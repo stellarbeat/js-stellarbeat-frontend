@@ -1,15 +1,15 @@
-#Goals
-##Explore
+# Goals
+## Explore
 Explore and gain insight on the network through various visualisations & analysis.
-##simulate
+## simulate
 Adapt the network by updating quorumSets, adding/removing nodes, toggling nodes on/off and see the results live in the browser. 
-##export
+## export
 - quorum set configurations
 - network simulation results
 
-#Architecture
+# Architecture
 Javascript browser app with api backend. Nodejs modules that can be reused on frontend and backend. This should provide us with a manageable/reusable codebase and allow us to simulate live in the browser and push heavier computations to the backend. 
-##Modules
+## Modules
 ### connector
 General purpose library that connects the stellar-core and can issue commands
 ### crawler
@@ -30,7 +30,7 @@ e.g. compute node failure from quorumSets, quorum slices, quorum intersection,..
 https://vuejs.org/v2/guide/single-file-components.html
 ### quorum monitor
 this
-##Technology
+## Technology
 ### nodejs
 https://nodejs.org/en/
 
@@ -43,7 +43,7 @@ https://d3js.org/
 ### flow
 https://flow.org/
 
-##Install
+## Install
 `npm install`
 
 `npm run flow:deps`
