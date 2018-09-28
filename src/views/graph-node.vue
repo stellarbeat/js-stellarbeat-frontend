@@ -5,7 +5,7 @@
                 v-bind:class="classObject"
                 v-on:click="nodeSelected"
         ></circle>
-        <text y="10" dy="1em" text-anchor="middle" font-size="7px">{{ displayName | truncate(10)}}</text>
+        <text y="5" dy="1em" text-anchor="middle" font-size="4px">{{ displayName | truncate(10)}}</text>
     </g>
 </template>
 
@@ -33,7 +33,7 @@
         },
         computed: {
             circleRadius: function () {
-                return "8px";
+                return "3px";
             },
             failing: function(){
                 return this.network.failingNodes.includes(this.node.originNode);

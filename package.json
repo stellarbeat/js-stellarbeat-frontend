@@ -12,7 +12,7 @@
     "flow:deps": "flow-typed install",
     "build": "node build.js",
     "build:prod": "NODE_ENV=production node build.js",
-    "watch": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development watchify -g envify -vd --plugin=browserify-hmr -t unflowify -t vueify --entry src/index.js --outfile dist/quorum-monitor.js"
+    "watch": "node node_modules/watchify/bin/cmd.js -g envify -vd --plugin=browserify-hmr -t unflowify -t babelify -t vueify --entry src/index.js --outfile dist/quorum-monitor.js"
   },
   "author": "pieterjan84@github",
   "license": "MIT",
@@ -34,8 +34,8 @@
     "vue": "^2.5.17",
     "vue-switches": "^2.0.1",
     "vue-truncate-filter": "^1.1.7",
-    "vue-worker": "^1.2.1",
-    "watchify": "^3.11.0"
+    "watchify": "^3.11.0",
+    "webworkify": "^1.5.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

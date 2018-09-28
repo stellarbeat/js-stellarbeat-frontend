@@ -14,10 +14,10 @@
     </g!-->
 
     <line
-          :x1="graphLink.source.x"
-          :y1="graphLink.source.y"
-          :x2="graphLink.target.x"
-          :y2="graphLink.target.y"
+          :x1="graphLink.coordinates.x1"
+          :y1="graphLink.coordinates.y1"
+          :x2="graphLink.coordinates.x2"
+          :y2="graphLink.coordinates.y2"
           v-bind:class="classObject"
     >
     </line>
@@ -40,8 +40,8 @@
             },
             classObject: function () {
                 return {
-                    'from-selected': this.graphLink.source.originNode === this.selectedNode,
-                    'to-selected': this.graphLink.target.originNode === this.selectedNode,
+                    'from-selected': this.graphLink.source === this.selectedNode,
+                    'to-selected': this.graphLink.target === this.selectedNode,
                     'cluster': this.graphLink.originLink.isClusterLink/*,
                     'inactive': !this.graphLink.originLink.active*/
                 }
@@ -54,7 +54,7 @@
     line {
         stroke: #74e1ff;
         stroke-width: 0.5px;
-        stroke-opacity: 0.34;
+        stroke-opacity: 0.14;
     }
 
     line.inactive{
@@ -64,17 +64,17 @@
 
     line.cluster {
         stroke-width: 0.8px;
-        stroke-opacity: 1;
+        stroke-opacity: 0.7;
     }
     line.from-selected {
         stroke: #e4d836;
-        stroke-opacity: 0.7;
+        stroke-opacity: 0.5;
         stroke-width: 1px;
     }
 
     line.to-selected {
         stroke: #1bc98e;
-        stroke-opacity: 0.7;
+        stroke-opacity: 0.5;
         stroke-width: 1px;
     }
 </style>

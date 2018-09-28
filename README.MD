@@ -51,3 +51,8 @@ https://flow.org/
 `npm run build`
 
 `open web/index.html in browser`
+
+babel polyfill needs to be loaded before you include the quorum-monitor code:
+`    <script src="../node_modules/babel-polyfill/dist/polyfill.min.js"></script>
+    <script src="../dist/quorum-monitor.js"></script>
+`

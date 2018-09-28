@@ -65,8 +65,8 @@ class Network {
                 .filter(validator => this._publicKeyToNodesMap.get(validator).active && !this._failingNodes.includes(this._publicKeyToNodesMap.get(validator))  )
                 .map(validator => {
                 return {
-                    'source': node.publicKey,
-                    'target': validator,
+                    'source': node,
+                    'target': this._publicKeyToNodesMap.get(validator),
                     'isClusterLink': this.isClusterLink(node.publicKey, validator)/*,
                     'active': this._publicKeyToNodesMap.get(validator).active
                     && this._publicKeyToNodesMap.get(node.publicKey).active
