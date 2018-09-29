@@ -43,8 +43,6 @@
 </template>
 
 <script>
-    const SWorker = require('simple-web-worker');
-
     export default {
         name: "statistics",
         props: {

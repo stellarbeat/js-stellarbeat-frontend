@@ -1,5 +1,5 @@
 <template>
-    <g :transform="`translate(${node.x},${node.y})`">
+    <g :transform="coordinateTransform">
         <circle
                 :r="circleRadius"
                 v-bind:class="classObject"
@@ -32,27 +32,30 @@
             }
         },
         computed: {
+            coordinateTransform: function() {
+                return `translate(${this.node.x},${this.node.y})`;
+            },
             circleRadius: function () {
                 return "3px";
             },
             failing: function(){
-                return this.network.failingNodes.includes(this.node.originNode);
+                return this.network.failingNodes.includes(this.node);
             },
 
             selected: function() {
-              return this.selectedNode === this.node.originNode
+              return this.selectedNode === this.node
             },
 
             active: function() {
-                return this.node.originNode.active
+                return this.node.active
             },
 
             isTarget: function() {
-                return this.targetNodes.includes(this.node.originNode) && this.selectedNode !== this.node.originNode
+                return this.targetNodes.includes(this.node) && this.selectedNode !== this.node
             },
 
             isSource: function() {
-                return this.sourceNodes.includes(this.node.originNode) && this.selectedNode !== this.node.originNode
+                return this.sourceNodes.includes(this.node) && this.selectedNode !== this.node
             },
 
             classObject: function () {
@@ -65,7 +68,7 @@
                 }
             },
             displayName: function () {
-                return this.node.originNode.displayName;
+                return this.node.displayName;
             }
         },
         methods: {

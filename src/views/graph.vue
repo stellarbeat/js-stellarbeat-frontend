@@ -11,9 +11,9 @@
                  height="600px"
             >
                 <g>
-                    <GraphLink v-show="!isLoading" v-for="link in graphLinks" :graphLink="link"
+                    <GraphLink v-if="graphInitialized && !isLoading" v-for="link in network.links" :link="link"
                                :selectedNode="selectedNode"></GraphLink>
-                    <GraphNode v-show="!isLoading" v-for="node in graphNodes" :node="node" :selectedNode="selectedNode"
+                    <GraphNode v-if="graphInitialized && !isLoading" v-for="node in network.nodes" :node="node" :selectedNode="selectedNode"
                                :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
                                v-on:node-selected="onNodeSelected"></GraphNode>
                 </g>
@@ -29,7 +29,6 @@
     const d3 = require('d3');
     const GraphNode = require("./graph-node.vue");
     const GraphLink = require("./graph-link.vue");
-    const GraphNodeEntity = require("./../entities/graph-node");
     const svgPanZoom = require("svg-pan-zoom");
     const Network = require("./../entities/network");
     const work = require('webworkify');
@@ -47,20 +46,6 @@
             return {
                 simulation: {},
                 simulationNodes: {},
-                graphNodes: this.network.nodes.map(node => new GraphNodeEntity(node.publicKey, node)), //todo couldn't we just use the network.nodes for simpler code?
-                graphLinks: this.network.links.map(link => {
-                    return {
-                        "source": link.source,
-                        "target": link.target,
-                        "originLink": link,
-                        "coordinates": {
-                            "x1": undefined,
-                            "y1": undefined,
-                            "x2": undefined,
-                            "y2": undefined,
-                        }
-                    }
-                }),
                 panZoom: {},
                 isLoading: true,
                 graphInitialized: false
@@ -76,54 +61,40 @@
         },
         computed: {
             sourceNodes: function () {
-                return this.graphLinks
-                    .filter(link => link.target.originNode === this.selectedNode)
-                    .map(link => link.source.originNode);
+                return this.network.links
+                    .filter(link => link.target === this.selectedNode)
+                    .map(link => link.source);
             },
             targetNodes: function () {
-                return this.graphLinks
-                    .filter(link => link.source.originNode === this.selectedNode)
-                    .map(link => link.target.originNode);
+                return this.network.links
+                    .filter(link => link.source === this.selectedNode)
+                    .map(link => link.target);
             }
         },
         methods: {
-            onNodeSelected: function (graphNode) {
-                this.$emit("node-selected", graphNode.originNode);
+            onNodeSelected: function (node) {
+                this.$emit("node-selected", node);
             },
             restartSimulation: function () {
-                this.graphLinks = this.network.links.map(link => {
-                        return {
-                            "source": link.source,
-                            "target": link.target,
-                            "originLink": link,
-                            "coordinates": {
-                                "x1": undefined,
-                                "y1": undefined,
-                                "x2": undefined,
-                                "y2": undefined,
-                            }
-                        }});
                 this.computeGraph();
             },
             computeGraph: function() {
                 this.isLoading = true;
                 //separate simnodes to avoid slow rendering
-                let simulationNodes = this.graphNodes.map((node, index) => {
+                let simulationNodes = this.network.nodes.map((node, index) => {
                     return {
                         'publicKey': node.publicKey,
                         'x': node.x,
                         'y': node.y,
-                        'fx': node.fx,
-                        'fy': node.fy,
                         'index': index
                     }
                 });
 
-                let simulationLinks = this.graphLinks.map((link, index) => {
+                let simulationLinks = this.network.links.map((link, index) => {
                     return {
                         'source': link.source.publicKey,
                         'target':link.target.publicKey,
-                        'isClusterLink': link.originLink.isClusterLink,
+                        'isClusterLink': link.isClusterLink,
                         'index': index
                     }
                 });
@@ -137,27 +108,23 @@
 
         },
         created() {//todo web worker
+            this.network.nodes.forEach(node =>{
+                this.$set(node, 'x', undefined);
+                this.$set(node, 'y', undefined);
+            } ); //trigger reactive changes on newly added x and y coordinates
+
             computeGraphWorker.onmessage = function(event) {
                 switch (event.data.type) {
                     case "tick": {
-                        console.log(100 * event.data.progress + "%");
+                        //console.log(100 * event.data.progress + "%");
                     }
                         break;
                     case "end": {
+                        console.log(event.data.links);
                         event.data.nodes.forEach(
                             node => {
-                                this.graphNodes[node.index].x = node.x;
-                                this.graphNodes[node.index].y = node.y;
-                            }
-                        );
-                        event.data.links.forEach(
-                            link => {
-                                this.graphLinks[link.index].coordinates = {
-                                    "x1": link.source.x,
-                                    "y1": link.source.y,
-                                    "x2": link.target.x,
-                                    "y2":  link.target.y
-                                } //update in one movement to avoid rerendering after every individual coordinate set (e.g. x1=..)
+                                this.network.nodes[node.index].x = node.x;
+                                this.network.nodes[node.index].y = node.y;
                             }
                         );
                         this.isLoading = false;

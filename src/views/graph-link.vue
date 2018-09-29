@@ -1,33 +1,15 @@
 <template>
-    <!--g>
-        <defs>
-            <marker id='head' orient='auto' markerWidth='2' markerHeight='4'
-                    refX='12' refY='2'>
-                <path d='M0,0 V4 L2,2 Z' fill='red'/>
-            </marker>
-        </defs>
-        <path
-                marker-end='url(#head)'
-                stroke-width='1' fill='black' stroke='black'
-                v-bind:d="path"
-        />
-    </g!-->
-
-    <line
-          :x1="graphLink.coordinates.x1"
-          :y1="graphLink.coordinates.y1"
-          :x2="graphLink.coordinates.x2"
-          :y2="graphLink.coordinates.y2"
-          v-bind:class="classObject"
-    >
-    </line>
+    <path
+            v-bind:class="classObject"
+            v-bind:d="path"
+    />
 </template>
 
 <script>
     export default {
         name: "graph-link",
         props: {
-            graphLink: {
+            link: {
                 type: Object
             },
             selectedNode: {
@@ -36,14 +18,14 @@
         },
         computed: {
             path: function () {
-                return 'M' + this.graphLink.source.x + ' ' + this.graphLink.source.y + ' L' + (this.graphLink.target.x) + ' ' + (this.graphLink.target.y)
+                return 'M' + this.link.source.x + ' ' + this.link.source.y + ' L' + (this.link.target.x) + ' ' + (this.link.target.y)
             },
             classObject: function () {
                 return {
-                    'from-selected': this.graphLink.source === this.selectedNode,
-                    'to-selected': this.graphLink.target === this.selectedNode,
-                    'cluster': this.graphLink.originLink.isClusterLink/*,
-                    'inactive': !this.graphLink.originLink.active*/
+                    'from-selected': this.link.source === this.selectedNode,
+                    'to-selected': this.link.target === this.selectedNode,
+                    'cluster': this.link.isClusterLink/*,
+                    'inactive': !this.link.originLink.active*/
                 }
             }
         }
@@ -51,28 +33,28 @@
 </script>
 
 <style scoped>
-    line {
+    path {
         stroke: #74e1ff;
         stroke-width: 0.5px;
         stroke-opacity: 0.14;
     }
 
-    line.inactive{
+    path.inactive{
         stroke: #ECEBE4;
         stroke-opacity: 0.6;
     }
 
-    line.cluster {
+    path.cluster {
         stroke-width: 0.8px;
         stroke-opacity: 0.7;
     }
-    line.from-selected {
+    path.from-selected {
         stroke: #e4d836;
         stroke-opacity: 0.5;
         stroke-width: 1px;
     }
 
-    line.to-selected {
+    path.to-selected {
         stroke: #1bc98e;
         stroke-opacity: 0.5;
         stroke-width: 1px;
