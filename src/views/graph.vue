@@ -120,7 +120,6 @@
                     }
                         break;
                     case "end": {
-                        console.log(event.data.links);
                         event.data.nodes.forEach(
                             node => {
                                 this.network.nodes[node.index].x = node.x;

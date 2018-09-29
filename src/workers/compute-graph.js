@@ -7,13 +7,13 @@ module.exports = function (self) {
 
         let simulation = d3.forceSimulation(nodes)
             .force('charge', d3.forceManyBody().strength(d => {
-                return -25;
+                return -120;
             }))
             .force('link', d3.forceLink(links).strength(function (link) {
                 if (link.isClusterLink) {
-                    return 0.05;
+                    return 0.1;
                 } else {
-                    return 0.001;
+                    return 0.005;
                 }
             }).id(function (d) {
                 return d.publicKey;

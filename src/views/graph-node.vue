@@ -1,11 +1,17 @@
 <template>
     <g :transform="coordinateTransform">
+        <defs>
+            <filter x="0" y="0" width="1" height="1" id="solid">
+                <feFlood flood-color="white" flood-opacity="0.7"/>
+                <feComposite in="SourceGraphic"/>
+            </filter>
+        </defs>
         <circle
                 :r="circleRadius"
                 v-bind:class="classObject"
                 v-on:click="nodeSelected"
         ></circle>
-        <text y="5" dy="1em" text-anchor="middle" font-size="4px">{{ displayName | truncate(10)}}</text>
+        <text filter="url(#solid)" y="5" dy="1em" text-anchor="middle" font-size="5px">{{ displayName | truncate(10)}}</text>
     </g>
 </template>
 
@@ -81,7 +87,7 @@
 
 <style scoped>
     circle.active {
-        fill: #74e1ff;
+        fill: #1997c6;
     }
 
     circle.selected {
@@ -104,12 +110,12 @@
     }
 
     circle {
-        stroke: transparent;
+        stroke: white;
         fill: #ECEBE4;
         cursor: pointer;
-        stroke-width: 2px;
+        stroke-width: 1px;
     }
     text{
-        opacity: 0.7;
+        fill: #1997c6;
     }
 </style>

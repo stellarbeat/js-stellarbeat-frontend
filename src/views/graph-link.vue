@@ -6,8 +6,16 @@
 </template>
 
 <script>
+    const getControlPoints = require("get-control-points");
+
     export default {
         name: "graph-link",
+        data() {
+            return {
+                curveSpacing: 10,
+                curveAmount: 10
+            }
+        },
         props: {
             link: {
                 type: Object
@@ -18,7 +26,12 @@
         },
         computed: {
             path: function () {
-                return 'M' + this.link.source.x + ' ' + this.link.source.y + ' L' + (this.link.target.x) + ' ' + (this.link.target.y)
+                /*let controlPoints = getControlPoints([this.link.source.x,this.link.source.y],[this.link.target.x,this.link.target.y],0.3);
+                return 'M' + this.link.source.x + ',' + this.link.source.y +
+                    ' C' + controlPoints[0][0] + ',' + controlPoints[0][1] +
+                    ' ' + controlPoints[1][0] + ',' + controlPoints[1][1] +
+                    ' ' + (this.link.target.x) + ',' + (this.link.target.y)*/
+                return 'M' + this.link.source.x + ' ' + this.link.source.y + ' L' + (this.link.target.x) + ' ' + (this.link.target.y);
             },
             classObject: function () {
                 return {
@@ -34,9 +47,10 @@
 
 <style scoped>
     path {
-        stroke: #74e1ff;
+        stroke: #1997c6;
         stroke-width: 0.5px;
         stroke-opacity: 0.14;
+        fill-opacity: 0;
     }
 
     path.inactive{
@@ -45,8 +59,8 @@
     }
 
     path.cluster {
-        stroke-width: 0.8px;
-        stroke-opacity: 0.7;
+        stroke-width: 1px;
+        stroke-opacity: 0.6;
     }
     path.from-selected {
         stroke: #e4d836;
