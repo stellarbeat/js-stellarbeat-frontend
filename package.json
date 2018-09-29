@@ -12,7 +12,8 @@
     "flow:deps": "flow-typed install",
     "build": "node build.js",
     "build:prod": "NODE_ENV=production node build.js",
-    "watch": "node node_modules/watchify/bin/cmd.js -g envify -vd --plugin=browserify-hmr -t unflowify -t babelify -t vueify --entry src/index.js --outfile dist/quorum-monitor.js"
+    "watch": "node node_modules/watchify/bin/cmd.js -g envify -vd --plugin=browserify-hmr -t unflowify -t babelify -t vueify --entry src/index.js --outfile dist/quorum-monitor.js",
+    "start": "serve"
   },
   "author": "pieterjan84@github",
   "license": "MIT",
@@ -29,6 +30,7 @@
     "envify": "^4.1.0",
     "js-stellar-node-crawler": "github:stellarbeat/js-stellar-node-crawler#master",
     "lodash": "^4.17.11",
+    "serve": "^10.0.2",
     "svg-pan-zoom": "^3.5.3",
     "unflowify": "^1.0.1",
     "vue": "^2.5.17",

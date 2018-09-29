@@ -16,7 +16,7 @@ module.exports = function (self) {
                     return 0.001;
                 }
             }).id(function (d) {
-                return d.publicKey; //can't use getters? webworkers?
+                return d.publicKey;
             }))
             .force('x', d3.forceX())
             .force('y', d3.forceY())
