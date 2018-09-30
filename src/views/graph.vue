@@ -10,10 +10,11 @@
                  width="100%"
                  height="600px"
             >
-                <g>
+                <g class="svg-pan-zoom_viewport">
                     <GraphLink v-if="graphInitialized && !isLoading" v-for="link in network.links" :link="link"
                                :selectedNode="selectedNode"></GraphLink>
-                    <GraphNode v-if="graphInitialized && !isLoading" v-for="node in network.nodes" :node="node" :selectedNode="selectedNode"
+                    <GraphNode v-if="graphInitialized && !isLoading" v-for="node in network.nodes" :node="node"
+                               :selectedNode="selectedNode"
                                :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
                                v-on:node-selected="onNodeSelected"></GraphNode>
                 </g>
@@ -57,6 +58,19 @@
             },
             selectedNode: {
                 type: Object
+            },
+            centerNode: {
+                type: Object
+            }
+        },
+        watch: {
+            centerNode: function (node) {
+                let height = this.panZoom.getSizes().height;
+                let width = this.panZoom.getSizes().width;
+                let zoom = this.panZoom.getSizes().realZoom;
+                let realNodeX = -node.x * zoom + width / 2;
+                let realNodeY = -node.y * zoom + height / 2;
+                this.panZoom.pan({x: realNodeX, y: realNodeY});
             }
         },
         computed: {
@@ -78,7 +92,7 @@
             restartSimulation: function () {
                 this.computeGraph();
             },
-            computeGraph: function() {
+            computeGraph: function () {
                 this.isLoading = true;
                 //separate simnodes to avoid slow rendering
                 let simulationNodes = this.network.nodes.map((node, index) => {
@@ -93,7 +107,7 @@
                 let simulationLinks = this.network.links.map((link, index) => {
                     return {
                         'source': link.source.publicKey,
-                        'target':link.target.publicKey,
+                        'target': link.target.publicKey,
                         'isClusterLink': link.isClusterLink,
                         'index': index
                     }
@@ -108,12 +122,12 @@
 
         },
         created() {//todo web worker
-            this.network.nodes.forEach(node =>{
+            this.network.nodes.forEach(node => {
                 this.$set(node, 'x', undefined);
                 this.$set(node, 'y', undefined);
-            } ); //trigger reactive changes on newly added x and y coordinates
+            }); //trigger reactive changes on newly added x and y coordinates
 
-            computeGraphWorker.onmessage = function(event) {
+            computeGraphWorker.onmessage = function (event) {
                 switch (event.data.type) {
                     case "tick": {
                         //console.log(100 * event.data.progress + "%");
@@ -127,9 +141,10 @@
                             }
                         );
                         this.isLoading = false;
-                        if(!this.graphInitialized){
+                        if (!this.graphInitialized) {
                             this.panZoom = svgPanZoom(this.$refs.graphSvg,
-                                {  zoom: 2,
+                                {
+                                    zoom: 2,
                                     minZoom: 0.5
                                     , maxZoom: 10
                                     , fit: false

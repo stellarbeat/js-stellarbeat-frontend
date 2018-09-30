@@ -54,6 +54,7 @@
         methods: {
             nodeSelected: function (node) {
                 this.searchString = '';
+                this.$emit("center-node", node);
                 this.$emit("node-selected", node);
             },
             onArrowDown() {

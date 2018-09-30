@@ -23,7 +23,7 @@
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Quorum Monitor</a>
             <form class="form-inline">
-                <search :nodes="this.network.nodes" v-on:node-selected="onNodeSelected"></search>
+                <search :nodes="this.network.nodes" v-on:node-selected="onNodeSelected" v-on:center-node="onNodeCenter"></search>
             </form>
         </nav>
         <div v-show="isSimulation" class="alert alert-warning" role="alert">
@@ -34,7 +34,7 @@
             <div class="col-sm-8">
                 <div class="card">
                     <div class="card-body" style="height: 100%">
-                        <Graph ref="graph" :network="network" :selectedNode="selectedNode"
+                        <Graph ref="graph" :network="network" :selectedNode="selectedNode" v-on:center-node="onNodeCenter" :centerNode="centerNode"
                                v-on:node-selected="onNodeSelected"></Graph>
                         <GraphLegend></GraphLegend>
                     </div>
@@ -103,6 +103,9 @@
         methods: {
             onNodeSelected: function (node) {
                 this.selectedNode = node;
+            },
+            onNodeCenter: function (node) {
+                this.centerNode = node;
             },
             toggleActive: function (node) {
                 node.active = !node.active;
