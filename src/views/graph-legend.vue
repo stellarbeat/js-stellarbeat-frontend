@@ -62,7 +62,7 @@
     }
 
     .quorum-graph-legend .connection {
-        background: #74e1ff;
+        background: #1997c6;
     }
 
     .quorum-graph-legend .incoming-connection {
@@ -74,7 +74,7 @@
     }
 
     .quorum-graph-legend .active-node {
-        background: #74e1ff;
+        background: #1997c6;
     }
 
     .quorum-graph-legend .selected-node {

@@ -74530,7 +74530,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"./graph-legend.vue":414,"./graph.vue":417,"./node-details.vue":418,"./node-list.vue":419,"./search.vue":421,"./statistics.vue":422,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],414:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".quorum-graph-legend[data-v-2f22afdc] {\n    margin-top: 20px;\n    font-size: 0.7rem;\n}\n\n.quorum-graph-legend .element[data-v-2f22afdc] {\n    border-radius: 5px;\n    opacity: 0.8;\n\n}\n\n.quorum-graph-legend .connection[data-v-2f22afdc] {\n    background: #74e1ff;\n}\n\n.quorum-graph-legend .incoming-connection[data-v-2f22afdc] {\n    background: #1bc98e;\n}\n\n.quorum-graph-legend .outgoing-connection[data-v-2f22afdc] {\n    background: #e4d836;\n}\n\n.quorum-graph-legend .active-node[data-v-2f22afdc] {\n    background: #74e1ff;\n}\n\n.quorum-graph-legend .selected-node[data-v-2f22afdc] {\n    background: yellow;\n}\n\n.quorum-graph-legend .inactive-node[data-v-2f22afdc] {\n    background: #ECEBE4;\n}\n\n.quorum-graph-legend .failing-node[data-v-2f22afdc] {\n    background: red;\n}\n\n.legend-link[data-v-2f22afdc] {\n    font-size: 0.8rem;\n    margin-bottom: 0px;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".quorum-graph-legend[data-v-2f22afdc] {\n    margin-top: 20px;\n    font-size: 0.7rem;\n}\n\n.quorum-graph-legend .element[data-v-2f22afdc] {\n    border-radius: 5px;\n    opacity: 0.8;\n\n}\n\n.quorum-graph-legend .connection[data-v-2f22afdc] {\n    background: #1997c6;\n}\n\n.quorum-graph-legend .incoming-connection[data-v-2f22afdc] {\n    background: #1bc98e;\n}\n\n.quorum-graph-legend .outgoing-connection[data-v-2f22afdc] {\n    background: #e4d836;\n}\n\n.quorum-graph-legend .active-node[data-v-2f22afdc] {\n    background: #1997c6;\n}\n\n.quorum-graph-legend .selected-node[data-v-2f22afdc] {\n    background: yellow;\n}\n\n.quorum-graph-legend .inactive-node[data-v-2f22afdc] {\n    background: #ECEBE4;\n}\n\n.quorum-graph-legend .failing-node[data-v-2f22afdc] {\n    background: red;\n}\n\n.legend-link[data-v-2f22afdc] {\n    font-size: 0.8rem;\n    margin-bottom: 0px;\n}")
 ;(function(){
 "use strict";
 
@@ -74898,6 +74898,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"./../entities/network":407,"./../workers/compute-graph.js":423,"./graph-link.vue":415,"./graph-node.vue":416,"d3":41,"svg-pan-zoom":389,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404,"webworkify":405}],418:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("ul.tree[data-v-4d72da67] {\n    padding-left: 0px;\n}")
 ;(function(){
 'use strict';
 
@@ -74933,20 +74934,21 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"card"},[(_vm.node !== null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title node-details-title",attrs:{"data-toggle":"tooltip","title":_vm.node.displayName}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.node.displayName,20))),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm btn-secondary",attrs:{"type":"button","data-toggle":"modal","data-target":"#node-details-modal"}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])]),_vm._v(" "),_c('QuorumSet',{attrs:{"quorumSet":_vm.node.quorumSet,"network":_vm.network}})],1):(_vm.node === null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Manual")]),_vm._v(" "),_vm._m(0)]):_vm._e(),_vm._v(" "),(_vm.node !== null)?_c('div',{staticClass:"modal",attrs:{"id":"node-details-modal","tabindex":"-1","role":"dialog"}},[_c('div',{staticClass:"modal-dialog modal-lg",attrs:{"role":"document"}},[_c('div',{staticClass:"modal-content"},[_c('div',{staticClass:"modal-header"},[_c('h5',{staticClass:"modal-title"},[_vm._v(_vm._s(_vm.node.displayName))]),_vm._v(" "),_vm._m(1)]),_vm._v(" "),_c('div',{staticClass:"modal-body"},[_c('p',[_vm._v("Todo: layout")]),_vm._v(" "),_vm._l((_vm.node),function(value,key){return _c('div',[_vm._v("\n                        "+_vm._s(key)+": "+_vm._s(value)+"\n                    ")])})],2),_vm._v(" "),_vm._m(2)])])]):_vm._e()])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"card"},[(_vm.node !== null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title node-details-title",attrs:{"data-toggle":"tooltip","title":_vm.node.displayName}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.node.displayName,20))),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm btn-secondary",attrs:{"type":"button","data-toggle":"modal","data-target":"#node-details-modal"}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])]),_vm._v(" "),_c('ul',{staticClass:"tree list-group-flush"},[_c('QuorumSet',{attrs:{"quorumSet":_vm.node.quorumSet,"network":_vm.network}})],1)]):(_vm.node === null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Manual")]),_vm._v(" "),_vm._m(0)]):_vm._e(),_vm._v(" "),(_vm.node !== null)?_c('div',{staticClass:"modal",attrs:{"id":"node-details-modal","tabindex":"-1","role":"dialog"}},[_c('div',{staticClass:"modal-dialog modal-lg",attrs:{"role":"document"}},[_c('div',{staticClass:"modal-content"},[_c('div',{staticClass:"modal-header"},[_c('h5',{staticClass:"modal-title"},[_vm._v(_vm._s(_vm.node.displayName))]),_vm._v(" "),_vm._m(1)]),_vm._v(" "),_c('div',{staticClass:"modal-body"},[_c('p',[_vm._v("Todo: layout")]),_vm._v(" "),_vm._l((_vm.node),function(value,key){return _c('div',[_vm._v("\n                        "+_vm._s(key)+": "+_vm._s(value)+"\n                    ")])})],2),_vm._v(" "),_vm._m(2)])])]):_vm._e()])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',[_c('li',[_vm._v("Click and drag on the Graph to pan")]),_vm._v(" "),_c('li',[_vm._v("Scroll on the Graph to zoom")]),_vm._v(" "),_c('li',[_vm._v("Search or click on a node to select it")]),_vm._v(" "),_c('li',[_vm._v("Click on the legend on the bottom on the graph to see the color codes")]),_vm._v(" "),_c('li',[_vm._v("Links are only shown between active, non-failing nodes")]),_vm._v(" "),_c('li',[_vm._v("Clustered nodes have fuller links and are closer together in the graph")]),_vm._v(" "),_c('li',[_vm._v("Press the info button in the selected node details for a complete list of the node details")]),_vm._v(" "),_c('li',[_vm._v("Toggle the on/off button in the selected node details to activate/deactivate the node and see the effects on the network")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{staticClass:"close",attrs:{"type":"button","data-dismiss":"modal","aria-label":"Close"}},[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("×")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"modal-footer"},[_c('button',{staticClass:"btn btn-secondary",attrs:{"type":"button","data-dismiss":"modal"}},[_vm._v("Close")])])}]
 __vue__options__._scopeId = "data-v-4d72da67"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-4d72da67", __vue__options__)
   } else {
     hotAPI.reload("data-v-4d72da67", __vue__options__)
   }
 })()}
-},{"./quorum-set.vue":420,"vue":403,"vue-hot-reload-api":401}],419:[function(require,module,exports){
+},{"./quorum-set.vue":420,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],419:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -74979,6 +74981,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"vue":403,"vue-hot-reload-api":401}],420:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".active-node[data-v-60930438] {\n    color: #1997c6;\n}\nli[data-v-60930438] {\n    padding-left: 0px;\n}")
 ;(function(){
 "use strict";
 
@@ -75009,20 +75012,21 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('div',[_vm._v("Threshold: "+_vm._s(_vm.quorumSet.threshold))]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.quorumSet.validators.length > 0),expression:"quorumSet.validators.length > 0"}]},[_vm._v("Validators:\n    "),_c('ul',{staticClass:"list-group list-group-flush"},_vm._l((_vm.quorumSet.validators),function(validator){return _c('li',{staticClass:"list-group-item"},[_vm._v(" "+_vm._s(_vm.validatorDisplayName(validator))+"\n        ")])}))]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.quorumSet.innerQuorumSets.length > 0),expression:"quorumSet.innerQuorumSets.length > 0"}]},[_vm._v("Inner QuorumSets:\n    "),_vm._l((_vm.quorumSet.innerQuorumSets),function(innerQuorumSet){return _c('quorum-set',{attrs:{"network":_vm.network,"quorumSet":innerQuorumSet}})})],2)])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item"},[_c('h6',[_vm._v("Quorumset with threshold: "+_vm._s(_vm.quorumSet.threshold))]),_vm._v(" "),_c('ul',[_vm._l((_vm.quorumSet.validators),function(validator){return _c('li',{staticClass:"list-group-item"},[_vm._v("\n            "+_vm._s(_vm.validatorDisplayName(validator))+"\n        ")])}),_vm._v(" "),_vm._l((_vm.quorumSet.innerQuorumSets),function(innerQuorumSet){return _c('quorum-set',{attrs:{"network":_vm.network,"quorumSet":innerQuorumSet}})})],2)])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-60930438"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
   if (!module.hot.data) {
     hotAPI.createRecord("data-v-60930438", __vue__options__)
   } else {
     hotAPI.reload("data-v-60930438", __vue__options__)
   }
 })()}
-},{"vue":403,"vue-hot-reload-api":401}],421:[function(require,module,exports){
+},{"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],421:[function(require,module,exports){
 ;(function(){
 'use strict';
 

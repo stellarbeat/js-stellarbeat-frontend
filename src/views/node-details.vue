@@ -13,9 +13,10 @@
                                         </button>
                                    </span></h5>
 
-
-            <QuorumSet :quorumSet="node.quorumSet"
-                       :network="network"></QuorumSet>
+            <ul class="tree list-group-flush">
+                <QuorumSet :quorumSet="node.quorumSet"
+                           :network="network"></QuorumSet>
+            </ul>
         </div>
         <div v-else-if="node === null" class="card-body">
             <h5 class="card-title">Manual</h5>
@@ -81,5 +82,7 @@
 </script>
 
 <style scoped>
-
+    ul.tree {
+        padding-left: 0px;
+    }
 </style>
