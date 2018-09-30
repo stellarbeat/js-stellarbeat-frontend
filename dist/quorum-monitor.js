@@ -74718,7 +74718,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   }
 })()}
 },{"./../entities/node":408,"./../services/quorum":411,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],417:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("svg.graph[data-v-5b01a60e] {\n    height: inherit;\n    width: 100%;\n}")
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("svg.graph[data-v-5b01a60e] {\n    height: inherit;\n    width: 100%;\n}\n\n.progress[data-v-5b01a60e] {\n    height: 20px;\n    margin-top: 10%;\n    margin-left: 20%;\n    margin-right: 20%\n}\n\n.progress-bar[data-v-5b01a60e] {\n    -webkit-transition: none !important;\n    transition: none !important;\n    background-color: #1997c6;\n    opacity: 0.6;\n}")
 ;(function(){
 "use strict";
 
@@ -74747,7 +74747,8 @@ exports.default = {
             simulationNodes: {},
             panZoom: {},
             isLoading: true,
-            graphInitialized: false
+            graphInitialized: false,
+            loadingProgress: 0
         };
     },
 
@@ -74773,6 +74774,9 @@ exports.default = {
         }
     },
     computed: {
+        progressBarWidth: function progressBarWidth() {
+            return "width: " + this.loadingProgress + '%';
+        },
         sourceNodes: function sourceNodes() {
             var _this = this;
 
@@ -74840,7 +74844,12 @@ exports.default = {
 
             switch (event.data.type) {
                 case "tick":
-                    {}
+                    {
+                        var newLoadingProgress = Math.round(event.data.progress * 100);
+
+                        this.loadingProgress = newLoadingProgress;
+                        console.log(this.loadingProgress);
+                    }
                     break;
                 case "end":
                     {
@@ -74874,7 +74883,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graph row"},[_c('div',{staticClass:"col-xs-12",staticStyle:{"width":"100%"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isLoading),expression:"isLoading"}],staticClass:"fa-5x",staticStyle:{"text-align":"center"}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"spinner","spin":"","pulse":""}})],1),_vm._v(" "),_c('svg',{ref:"graphSvg",staticClass:"graph",attrs:{"xmlns":"http://www.w3.org/2000/svg","width":"100%","height":"600px"}},[_c('g',{staticClass:"svg-pan-zoom_viewport"},[_vm._l((_vm.network.links),function(link){return (_vm.graphInitialized && !_vm.isLoading)?_c('GraphLink',{attrs:{"link":link,"selectedNode":_vm.selectedNode}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.network.nodes),function(node){return (_vm.graphInitialized && !_vm.isLoading)?_c('GraphNode',{attrs:{"node":node,"selectedNode":_vm.selectedNode,"network":_vm.network,"targetNodes":_vm.targetNodes,"sourceNodes":_vm.sourceNodes},on:{"node-selected":_vm.onNodeSelected}}):_vm._e()})],2)])])])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graph row"},[_c('div',{staticClass:"col-xs-12",staticStyle:{"width":"100%"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isLoading),expression:"isLoading"}],staticClass:"progress"},[_c('div',{staticClass:"progress-bar",style:(_vm.progressBarWidth),attrs:{"role":"progressbar","aria-valuenow":_vm.loadingProgress,"aria-valuemin":"0","aria-valuemax":"100"}})]),_vm._v(" "),_c('svg',{ref:"graphSvg",staticClass:"graph",attrs:{"xmlns":"http://www.w3.org/2000/svg","width":"100%","height":"600px"}},[_c('g',{staticClass:"svg-pan-zoom_viewport"},[_vm._l((_vm.network.links),function(link){return (_vm.graphInitialized && !_vm.isLoading)?_c('GraphLink',{attrs:{"link":link,"selectedNode":_vm.selectedNode}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.network.nodes),function(node){return (_vm.graphInitialized && !_vm.isLoading)?_c('GraphNode',{attrs:{"node":node,"selectedNode":_vm.selectedNode,"network":_vm.network,"targetNodes":_vm.targetNodes,"sourceNodes":_vm.sourceNodes},on:{"node-selected":_vm.onNodeSelected}}):_vm._e()})],2)])])])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-5b01a60e"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")

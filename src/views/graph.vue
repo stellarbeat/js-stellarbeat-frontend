@@ -2,8 +2,9 @@
     <div class="graph row">
 
         <div class="col-xs-12" style="width: 100%">
-            <div v-show="isLoading" class="fa-5x" style="text-align: center;">
-                <font-awesome-icon size="xs" icon="spinner" spin pulse/>
+            <div v-show="isLoading" class="progress">
+                <div class="progress-bar" role="progressbar" v-bind:style="progressBarWidth"
+                     v-bind:aria-valuenow="loadingProgress" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <svg class="graph" xmlns="http://www.w3.org/2000/svg"
                  ref="graphSvg"
@@ -49,7 +50,8 @@
                 simulationNodes: {},
                 panZoom: {},
                 isLoading: true,
-                graphInitialized: false
+                graphInitialized: false,
+                loadingProgress: 0
             }
         },
         props: {
@@ -74,6 +76,9 @@
             }
         },
         computed: {
+            progressBarWidth: function () {
+                return "width: " + this.loadingProgress + '%';
+            },
             sourceNodes: function () {
                 return this.network.links
                     .filter(link => link.target === this.selectedNode)
@@ -130,6 +135,10 @@
             computeGraphWorker.onmessage = function (event) {
                 switch (event.data.type) {
                     case "tick": {
+                        let newLoadingProgress = Math.round(event.data.progress * 100);
+                        //if(newLoadingProgress % 25 === 0)
+                        this.loadingProgress = newLoadingProgress;
+                        console.log(this.loadingProgress);
                         //console.log(100 * event.data.progress + "%");
                     }
                         break;
@@ -173,5 +182,19 @@
     svg.graph {
         height: inherit;
         width: 100%;
+    }
+
+    .progress {
+        height: 20px;
+        margin-top: 10%;
+        margin-left: 20%;
+        margin-right: 20%
+    }
+
+    .progress-bar {
+        -webkit-transition: none !important;
+        transition: none !important;
+        background-color: #1997c6;
+        opacity: 0.6;
     }
 </style>
