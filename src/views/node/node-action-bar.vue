@@ -1,7 +1,7 @@
 <template>
     <div style="font-size: 0.5rem;">
         <button type="button" class="btn btn-xs btn-secondary" data-toggle="modal"
-                data-target="#node-details-modal">
+                v-bind:data-target="'#' + modalId">
             <font-awesome-icon size="xs" icon="info"/>
         </button>
         <button type="button" class="btn btn-xs"
@@ -53,7 +53,7 @@
             },
         computed: {
             modalId: function () {
-                return 'node-details-modal-' + this.node.publicKey
+                return this.node.publicKey
             }
         }
     }

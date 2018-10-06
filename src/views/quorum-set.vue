@@ -116,4 +116,5 @@
     .failing {
         color: red
     }
+    .list-group-item, .list-group-item:hover{ z-index: auto; }
 </style>
