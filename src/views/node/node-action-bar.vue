@@ -36,21 +36,15 @@
 
 <script>
     export default {
-        name: "node-list-item",
+        name: "node-action-bar",
         props: {
-            nodePublicKey: {
-                type: String
+            node: {
+                type: Object
             },
             network: {
                 type: Object
             }
         },
-        data:
-            function () {
-                return {
-                    node: this.network.getNodeByPublicKey(this.nodePublicKey)
-                }
-            },
         computed: {
             modalId: function () {
                 return this.node.publicKey

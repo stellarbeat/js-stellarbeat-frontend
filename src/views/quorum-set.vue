@@ -11,7 +11,7 @@
                 <div v-bind:class="nodeState(validator)">
                     {{validatorDisplayName(validator)}}
                     <span class="fa-pull-right">
-                    <NodeActionBar :nodePublicKey="validator" :network="network" v-on:node-toggle-active="toggleNodeActive"></NodeActionBar>
+                    <NodeActionBar :node="getNode(validator)" :network="network" v-on:node-toggle-active="toggleNodeActive"></NodeActionBar>
                 </span>
                 </div>
             </li>
@@ -52,10 +52,13 @@
         methods: {
             validatorDisplayName: function (validator) {
                 if (this.network.getNodeByPublicKey(validator)) {
-                    return this.network.getNodeByPublicKey(validator).displayName;
+                    return this.network.getNodeByPublicKey(validator).name;
                 } else {
                     return validator;
                 }
+            },
+            getNode: function(publicKey) {
+                  return this.network.getNodeByPublicKey(publicKey);
             },
             toggle: function () {
                 this.open = !this.open;
@@ -69,6 +72,7 @@
                 }
             },
             toggleNodeActive: function(node) {
+                console.log(node.name);
                 this.$emit("node-toggle-active", node);
             }
         },

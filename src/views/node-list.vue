@@ -5,7 +5,7 @@
             <div>
                 {{node.displayName | truncate(30)}}
                 <span class="fa-pull-right">
-                    <NodeActionBar :nodePublicKey="node.publicKey" :network="network" v-on:node-toggle-active="toggleActive(node)"></NodeActionBar>
+                    <NodeActionBar :node="node" :network="network" v-on:node-toggle-active="toggleActive(node)"></NodeActionBar>
                 </span>
             </div>
         </div>
