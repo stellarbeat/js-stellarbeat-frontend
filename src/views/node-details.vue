@@ -17,7 +17,8 @@
             <ul class="tree list-group list-group-flush">
                 <QuorumSet :quorumSet="node.quorumSet"
                            :network="network"
-                           :root="true">
+                           :root="true"
+                           v-on:node-toggle-active="toggleNodeActive">
                 </QuorumSet>
             </ul>
         </div>
@@ -74,6 +75,11 @@
             },
             network: {
                 type: Object
+            }
+        },
+        methods: {
+            toggleNodeActive: function (node) {
+                this.$emit("node-toggle-active", node);
             }
         },
         mounted() {

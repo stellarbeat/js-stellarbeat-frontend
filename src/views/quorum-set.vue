@@ -10,20 +10,29 @@
             <li v-for="validator in quorumSet.validators" class="list-group-item">
                 <div v-bind:class="nodeState(validator)">
                     {{validatorDisplayName(validator)}}
+                    <span class="fa-pull-right">
+                    <NodeActionBar :nodePublicKey="validator" :network="network" v-on:node-toggle-active="toggleNodeActive"></NodeActionBar>
+                </span>
                 </div>
             </li>
             <quorum-set v-for="innerQuorumSet in quorumSet.innerQuorumSets"
                         :network="network"
                         :quorumSet="innerQuorumSet"
-                        :root="false">
+                        :root="false"
+                        v-on:node-toggle-active="toggleNodeActive">
             </quorum-set>
         </ul>
     </li>
 </template>
 
 <script>
+    const NodeActionBar = require('./node/node-action-bar.vue');
+
     export default {
         name: "quorum-set",
+        components: {
+            NodeActionBar
+        },
         props: {
             "network": {
                 type: Object
@@ -58,6 +67,9 @@
                     'active': node.active,
                     'failing': this.network.isNodeFailing(node)
                 }
+            },
+            toggleNodeActive: function(node) {
+                this.$emit("node-toggle-active", node);
             }
         },
         computed: {
@@ -86,6 +98,7 @@
 
     .caret {
         height: 0.6em;
+        cursor: pointer;
     }
 
     .nested-tree {

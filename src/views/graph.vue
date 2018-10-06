@@ -138,8 +138,6 @@
                         let newLoadingProgress = Math.round(event.data.progress * 100);
                         //if(newLoadingProgress % 25 === 0)
                         this.loadingProgress = newLoadingProgress;
-                        console.log(this.loadingProgress);
-                        //console.log(100 * event.data.progress + "%");
                     }
                         break;
                     case "end": {
