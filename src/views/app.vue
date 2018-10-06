@@ -52,7 +52,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Simulated nodes</h5>
-                                    <NodeList :nodes="simulatedNodes" v-on:node-toggle-active="toggleActive"></NodeList>
+                                    <NodeList :nodes="simulatedNodes" :network="network" v-on:node-toggle-active="toggleActive"></NodeList>
                             </div>
                         </div>
                     </div>

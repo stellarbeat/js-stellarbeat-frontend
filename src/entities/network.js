@@ -57,6 +57,14 @@ class Network {
         return this._failingNodes;
     }
 
+    isNodeFailing(node: Node) {
+        return this._failingNodes.includes(node);
+    }
+
+    isQuorumSetFailing(quorumSet: QuorumSet) {
+        return !this.quorumSetCanReachThreshold(quorumSet, this._failingNodes);
+    }
+
     createLinks(){
         this._links = this._nodes
             .filter(node => node.active && !this._failingNodes.includes(node))

@@ -73222,6 +73222,16 @@ var Network = function () {
             //let clusterLeafs = QuorumService.getAllClusterLeafs(clusters, this._publicKeyToNodesMap);
         }
     }, {
+        key: 'isNodeFailing',
+        value: function isNodeFailing(node) {
+            return this._failingNodes.includes(node);
+        }
+    }, {
+        key: 'isQuorumSetFailing',
+        value: function isQuorumSetFailing(quorumSet) {
+            return !this.quorumSetCanReachThreshold(quorumSet, this._failingNodes);
+        }
+    }, {
         key: 'createLinks',
         value: function createLinks() {
             var _this = this;
@@ -73851,7 +73861,7 @@ var main = function () {
 
                         Vue.use(VueTruncate);
                         //Vue.use(VueWorker);
-                        FaSvgCore.library.add(FaFree.faPowerOff, FaFree.faInfo, FaFree.faSun, FaFree.faSpinner);
+                        FaSvgCore.library.add(FaFree.faPowerOff, FaFree.faInfo, FaFree.faSun, FaFree.faSpinner, FaFree.faCaretDown, FaFree.faCaretRight);
                         Vue.component('font-awesome-icon', VueFontAwesome.FontAwesomeIcon);
 
                         //let nodesJson = await fetchData(); //document.getElementById('nodes-seed').innerHTML;
@@ -74516,7 +74526,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"height":"100%"}},[_c('nav',{staticClass:"navbar navbar-dark bg-dark"},[_c('a',{staticClass:"navbar-brand",attrs:{"href":"#"}},[_vm._v("Quorum Monitor")]),_vm._v(" "),_c('form',{staticClass:"form-inline"},[_c('search',{attrs:{"nodes":this.network.nodes},on:{"node-selected":_vm.onNodeSelected,"center-node":_vm.onNodeCenter}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"alert alert-warning",attrs:{"role":"alert"}},[_vm._v("\n        You are viewing a simulation!\n    ")]),_vm._v(" "),_c('Statistics',{attrs:{"network":_vm.network}}),_vm._v(" "),_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-8"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body",staticStyle:{"height":"100%"}},[_c('Graph',{ref:"graph",attrs:{"network":_vm.network,"selectedNode":_vm.selectedNode,"centerNode":_vm.centerNode},on:{"center-node":_vm.onNodeCenter,"node-selected":_vm.onNodeSelected}}),_vm._v(" "),_c('GraphLegend')],1)])]),_vm._v(" "),_c('div',{staticClass:"col-sm-4"},[_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('NodeDetails',{attrs:{"node":_vm.selectedNode,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Simulated nodes")]),_vm._v(" "),_c('NodeList',{attrs:{"nodes":_vm.simulatedNodes},on:{"node-toggle-active":_vm.toggleActive}})],1)])])])])])],1)}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"height":"100%"}},[_c('nav',{staticClass:"navbar navbar-dark bg-dark"},[_c('a',{staticClass:"navbar-brand",attrs:{"href":"#"}},[_vm._v("Quorum Monitor")]),_vm._v(" "),_c('form',{staticClass:"form-inline"},[_c('search',{attrs:{"nodes":this.network.nodes},on:{"node-selected":_vm.onNodeSelected,"center-node":_vm.onNodeCenter}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"alert alert-warning",attrs:{"role":"alert"}},[_vm._v("\n        You are viewing a simulation!\n    ")]),_vm._v(" "),_c('Statistics',{attrs:{"network":_vm.network}}),_vm._v(" "),_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-8"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body",staticStyle:{"height":"100%"}},[_c('Graph',{ref:"graph",attrs:{"network":_vm.network,"selectedNode":_vm.selectedNode,"centerNode":_vm.centerNode},on:{"center-node":_vm.onNodeCenter,"node-selected":_vm.onNodeSelected}}),_vm._v(" "),_c('GraphLegend')],1)])]),_vm._v(" "),_c('div',{staticClass:"col-sm-4"},[_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('NodeDetails',{attrs:{"node":_vm.selectedNode,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Simulated nodes")]),_vm._v(" "),_c('NodeList',{attrs:{"nodes":_vm.simulatedNodes,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)])])])])])],1)}
 __vue__options__.staticRenderFns = []
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -74529,7 +74539,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-4678313e", __vue__options__)
   }
 })()}
-},{"./graph-legend.vue":414,"./graph.vue":417,"./node-details.vue":418,"./node-list.vue":419,"./search.vue":421,"./statistics.vue":422,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],414:[function(require,module,exports){
+},{"./graph-legend.vue":414,"./graph.vue":417,"./node-details.vue":418,"./node-list.vue":419,"./search.vue":422,"./statistics.vue":423,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],414:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".quorum-graph-legend[data-v-2f22afdc] {\n    margin-top: 20px;\n    font-size: 0.7rem;\n}\n\n.quorum-graph-legend .element[data-v-2f22afdc] {\n    border-radius: 5px;\n    opacity: 0.8;\n\n}\n\n.quorum-graph-legend .connection[data-v-2f22afdc] {\n    background: #1997c6;\n}\n\n.quorum-graph-legend .incoming-connection[data-v-2f22afdc] {\n    background: #1bc98e;\n}\n\n.quorum-graph-legend .outgoing-connection[data-v-2f22afdc] {\n    background: #e4d836;\n}\n\n.quorum-graph-legend .active-node[data-v-2f22afdc] {\n    background: #1997c6;\n}\n\n.quorum-graph-legend .selected-node[data-v-2f22afdc] {\n    background: yellow;\n}\n\n.quorum-graph-legend .inactive-node[data-v-2f22afdc] {\n    background: #ECEBE4;\n}\n\n.quorum-graph-legend .failing-node[data-v-2f22afdc] {\n    background: red;\n}\n\n.legend-link[data-v-2f22afdc] {\n    font-size: 0.8rem;\n    margin-bottom: 0px;\n}")
 ;(function(){
 "use strict";
@@ -74897,7 +74907,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-5b01a60e", __vue__options__)
   }
 })()}
-},{"./../entities/network":407,"./../workers/compute-graph.js":423,"./graph-link.vue":415,"./graph-node.vue":416,"d3":41,"svg-pan-zoom":389,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404,"webworkify":405}],418:[function(require,module,exports){
+},{"./../entities/network":407,"./../workers/compute-graph.js":424,"./graph-link.vue":415,"./graph-node.vue":416,"d3":41,"svg-pan-zoom":389,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404,"webworkify":405}],418:[function(require,module,exports){
 var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("ul.tree[data-v-4d72da67] {\n    padding-left: 0px;\n}")
 ;(function(){
 'use strict';
@@ -74934,8 +74944,8 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"card"},[(_vm.node !== null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title node-details-title",attrs:{"data-toggle":"tooltip","title":_vm.node.displayName}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.node.displayName,20))),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm btn-secondary",attrs:{"type":"button","data-toggle":"modal","data-target":"#node-details-modal"}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])]),_vm._v(" "),_c('ul',{staticClass:"tree list-group-flush"},[_c('QuorumSet',{attrs:{"quorumSet":_vm.node.quorumSet,"network":_vm.network}})],1)]):(_vm.node === null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Manual")]),_vm._v(" "),_vm._m(0)]):_vm._e(),_vm._v(" "),(_vm.node !== null)?_c('div',{staticClass:"modal",attrs:{"id":"node-details-modal","tabindex":"-1","role":"dialog"}},[_c('div',{staticClass:"modal-dialog modal-lg",attrs:{"role":"document"}},[_c('div',{staticClass:"modal-content"},[_c('div',{staticClass:"modal-header"},[_c('h5',{staticClass:"modal-title"},[_vm._v(_vm._s(_vm.node.displayName))]),_vm._v(" "),_vm._m(1)]),_vm._v(" "),_c('div',{staticClass:"modal-body"},[_c('p',[_vm._v("Todo: layout")]),_vm._v(" "),_vm._l((_vm.node),function(value,key){return _c('div',[_vm._v("\n                        "+_vm._s(key)+": "+_vm._s(value)+"\n                    ")])})],2),_vm._v(" "),_vm._m(2)])])]):_vm._e()])}
-__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',[_c('li',[_vm._v("Click and drag on the Graph to pan")]),_vm._v(" "),_c('li',[_vm._v("Scroll on the Graph to zoom")]),_vm._v(" "),_c('li',[_vm._v("Search or click on a node to select it")]),_vm._v(" "),_c('li',[_vm._v("Click on the legend on the bottom on the graph to see the color codes")]),_vm._v(" "),_c('li',[_vm._v("Links are only shown between active, non-failing nodes")]),_vm._v(" "),_c('li',[_vm._v("Clustered nodes have fuller links and are closer together in the graph")]),_vm._v(" "),_c('li',[_vm._v("Press the info button in the selected node details for a complete list of the node details")]),_vm._v(" "),_c('li',[_vm._v("Toggle the on/off button in the selected node details to activate/deactivate the node and see the effects on the network")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{staticClass:"close",attrs:{"type":"button","data-dismiss":"modal","aria-label":"Close"}},[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("×")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"modal-footer"},[_c('button',{staticClass:"btn btn-secondary",attrs:{"type":"button","data-dismiss":"modal"}},[_vm._v("Close")])])}]
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"card"},[(_vm.node !== null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title node-details-title",attrs:{"data-toggle":"tooltip","title":_vm.node.displayName}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.node.displayName,20))),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm btn-secondary",attrs:{"type":"button","data-toggle":"modal","data-target":"#node-details-modal"}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])]),_vm._v(" "),_c('ul',{staticClass:"tree list-group list-group-flush"},[_c('QuorumSet',{attrs:{"quorumSet":_vm.node.quorumSet,"network":_vm.network,"root":true}})],1)]):(_vm.node === null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Manual")]),_vm._v(" "),_vm._m(0)]):_vm._e(),_vm._v(" "),(_vm.node !== null)?_c('div',{staticClass:"modal",attrs:{"id":"node-details-modal","tabindex":"-1","role":"dialog"}},[_c('div',{staticClass:"modal-dialog modal-lg",attrs:{"role":"document"}},[_c('div',{staticClass:"modal-content"},[_c('div',{staticClass:"modal-header"},[_c('h5',{staticClass:"modal-title"},[_vm._v(_vm._s(_vm.node.displayName))]),_vm._v(" "),_vm._m(1)]),_vm._v(" "),_c('div',{staticClass:"modal-body"},[_c('p',[_vm._v("Todo: layout")]),_vm._v(" "),_vm._l((_vm.node),function(value,key){return _c('div',[_vm._v("\n                        "+_vm._s(key)+": "+_vm._s(value)+"\n                    ")])})],2),_vm._v(" "),_vm._m(2)])])]):_vm._e()])}
+__vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',[_c('li',[_vm._v("Click and drag on the Graph to pan")]),_vm._v(" "),_c('li',[_vm._v("Scroll on the Graph to zoom")]),_vm._v(" "),_c('li',[_vm._v("Search or click on a node to select it")]),_vm._v(" "),_c('li',[_vm._v("Click on the legend on the bottom on the graph to see the color codes")]),_vm._v(" "),_c('li',[_vm._v("Links are only shown between active, non-failing nodes")]),_vm._v(" "),_c('li',[_vm._v("Clustered nodes have fuller links and are closer together in the graph")]),_vm._v(" "),_c('li',[_vm._v("Press the info button in the selected node details for a complete list of the node details")]),_vm._v(" "),_c('li',[_vm._v("\n                Toggle the on/off button in the selected node details to activate/deactivate the node and see the effects on the network\n            ")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{staticClass:"close",attrs:{"type":"button","data-dismiss":"modal","aria-label":"Close"}},[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("×")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"modal-footer"},[_c('button',{staticClass:"btn btn-secondary",attrs:{"type":"button","data-dismiss":"modal"}},[_vm._v("Close")])])}]
 __vue__options__._scopeId = "data-v-4d72da67"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -74948,18 +74958,33 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-4d72da67", __vue__options__)
   }
 })()}
-},{"./quorum-set.vue":420,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],419:[function(require,module,exports){
+},{"./quorum-set.vue":421,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],419:[function(require,module,exports){
 ;(function(){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+
+var NodeListItem = require('./node/node-list-item.vue');
+
 exports.default = {
     name: "node-list",
+    components: {
+        NodeListItem: NodeListItem
+    },
     props: {
         nodes: {
             type: Array
+        },
+        network: {
+            type: Object
+        }
+    },
+    methods: {
+        toggleActive: function toggleActive(node) {
+            this.$emit("node-toggle-active", node);
         }
     }
 };
@@ -74967,7 +74992,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"list-group list-group-flush"},_vm._l((_vm.nodes),function(node){return _c('a',{staticClass:"list-group-item list-group-item-action",attrs:{"href":"#"}},[_vm._v("\n        "+_vm._s(_vm._f("truncate")(node.displayName,30))+"\n        "),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm",class:[node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])])}))}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"list-group list-group-flush"},_vm._l((_vm.nodes),function(node){return _c('div',{staticClass:"list-group-item"},[_c('NodeListItem',{attrs:{"nodePublicKey":node.publicKey,"network":_vm.network},on:{"node-toggle-active":function($event){_vm.toggleActive(node)}}})],1)}))}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-0f1d10c9"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
@@ -74980,8 +75005,48 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-0f1d10c9", __vue__options__)
   }
 })()}
-},{"vue":403,"vue-hot-reload-api":401}],420:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".active-node[data-v-60930438] {\n    color: #1997c6;\n}\nli[data-v-60930438] {\n    padding-left: 0px;\n}")
+},{"./node/node-list-item.vue":420,"vue":403,"vue-hot-reload-api":401}],420:[function(require,module,exports){
+;(function(){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    name: "node-list-item",
+    props: {
+        nodePublicKey: {
+            type: String
+        },
+        network: {
+            type: Object
+        }
+    },
+    data: function data() {
+        return {
+            node: this.network.getNodeByPublicKey(this.nodePublicKey)
+        };
+    }
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_vm._v("\n    "+_vm._s(_vm._f("truncate")(_vm.node.displayName,30))+"\n    "),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])])}
+__vue__options__.staticRenderFns = []
+__vue__options__._scopeId = "data-v-2975cf78"
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2975cf78", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-2975cf78", __vue__options__)
+  }
+})()}
+},{"vue":403,"vue-hot-reload-api":401}],421:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".active-node[data-v-60930438] {\n    color: #1997c6;\n}\n\nli[data-v-60930438] {\n    padding-left: 0px;\n}\n\n.caret[data-v-60930438] {\n    height: 0.6em;\n}\n\n.nested-tree[data-v-60930438] {\n    margin-left: 20px;\n}\n\n.inactive[data-v-60930438] {\n    color: #ECEBE4\n}\n\n.active[data-v-60930438] {\n    color: #1997c6\n}\n\n.failing[data-v-60930438] {\n    color: red\n}")
 ;(function(){
 "use strict";
 
@@ -74996,7 +75061,15 @@ exports.default = {
         },
         "quorumSet": {
             type: Object
+        },
+        "root": {
+            type: Boolean
         }
+    },
+    data: function data() {
+        return {
+            open: this.root ? true : false
+        };
     },
     methods: {
         validatorDisplayName: function validatorDisplayName(validator) {
@@ -75005,6 +75078,29 @@ exports.default = {
             } else {
                 return validator;
             }
+        },
+        toggle: function toggle() {
+            this.open = !this.open;
+        },
+        nodeState: function nodeState(validator) {
+            var node = this.network.getNodeByPublicKey(validator);
+            return {
+                'inactive': !node.active,
+                'active': node.active,
+                'failing': this.network.isNodeFailing(node)
+            };
+        }
+    },
+    computed: {
+        caret: function caret() {
+            return this.open ? 'caret-down' : 'caret-right';
+        },
+        quorumSetState: function quorumSetState() {
+            var failing = this.network.isQuorumSetFailing(this.quorumSet);
+            return {
+                'failing': failing,
+                'active': !failing
+            };
         }
     }
 };
@@ -75012,7 +75108,7 @@ exports.default = {
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
 if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item"},[_c('h6',[_vm._v("Quorumset with threshold: "+_vm._s(_vm.quorumSet.threshold))]),_vm._v(" "),_c('ul',[_vm._l((_vm.quorumSet.validators),function(validator){return _c('li',{staticClass:"list-group-item"},[_vm._v("\n            "+_vm._s(_vm.validatorDisplayName(validator))+"\n        ")])}),_vm._v(" "),_vm._l((_vm.quorumSet.innerQuorumSets),function(innerQuorumSet){return _c('quorum-set',{attrs:{"network":_vm.network,"quorumSet":innerQuorumSet}})})],2)])}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item"},[_c('div',{class:_vm.quorumSetState,on:{"click":_vm.toggle}},[_c('font-awesome-icon',{staticClass:"caret",attrs:{"pull":"left","size":"2x","icon":_vm.caret}}),_vm._v(" "),_c('h6',[_vm._v("\n            Quorumset with threshold: "+_vm._s(_vm.quorumSet.threshold)+"\n        ")])],1),_vm._v(" "),_c('ul',{directives:[{name:"show",rawName:"v-show",value:(_vm.open),expression:"open"}],staticClass:"list-group list-group-flush nested-tree"},[_vm._l((_vm.quorumSet.validators),function(validator){return _c('li',{staticClass:"list-group-item"},[_c('div',{class:_vm.nodeState(validator)},[_vm._v("\n                "+_vm._s(_vm.validatorDisplayName(validator))+"\n            ")])])}),_vm._v(" "),_vm._l((_vm.quorumSet.innerQuorumSets),function(innerQuorumSet){return _c('quorum-set',{attrs:{"network":_vm.network,"quorumSet":innerQuorumSet,"root":false}})})],2)])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-60930438"
 if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
@@ -75026,7 +75122,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-60930438", __vue__options__)
   }
 })()}
-},{"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],421:[function(require,module,exports){
+},{"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],422:[function(require,module,exports){
 ;(function(){
 'use strict';
 
@@ -75109,7 +75205,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-557fa018", __vue__options__)
   }
 })()}
-},{"vue":403,"vue-hot-reload-api":401}],422:[function(require,module,exports){
+},{"vue":403,"vue-hot-reload-api":401}],423:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -75160,7 +75256,7 @@ if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
     hotAPI.reload("data-v-24280a13", __vue__options__)
   }
 })()}
-},{"vue":403,"vue-hot-reload-api":401}],423:[function(require,module,exports){
+},{"vue":403,"vue-hot-reload-api":401}],424:[function(require,module,exports){
 'use strict';
 
 var d3 = require("d3");

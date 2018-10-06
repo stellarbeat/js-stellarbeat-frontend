@@ -16,7 +16,7 @@ async function main(){
 
     Vue.use(VueTruncate);
     //Vue.use(VueWorker);
-    FaSvgCore.library.add(FaFree.faPowerOff, FaFree.faInfo, FaFree.faSun, FaFree.faSpinner);
+    FaSvgCore.library.add(FaFree.faPowerOff, FaFree.faInfo, FaFree.faSun, FaFree.faSpinner, FaFree.faCaretDown, FaFree.faCaretRight);
     Vue.component('font-awesome-icon', VueFontAwesome.FontAwesomeIcon);
 
     //let nodesJson = await fetchData(); //document.getElementById('nodes-seed').innerHTML;

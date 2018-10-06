@@ -3,7 +3,8 @@
         <div v-if="node !== null" class="card-body">
             <h5 class="card-title node-details-title" data-toggle="tooltip"
                 v-bind:title="node.displayName">{{node.displayName | truncate(20)}}<span class="fa-pull-right">
-                                        <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#node-details-modal">
+                                        <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal"
+                                                data-target="#node-details-modal">
                                             <font-awesome-icon size="xs" icon="info"/>
                                         </button>
                                         <button type="button" class="btn btn-sm"
@@ -13,9 +14,11 @@
                                         </button>
                                    </span></h5>
 
-            <ul class="tree list-group-flush">
+            <ul class="tree list-group list-group-flush">
                 <QuorumSet :quorumSet="node.quorumSet"
-                           :network="network"></QuorumSet>
+                           :network="network"
+                           :root="true">
+                </QuorumSet>
             </ul>
         </div>
         <div v-else-if="node === null" class="card-body">
@@ -28,7 +31,9 @@
                 <li>Links are only shown between active, non-failing nodes</li>
                 <li>Clustered nodes have fuller links and are closer together in the graph</li>
                 <li>Press the info button in the selected node details for a complete list of the node details</li>
-                <li>Toggle the on/off button in the selected node details to activate/deactivate the node and see the effects on the network</li>
+                <li>
+                    Toggle the on/off button in the selected node details to activate/deactivate the node and see the effects on the network
+                </li>
             </ul>
         </div>
         <div v-if="node !== null" class="modal" id="node-details-modal" tabindex="-1" role="dialog">

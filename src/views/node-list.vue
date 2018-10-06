@@ -1,27 +1,33 @@
 <template>
     <div class="list-group list-group-flush">
-        <a href="#" class="list-group-item list-group-item-action"
+        <div class="list-group-item"
            v-for="node in nodes">
-            {{node.displayName | truncate(30)}}
-            <span class="fa-pull-right">
-                <button type="button" class="btn btn-sm"
-                        v-on:click.prevent.stop="$emit('node-toggle-active', node)"
-                        v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
-                <font-awesome-icon size="xs" icon="power-off"/>
-            </button>
-            </span>
-        </a>
+            <NodeListItem :nodePublicKey="node.publicKey" :network="network" v-on:node-toggle-active="toggleActive(node)"></NodeListItem>
+        </div>
     </div>
 </template>
 
 <script>
+    const NodeListItem = require('./node/node-list-item.vue');
+
     export default {
         name: "node-list",
+        components: {
+            NodeListItem,
+        },
         props: {
             nodes: {
                 type: Array
+            },
+            network: {
+                type: Object
             }
         },
+        methods: {
+            toggleActive: function (node) {
+                this.$emit("node-toggle-active", node);
+            }
+        }
     }
 </script>
 
