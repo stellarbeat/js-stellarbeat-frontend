@@ -46,6 +46,7 @@
         },
         data() {
             return {
+                selectedNode: null,
                 simulation: {},
                 simulationNodes: {},
                 panZoom: {},
@@ -56,9 +57,6 @@
         },
         props: {
             network: {
-                type: Object
-            },
-            selectedNode: {
                 type: Object
             },
             centerNode: {
@@ -73,7 +71,11 @@
                 let realNodeX = -node.x * zoom + width / 2;
                 let realNodeY = -node.y * zoom + height / 2;
                 this.panZoom.pan({x: realNodeX, y: realNodeY});
+            },
+            '$route' (to, from) {
+                    this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
             }
+
         },
         computed: {
             progressBarWidth: function () {
@@ -170,7 +172,9 @@
 
         },
         mounted() {
-
+            if (this.network.getNodeByPublicKey(this.$route.params.publicKey)) {
+                this.selectedNode = this.network.getNodeByPublicKey(this.$route.params.publicKey);
+            }
 
         }
     }

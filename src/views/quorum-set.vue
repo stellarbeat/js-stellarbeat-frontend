@@ -6,15 +6,15 @@
                 Quorumset with threshold: {{quorumSet.threshold}}
             </h6>
         </div>
-        <ul v-show="open" class="list-group list-group-flush nested-tree">
-            <li v-for="validator in quorumSet.validators" class="list-group-item">
+        <div v-show="open" class="list-group list-group-flush nested-tree">
+            <a href="#" v-for="validator in quorumSet.validators" class="list-group-item list-group-item-action" v-on:click.prevent.stop="selectNode(validator)">
                 <div v-bind:class="nodeState(validator)">
-                    {{validatorDisplayName(validator)}}
+                    {{validatorDisplayName(validator) | truncate(30)}}
                     <span class="fa-pull-right">
                     <NodeActionBar :node="getNode(validator)" :network="network" v-on:node-toggle-active="toggleNodeActive" v-on:node-show-modal="showModal"></NodeActionBar>
                 </span>
                 </div>
-            </li>
+            </a>
             <quorum-set v-for="innerQuorumSet in quorumSet.innerQuorumSets"
                         :network="network"
                         :quorumSet="innerQuorumSet"
@@ -22,7 +22,7 @@
                         v-on:node-toggle-active="toggleNodeActive"
                         v-on:node-show-modal="showModal">
             </quorum-set>
-        </ul>
+        </div>
     </li>
 </template>
 
@@ -53,7 +53,7 @@
         methods: {
             validatorDisplayName: function (validator) {
                 if (this.network.getNodeByPublicKey(validator)) {
-                    return this.network.getNodeByPublicKey(validator).name;
+                    return this.network.getNodeByPublicKey(validator).displayName;
                 } else {
                     return validator;
                 }
@@ -77,6 +77,10 @@
             },
             showModal: function(node) {
                 this.$emit("node-show-modal", node);
+            },
+            selectNode: function (validator) {
+                this.$emit("node-selected", this.network.getNodeByPublicKey(validator));
+                this.$router.push({ name: 'node', params: { publicKey: this.network.getNodeByPublicKey(validator).publicKey }});
             }
         },
         computed: {

@@ -23,7 +23,8 @@
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href="#">Quorum Monitor</a>
             <form class="form-inline">
-                <search :nodes="this.network.nodes" v-on:node-selected="onNodeSelected" v-on:center-node="onNodeCenter"></search>
+                <search :nodes="this.network.nodes" v-on:node-selected="onNodeSelected"
+                        v-on:center-node="onNodeCenter"></search>
             </form>
         </nav>
         <div v-show="isSimulation" class="alert alert-warning" role="alert">
@@ -34,7 +35,7 @@
             <div class="col-sm-8">
                 <div class="card">
                     <div class="card-body" style="height: 100%">
-                        <Graph ref="graph" :network="network" :selectedNode="selectedNode" v-on:center-node="onNodeCenter" :centerNode="centerNode"
+                        <Graph ref="graph" :network="network" v-on:center-node="onNodeCenter" :centerNode="centerNode"
                                v-on:node-selected="onNodeSelected"></Graph>
                         <GraphLegend></GraphLegend>
                     </div>
@@ -43,7 +44,9 @@
             <div class="col-sm-4">
                 <div class="row">
                     <div class="col-sm-12">
-                        <NodeExplorer :node="selectedNode" :network="network" v-on:node-toggle-active="toggleActive"></NodeExplorer>
+                            <router-view v-on:node-toggle-active="toggleActive" v-on:center-node="onNodeCenter"
+                                         v-on:node-selected="onNodeSelected"></router-view>
+                        <!--NodeExplorer :node="selectedNode" :network="network" v-on:node-toggle-active="toggleActive" v-on:node-selected="onNodeSelected"></NodeExplorer!-->
                     </div>
 
                 </div>
@@ -52,7 +55,8 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Simulated nodes</h5>
-                                    <NodeList :nodes="simulatedNodes" :network="network" v-on:node-toggle-active="toggleActive"></NodeList>
+                                <NodeList :nodes="simulatedNodes" :network="network"
+                                          v-on:node-toggle-active="toggleActive"></NodeList>
                             </div>
                         </div>
                     </div>
@@ -76,7 +80,6 @@
     const Search = require('./search.vue');
     const Statistics = require('./statistics.vue');
     const NodeList = require('./node-list.vue');
-
 
     export default {
         components: {
@@ -102,7 +105,7 @@
         },
         methods: {
             onNodeSelected: function (node) {
-                this.selectedNode = node;
+                this.$router.push({name: 'node', params: {publicKey: node.publicKey}});
             },
             onNodeCenter: function (node) {
                 this.centerNode = node;
@@ -110,7 +113,7 @@
             toggleActive: function (node) {
                 node.active = !node.active;
 
-                if(this.simulatedNodes.includes(node)) {
+                if (this.simulatedNodes.includes(node)) {
                     this.simulatedNodes = this.simulatedNodes.filter(simNode => node !== simNode);
                 } else {
                     this.simulatedNodes.push(node);
@@ -135,3 +138,7 @@
         }*/
     }
 </script>
+
+<style scoped>
+
+</style>

@@ -4,7 +4,7 @@
                autocomplete="off"
                @keydown.down="onArrowDown"
                @keydown.up="onArrowUp"
-               @keydown.enter="onEnter"/>
+               @keydown.enter.prevent.stop="onEnter"/>
         <div class="dropdown-menu dropdown-menu-right" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a

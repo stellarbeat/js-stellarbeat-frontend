@@ -37,6 +37,7 @@
     "svg-pan-zoom": "^3.5.3",
     "unflowify": "^1.0.1",
     "vue": "^2.5.17",
+    "vue-router": "^3.0.1",
     "vue-switches": "^2.0.1",
     "vue-truncate-filter": "^1.1.7",
     "watchify": "^3.11.0",
