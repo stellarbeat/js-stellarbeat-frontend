@@ -1,7 +1,6 @@
 <template>
     <div style="font-size: 0.5rem;">
-        <button type="button" class="btn btn-xs btn-secondary" data-toggle="modal"
-                v-bind:data-target="'#' + modalId">
+        <button type="button" class="btn btn-xs btn-secondary" v-on:click="$emit('node-show-modal', node)">
             <font-awesome-icon size="xs" icon="info"/>
         </button>
         <button type="button" class="btn btn-xs"
@@ -9,27 +8,6 @@
                 v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
             <font-awesome-icon size="xs" icon="power-off"/>
         </button>
-        <div class="modal" v-bind:id="modalId" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{{node.displayName}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Todo: layout</p>
-                        <div v-for="(value, key) in node">
-                            {{ key }}: {{ value }}
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
 </template>
@@ -40,14 +18,6 @@
         props: {
             node: {
                 type: Object
-            },
-            network: {
-                type: Object
-            }
-        },
-        computed: {
-            modalId: function () {
-                return this.node.publicKey
             }
         }
     }

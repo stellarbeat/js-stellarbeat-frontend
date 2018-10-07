@@ -11,7 +11,7 @@
                 <div v-bind:class="nodeState(validator)">
                     {{validatorDisplayName(validator)}}
                     <span class="fa-pull-right">
-                    <NodeActionBar :node="getNode(validator)" :network="network" v-on:node-toggle-active="toggleNodeActive"></NodeActionBar>
+                    <NodeActionBar :node="getNode(validator)" :network="network" v-on:node-toggle-active="toggleNodeActive" v-on:node-show-modal="showModal"></NodeActionBar>
                 </span>
                 </div>
             </li>
@@ -19,7 +19,8 @@
                         :network="network"
                         :quorumSet="innerQuorumSet"
                         :root="false"
-                        v-on:node-toggle-active="toggleNodeActive">
+                        v-on:node-toggle-active="toggleNodeActive"
+                        v-on:node-show-modal="showModal">
             </quorum-set>
         </ul>
     </li>
@@ -44,7 +45,7 @@
                 type: Boolean
             }
         },
-        data: function () {
+        data() {
             return {
                 open: this.root ? true : false
             }
@@ -72,8 +73,10 @@
                 }
             },
             toggleNodeActive: function(node) {
-                console.log(node.name);
                 this.$emit("node-toggle-active", node);
+            },
+            showModal: function(node) {
+                this.$emit("node-show-modal", node);
             }
         },
         computed: {

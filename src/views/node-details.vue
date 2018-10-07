@@ -3,8 +3,7 @@
         <div v-if="node !== null" class="card-body">
             <h5 class="card-title node-details-title" data-toggle="tooltip"
                 v-bind:title="node.displayName">{{node.displayName | truncate(20)}}<span class="fa-pull-right">
-                                        <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal"
-                                                data-target="#node-details-modal">
+                                        <button type="button" class="btn btn-sm btn-secondary" v-on:click="showModal(node)">
                                             <font-awesome-icon size="xs" icon="info"/>
                                         </button>
                                         <button type="button" class="btn btn-sm"
@@ -18,7 +17,8 @@
                 <QuorumSet :quorumSet="node.quorumSet"
                            :network="network"
                            :root="true"
-                           v-on:node-toggle-active="toggleNodeActive">
+                           v-on:node-toggle-active="toggleNodeActive"
+                           v-on:node-show-modal="showModal">
                 </QuorumSet>
             </ul>
         </div>
@@ -37,18 +37,18 @@
                 </li>
             </ul>
         </div>
-        <div v-if="node !== null" class="modal" id="node-details-modal" tabindex="-1" role="dialog">
+        <div class="modal" id="node-details-modal" ref="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{node.displayName}}</h5>
+                        <h5 class="modal-title">{{modalNode.displayName}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <p>Todo: layout</p>
-                        <div v-for="(value, key) in node">
+                        <div v-for="(value, key) in modalNode">
                             {{ key }}: {{ value }}
                         </div>
                     </div>
@@ -77,9 +77,18 @@
                 type: Object
             }
         },
+        data() {
+            return {
+                modalNode: {}
+            }
+        },
         methods: {
             toggleNodeActive: function (node) {
                 this.$emit("node-toggle-active", node);
+            },
+            showModal: function (node) {
+                this.modalNode = node;
+                $('#node-details-modal').modal('show');
             }
         },
         mounted() {
