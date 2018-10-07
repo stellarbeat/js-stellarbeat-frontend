@@ -1,4 +1,5 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function (process){
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -47,7 +48,7 @@ var HTML_CLASS_I2SVG_BASE_CLASS = 'fontawesome-i2svg';
 var TAGNAMES_TO_SKIP_FOR_PSEUDOELEMENTS = ['HTML', 'HEAD', 'STYLE', 'SCRIPT'];
 var PRODUCTION = function () {
   try {
-    return "production" === 'production';
+    return process.env.NODE_ENV === 'production';
   } catch (e) {
     return false;
   }
@@ -1948,7 +1949,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-},{}],2:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":51}],2:[function(require,module,exports){
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -4272,7 +4274,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 })));
 
 },{}],3:[function(require,module,exports){
-(function (global){
+(function (process,global){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@fortawesome/fontawesome-svg-core')) :
 	typeof define === 'function' && define.amd ? define(['exports', '@fortawesome/fontawesome-svg-core'], factory) :
@@ -4564,7 +4566,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 	var PRODUCTION = false;
 
 	try {
-	  PRODUCTION = "production" === 'production';
+	  PRODUCTION = process.env.NODE_ENV === 'production';
 	} catch (e) {}
 
 	function log () {
@@ -4785,8 +4787,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"@fortawesome/fontawesome-svg-core":1}],4:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"@fortawesome/fontawesome-svg-core":1,"_process":51}],4:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -58039,7 +58041,7 @@ http.METHODS = [
 	'UNSUBSCRIBE'
 ]
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/request":386,"./lib/response":387,"builtin-status-codes":8,"url":398,"xtend":405}],385:[function(require,module,exports){
+},{"./lib/request":386,"./lib/response":387,"builtin-status-codes":8,"url":398,"xtend":406}],385:[function(require,module,exports){
 (function (global){
 exports.fetch = isFunction(global.fetch) && isFunction(global.ReadableStream)
 
@@ -61785,6 +61787,248 @@ function config (name) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],401:[function(require,module,exports){
+var Vue // late bind
+var version
+var map = (window.__VUE_HOT_MAP__ = Object.create(null))
+var installed = false
+var isBrowserify = false
+var initHookName = 'beforeCreate'
+
+exports.install = function (vue, browserify) {
+  if (installed) { return }
+  installed = true
+
+  Vue = vue.__esModule ? vue.default : vue
+  version = Vue.version.split('.').map(Number)
+  isBrowserify = browserify
+
+  // compat with < 2.0.0-alpha.7
+  if (Vue.config._lifecycleHooks.indexOf('init') > -1) {
+    initHookName = 'init'
+  }
+
+  exports.compatible = version[0] >= 2
+  if (!exports.compatible) {
+    console.warn(
+      '[HMR] You are using a version of vue-hot-reload-api that is ' +
+        'only compatible with Vue.js core ^2.0.0.'
+    )
+    return
+  }
+}
+
+/**
+ * Create a record for a hot module, which keeps track of its constructor
+ * and instances
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+
+exports.createRecord = function (id, options) {
+  if(map[id]) { return }
+  
+  var Ctor = null
+  if (typeof options === 'function') {
+    Ctor = options
+    options = Ctor.options
+  }
+  makeOptionsHot(id, options)
+  map[id] = {
+    Ctor: Ctor,
+    options: options,
+    instances: []
+  }
+}
+
+/**
+ * Check if module is recorded
+ *
+ * @param {String} id
+ */
+
+exports.isRecorded = function (id) {
+  return typeof map[id] !== 'undefined'
+}
+
+/**
+ * Make a Component options object hot.
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+
+function makeOptionsHot(id, options) {
+  if (options.functional) {
+    var render = options.render
+    options.render = function (h, ctx) {
+      var instances = map[id].instances
+      if (ctx && instances.indexOf(ctx.parent) < 0) {
+        instances.push(ctx.parent)
+      }
+      return render(h, ctx)
+    }
+  } else {
+    injectHook(options, initHookName, function() {
+      var record = map[id]
+      if (!record.Ctor) {
+        record.Ctor = this.constructor
+      }
+      record.instances.push(this)
+    })
+    injectHook(options, 'beforeDestroy', function() {
+      var instances = map[id].instances
+      instances.splice(instances.indexOf(this), 1)
+    })
+  }
+}
+
+/**
+ * Inject a hook to a hot reloadable component so that
+ * we can keep track of it.
+ *
+ * @param {Object} options
+ * @param {String} name
+ * @param {Function} hook
+ */
+
+function injectHook(options, name, hook) {
+  var existing = options[name]
+  options[name] = existing
+    ? Array.isArray(existing) ? existing.concat(hook) : [existing, hook]
+    : [hook]
+}
+
+function tryWrap(fn) {
+  return function (id, arg) {
+    try {
+      fn(id, arg)
+    } catch (e) {
+      console.error(e)
+      console.warn(
+        'Something went wrong during Vue component hot-reload. Full reload required.'
+      )
+    }
+  }
+}
+
+function updateOptions (oldOptions, newOptions) {
+  for (var key in oldOptions) {
+    if (!(key in newOptions)) {
+      delete oldOptions[key]
+    }
+  }
+  for (var key$1 in newOptions) {
+    oldOptions[key$1] = newOptions[key$1]
+  }
+}
+
+exports.rerender = tryWrap(function (id, options) {
+  var record = map[id]
+  if (!options) {
+    record.instances.slice().forEach(function (instance) {
+      instance.$forceUpdate()
+    })
+    return
+  }
+  if (typeof options === 'function') {
+    options = options.options
+  }
+  if (record.Ctor) {
+    record.Ctor.options.render = options.render
+    record.Ctor.options.staticRenderFns = options.staticRenderFns
+    record.instances.slice().forEach(function (instance) {
+      instance.$options.render = options.render
+      instance.$options.staticRenderFns = options.staticRenderFns
+      // reset static trees
+      // pre 2.5, all static trees are cahced together on the instance
+      if (instance._staticTrees) {
+        instance._staticTrees = []
+      }
+      // 2.5.0
+      if (Array.isArray(record.Ctor.options.cached)) {
+        record.Ctor.options.cached = []
+      }
+      // 2.5.3
+      if (Array.isArray(instance.$options.cached)) {
+        instance.$options.cached = []
+      }
+      // post 2.5.4: v-once trees are cached on instance._staticTrees.
+      // Pure static trees are cached on the staticRenderFns array
+      // (both already reset above)
+      instance.$forceUpdate()
+    })
+  } else {
+    // functional or no instance created yet
+    record.options.render = options.render
+    record.options.staticRenderFns = options.staticRenderFns
+
+    // handle functional component re-render
+    if (record.options.functional) {
+      // rerender with full options
+      if (Object.keys(options).length > 2) {
+        updateOptions(record.options, options)
+      } else {
+        // template-only rerender.
+        // need to inject the style injection code for CSS modules
+        // to work properly.
+        var injectStyles = record.options._injectStyles
+        if (injectStyles) {
+          var render = options.render
+          record.options.render = function (h, ctx) {
+            injectStyles.call(ctx)
+            return render(h, ctx)
+          }
+        }
+      }
+      record.options._Ctor = null
+      // 2.5.3
+      if (Array.isArray(record.options.cached)) {
+        record.options.cached = []
+      }
+      record.instances.slice().forEach(function (instance) {
+        instance.$forceUpdate()
+      })
+    }
+  }
+})
+
+exports.reload = tryWrap(function (id, options) {
+  var record = map[id]
+  if (options) {
+    if (typeof options === 'function') {
+      options = options.options
+    }
+    makeOptionsHot(id, options)
+    if (record.Ctor) {
+      if (version[1] < 2) {
+        // preserve pre 2.2 behavior for global mixin handling
+        record.Ctor.extendOptions = options
+      }
+      var newCtor = record.Ctor.super.extend(options)
+      record.Ctor.options = newCtor.options
+      record.Ctor.cid = newCtor.cid
+      record.Ctor.prototype = newCtor.prototype
+      if (newCtor.release) {
+        // temporary global mixin strategy used in < 2.0.0-alpha.6
+        newCtor.release()
+      }
+    } else {
+      updateOptions(record.options, options)
+    }
+  }
+  record.instances.slice().forEach(function (instance) {
+    if (instance.$vnode && instance.$vnode.context) {
+      instance.$vnode.context.$forceUpdate()
+    } else {
+      console.warn(
+        'Root or manually mounted instance modified. Full reload required.'
+      )
+    }
+  })
+})
+
+},{}],402:[function(require,module,exports){
 ;(function () {
 
   var vueTruncate = {};
@@ -61831,8 +62075,8 @@ function config (name) {
 
 })()
 
-},{}],402:[function(require,module,exports){
-(function (global,setImmediate){
+},{}],403:[function(require,module,exports){
+(function (process,global,setImmediate){
 /*!
  * Vue.js v2.5.17
  * (c) 2014-2018 Evan You
@@ -62204,12 +62448,12 @@ var config = ({
   /**
    * Show production mode tip message on boot?
    */
-  productionTip: "production" !== 'production',
+  productionTip: process.env.NODE_ENV !== 'production',
 
   /**
    * Whether to enable devtools
    */
-  devtools: "production" !== 'production',
+  devtools: process.env.NODE_ENV !== 'production',
 
   /**
    * Whether to record perf
@@ -62412,7 +62656,7 @@ var tip = noop;
 var generateComponentTrace = (noop); // work around flow check
 var formatComponentName = (noop);
 
-if ("production" !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   var hasConsole = typeof console !== 'undefined';
   var classifyRE = /(?:^|[-_])(\w)/g;
   var classify = function (str) { return str
@@ -62839,7 +63083,7 @@ function defineReactive (
         return
       }
       /* eslint-enable no-self-compare */
-      if ("production" !== 'production' && customSetter) {
+      if (process.env.NODE_ENV !== 'production' && customSetter) {
         customSetter();
       }
       if (setter) {
@@ -62859,7 +63103,7 @@ function defineReactive (
  * already exist.
  */
 function set (target, key, val) {
-  if ("production" !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
     warn(("Cannot set reactive property on undefined, null, or primitive value: " + ((target))));
@@ -62875,7 +63119,7 @@ function set (target, key, val) {
   }
   var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
-    "production" !== 'production' && warn(
+    process.env.NODE_ENV !== 'production' && warn(
       'Avoid adding reactive properties to a Vue instance or its root $data ' +
       'at runtime - declare it upfront in the data option.'
     );
@@ -62894,7 +63138,7 @@ function set (target, key, val) {
  * Delete a property and trigger change if necessary.
  */
 function del (target, key) {
-  if ("production" !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
     warn(("Cannot delete reactive property on undefined, null, or primitive value: " + ((target))));
@@ -62905,7 +63149,7 @@ function del (target, key) {
   }
   var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
-    "production" !== 'production' && warn(
+    process.env.NODE_ENV !== 'production' && warn(
       'Avoid deleting properties on a Vue instance or its root $data ' +
       '- just set it to null.'
     );
@@ -62947,7 +63191,7 @@ var strats = config.optionMergeStrategies;
 /**
  * Options with restrictions
  */
-if ("production" !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   strats.el = strats.propsData = function (parent, child, vm, key) {
     if (!vm) {
       warn(
@@ -63031,7 +63275,7 @@ strats.data = function (
 ) {
   if (!vm) {
     if (childVal && typeof childVal !== 'function') {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         'The "data" option should be a function ' +
         'that returns a per-instance value in component ' +
         'definitions.',
@@ -63081,7 +63325,7 @@ function mergeAssets (
 ) {
   var res = Object.create(parentVal || null);
   if (childVal) {
-    "production" !== 'production' && assertObjectType(key, childVal, vm);
+    process.env.NODE_ENV !== 'production' && assertObjectType(key, childVal, vm);
     return extend(res, childVal)
   } else {
     return res
@@ -63109,7 +63353,7 @@ strats.watch = function (
   if (childVal === nativeWatch) { childVal = undefined; }
   /* istanbul ignore if */
   if (!childVal) { return Object.create(parentVal || null) }
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     assertObjectType(key, childVal, vm);
   }
   if (!parentVal) { return childVal }
@@ -63140,7 +63384,7 @@ strats.computed = function (
   vm,
   key
 ) {
-  if (childVal && "production" !== 'production') {
+  if (childVal && process.env.NODE_ENV !== 'production') {
     assertObjectType(key, childVal, vm);
   }
   if (!parentVal) { return childVal }
@@ -63201,7 +63445,7 @@ function normalizeProps (options, vm) {
       if (typeof val === 'string') {
         name = camelize(val);
         res[name] = { type: null };
-      } else if ("production" !== 'production') {
+      } else if (process.env.NODE_ENV !== 'production') {
         warn('props must be strings when using array syntax.');
       }
     }
@@ -63213,7 +63457,7 @@ function normalizeProps (options, vm) {
         ? val
         : { type: val };
     }
-  } else if ("production" !== 'production') {
+  } else if (process.env.NODE_ENV !== 'production') {
     warn(
       "Invalid value for option \"props\": expected an Array or an Object, " +
       "but got " + (toRawType(props)) + ".",
@@ -63241,7 +63485,7 @@ function normalizeInject (options, vm) {
         ? extend({ from: key }, val)
         : { from: val };
     }
-  } else if ("production" !== 'production') {
+  } else if (process.env.NODE_ENV !== 'production') {
     warn(
       "Invalid value for option \"inject\": expected an Array or an Object, " +
       "but got " + (toRawType(inject)) + ".",
@@ -63284,7 +63528,7 @@ function mergeOptions (
   child,
   vm
 ) {
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     checkComponents(child);
   }
 
@@ -63345,7 +63589,7 @@ function resolveAsset (
   if (hasOwn(assets, PascalCaseId)) { return assets[PascalCaseId] }
   // fallback to prototype chain
   var res = assets[id] || assets[camelizedId] || assets[PascalCaseId];
-  if ("production" !== 'production' && warnMissing && !res) {
+  if (process.env.NODE_ENV !== 'production' && warnMissing && !res) {
     warn(
       'Failed to resolve ' + type.slice(0, -1) + ': ' + id,
       options
@@ -63390,7 +63634,7 @@ function validateProp (
     toggleObserving(prevShouldObserve);
   }
   if (
-    "production" !== 'production' &&
+    process.env.NODE_ENV !== 'production' &&
     // skip validation for weex recycle-list child component props
     !(false && isObject(value) && ('@binding' in value))
   ) {
@@ -63409,7 +63653,7 @@ function getPropDefaultValue (vm, prop, key) {
   }
   var def = prop.default;
   // warn against non-factory defaults for Object & Array
-  if ("production" !== 'production' && isObject(def)) {
+  if (process.env.NODE_ENV !== 'production' && isObject(def)) {
     warn(
       'Invalid default value for prop "' + key + '": ' +
       'Props with type Object/Array must use a factory function ' +
@@ -63570,7 +63814,7 @@ function globalHandleError (err, vm, info) {
 }
 
 function logError (err, vm, info) {
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     warn(("Error in " + info + ": \"" + (err.toString()) + "\""), vm);
   }
   /* istanbul ignore else */
@@ -63700,7 +63944,7 @@ function nextTick (cb, ctx) {
 var mark;
 var measure;
 
-if ("production" !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   var perf = inBrowser && window.performance;
   /* istanbul ignore if */
   if (
@@ -63724,7 +63968,7 @@ if ("production" !== 'production') {
 
 var initProxy;
 
-if ("production" !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   var allowedGlobals = makeMap(
     'Infinity,undefined,NaN,isFinite,isNaN,' +
     'parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,' +
@@ -63882,7 +64126,7 @@ function updateListeners (
     event = normalizeEvent(name);
     /* istanbul ignore if */
     if (isUndef(cur)) {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
         vm
       );
@@ -63959,7 +64203,7 @@ function extractPropsFromVNodeData (
   if (isDef(attrs) || isDef(props)) {
     for (var key in propOptions) {
       var altKey = hyphenate(key);
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         var keyInLowerCase = key.toLowerCase();
         if (
           key !== keyInLowerCase &&
@@ -64162,7 +64406,7 @@ function resolveAsyncComponent (
     });
 
     var reject = once(function (reason) {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         "Failed to resolve async component: " + (String(factory)) +
         (reason ? ("\nReason: " + reason) : '')
       );
@@ -64205,7 +64449,7 @@ function resolveAsyncComponent (
           setTimeout(function () {
             if (isUndef(factory.resolved)) {
               reject(
-                "production" !== 'production'
+                process.env.NODE_ENV !== 'production'
                   ? ("timeout (" + (res.timeout) + "ms)")
                   : null
               );
@@ -64354,7 +64598,7 @@ function eventsMixin (Vue) {
 
   Vue.prototype.$emit = function (event) {
     var vm = this;
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       var lowerCaseEvent = event.toLowerCase();
       if (lowerCaseEvent !== event && vm._events[lowerCaseEvent]) {
         tip(
@@ -64581,7 +64825,7 @@ function mountComponent (
   vm.$el = el;
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode;
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       /* istanbul ignore if */
       if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
         vm.$options.el || el) {
@@ -64603,7 +64847,7 @@ function mountComponent (
 
   var updateComponent;
   /* istanbul ignore if */
-  if ("production" !== 'production' && config.performance && mark) {
+  if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
     updateComponent = function () {
       var name = vm._name;
       var id = vm._uid;
@@ -64648,7 +64892,7 @@ function updateChildComponent (
   parentVnode,
   renderChildren
 ) {
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     isUpdatingChildComponent = true;
   }
 
@@ -64702,7 +64946,7 @@ function updateChildComponent (
     vm.$forceUpdate();
   }
 
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     isUpdatingChildComponent = false;
   }
 }
@@ -64786,7 +65030,7 @@ var index = 0;
 function resetSchedulerState () {
   index = queue.length = activatedChildren.length = 0;
   has = {};
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     circular = {};
   }
   waiting = flushing = false;
@@ -64817,7 +65061,7 @@ function flushSchedulerQueue () {
     has[id] = null;
     watcher.run();
     // in dev build, check and stop circular updates.
-    if ("production" !== 'production' && has[id] != null) {
+    if (process.env.NODE_ENV !== 'production' && has[id] != null) {
       circular[id] = (circular[id] || 0) + 1;
       if (circular[id] > MAX_UPDATE_COUNT) {
         warn(
@@ -64945,7 +65189,7 @@ var Watcher = function Watcher (
   this.newDeps = [];
   this.depIds = new _Set();
   this.newDepIds = new _Set();
-  this.expression = "production" !== 'production'
+  this.expression = process.env.NODE_ENV !== 'production'
     ? expOrFn.toString()
     : '';
   // parse expression for getter
@@ -64955,7 +65199,7 @@ var Watcher = function Watcher (
     this.getter = parsePath(expOrFn);
     if (!this.getter) {
       this.getter = function () {};
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         "Failed watching path: \"" + expOrFn + "\" " +
         'Watcher only accepts simple dot-delimited paths. ' +
         'For full control, use a function instead.',
@@ -65170,7 +65414,7 @@ function initProps (vm, propsOptions) {
     keys.push(key);
     var value = validateProp(key, propsOptions, propsData, vm);
     /* istanbul ignore else */
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       var hyphenatedKey = hyphenate(key);
       if (isReservedAttribute(hyphenatedKey) ||
           config.isReservedAttr(hyphenatedKey)) {
@@ -65212,7 +65456,7 @@ function initData (vm) {
     : data || {};
   if (!isPlainObject(data)) {
     data = {};
-    "production" !== 'production' && warn(
+    process.env.NODE_ENV !== 'production' && warn(
       'data functions should return an object:\n' +
       'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
       vm
@@ -65225,7 +65469,7 @@ function initData (vm) {
   var i = keys.length;
   while (i--) {
     var key = keys[i];
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       if (methods && hasOwn(methods, key)) {
         warn(
           ("Method \"" + key + "\" has already been defined as a data property."),
@@ -65234,7 +65478,7 @@ function initData (vm) {
       }
     }
     if (props && hasOwn(props, key)) {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         "The data property \"" + key + "\" is already declared as a prop. " +
         "Use prop default value instead.",
         vm
@@ -65271,7 +65515,7 @@ function initComputed (vm, computed) {
   for (var key in computed) {
     var userDef = computed[key];
     var getter = typeof userDef === 'function' ? userDef : userDef.get;
-    if ("production" !== 'production' && getter == null) {
+    if (process.env.NODE_ENV !== 'production' && getter == null) {
       warn(
         ("Getter is missing for computed property \"" + key + "\"."),
         vm
@@ -65293,7 +65537,7 @@ function initComputed (vm, computed) {
     // at instantiation here.
     if (!(key in vm)) {
       defineComputed(vm, key, userDef);
-    } else if ("production" !== 'production') {
+    } else if (process.env.NODE_ENV !== 'production') {
       if (key in vm.$data) {
         warn(("The computed property \"" + key + "\" is already defined in data."), vm);
       } else if (vm.$options.props && key in vm.$options.props) {
@@ -65324,7 +65568,7 @@ function defineComputed (
       ? userDef.set
       : noop;
   }
-  if ("production" !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' &&
       sharedPropertyDefinition.set === noop) {
     sharedPropertyDefinition.set = function () {
       warn(
@@ -65354,7 +65598,7 @@ function createComputedGetter (key) {
 function initMethods (vm, methods) {
   var props = vm.$options.props;
   for (var key in methods) {
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       if (methods[key] == null) {
         warn(
           "Method \"" + key + "\" has an undefined value in the component definition. " +
@@ -65416,7 +65660,7 @@ function stateMixin (Vue) {
   dataDef.get = function () { return this._data };
   var propsDef = {};
   propsDef.get = function () { return this._props };
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     dataDef.set = function (newData) {
       warn(
         'Avoid replacing instance root $data. ' +
@@ -65472,7 +65716,7 @@ function initInjections (vm) {
     toggleObserving(false);
     Object.keys(result).forEach(function (key) {
       /* istanbul ignore else */
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         defineReactive(vm, key, result[key], function () {
           warn(
             "Avoid mutating an injected value directly since the changes will be " +
@@ -65517,7 +65761,7 @@ function resolveInject (inject, vm) {
           result[key] = typeof provideDefault === 'function'
             ? provideDefault.call(vm)
             : provideDefault;
-        } else if ("production" !== 'production') {
+        } else if (process.env.NODE_ENV !== 'production') {
           warn(("Injection \"" + key + "\" not found"), vm);
         }
       }
@@ -65576,7 +65820,7 @@ function renderSlot (
   if (scopedSlotFn) { // scoped slot
     props = props || {};
     if (bindObject) {
-      if ("production" !== 'production' && !isObject(bindObject)) {
+      if (process.env.NODE_ENV !== 'production' && !isObject(bindObject)) {
         warn(
           'slot v-bind without argument expects an Object',
           this
@@ -65589,7 +65833,7 @@ function renderSlot (
     var slotNodes = this.$slots[name];
     // warn duplicate slot usage
     if (slotNodes) {
-      if ("production" !== 'production' && slotNodes._rendered) {
+      if (process.env.NODE_ENV !== 'production' && slotNodes._rendered) {
         warn(
           "Duplicate presence of slot \"" + name + "\" found in the same render tree " +
           "- this will likely cause render errors.",
@@ -65664,7 +65908,7 @@ function bindObjectProps (
 ) {
   if (value) {
     if (!isObject(value)) {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         'v-bind without argument expects an Object or Array value',
         this
       );
@@ -65770,7 +66014,7 @@ function markStaticNode (node, key, isOnce) {
 function bindObjectListeners (data, value) {
   if (value) {
     if (!isPlainObject(value)) {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         'v-on without argument expects an Object value',
         this
       );
@@ -66043,7 +66287,7 @@ function createComponent (
   // if at this stage it's not a constructor or an async component factory,
   // reject.
   if (typeof Ctor !== 'function') {
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       warn(("Invalid Component definition: " + (String(Ctor))), context);
     }
     return
@@ -66202,7 +66446,7 @@ function _createElement (
   normalizationType
 ) {
   if (isDef(data) && isDef((data).__ob__)) {
-    "production" !== 'production' && warn(
+    process.env.NODE_ENV !== 'production' && warn(
       "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
       'Always create fresh vnode data objects in each render!',
       context
@@ -66218,7 +66462,7 @@ function _createElement (
     return createEmptyVNode()
   }
   // warn against non-primitive key
-  if ("production" !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' &&
     isDef(data) && isDef(data.key) && !isPrimitive(data.key)
   ) {
     {
@@ -66333,7 +66577,7 @@ function initRender (vm) {
   var parentData = parentVnode && parentVnode.data;
 
   /* istanbul ignore else */
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
       !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
     }, true);
@@ -66361,7 +66605,7 @@ function renderMixin (Vue) {
     var _parentVnode = ref._parentVnode;
 
     // reset _rendered flag on slots for duplicate slot check
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       for (var key in vm.$slots) {
         // $flow-disable-line
         vm.$slots[key]._rendered = false;
@@ -66384,7 +66628,7 @@ function renderMixin (Vue) {
       // return error render result,
       // or previous vnode to prevent render error causing blank component
       /* istanbul ignore else */
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         if (vm.$options.renderError) {
           try {
             vnode = vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e);
@@ -66401,7 +66645,7 @@ function renderMixin (Vue) {
     }
     // return empty vnode in case the render function errored out
     if (!(vnode instanceof VNode)) {
-      if ("production" !== 'production' && Array.isArray(vnode)) {
+      if (process.env.NODE_ENV !== 'production' && Array.isArray(vnode)) {
         warn(
           'Multiple root nodes returned from render function. Render function ' +
           'should return a single root node.',
@@ -66428,7 +66672,7 @@ function initMixin (Vue) {
 
     var startTag, endTag;
     /* istanbul ignore if */
-    if ("production" !== 'production' && config.performance && mark) {
+    if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       startTag = "vue-perf-start:" + (vm._uid);
       endTag = "vue-perf-end:" + (vm._uid);
       mark(startTag);
@@ -66450,7 +66694,7 @@ function initMixin (Vue) {
       );
     }
     /* istanbul ignore else */
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       initProxy(vm);
     } else {
       vm._renderProxy = vm;
@@ -66467,7 +66711,7 @@ function initMixin (Vue) {
     callHook(vm, 'created');
 
     /* istanbul ignore if */
-    if ("production" !== 'production' && config.performance && mark) {
+    if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       vm._name = formatComponentName(vm, false);
       mark(endTag);
       measure(("vue " + (vm._name) + " init"), startTag, endTag);
@@ -66558,7 +66802,7 @@ function dedupe (latest, extended, sealed) {
 }
 
 function Vue (options) {
-  if ("production" !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' &&
     !(this instanceof Vue)
   ) {
     warn('Vue is a constructor and should be called with the `new` keyword');
@@ -66627,7 +66871,7 @@ function initExtend (Vue) {
     }
 
     var name = extendOptions.name || Super.options.name;
-    if ("production" !== 'production' && name) {
+    if (process.env.NODE_ENV !== 'production' && name) {
       validateComponentName(name);
     }
 
@@ -66710,7 +66954,7 @@ function initAssetRegisters (Vue) {
         return this.options[type + 's'][id]
       } else {
         /* istanbul ignore if */
-        if ("production" !== 'production' && type === 'component') {
+        if (process.env.NODE_ENV !== 'production' && type === 'component') {
           validateComponentName(id);
         }
         if (type === 'component' && isPlainObject(definition)) {
@@ -66867,7 +67111,7 @@ function initGlobalAPI (Vue) {
   // config
   var configDef = {};
   configDef.get = function () { return config; };
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     configDef.set = function () {
       warn(
         'Do not replace the Vue.config object, set individual fields instead.'
@@ -67134,7 +67378,7 @@ function query (el) {
   if (typeof el === 'string') {
     var selected = document.querySelector(el);
     if (!selected) {
-      "production" !== 'production' && warn(
+      process.env.NODE_ENV !== 'production' && warn(
         'Cannot find element: ' + el
       );
       return document.createElement('div')
@@ -67397,7 +67641,7 @@ function createPatchFunction (backend) {
     var children = vnode.children;
     var tag = vnode.tag;
     if (isDef(tag)) {
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         if (data && data.pre) {
           creatingElmInVPre++;
         }
@@ -67425,7 +67669,7 @@ function createPatchFunction (backend) {
         insert(parentElm, vnode.elm, refElm);
       }
 
-      if ("production" !== 'production' && data && data.pre) {
+      if (process.env.NODE_ENV !== 'production' && data && data.pre) {
         creatingElmInVPre--;
       }
     } else if (isTrue(vnode.isComment)) {
@@ -67512,7 +67756,7 @@ function createPatchFunction (backend) {
 
   function createChildren (vnode, children, insertedVnodeQueue) {
     if (Array.isArray(children)) {
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         checkDuplicateKeys(children);
       }
       for (var i = 0; i < children.length; ++i) {
@@ -67646,7 +67890,7 @@ function createPatchFunction (backend) {
     // during leaving transitions
     var canMove = !removeOnly;
 
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       checkDuplicateKeys(newCh);
     }
 
@@ -67820,7 +68064,7 @@ function createPatchFunction (backend) {
       return true
     }
     // assert node match
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       if (!assertNodeMatch(elm, vnode, inVPre)) {
         return false
       }
@@ -67843,7 +68087,7 @@ function createPatchFunction (backend) {
           if (isDef(i = data) && isDef(i = i.domProps) && isDef(i = i.innerHTML)) {
             if (i !== elm.innerHTML) {
               /* istanbul ignore if */
-              if ("production" !== 'production' &&
+              if (process.env.NODE_ENV !== 'production' &&
                 typeof console !== 'undefined' &&
                 !hydrationBailed
               ) {
@@ -67869,7 +68113,7 @@ function createPatchFunction (backend) {
             // longer than the virtual children list.
             if (!childrenMatch || childNode) {
               /* istanbul ignore if */
-              if ("production" !== 'production' &&
+              if (process.env.NODE_ENV !== 'production' &&
                 typeof console !== 'undefined' &&
                 !hydrationBailed
               ) {
@@ -67944,7 +68188,7 @@ function createPatchFunction (backend) {
             if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
               invokeInsertHook(vnode, insertedVnodeQueue, true);
               return oldVnode
-            } else if ("production" !== 'production') {
+            } else if (process.env.NODE_ENV !== 'production') {
               warn(
                 'The client-side rendered virtual DOM tree is not matching ' +
                 'server-rendered content. This is likely caused by incorrect ' +
@@ -68432,7 +68676,7 @@ function addHandler (
   // warn prevent and passive modifier
   /* istanbul ignore if */
   if (
-    "production" !== 'production' && warn &&
+    process.env.NODE_ENV !== 'production' && warn &&
     modifiers.prevent && modifiers.passive
   ) {
     warn(
@@ -68712,7 +68956,7 @@ function model (
   var tag = el.tag;
   var type = el.attrsMap.type;
 
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     // inputs with type="file" are read only and setting the input's
     // value will throw an error.
     if (tag === 'input' && type === 'file') {
@@ -68739,7 +68983,7 @@ function model (
     genComponentModel(el, value, modifiers);
     // component v-model doesn't need extra runtime
     return false
-  } else if ("production" !== 'production') {
+  } else if (process.env.NODE_ENV !== 'production') {
     warn$1(
       "<" + (el.tag) + " v-model=\"" + value + "\">: " +
       "v-model is not supported on this element type. " +
@@ -68821,7 +69065,7 @@ function genDefaultModel (
 
   // warn if v-bind:value conflicts with v-model
   // except for inputs with v-bind:type
-  if ("production" !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     var value$1 = el.attrsMap['v-bind:value'] || el.attrsMap[':value'];
     var typeBinding = el.attrsMap['v-bind:type'] || el.attrsMap[':type'];
     if (value$1 && !typeBinding) {
@@ -69529,7 +69773,7 @@ function enter (vnode, toggleDisplay) {
       : duration
   );
 
-  if ("production" !== 'production' && explicitEnterDuration != null) {
+  if (process.env.NODE_ENV !== 'production' && explicitEnterDuration != null) {
     checkDuration(explicitEnterDuration, 'enter', vnode);
   }
 
@@ -69637,7 +69881,7 @@ function leave (vnode, rm) {
       : duration
   );
 
-  if ("production" !== 'production' && isDef(explicitLeaveDuration)) {
+  if (process.env.NODE_ENV !== 'production' && isDef(explicitLeaveDuration)) {
     checkDuration(explicitLeaveDuration, 'leave', vnode);
   }
 
@@ -69864,7 +70108,7 @@ function actuallySetSelected (el, binding, vm) {
   var value = binding.value;
   var isMultiple = el.multiple;
   if (isMultiple && !Array.isArray(value)) {
-    "production" !== 'production' && warn(
+    process.env.NODE_ENV !== 'production' && warn(
       "<select multiple v-model=\"" + (binding.expression) + "\"> " +
       "expects an Array value for its binding, but got " + (Object.prototype.toString.call(value).slice(8, -1)),
       vm
@@ -70080,7 +70324,7 @@ var Transition = {
     }
 
     // warn multiple elements
-    if ("production" !== 'production' && children.length > 1) {
+    if (process.env.NODE_ENV !== 'production' && children.length > 1) {
       warn(
         '<transition> can only be used on a single element. Use ' +
         '<transition-group> for lists.',
@@ -70091,7 +70335,7 @@ var Transition = {
     var mode = this.mode;
 
     // warn invalid mode
-    if ("production" !== 'production' &&
+    if (process.env.NODE_ENV !== 'production' &&
       mode && mode !== 'in-out' && mode !== 'out-in'
     ) {
       warn(
@@ -70216,7 +70460,7 @@ var TransitionGroup = {
           children.push(c);
           map[c.key] = c
           ;(c.data || (c.data = {})).transition = transitionData;
-        } else if ("production" !== 'production') {
+        } else if (process.env.NODE_ENV !== 'production') {
           var opts = c.componentOptions;
           var name = opts ? (opts.Ctor.options.name || opts.tag || '') : c.tag;
           warn(("<transition-group> children must be keyed: <" + name + ">"));
@@ -70385,8 +70629,8 @@ if (inBrowser) {
       if (devtools) {
         devtools.emit('init', Vue);
       } else if (
-        "production" !== 'production' &&
-        "production" !== 'test' &&
+        process.env.NODE_ENV !== 'production' &&
+        process.env.NODE_ENV !== 'test' &&
         isChrome
       ) {
         console[console.info ? 'info' : 'log'](
@@ -70395,8 +70639,8 @@ if (inBrowser) {
         );
       }
     }
-    if ("production" !== 'production' &&
-      "production" !== 'test' &&
+    if (process.env.NODE_ENV !== 'production' &&
+      process.env.NODE_ENV !== 'test' &&
       config.productionTip !== false &&
       typeof console !== 'undefined'
     ) {
@@ -70462,7 +70706,7 @@ function parseText (
 function transformNode (el, options) {
   var warn = options.warn || baseWarn;
   var staticClass = getAndRemoveAttr(el, 'class');
-  if ("production" !== 'production' && staticClass) {
+  if (process.env.NODE_ENV !== 'production' && staticClass) {
     var res = parseText(staticClass, options.delimiters);
     if (res) {
       warn(
@@ -70506,7 +70750,7 @@ function transformNode$1 (el, options) {
   var staticStyle = getAndRemoveAttr(el, 'style');
   if (staticStyle) {
     /* istanbul ignore if */
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       var res = parseText(staticStyle, options.delimiters);
       if (res) {
         warn(
@@ -70748,7 +70992,7 @@ function parseHTML (html, options) {
 
     if (html === last) {
       options.chars && options.chars(html);
-      if ("production" !== 'production' && !stack.length && options.warn) {
+      if (process.env.NODE_ENV !== 'production' && !stack.length && options.warn) {
         options.warn(("Mal-formatted tag at end of template: \"" + html + "\""));
       }
       break
@@ -70855,7 +71099,7 @@ function parseHTML (html, options) {
     if (pos >= 0) {
       // Close all the open elements, up the stack
       for (var i = stack.length - 1; i >= pos; i--) {
-        if ("production" !== 'production' &&
+        if (process.env.NODE_ENV !== 'production' &&
           (i > pos || !tagName) &&
           options.warn
         ) {
@@ -71001,7 +71245,7 @@ function parse (
 
       if (isForbiddenTag(element) && !isServerRendering()) {
         element.forbidden = true;
-        "production" !== 'production' && warn$2(
+        process.env.NODE_ENV !== 'production' && warn$2(
           'Templates should only be responsible for mapping the state to the ' +
           'UI. Avoid placing tags with side-effects in your templates, such as ' +
           "<" + tag + ">" + ', as they will not be parsed.'
@@ -71034,7 +71278,7 @@ function parse (
       }
 
       function checkRootConstraints (el) {
-        if ("production" !== 'production') {
+        if (process.env.NODE_ENV !== 'production') {
           if (el.tag === 'slot' || el.tag === 'template') {
             warnOnce(
               "Cannot use <" + (el.tag) + "> as component root element because it may " +
@@ -71062,7 +71306,7 @@ function parse (
             exp: element.elseif,
             block: element
           });
-        } else if ("production" !== 'production') {
+        } else if (process.env.NODE_ENV !== 'production') {
           warnOnce(
             "Component template should contain exactly one root element. " +
             "If you are using v-if on multiple elements, " +
@@ -71104,7 +71348,7 @@ function parse (
 
     chars: function chars (text) {
       if (!currentParent) {
-        if ("production" !== 'production') {
+        if (process.env.NODE_ENV !== 'production') {
           if (text === template) {
             warnOnce(
               'Component template requires a root element, rather than just text.'
@@ -71199,7 +71443,7 @@ function processElement (element, options) {
 function processKey (el) {
   var exp = getBindingAttr(el, 'key');
   if (exp) {
-    if ("production" !== 'production' && el.tag === 'template') {
+    if (process.env.NODE_ENV !== 'production' && el.tag === 'template') {
       warn$2("<template> cannot be keyed. Place the key on real elements instead.");
     }
     el.key = exp;
@@ -71220,7 +71464,7 @@ function processFor (el) {
     var res = parseFor(exp);
     if (res) {
       extend(el, res);
-    } else if ("production" !== 'production') {
+    } else if (process.env.NODE_ENV !== 'production') {
       warn$2(
         ("Invalid v-for expression: " + exp)
       );
@@ -71275,7 +71519,7 @@ function processIfConditions (el, parent) {
       exp: el.elseif,
       block: el
     });
-  } else if ("production" !== 'production') {
+  } else if (process.env.NODE_ENV !== 'production') {
     warn$2(
       "v-" + (el.elseif ? ('else-if="' + el.elseif + '"') : 'else') + " " +
       "used on element <" + (el.tag) + "> without corresponding v-if."
@@ -71289,7 +71533,7 @@ function findPrevElement (children) {
     if (children[i].type === 1) {
       return children[i]
     } else {
-      if ("production" !== 'production' && children[i].text !== ' ') {
+      if (process.env.NODE_ENV !== 'production' && children[i].text !== ' ') {
         warn$2(
           "text \"" + (children[i].text.trim()) + "\" between v-if and v-else(-if) " +
           "will be ignored."
@@ -71317,7 +71561,7 @@ function processOnce (el) {
 function processSlot (el) {
   if (el.tag === 'slot') {
     el.slotName = getBindingAttr(el, 'name');
-    if ("production" !== 'production' && el.key) {
+    if (process.env.NODE_ENV !== 'production' && el.key) {
       warn$2(
         "`key` does not work on <slot> because slots are abstract outlets " +
         "and can possibly expand into multiple elements. " +
@@ -71329,7 +71573,7 @@ function processSlot (el) {
     if (el.tag === 'template') {
       slotScope = getAndRemoveAttr(el, 'scope');
       /* istanbul ignore if */
-      if ("production" !== 'production' && slotScope) {
+      if (process.env.NODE_ENV !== 'production' && slotScope) {
         warn$2(
           "the \"scope\" attribute for scoped slots have been deprecated and " +
           "replaced by \"slot-scope\" since 2.5. The new \"slot-scope\" attribute " +
@@ -71341,7 +71585,7 @@ function processSlot (el) {
       el.slotScope = slotScope || getAndRemoveAttr(el, 'slot-scope');
     } else if ((slotScope = getAndRemoveAttr(el, 'slot-scope'))) {
       /* istanbul ignore if */
-      if ("production" !== 'production' && el.attrsMap['v-for']) {
+      if (process.env.NODE_ENV !== 'production' && el.attrsMap['v-for']) {
         warn$2(
           "Ambiguous combined usage of slot-scope and v-for on <" + (el.tag) + "> " +
           "(v-for takes higher priority). Use a wrapper <template> for the " +
@@ -71427,13 +71671,13 @@ function processAttrs (el) {
           name = name.slice(0, -(arg.length + 1));
         }
         addDirective(el, name, rawName, value, arg, modifiers);
-        if ("production" !== 'production' && name === 'model') {
+        if (process.env.NODE_ENV !== 'production' && name === 'model') {
           checkForAliasModel(el, value);
         }
       }
     } else {
       // literal attribute
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         var res = parseText(value, delimiters);
         if (res) {
           warn$2(
@@ -71480,7 +71724,7 @@ function makeAttrsMap (attrs) {
   var map = {};
   for (var i = 0, l = attrs.length; i < l; i++) {
     if (
-      "production" !== 'production' &&
+      process.env.NODE_ENV !== 'production' &&
       map[attrs[i].name] && !isIE && !isEdge
     ) {
       warn$2('duplicate attribute: ' + attrs[i].name);
@@ -71936,7 +72180,7 @@ function genFilterCode (key) {
 /*  */
 
 function on (el, dir) {
-  if ("production" !== 'production' && dir.modifiers) {
+  if (process.env.NODE_ENV !== 'production' && dir.modifiers) {
     warn("v-on without argument does not support modifiers.");
   }
   el.wrapListeners = function (code) { return ("_g(" + code + "," + (dir.value) + ")"); };
@@ -72041,7 +72285,7 @@ function genOnce (el, state) {
       parent = parent.parent;
     }
     if (!key) {
-      "production" !== 'production' && state.warn(
+      process.env.NODE_ENV !== 'production' && state.warn(
         "v-once can only be used inside v-for that is keyed. "
       );
       return genElement(el, state)
@@ -72100,7 +72344,7 @@ function genFor (
   var iterator1 = el.iterator1 ? ("," + (el.iterator1)) : '';
   var iterator2 = el.iterator2 ? ("," + (el.iterator2)) : '';
 
-  if ("production" !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' &&
     state.maybeComponent(el) &&
     el.tag !== 'slot' &&
     el.tag !== 'template' &&
@@ -72226,7 +72470,7 @@ function genDirectives (el, state) {
 
 function genInlineTemplate (el, state) {
   var ast = el.children[0];
-  if ("production" !== 'production' && (
+  if (process.env.NODE_ENV !== 'production' && (
     el.children.length !== 1 || ast.type !== 1
   )) {
     state.warn('Inline-template components must have exactly one child element.');
@@ -72534,7 +72778,7 @@ function createCompileToFunctionFn (compile) {
     delete options.warn;
 
     /* istanbul ignore if */
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       // detect possible CSP restriction
       try {
         new Function('return 1');
@@ -72563,7 +72807,7 @@ function createCompileToFunctionFn (compile) {
     var compiled = compile(template, options);
 
     // check compilation errors/tips
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       if (compiled.errors && compiled.errors.length) {
         warn$$1(
           "Error compiling template:\n\n" + template + "\n\n" +
@@ -72588,7 +72832,7 @@ function createCompileToFunctionFn (compile) {
     // this should only happen if there is a bug in the compiler itself.
     // mostly for codegen development use
     /* istanbul ignore if */
-    if ("production" !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       if ((!compiled.errors || !compiled.errors.length) && fnGenErrors.length) {
         warn$$1(
           "Failed to generate render function:\n\n" +
@@ -72644,7 +72888,7 @@ function createCompilerCreator (baseCompile) {
       }
 
       var compiled = baseCompile(template, finalOptions);
-      if ("production" !== 'production') {
+      if (process.env.NODE_ENV !== 'production') {
         errors.push.apply(errors, detectErrors(compiled.ast));
       }
       compiled.errors = errors;
@@ -72716,7 +72960,7 @@ Vue.prototype.$mount = function (
 
   /* istanbul ignore if */
   if (el === document.body || el === document.documentElement) {
-    "production" !== 'production' && warn(
+    process.env.NODE_ENV !== 'production' && warn(
       "Do not mount Vue to <html> or <body> - mount to normal elements instead."
     );
     return this
@@ -72731,7 +72975,7 @@ Vue.prototype.$mount = function (
         if (template.charAt(0) === '#') {
           template = idToTemplate(template);
           /* istanbul ignore if */
-          if ("production" !== 'production' && !template) {
+          if (process.env.NODE_ENV !== 'production' && !template) {
             warn(
               ("Template element not found or is empty: " + (options.template)),
               this
@@ -72741,7 +72985,7 @@ Vue.prototype.$mount = function (
       } else if (template.nodeType) {
         template = template.innerHTML;
       } else {
-        if ("production" !== 'production') {
+        if (process.env.NODE_ENV !== 'production') {
           warn('invalid template option:' + template, this);
         }
         return this
@@ -72751,7 +72995,7 @@ Vue.prototype.$mount = function (
     }
     if (template) {
       /* istanbul ignore if */
-      if ("production" !== 'production' && config.performance && mark) {
+      if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile');
       }
 
@@ -72767,7 +73011,7 @@ Vue.prototype.$mount = function (
       options.staticRenderFns = staticRenderFns;
 
       /* istanbul ignore if */
-      if ("production" !== 'production' && config.performance && mark) {
+      if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile end');
         measure(("vue " + (this._name) + " compile"), 'compile', 'compile end');
       }
@@ -72794,8 +73038,8 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
-},{"timers":396}],403:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
+},{"_process":51,"timers":396}],404:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 function noop () {}
@@ -72820,7 +73064,7 @@ exports.insert = function (css) {
   }
 }
 
-},{}],404:[function(require,module,exports){
+},{}],405:[function(require,module,exports){
 var bundleFn = arguments[3];
 var sources = arguments[4];
 var cache = arguments[5];
@@ -72902,7 +73146,7 @@ module.exports = function (fn, options) {
     return worker;
 };
 
-},{}],405:[function(require,module,exports){
+},{}],406:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -72923,7 +73167,7 @@ function extend() {
     return target
 }
 
-},{}],406:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -73135,7 +73379,7 @@ var Network = function () {
 
 module.exports = Network;
 
-},{"./../services/quorum":410,"./node":407,"./quorum-set":408}],407:[function(require,module,exports){
+},{"./../services/quorum":411,"./node":408,"./quorum-set":409}],408:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -73476,7 +73720,7 @@ var Node = function () {
 
 module.exports = Node;
 
-},{"./quorum-set":408}],408:[function(require,module,exports){
+},{"./quorum-set":409}],409:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -73602,7 +73846,7 @@ var QuorumSet = function () {
 
 module.exports = QuorumSet;
 
-},{"ramda":139}],409:[function(require,module,exports){
+},{"ramda":139}],410:[function(require,module,exports){
 'use strict';
 
 var main = function () {
@@ -73691,7 +73935,7 @@ $(document).ready(function () {
     main();
 });
 
-},{"./entities/network":406,"./entities/node":407,"./services/request-async":411,"./views/app.vue":412,"@fortawesome/fontawesome-svg-core":1,"@fortawesome/free-solid-svg-icons":2,"@fortawesome/vue-fontawesome":3,"vue":402,"vue-truncate-filter":401}],410:[function(require,module,exports){
+},{"./entities/network":407,"./entities/node":408,"./services/request-async":412,"./views/app.vue":413,"@fortawesome/fontawesome-svg-core":1,"@fortawesome/free-solid-svg-icons":2,"@fortawesome/vue-fontawesome":3,"vue":403,"vue-truncate-filter":402}],411:[function(require,module,exports){
 "use strict";
 
 var Node = require("../entities/node");
@@ -74182,7 +74426,7 @@ module.exports = {
     })
 };
 
-},{"../entities/node":407,"../entities/quorum-set":408,"lodash":49}],411:[function(require,module,exports){
+},{"../entities/node":408,"../entities/quorum-set":409,"lodash":49}],412:[function(require,module,exports){
 'use strict';
 
 var https = require('https');
@@ -74209,8 +74453,8 @@ module.exports = {
     }
 };
 
-},{"https":44}],412:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".red{color:red}.graph-toolbar{justify-content:flex-end;float:right}.navbar,.row{margin-bottom:10px}")
+},{"https":44}],413:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".red {\n    color: #f00;\n}\n\n.graph-toolbar {\n    justify-content: flex-end;\n    float: right;\n}\n\n.row {\n    margin-bottom: 10px;\n}\n\n.navbar {\n    margin-bottom: 10px;\n}")
 ;(function(){
 "use strict";
 
@@ -74221,14 +74465,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var Graph = require("./graph.vue");
 var GraphLegend = require("./graph-legend.vue");
-var NodeDetails = require("./node-details.vue");
+var NodeExplorer = require("./node/node-explorer.vue");
 var Search = require('./search.vue');
 var Statistics = require('./statistics.vue');
 var NodeList = require('./node-list.vue');
 
 exports.default = {
     components: {
-        NodeDetails: NodeDetails,
+        NodeExplorer: NodeExplorer,
         NodeList: NodeList,
         Graph: Graph,
         GraphLegend: GraphLegend,
@@ -74281,11 +74525,22 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"height":"100%"}},[_c('nav',{staticClass:"navbar navbar-dark bg-dark"},[_c('a',{staticClass:"navbar-brand",attrs:{"href":"#"}},[_vm._v("Quorum Monitor")]),_vm._v(" "),_c('form',{staticClass:"form-inline"},[_c('search',{attrs:{"nodes":this.network.nodes},on:{"node-selected":_vm.onNodeSelected,"center-node":_vm.onNodeCenter}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"alert alert-warning",attrs:{"role":"alert"}},[_vm._v("\n        You are viewing a simulation!\n    ")]),_vm._v(" "),_c('Statistics',{attrs:{"network":_vm.network}}),_vm._v(" "),_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-8"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body",staticStyle:{"height":"100%"}},[_c('Graph',{ref:"graph",attrs:{"network":_vm.network,"selectedNode":_vm.selectedNode,"centerNode":_vm.centerNode},on:{"center-node":_vm.onNodeCenter,"node-selected":_vm.onNodeSelected}}),_vm._v(" "),_c('GraphLegend')],1)])]),_vm._v(" "),_c('div',{staticClass:"col-sm-4"},[_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('NodeDetails',{attrs:{"node":_vm.selectedNode,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Simulated nodes")]),_vm._v(" "),_c('NodeList',{attrs:{"nodes":_vm.simulatedNodes,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)])])])])])],1)}
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"height":"100%"}},[_c('nav',{staticClass:"navbar navbar-dark bg-dark"},[_c('a',{staticClass:"navbar-brand",attrs:{"href":"#"}},[_vm._v("Quorum Monitor")]),_vm._v(" "),_c('form',{staticClass:"form-inline"},[_c('search',{attrs:{"nodes":this.network.nodes},on:{"node-selected":_vm.onNodeSelected,"center-node":_vm.onNodeCenter}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"alert alert-warning",attrs:{"role":"alert"}},[_vm._v("\n        You are viewing a simulation!\n    ")]),_vm._v(" "),_c('Statistics',{attrs:{"network":_vm.network}}),_vm._v(" "),_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-8"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body",staticStyle:{"height":"100%"}},[_c('Graph',{ref:"graph",attrs:{"network":_vm.network,"selectedNode":_vm.selectedNode,"centerNode":_vm.centerNode},on:{"center-node":_vm.onNodeCenter,"node-selected":_vm.onNodeSelected}}),_vm._v(" "),_c('GraphLegend')],1)])]),_vm._v(" "),_c('div',{staticClass:"col-sm-4"},[_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('NodeExplorer',{attrs:{"node":_vm.selectedNode,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isSimulation),expression:"isSimulation"}],staticClass:"row"},[_c('div',{staticClass:"col-sm-12"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Simulated nodes")]),_vm._v(" "),_c('NodeList',{attrs:{"nodes":_vm.simulatedNodes,"network":_vm.network},on:{"node-toggle-active":_vm.toggleActive}})],1)])])])])])],1)}
 __vue__options__.staticRenderFns = []
-
-},{"./graph-legend.vue":413,"./graph.vue":416,"./node-details.vue":417,"./node-list.vue":418,"./search.vue":421,"./statistics.vue":422,"vueify/lib/insert-css":403}],413:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".quorum-graph-legend[data-v-2f22afdc]{margin-top:20px;font-size:.7rem}.quorum-graph-legend .element[data-v-2f22afdc]{border-radius:5px;opacity:.8}.quorum-graph-legend .connection[data-v-2f22afdc]{background:#1997c6}.quorum-graph-legend .incoming-connection[data-v-2f22afdc]{background:#1bc98e}.quorum-graph-legend .outgoing-connection[data-v-2f22afdc]{background:#e4d836}.quorum-graph-legend .active-node[data-v-2f22afdc]{background:#1997c6}.quorum-graph-legend .selected-node[data-v-2f22afdc]{background:#ff0}.quorum-graph-legend .inactive-node[data-v-2f22afdc]{background:#ecebe4}.quorum-graph-legend .failing-node[data-v-2f22afdc]{background:red}.legend-link[data-v-2f22afdc]{font-size:.8rem;margin-bottom:0}")
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-4678313e", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-4678313e", __vue__options__)
+  }
+})()}
+},{"./graph-legend.vue":414,"./graph.vue":417,"./node-list.vue":418,"./node/node-explorer.vue":420,"./search.vue":422,"./statistics.vue":423,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],414:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".quorum-graph-legend[data-v-2f22afdc] {\n    margin-top: 20px;\n    font-size: 0.7rem;\n}\n\n.quorum-graph-legend .element[data-v-2f22afdc] {\n    border-radius: 5px;\n    opacity: 0.8;\n\n}\n\n.quorum-graph-legend .connection[data-v-2f22afdc] {\n    background: #1997c6;\n}\n\n.quorum-graph-legend .incoming-connection[data-v-2f22afdc] {\n    background: #1bc98e;\n}\n\n.quorum-graph-legend .outgoing-connection[data-v-2f22afdc] {\n    background: #e4d836;\n}\n\n.quorum-graph-legend .active-node[data-v-2f22afdc] {\n    background: #1997c6;\n}\n\n.quorum-graph-legend .selected-node[data-v-2f22afdc] {\n    background: yellow;\n}\n\n.quorum-graph-legend .inactive-node[data-v-2f22afdc] {\n    background: #ECEBE4;\n}\n\n.quorum-graph-legend .failing-node[data-v-2f22afdc] {\n    background: red;\n}\n\n.legend-link[data-v-2f22afdc] {\n    font-size: 0.8rem;\n    margin-bottom: 0px;\n}")
 ;(function(){
 "use strict";
 
@@ -74303,12 +74558,23 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row",staticStyle:{"width":"100%"}},[_c('div',{staticClass:"col-12"},[_c('div',{staticClass:"row"},[_c('div',{staticClass:"col-12 legend-link"},[_c('a',{directives:[{name:"show",rawName:"v-show",value:(!_vm.showLegend),expression:"!showLegend"}],attrs:{"href":"#"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.showLegend=true}}},[_vm._v("Show legend")]),_vm._v(" "),_c('a',{directives:[{name:"show",rawName:"v-show",value:(_vm.showLegend),expression:"showLegend"}],attrs:{"href":"#"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.showLegend=false}}},[_vm._v("Hide legend")])])]),_vm._v(" "),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.showLegend),expression:"showLegend"}],staticClass:"row text-center quorum-graph-legend"},[_c('div',{staticClass:"col-2 element selected-node"},[_vm._v("\n                Selected\n            ")]),_vm._v(" "),_c('div',{staticClass:"col-2 element active-node"},[_vm._v("\n                Active\n            ")]),_vm._v(" "),_c('div',{staticClass:"col-2 element inactive-node"},[_vm._v("\n                Inactive\n            ")]),_vm._v(" "),_c('div',{staticClass:"col-2 element failing-node"},[_vm._v("\n                Failing\n            ")]),_vm._v(" "),_c('div',{staticClass:"col-2 element incoming-connection"},[_vm._v("\n                Incoming Link\n            ")]),_vm._v(" "),_c('div',{staticClass:"col-2 element outgoing-connection"},[_vm._v("\n                Outgoing Link\n            ")])])])])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-2f22afdc"
-
-},{"vueify/lib/insert-css":403}],414:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("path[data-v-9d15c1ee]{stroke:#1997c6;stroke-width:.5px;stroke-opacity:.14;fill-opacity:0}path.inactive[data-v-9d15c1ee]{stroke:#ecebe4;stroke-opacity:.6}path.cluster[data-v-9d15c1ee]{stroke-width:1px;stroke-opacity:.6}path.from-selected[data-v-9d15c1ee]{stroke:#e4d836;stroke-opacity:.5;stroke-width:1px}path.to-selected[data-v-9d15c1ee]{stroke:#1bc98e;stroke-opacity:.5;stroke-width:1px}")
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2f22afdc", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-2f22afdc", __vue__options__)
+  }
+})()}
+},{"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],415:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("path[data-v-9d15c1ee] {\n    stroke: #1997c6;\n    stroke-width: 0.5px;\n    stroke-opacity: 0.14;\n    fill-opacity: 0;\n}\n\npath.inactive[data-v-9d15c1ee]{\n    stroke: #ECEBE4;\n    stroke-opacity: 0.6;\n}\n\npath.cluster[data-v-9d15c1ee] {\n    stroke-width: 1px;\n    stroke-opacity: 0.6;\n}\npath.from-selected[data-v-9d15c1ee] {\n    stroke: #e4d836;\n    stroke-opacity: 0.5;\n    stroke-width: 1px;\n}\n\npath.to-selected[data-v-9d15c1ee] {\n    stroke: #1bc98e;\n    stroke-opacity: 0.5;\n    stroke-width: 1px;\n}")
 ;(function(){
 "use strict";
 
@@ -74351,12 +74617,23 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('path',{class:_vm.classObject,attrs:{"d":_vm.path}})}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-9d15c1ee"
-
-},{"get-control-points":43,"vueify/lib/insert-css":403}],415:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("circle.active[data-v-a5904dde]{fill:#1997c6}circle.selected[data-v-a5904dde]{stroke:#ff0}circle.failing[data-v-a5904dde]{fill:red}circle.target[data-v-a5904dde]{stroke:#e4d836;stroke-opacity:1}circle.source[data-v-a5904dde]{stroke:#1bc98e;stroke-opacity:.7}circle[data-v-a5904dde]{stroke:#fff;fill:#ecebe4;cursor:pointer;stroke-width:1px}text[data-v-a5904dde]{fill:#1997c6}")
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-9d15c1ee", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-9d15c1ee", __vue__options__)
+  }
+})()}
+},{"get-control-points":43,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],416:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("circle.active[data-v-a5904dde] {\n    fill: #1997c6;\n}\n\ncircle.selected[data-v-a5904dde] {\n    stroke:  yellow;\n}\n\ncircle.failing[data-v-a5904dde] {\n    fill: red\n}\n\ncircle.target[data-v-a5904dde] {\n    stroke:  #e4d836;\n\n    stroke-opacity: 1;\n}\n\ncircle.source[data-v-a5904dde] {\n    stroke:  #1bc98e;\n    stroke-opacity: 0.7;\n}\n\ncircle[data-v-a5904dde] {\n    stroke: white;\n    fill: #ECEBE4;\n    cursor: pointer;\n    stroke-width: 1px;\n}\ntext[data-v-a5904dde]{\n    fill: #1997c6;\n}")
 ;(function(){
 "use strict";
 
@@ -74435,12 +74712,23 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('g',{attrs:{"transform":_vm.coordinateTransform}},[_c('defs',[_c('filter',{attrs:{"x":"0","y":"0","width":"1","height":"1","id":"solid"}},[_c('feFlood',{attrs:{"flood-color":"white","flood-opacity":"0.7"}}),_vm._v(" "),_c('feComposite',{attrs:{"in":"SourceGraphic"}})],1)]),_vm._v(" "),_c('circle',{class:_vm.classObject,attrs:{"r":_vm.circleRadius},on:{"click":_vm.nodeSelected}}),_vm._v(" "),_c('text',{attrs:{"filter":"url(#solid)","y":"5","dy":"1em","text-anchor":"middle","font-size":"5px"}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.displayName,10)))])])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-a5904dde"
-
-},{"./../entities/node":407,"./../services/quorum":410,"vueify/lib/insert-css":403}],416:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("svg.graph[data-v-5b01a60e]{height:inherit;width:100%}.progress[data-v-5b01a60e]{height:20px;margin-top:10%;margin-left:20%;margin-right:20%}.progress-bar[data-v-5b01a60e]{transition:none!important;background-color:#1997c6;opacity:.6}")
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-a5904dde", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-a5904dde", __vue__options__)
+  }
+})()}
+},{"./../entities/node":408,"./../services/quorum":411,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],417:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("svg.graph[data-v-5b01a60e] {\n    height: inherit;\n    width: 100%;\n}\n\n.progress[data-v-5b01a60e] {\n    height: 20px;\n    margin-top: 10%;\n    margin-left: 20%;\n    margin-right: 20%\n}\n\n.progress-bar[data-v-5b01a60e] {\n    -webkit-transition: none !important;\n    transition: none !important;\n    background-color: #1997c6;\n    opacity: 0.6;\n}")
 ;(function(){
 "use strict";
 
@@ -74603,12 +74891,22 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"graph row"},[_c('div',{staticClass:"col-xs-12",staticStyle:{"width":"100%"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isLoading),expression:"isLoading"}],staticClass:"progress"},[_c('div',{staticClass:"progress-bar",style:(_vm.progressBarWidth),attrs:{"role":"progressbar","aria-valuenow":_vm.loadingProgress,"aria-valuemin":"0","aria-valuemax":"100"}})]),_vm._v(" "),_c('svg',{ref:"graphSvg",staticClass:"graph",attrs:{"xmlns":"http://www.w3.org/2000/svg","width":"100%","height":"600px"}},[_c('g',{staticClass:"svg-pan-zoom_viewport"},[_vm._l((_vm.network.links),function(link){return (_vm.graphInitialized && !_vm.isLoading)?_c('GraphLink',{attrs:{"link":link,"selectedNode":_vm.selectedNode}}):_vm._e()}),_vm._v(" "),_vm._l((_vm.network.nodes),function(node){return (_vm.graphInitialized && !_vm.isLoading)?_c('GraphNode',{attrs:{"node":node,"selectedNode":_vm.selectedNode,"network":_vm.network,"targetNodes":_vm.targetNodes,"sourceNodes":_vm.sourceNodes},on:{"node-selected":_vm.onNodeSelected}}):_vm._e()})],2)])])])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-5b01a60e"
-
-},{"./../entities/network":406,"./../workers/compute-graph.js":423,"./graph-link.vue":414,"./graph-node.vue":415,"d3":41,"svg-pan-zoom":389,"vueify/lib/insert-css":403,"webworkify":404}],417:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("ul.tree[data-v-4d72da67]{padding-left:0}")
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5b01a60e", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-5b01a60e", __vue__options__)
+  }
+})()}
+},{"./../entities/network":407,"./../workers/compute-graph.js":424,"./graph-link.vue":415,"./graph-node.vue":416,"d3":41,"svg-pan-zoom":389,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404,"webworkify":405}],418:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -74617,10 +74915,92 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 
-var QuorumSet = require('./quorum-set.vue');
+var NodeActionBar = require('./node/node-action-bar.vue');
 
 exports.default = {
-    name: "node-details",
+    name: "node-list",
+    components: {
+        NodeActionBar: NodeActionBar
+    },
+    props: {
+        nodes: {
+            type: Array
+        },
+        network: {
+            type: Object
+        }
+    },
+    methods: {
+        toggleActive: function toggleActive(node) {
+            this.$emit("node-toggle-active", node);
+        }
+    }
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"list-group list-group-flush"},_vm._l((_vm.nodes),function(node){return _c('div',{staticClass:"list-group-item"},[_c('div',[_vm._v("\n            "+_vm._s(_vm._f("truncate")(node.displayName,30))+"\n            "),_c('span',{staticClass:"fa-pull-right"},[_c('NodeActionBar',{attrs:{"node":node,"network":_vm.network},on:{"node-toggle-active":function($event){_vm.toggleActive(node)}}})],1)])])}))}
+__vue__options__.staticRenderFns = []
+__vue__options__._scopeId = "data-v-0f1d10c9"
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0f1d10c9", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-0f1d10c9", __vue__options__)
+  }
+})()}
+},{"./node/node-action-bar.vue":419,"vue":403,"vue-hot-reload-api":401}],419:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".btn-group-xs > .btn[data-v-34e4aa0a], .btn-xs[data-v-34e4aa0a] {\n    padding  : .25rem .25rem;\n    font-size  : .875rem;\n    line-height  : .5;\n    border-radius : .2rem;\n}")
+;(function(){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    name: "node-action-bar",
+    props: {
+        node: {
+            type: Object
+        }
+    }
+};
+})()
+if (module.exports.__esModule) module.exports = module.exports.default
+var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"font-size":"0.5rem"}},[_c('button',{staticClass:"btn btn-xs btn-secondary",attrs:{"type":"button"},on:{"click":function($event){_vm.$emit('node-show-modal', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-xs",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])}
+__vue__options__.staticRenderFns = []
+__vue__options__._scopeId = "data-v-34e4aa0a"
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-34e4aa0a", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-34e4aa0a", __vue__options__)
+  }
+})()}
+},{"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],420:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert("ul.tree[data-v-c0e6ab66] {\n    padding-left: 0px;\n}")
+;(function(){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+
+var QuorumSet = require('../quorum-set.vue');
+
+exports.default = {
+    name: "node-explorer",
     components: {
         QuorumSet: QuorumSet
     },
@@ -74658,72 +75038,23 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"card"},[(_vm.node !== null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title node-details-title",attrs:{"data-toggle":"tooltip","title":_vm.node.displayName}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.node.displayName,20))),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm btn-secondary",attrs:{"type":"button"},on:{"click":function($event){_vm.showModal(_vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])]),_vm._v(" "),_c('ul',{staticClass:"tree list-group list-group-flush"},[_c('QuorumSet',{attrs:{"quorumSet":_vm.node.quorumSet,"network":_vm.network,"root":true},on:{"node-toggle-active":_vm.toggleNodeActive,"node-show-modal":_vm.showModal}})],1)]):(_vm.node === null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Manual")]),_vm._v(" "),_vm._m(0)]):_vm._e(),_vm._v(" "),_c('div',{ref:"modal",staticClass:"modal",attrs:{"id":"node-details-modal","tabindex":"-1","role":"dialog"}},[_c('div',{staticClass:"modal-dialog modal-lg",attrs:{"role":"document"}},[_c('div',{staticClass:"modal-content"},[_c('div',{staticClass:"modal-header"},[_c('h5',{staticClass:"modal-title"},[_vm._v(_vm._s(_vm.modalNode.displayName))]),_vm._v(" "),_vm._m(1)]),_vm._v(" "),_c('div',{staticClass:"modal-body"},[_c('p',[_vm._v("Todo: layout")]),_vm._v(" "),_vm._l((_vm.modalNode),function(value,key){return _c('div',[_vm._v("\n                        "+_vm._s(key)+": "+_vm._s(value)+"\n                    ")])})],2),_vm._v(" "),_vm._m(2)])])])])}
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
+__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"card"},[(_vm.node !== null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title node-details-title",attrs:{"data-toggle":"tooltip","title":_vm.node.displayName}},[_vm._v(_vm._s(_vm._f("truncate")(_vm.node.displayName,20))),_c('span',{staticClass:"fa-pull-right"},[_c('button',{staticClass:"btn btn-sm btn-secondary",attrs:{"type":"button"},on:{"click":function($event){_vm.showModal(_vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-sm",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])]),_vm._v(" "),_c('ul',{staticClass:"tree list-group list-group-flush"},[_c('QuorumSet',{attrs:{"quorumSet":_vm.node.quorumSet,"network":_vm.network,"root":true},on:{"node-toggle-active":_vm.toggleNodeActive,"node-show-modal":_vm.showModal}})],1)]):(_vm.node === null)?_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Manual")]),_vm._v(" "),_vm._m(0)]):_vm._e(),_vm._v(" "),_c('div',{ref:"modal",staticClass:"modal",attrs:{"id":"node-details-modal","tabindex":"-1","role":"dialog"}},[_c('div',{staticClass:"modal-dialog modal-lg",attrs:{"role":"document"}},[_c('div',{staticClass:"modal-content"},[_c('div',{staticClass:"modal-header"},[_c('h5',{staticClass:"modal-title"},[_vm._v(_vm._s(_vm.modalNode.displayName))]),_vm._v(" "),_vm._m(1)]),_vm._v(" "),_c('div',{staticClass:"modal-body"},[_c('dl',[_c('dt',[_vm._v("public key")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.publicKey))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("ip:port")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.key))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("host")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.host))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("Version")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.versionStr))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("ledger version")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.ledgerVersion))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("overlay version")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.overlayVersion))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("date discovered")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.dateDiscovered))])]),_vm._v(" "),_c('dl',[_c('dt',[_vm._v("date updated")]),_vm._v(" "),_c('dd',[_vm._v(_vm._s(_vm.modalNode.dateUpdated))])])]),_vm._v(" "),_vm._m(2)])])])])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',[_c('li',[_vm._v("Click and drag on the Graph to pan")]),_vm._v(" "),_c('li',[_vm._v("Scroll on the Graph to zoom")]),_vm._v(" "),_c('li',[_vm._v("Search or click on a node to select it")]),_vm._v(" "),_c('li',[_vm._v("Click on the legend on the bottom on the graph to see the color codes")]),_vm._v(" "),_c('li',[_vm._v("Links are only shown between active, non-failing nodes")]),_vm._v(" "),_c('li',[_vm._v("Clustered nodes have fuller links and are closer together in the graph")]),_vm._v(" "),_c('li',[_vm._v("Press the info button in the selected node details for a complete list of the node details")]),_vm._v(" "),_c('li',[_vm._v("\n                Toggle the on/off button in the selected node details to activate/deactivate the node and see the effects on the network\n            ")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('button',{staticClass:"close",attrs:{"type":"button","data-dismiss":"modal","aria-label":"Close"}},[_c('span',{attrs:{"aria-hidden":"true"}},[_vm._v("×")])])},function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"modal-footer"},[_c('button',{staticClass:"btn btn-secondary",attrs:{"type":"button","data-dismiss":"modal"}},[_vm._v("Close")])])}]
-__vue__options__._scopeId = "data-v-4d72da67"
-
-},{"./quorum-set.vue":420,"vueify/lib/insert-css":403}],418:[function(require,module,exports){
-;(function(){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-
-var NodeActionBar = require('./node/node-action-bar.vue');
-
-exports.default = {
-    name: "node-list",
-    components: {
-        NodeActionBar: NodeActionBar
-    },
-    props: {
-        nodes: {
-            type: Array
-        },
-        network: {
-            type: Object
-        }
-    },
-    methods: {
-        toggleActive: function toggleActive(node) {
-            this.$emit("node-toggle-active", node);
-        }
-    }
-};
-})()
-if (module.exports.__esModule) module.exports = module.exports.default
-var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"list-group list-group-flush"},_vm._l((_vm.nodes),function(node){return _c('div',{staticClass:"list-group-item"},[_c('div',[_vm._v("\n            "+_vm._s(_vm._f("truncate")(node.displayName,30))+"\n            "),_c('span',{staticClass:"fa-pull-right"},[_c('NodeActionBar',{attrs:{"node":node,"network":_vm.network},on:{"node-toggle-active":function($event){_vm.toggleActive(node)}}})],1)])])}))}
-__vue__options__.staticRenderFns = []
-__vue__options__._scopeId = "data-v-0f1d10c9"
-
-},{"./node/node-action-bar.vue":419}],419:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".btn-group-xs>.btn[data-v-34e4aa0a],.btn-xs[data-v-34e4aa0a]{padding:.25rem;font-size:.875rem;line-height:.5;border-radius:.2rem}")
-;(function(){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    name: "node-action-bar",
-    props: {
-        node: {
-            type: Object
-        }
-    }
-};
-})()
-if (module.exports.__esModule) module.exports = module.exports.default
-var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
-__vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"font-size":"0.5rem"}},[_c('button',{staticClass:"btn btn-xs btn-secondary",attrs:{"type":"button"},on:{"click":function($event){_vm.$emit('node-show-modal', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"info"}})],1),_vm._v(" "),_c('button',{staticClass:"btn btn-xs",class:[_vm.node.active ? 'btn-success' : 'btn-secondary'],attrs:{"type":"button"},on:{"click":function($event){$event.preventDefault();$event.stopPropagation();_vm.$emit('node-toggle-active', _vm.node)}}},[_c('font-awesome-icon',{attrs:{"size":"xs","icon":"power-off"}})],1)])}
-__vue__options__.staticRenderFns = []
-__vue__options__._scopeId = "data-v-34e4aa0a"
-
-},{"vueify/lib/insert-css":403}],420:[function(require,module,exports){
-var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".active-node[data-v-60930438]{color:#1997c6}li[data-v-60930438]{padding-left:0}.caret[data-v-60930438]{height:.6em;cursor:pointer}.nested-tree[data-v-60930438]{margin-left:20px}.inactive[data-v-60930438]{color:#ecebe4}.active[data-v-60930438]{color:#1997c6}.failing[data-v-60930438]{color:red}.list-group-item[data-v-60930438],.list-group-item[data-v-60930438]:hover{z-index:auto}")
+__vue__options__._scopeId = "data-v-c0e6ab66"
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-c0e6ab66", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-c0e6ab66", __vue__options__)
+  }
+})()}
+},{"../quorum-set.vue":421,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],421:[function(require,module,exports){
+var __vueify_style_dispose__ = require("vueify/lib/insert-css").insert(".active-node[data-v-60930438] {\n    color: #1997c6;\n}\n\nli[data-v-60930438] {\n    padding-left: 0px;\n}\n\n.caret[data-v-60930438] {\n    height: 0.6em;\n    cursor: pointer;\n}\n\n.nested-tree[data-v-60930438] {\n    margin-left: 20px;\n}\n\n.inactive[data-v-60930438] {\n    color: #ECEBE4\n}\n\n.active[data-v-60930438] {\n    color: #1997c6\n}\n\n.failing[data-v-60930438] {\n    color: red\n}\n.list-group-item[data-v-60930438], .list-group-item[data-v-60930438]:hover{ z-index: auto; }")
 ;(function(){
 "use strict";
 
@@ -74801,11 +75132,22 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"list-group-item"},[_c('div',{class:_vm.quorumSetState,on:{"click":_vm.toggle}},[_c('font-awesome-icon',{staticClass:"caret",attrs:{"pull":"left","size":"2x","icon":_vm.caret}}),_vm._v(" "),_c('h6',[_vm._v("\n            Quorumset with threshold: "+_vm._s(_vm.quorumSet.threshold)+"\n        ")])],1),_vm._v(" "),_c('ul',{directives:[{name:"show",rawName:"v-show",value:(_vm.open),expression:"open"}],staticClass:"list-group list-group-flush nested-tree"},[_vm._l((_vm.quorumSet.validators),function(validator){return _c('li',{staticClass:"list-group-item"},[_c('div',{class:_vm.nodeState(validator)},[_vm._v("\n                "+_vm._s(_vm.validatorDisplayName(validator))+"\n                "),_c('span',{staticClass:"fa-pull-right"},[_c('NodeActionBar',{attrs:{"node":_vm.getNode(validator),"network":_vm.network},on:{"node-toggle-active":_vm.toggleNodeActive,"node-show-modal":_vm.showModal}})],1)])])}),_vm._v(" "),_vm._l((_vm.quorumSet.innerQuorumSets),function(innerQuorumSet){return _c('quorum-set',{attrs:{"network":_vm.network,"quorumSet":innerQuorumSet,"root":false},on:{"node-toggle-active":_vm.toggleNodeActive,"node-show-modal":_vm.showModal}})})],2)])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-60930438"
-
-},{"./node/node-action-bar.vue":419,"vueify/lib/insert-css":403}],421:[function(require,module,exports){
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  module.hot.dispose(__vueify_style_dispose__)
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-60930438", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-60930438", __vue__options__)
+  }
+})()}
+},{"./node/node-action-bar.vue":419,"vue":403,"vue-hot-reload-api":401,"vueify/lib/insert-css":404}],422:[function(require,module,exports){
 ;(function(){
 'use strict';
 
@@ -74874,11 +75216,21 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"dropdown"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.searchString),expression:"searchString"}],staticClass:"form-control",attrs:{"type":"text","id":"searchInput","placeholder":"Search node","autocomplete":"off"},domProps:{"value":(_vm.searchString)},on:{"keydown":[function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"down",40,$event.key,["Down","ArrowDown"])){ return null; }return _vm.onArrowDown($event)},function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"up",38,$event.key,["Up","ArrowUp"])){ return null; }return _vm.onArrowUp($event)},function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.onEnter($event)}],"input":function($event){if($event.target.composing){ return; }_vm.searchString=$event.target.value}}}),_vm._v(" "),_c('div',{staticClass:"dropdown-menu dropdown-menu-right",class:{show: _vm.showSuggestions},attrs:{"aria-labelledby":"searchInput"}},_vm._l((_vm.filteredList),function(node,i){return _c('a',{key:i,staticClass:"dropdown-item",class:{ 'active': i === _vm.arrowCounter },attrs:{"href":"#"},on:{"click":function($event){_vm.nodeSelected(node)}}},[_vm._v("\n            "+_vm._s(node.displayName)+"\n        ")])}))])}
 __vue__options__.staticRenderFns = []
 __vue__options__._scopeId = "data-v-557fa018"
-
-},{}],422:[function(require,module,exports){
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-557fa018", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-557fa018", __vue__options__)
+  }
+})()}
+},{"vue":403,"vue-hot-reload-api":401}],423:[function(require,module,exports){
 ;(function(){
 "use strict";
 
@@ -74915,11 +75267,21 @@ exports.default = {
 })()
 if (module.exports.__esModule) module.exports = module.exports.default
 var __vue__options__ = (typeof module.exports === "function"? module.exports.options: module.exports)
+if (__vue__options__.functional) {console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.")}
 __vue__options__.render = function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row"},[_c('div',{staticClass:"col-sm-3"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Total nodes")]),_vm._v(" "),_c('h6',{staticClass:"card-subtitle mb-2 text-muted"},[_vm._v("Total nodes in the network")]),_vm._v(" "),_c('p',{staticClass:"card-text"},[_vm._v(_vm._s(_vm.totalNodes))])])])]),_vm._v(" "),_c('div',{staticClass:"col-sm-3"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Active nodes")]),_vm._v(" "),_c('h6',{staticClass:"card-subtitle mb-2 text-muted"},[_vm._v("Nodes we can connect to")]),_vm._v(" "),_c('p',{staticClass:"card-text"},[_vm._v(_vm._s(_vm.numberOfActiveNodes))])])])]),_vm._v(" "),_c('div',{staticClass:"col-sm-3"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Failing nodes")]),_vm._v(" "),_c('h6',{staticClass:"card-subtitle mb-2 text-muted"},[_vm._v("Not meeting quorumset threshold")]),_vm._v(" "),_c('p',{staticClass:"card-text"},[_vm._v(_vm._s(_vm.numberOfFailingNodes)+" of "+_vm._s(_vm.numberOfNodesWithQuorumSets)+" active nodes with\n                    quorumsets")])])])]),_vm._v(" "),_vm._m(0)])}
 __vue__options__.staticRenderFns = [function render () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"col-sm-3"},[_c('div',{staticClass:"card"},[_c('div',{staticClass:"card-body"},[_c('h5',{staticClass:"card-title"},[_vm._v("Network Health")]),_vm._v(" "),_c('p',{staticClass:"card-text"},[_vm._v("Quorum Intersection: In Progress")])])])])}]
 __vue__options__._scopeId = "data-v-24280a13"
-
-},{}],423:[function(require,module,exports){
+if (module.hot) {(function () {  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-24280a13", __vue__options__)
+  } else {
+    hotAPI.reload("data-v-24280a13", __vue__options__)
+  }
+})()}
+},{"vue":403,"vue-hot-reload-api":401}],424:[function(require,module,exports){
 'use strict';
 
 var d3 = require("d3");
@@ -74959,4 +75321,4 @@ module.exports = function (self) {
     });
 };*/
 
-},{"d3":41}]},{},[409]);
+},{"d3":41}]},{},[410]);

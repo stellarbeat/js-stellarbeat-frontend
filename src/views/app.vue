@@ -43,7 +43,7 @@
             <div class="col-sm-4">
                 <div class="row">
                     <div class="col-sm-12">
-                        <NodeDetails :node="selectedNode" :network="network" v-on:node-toggle-active="toggleActive"></NodeDetails>
+                        <NodeExplorer :node="selectedNode" :network="network" v-on:node-toggle-active="toggleActive"></NodeExplorer>
                     </div>
 
                 </div>
@@ -72,7 +72,7 @@
 <script>
     const Graph = require("./graph.vue");
     const GraphLegend = require("./graph-legend.vue");
-    const NodeDetails = require("./node-details.vue");
+    const NodeExplorer = require("./node/node-explorer.vue");
     const Search = require('./search.vue');
     const Statistics = require('./statistics.vue');
     const NodeList = require('./node-list.vue');
@@ -80,7 +80,7 @@
 
     export default {
         components: {
-            NodeDetails,
+            NodeExplorer,
             NodeList,
             Graph,
             GraphLegend,

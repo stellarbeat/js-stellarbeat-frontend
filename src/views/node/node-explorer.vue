@@ -47,10 +47,40 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Todo: layout</p>
-                        <div v-for="(value, key) in modalNode">
-                            {{ key }}: {{ value }}
-                        </div>
+                        <dl>
+                            <dt>public key</dt>
+                            <dd>{{modalNode.publicKey}}</dd>
+                        </dl>
+                        <dl>
+                            <dt>ip:port</dt>
+                            <dd>{{modalNode.key}}</dd>
+                        </dl>
+                        <dl>
+                            <dt>host</dt>
+                            <dd>{{modalNode.host}}</dd>
+                        </dl>
+                        <dl>
+                            <dt>Version</dt>
+                            <dd>{{modalNode.versionStr}}</dd>
+                        </dl>
+                        <dl>
+                            <dt>ledger version</dt>
+                            <dd>{{modalNode.ledgerVersion}}</dd>
+                        </dl>
+                        <dl>
+                            <dt>overlay version</dt>
+                            <dd>{{modalNode.overlayVersion}}</dd>
+                        </dl>
+                        <dl>
+                            <dt>date discovered</dt>
+                            <dd>{{modalNode.dateDiscovered}}</dd>
+                        </dl>
+
+                        <dl>
+                            <dt>date updated</dt>
+                            <dd>{{modalNode.dateUpdated}}</dd>
+                        </dl>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -62,10 +92,10 @@
 </template>
 
 <script>
-    const QuorumSet = require('./quorum-set.vue');
+    const QuorumSet = require('../quorum-set.vue');
 
     export default {
-        name: "node-details",
+        name: "node-explorer",
         components: {
             QuorumSet
         },
