@@ -7,29 +7,30 @@ Adapt the network by updating quorumSets, adding/removing nodes, toggling nodes 
 - quorum set configurations
 - network simulation results
 
-# Architecture
-Javascript browser app with api backend. Nodejs modules that can be reused on frontend and backend. This should provide us with a manageable/reusable codebase and allow us to simulate live in the browser and push heavier computations to the backend. 
+# Stellarbeat Architecture
+Nodejs modules that can be reused on frontend and backend. This should provide us with a manageable/reusable codebase and allow us to simulate/process live in the browser and push heavier computations to the backend. 
 ## Modules
+### domain
+Domain classes like node, quorumset, network
 ### connector
 General purpose library that connects the stellar-core and can issue commands
 ### crawler
 Uses the connector to crawl the network
-### harvester (todo)
+### stellarbeat backend (todo: open-source)
 Initiates the crawler and augments the nodes with statistics (uptime,...) and other data like displayname, location,...
-Provides persistent storage. 
-### api (todo)
+Provides persistent storage. Provides api
 Exposes the nodes & analytic processes. e.g. 
 
 `GET /nodes/{publicKey}`
 
 `POST /compute/quorum-intersection`
 
-### network analysis (todo: extract from quorum monitor)
-e.g. compute node failure from quorumSets, quorum slices, quorum intersection,...
-### network visualisation (todo: extract from quorum monitor)
-https://vuejs.org/v2/guide/single-file-components.html
 ### quorum monitor
-this
+This. Consumes the backend api
+
+### stellarbeat frontend (todo: open-source)
+Frontend that contains various visualisations and tools like quorum monitor, node map, node version pie chart,...
+
 ## Technology
 ### nodejs
 https://nodejs.org/en/
