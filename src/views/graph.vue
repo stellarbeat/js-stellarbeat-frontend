@@ -27,12 +27,10 @@
 </template>
 
 <script>
-    //The svg viewbox takes sets the x and y coordinates to the center
-    const d3 = require('d3');
+    /* @flow */
     const GraphNode = require("./graph-node.vue");
     const GraphLink = require("./graph-link.vue");
     const svgPanZoom = require("svg-pan-zoom");
-    const Network = require("./../entities/network");
     const work = require('webworkify');
     const computeGraphWorker = work(require('./../workers/compute-graph.js'));
 

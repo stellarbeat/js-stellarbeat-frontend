@@ -74,12 +74,12 @@
                         </dl>
                         <dl>
                             <dt>date discovered</dt>
-                            <dd>{{modalNode.dateDiscovered}}</dd>
+                            <dd>{{modalNode.statistics.dateDiscovered}}</dd>
                         </dl>
 
                         <dl>
                             <dt>date updated</dt>
-                            <dd>{{modalNode.dateUpdated}}</dd>
+                            <dd>{{modalNode.statistics.dateUpdated}}</dd>
                         </dl>
 
                     </div>

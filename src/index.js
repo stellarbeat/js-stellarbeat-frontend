@@ -1,6 +1,7 @@
-const Network = require('./entities/network');
+// @flow
+const Network = require('@stellarbeat/js-stellar-domain').Network;
 const Vue = require('vue');
-const Node = require('./entities/node');
+const Node = require('@stellarbeat/js-stellar-domain').Node;
 const VueTruncate = require('vue-truncate-filter');
 const Request = require('./services/request-async');
 const FaSvgCore = require('@fortawesome/fontawesome-svg-core');
@@ -22,7 +23,11 @@ async function main() {
 
 
     //let nodesJson = await fetchData(); //document.getElementById('nodes-seed').innerHTML;
-    let nodesJson = document.getElementById('nodes-seed').innerHTML;
+    let nodesSeedElement = document.getElementById('nodes-seed');
+    if(!nodesSeedElement)
+        return;
+
+    let nodesJson = await fetchData(); //nodesSeedElement.innerHTML;
     let nodesRaw = JSON.parse(nodesJson);
     let nodes = nodesRaw.map(node => Node.fromJSON(node));
 
@@ -56,5 +61,5 @@ async function main() {
 }
 
 async function fetchData() {
-    return await Request.getHttpsGetPromise('stellarbeat.io', '/nodes/raw');
+    return await Request.getHttpsGetPromise('stellarbeat-crawler.herokuapp.com', '/nodes');
 }

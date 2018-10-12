@@ -1,13 +1,17 @@
 [ignore]
-<PROJECT_ROOT>/lib/.*
-<PROJECT_ROOT>/dist/.*
+.*/node_modules/config-chain/test/broken.json
+.*/node_modules/module-deps/test/invalid_pkg/package.json
+.*/build/.*
+.*/dist/.*
 
 [include]
-<PROJECT_ROOT>/node_modules/js-stellar-node-connector/*
+src
 
 [libs]
 flow-typed
 
 [options]
 module.system.node.resolve_dirname=node_modules
+module.file_ext=.vue
+module.file_ext=.js
 #all=true

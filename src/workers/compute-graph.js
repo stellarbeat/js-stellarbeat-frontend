@@ -1,6 +1,7 @@
+/* @flow */
 const d3 = require("d3");
 
-module.exports = function (self) {
+module.exports = function (self:any) {
     self.addEventListener('message', (event) => {
         let nodes = event.data.nodes;
         let links = event.data.links;

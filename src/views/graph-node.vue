@@ -16,8 +16,8 @@
 </template>
 
 <script>
-    const QuorumService = require("./../services/quorum");
-    const Node = require("./../entities/node");
+    const QuorumService = require("@stellarbeat/js-stellar-domain").QuorumService;
+    const Node = require("@stellarbeat/js-stellar-domain").Node;
     export default {
         name: "graph-node",
         props: {
