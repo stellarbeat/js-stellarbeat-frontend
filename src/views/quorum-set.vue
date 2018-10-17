@@ -2,9 +2,9 @@
     <li class="list-group-item">
         <div @click="toggle" v-bind:class="quorumSetState">
             <font-awesome-icon pull="left" class="caret" size="2x" v-bind:icon="caret"/>
-            <h6>
+            <h5 class="quorumSetTitle">
                 Quorumset with threshold: {{quorumSet.threshold}}
-            </h6>
+            </h5>
         </div>
         <div v-show="open" class="list-group list-group-flush nested-tree">
             <a href="#" v-for="validator in quorumSet.validators" class="list-group-item list-group-item-action" v-on:click.prevent.stop="selectNode(validator)">
@@ -99,6 +99,9 @@
 </script>
 
 <style scoped>
+    .quorumSetTitle {
+        margin-bottom: 1em;
+    }
     .active-node {
         color: #1997c6;
     }

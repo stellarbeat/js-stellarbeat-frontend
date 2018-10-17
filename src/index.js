@@ -21,13 +21,7 @@ async function main() {
     const NodeExplorer = require('./views/node/node-explorer.vue');
     const Manual = require('./views/manual.vue');
 
-
-    //let nodesJson = await fetchData(); //document.getElementById('nodes-seed').innerHTML;
-    let nodesSeedElement = document.getElementById('nodes-seed');
-    if(!nodesSeedElement)
-        return;
-
-    let nodesJson = await fetchData(); //nodesSeedElement.innerHTML;
+    let nodesJson = await fetchData();
     let nodesRaw = JSON.parse(nodesJson);
     let nodes = nodesRaw.map(node => Node.fromJSON(node));
 

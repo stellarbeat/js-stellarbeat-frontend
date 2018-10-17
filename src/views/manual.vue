@@ -1,9 +1,9 @@
 <template>
-    <div class="card-body">
+    <div>
         <h5 class="card-title">Manual</h5>
         <ul>
             <li>Click and drag on the Graph to pan</li>
-            <li>Scroll on the Graph to zoom</li>
+            <li>Zoom the graph with the controls in the bottom right corner</li>
             <li>Search or click on a node to select it</li>
             <li>Click on the legend on the bottom on the graph to see the color codes</li>
             <li>Links are only shown between active, non-failing nodes</li>

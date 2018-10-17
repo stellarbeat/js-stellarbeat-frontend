@@ -1,8 +1,7 @@
 <template>
-    <div class="card">
-        <div class="card-body">
-
-            <h5 class="card-title node-details-title" data-toggle="tooltip"
+    <div>
+        <div>
+            <h4 class="node-details-title"
                 v-bind:title="node.displayName">{{node.displayName | truncate(30)}}
                 <div class="btn-toolbar fa-pull-right" role="toolbar" aria-label="Toolbar with button groups">
                     <!--div class="btn-group btn-group-sm" role="group" aria-label="breadcrumb">
@@ -25,7 +24,7 @@
                         </button>
                     </div>
                 </div>
-            </h5>
+            </h4>
             <ul class="tree list-group list-group-flush">
                 <QuorumSet :quorumSet="node.quorumSet"
                            :network="network"
@@ -44,7 +43,6 @@
                     <div class="modal-header">
                         <h5 class="modal-title">{{modalNode.displayName}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -95,11 +93,13 @@
 <script>
     const QuorumSet = require('../quorum-set.vue');
     const NodeExplorerBreadcrumbs = require('./node-explorer-breadcrumbs.vue');
+    const Search = require('./../search.vue');
 
     export default {
         name: "node-explorer",
         components: {
             QuorumSet,
+            Search,
             NodeExplorerBreadcrumbs
         },
         props: {
@@ -124,6 +124,9 @@
             onNodeSelected: function (node) {
                 this.$emit("center-node", node);
             },
+            onNodeCenter: function (node) {
+                this.$emit("center-node", node);
+            },
         },
         watch: {
             '$route'(to, from) {
@@ -138,9 +141,9 @@
         },
         mounted() {
             $(function () {
-                $('.node-details-title').tooltip({
+                /*$('.node-details-title').tooltip({
                     "placement": "left"
-                });
+                });*/
             });
         }
     }

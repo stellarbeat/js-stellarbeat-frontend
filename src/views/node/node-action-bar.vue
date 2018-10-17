@@ -1,9 +1,9 @@
 <template>
     <div style="font-size: 0.5rem;">
-        <button type="button" class="btn btn-xs btn-secondary" v-on:click.prevent.stop="$emit('node-show-modal', node)">
+        <button type="button" class="btn btn-sm btn-icon btn-secondary" v-on:click.prevent.stop="$emit('node-show-modal', node)">
             <font-awesome-icon size="xs" icon="info"/>
         </button>
-        <button type="button" class="btn btn-xs"
+        <button type="button" class="btn btn-sm btn-icon"
                 v-on:click.prevent.stop="$emit('node-toggle-active', node)"
                 v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
             <font-awesome-icon size="xs" icon="power-off"/>

@@ -1,5 +1,5 @@
 <template>
-    <div class="dropdown">
+    <div class="dropdown search">
         <input class="form-control" type="text" v-model="searchString" id="searchInput" placeholder="Search node"
                autocomplete="off"
                @keydown.down="onArrowDown"
@@ -80,5 +80,11 @@
 </script>
 
 <style scoped>
-
+.search{
+    width:100%;
+    margin-bottom: 15px;
+}
+    .dropdown-menu{
+        min-width: 100%;
+    }
 </style>

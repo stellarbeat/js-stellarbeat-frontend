@@ -1,41 +1,48 @@
 <template>
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="row row-cards">
+        <div class="col-sm-3 col-6 ">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Total nodes</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Total nodes in the network</h6>
-                    <p class="card-text">{{totalNodes}}</p>
+                <div class="card-body p-3 text-center">
+                    <!--div class="text-right text-green">
+                        6%
+                        <i class="fe fe-chevron-up"></i>
+                    </div!-->
+                    <div class="h1 m-0">{{totalNodes}}</div>
+                    <div class="text-muted mb-0">Nodes</div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
-
+        <div class="col-sm-3 col-6 ">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Active nodes</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Nodes we can connect to</h6>
-                    <p class="card-text">{{numberOfActiveNodes}}</p>
+                <div class="card-body p-3 text-center">
+                    <div class="text-right text-green">
+                    </div>
+                    <div class="h1 m-0">{{numberOfActiveNodes}}</div>
+                    <div class="text-muted mb-0">Active Nodes</div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
-
+        <div class="col-sm-3 col-6 ">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Failing nodes</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Not meeting quorumset threshold</h6>
-                    <p class="card-text">{{numberOfFailingNodes}} of {{numberOfNodesWithQuorumSets}} active nodes with
-                        quorumsets</p>
+                <div class="card-body p-3 text-center">
+                    <!--div class="text-right text-green">
+                        6%
+                        <i class="fe fe-chevron-up"></i>
+                    </div!-->
+                    <div class="h1 m-0">{{numberOfNodesWithQuorumSets}}</div>
+                    <div class="text-muted mb-0">Active Validators</div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-3 col-6 ">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Network Health</h5>
-                    <p class="card-text">Quorum Intersection: In Progress</p>
-
+                <div class="card-body p-3 text-center">
+                    <!--div class="text-right text-green">
+                        6%
+                        <i class="fe fe-chevron-up"></i>
+                    </div!-->
+                    <div class="h1 m-0">{{numberOfFailingNodes}}</div>
+                    <div class="text-muted mb-0">Failing Validators</div>
                 </div>
             </div>
         </div>

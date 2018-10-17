@@ -151,6 +151,7 @@
                         if (!this.graphInitialized) {
                             this.panZoom = svgPanZoom(this.$refs.graphSvg,
                                 {
+                                    mouseWheelZoomEnabled: false,
                                     zoom: 2,
                                     minZoom: 0.5
                                     , maxZoom: 10
@@ -182,6 +183,7 @@
     svg.graph {
         height: inherit;
         width: 100%;
+        border-right: 1px solid rgba(0, 40, 100, 0.12);
     }
 
     .progress {
