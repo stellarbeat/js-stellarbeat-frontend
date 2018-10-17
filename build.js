@@ -13,4 +13,4 @@ var b = browserify("./src/index.js")
     .transform({ global: true },envify)
     //.transform(work)
     .bundle()
-    .pipe(fs.createWriteStream("dist/quorum-monitorv2.js"));
+    .pipe(fs.createWriteStream("dist/quorum-monitor.js"));
