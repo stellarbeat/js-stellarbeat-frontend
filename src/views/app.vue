@@ -22,7 +22,7 @@
                         </a>
                         <div class="d-flex order-lg-2 ml-auto">
                             <div class="nav-item d-none d-md-flex">
-                                <a href="https://github.com/stellarbeat/quorum-monitor"
+                                <a href="https://github.com/stellarbeat"
                                    class="btn btn-sm btn-outline-primary" target="_blank">Github</a>
                             </div>
                         </div>
