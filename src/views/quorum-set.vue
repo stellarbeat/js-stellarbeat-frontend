@@ -80,7 +80,7 @@
             },
             selectNode: function (validator) {
                 this.$emit("node-selected", this.network.getNodeByPublicKey(validator));
-                this.$router.push({ name: 'node', params: { publicKey: this.network.getNodeByPublicKey(validator).publicKey }});
+                this.$router.push({ name: 'quorum-monitor-node', params: { publicKey: this.network.getNodeByPublicKey(validator).publicKey }});
             }
         },
         computed: {
