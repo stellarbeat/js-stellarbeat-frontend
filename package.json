@@ -26,13 +26,13 @@
     "tabler-ui": "0.0.32",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vue-truncate-filter": "^1.1.7"
+    "vue-truncate-filter": "^1.1.7",
+    "serve": "^10.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.5",
     "@vue/cli-service": "^3.0.5",
     "prerender-spa-plugin": "^3.2.1",
-    "serve": "^10.0.2",
     "vue-cli-plugin-prerender-spa": "^1.0.3",
     "vue-template-compiler": "^2.5.17",
     "worker-loader": "^2.0.0"
