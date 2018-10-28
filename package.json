@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "serve-prod": "node_modules/serve/bin/serve.js dist"
+    "serve-prod": "node_modules/serve/bin/serve.js dist",
     "start": "serve",
     "heroku-postbuild": "npm run build"
   },
