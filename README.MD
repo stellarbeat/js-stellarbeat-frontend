@@ -1,9 +1,21 @@
-# Goals
-## Explore
+#Stellarbeat frontend (new version)
+Not yet in production
+
+## Install
+`npm install`
+
+`npm run serve`
+
+`npm run build`
+
+`npm run serve-prod`
+
+## Quorum Monitor
+### Explore
 Explore and gain insight on the network through various visualisations & analysis.
-## simulate
+### simulate
 Adapt the network by updating quorumSets, adding/removing nodes, toggling nodes on/off and see the results live in the browser. 
-## export
+### export
 - quorum set configurations
 - network simulation results
 
@@ -16,7 +28,7 @@ Domain classes like node, quorumset, network
 General purpose library that connects the stellar-core and can issue commands
 ### crawler
 Uses the connector to crawl the network
-### stellarbeat backend (todo: open-source)
+### stellarbeat backend
 Initiates the crawler and augments the nodes with statistics (uptime,...) and other data like displayname, location,...
 Provides persistent storage. Provides api
 Exposes the nodes & analytic processes. e.g. 
@@ -25,10 +37,7 @@ Exposes the nodes & analytic processes. e.g.
 
 `POST /compute/quorum-intersection`
 
-### quorum monitor
-This. Consumes the backend api
-
-### stellarbeat frontend (todo: open-source)
+### stellarbeat frontend
 Frontend that contains various visualisations and tools like quorum monitor, node map, node version pie chart,...
 
 ## Technology
@@ -44,16 +53,3 @@ https://d3js.org/
 ### flow
 https://flow.org/
 
-## Install
-`npm install`
-
-`npm run flow:deps`
-
-`npm run build`
-
-`open web/index.html in browser`
-
-babel polyfill needs to be loaded before you include the quorum-monitor code:
-`    <script src="../node_modules/babel-polyfill/dist/polyfill.min.js"></script>
-    <script src="../dist/quorum-monitor.js"></script>
-`

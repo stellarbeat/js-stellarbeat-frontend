@@ -1,67 +1,38 @@
 {
-  "name": "@stellarbeat/js-stellar-quorum-monitor",
+  "name": "newmeh",
   "version": "0.1.0",
-  "description": "Monitor the quorums",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stellarbeat/js-stellar-quorum-monitor.git"
-  },
+  "private": true,
   "scripts": {
-    "flow": "flow",
-    "flow:check": "flow check ./src/",
-    "flow:deps": "flow-typed install",
-    "build": "node build.js",
-    "build:prod": "NODE_ENV=production node build.js",
-    "watch": "node node_modules/watchify/bin/cmd.js -g envify -vd --plugin=browserify-hmr -t unflowify -t babelify -t vueify --entry src/index.js --outfile dist/quorum-monitor.js",
-    "start": "serve"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "serve-prod": "node_modules/serve/bin/serve.js dist"
   },
-  "author": "pieterjan84@github",
-  "license": "MIT",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.6",
-    "@fortawesome/free-solid-svg-icons": "^5.4.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.7",
+    "@fortawesome/free-solid-svg-icons": "^5.4.2",
     "@fortawesome/vue-fontawesome": "^0.1.1",
     "@stellarbeat/js-stellar-domain": "github:stellarbeat/js-stellar-domain#master",
-    "babel-polyfill": "^6.26.0",
-    "bootstrap": "^4.1.3",
+    "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
-    "browserify": "^16.2.3",
     "chart.js": "^2.7.3",
-    "cross-env": "^5.2.0",
     "d3": "^5.7.0",
-    "d3-drag": "^1.2.3",
-    "d3-zoom": "^1.7.3",
-    "envify": "^4.1.0",
-    "get-control-points": "^1.0.1",
     "jquery": "^3.3.1",
     "leaflet": "^1.3.1",
     "leaflet.markercluster": "^1.3.0",
     "lodash": "^4.17.11",
-    "serve": "^10.0.2",
     "svg-pan-zoom": "^3.6.0",
     "tabler-ui": "0.0.32",
-    "unflowify": "^1.0.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vue-switches": "^2.0.1",
-    "vue-truncate-filter": "^1.1.7",
-    "watchify": "^3.11.0",
-    "webworkify": "^1.5.0"
+    "vue-truncate-filter": "^1.1.7"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^8.0.0",
-    "browserify-hmr": "^0.3.6",
-    "flow": "^0.2.3",
-    "flow-bin": "^0.73.0",
-    "flow-copy-source": "^2.0.2",
-    "flow-remove-types": "^1.2.3",
-    "flow-typed": "^2.4.0",
-    "vueify": "^9.4.1"
-  },
-  "browser": {
-    "vue": "vue/dist/vue.common.js"
+    "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "prerender-spa-plugin": "^3.2.1",
+    "serve": "^10.0.2",
+    "vue-cli-plugin-prerender-spa": "^1.0.3",
+    "vue-template-compiler": "^2.5.17",
+    "worker-loader": "^2.0.0"
   }
 }
