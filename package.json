@@ -1,11 +1,13 @@
 {
-  "name": "newmeh",
+  "name": "stellarbeat-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "serve-prod": "node_modules/serve/bin/serve.js dist"
+    "start": "serve",
+    "heroku-postbuild": "npm run build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.7",
