@@ -16,7 +16,7 @@
             <b-card class="mb-2 p-3">
                 <b-table stacked striped hover responsive :items="items" >
                     <template slot="quorumSet" slot-scope="row">
-                        <router-link class="btn btn-primary" role="button" :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }}">Go to quorum monitor</router-link>
+                        <router-link class="btn btn-secondary btn-sm" role="button" :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }}">Go to quorum monitor</router-link>
                     </template>
                 </b-table>
             </b-card>

@@ -18,7 +18,7 @@
                 <b-col md="6" class="my-1">
                     <b-form-group horizontal label="Search" label-sr-only class="mb-0">
                         <b-input-group>
-                            <b-form-input v-model="filter" placeholder="Type to Search" />
+                            <b-form-input v-model="filter" placeholder="Type public key, name, ... to search" />
                             <b-input-group-append>
                                 <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
                             </b-input-group-append>
@@ -29,11 +29,20 @@
             <b-table striped hover responsive :items="nodes" :fields="fields" :sort-by.sync="sortBy"
                      :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                      :filter="filter" @filtered="onFiltered" >
-                <template slot="publicKey" slot-scope="data">
+                <!--template slot="publicKey" slot-scope="data">
                     {{data.value | truncate(20)}}
+                </template!-->
+                <template slot="name" slot-scope="data">
+                    {{data.value  || " " | truncate(20)}}
+                </template>
+                <template slot="version" slot-scope="data">
+                    {{data.value || " " | truncate(28)}}
                 </template>
                 <template slot="actions" slot-scope="row">
-                    <router-link class="btn btn-primary" role="button" :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">Details</router-link>
+                    <b-button-group class="btn-group-sm">
+                    <router-link class="btn btn-secondary " role="button" :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">Details</router-link>
+                    <router-link class="btn btn-secondary" role="button" :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }}">Quorum monitor</router-link>
+                    </b-button-group>
                 </template>
             </b-table>
         </b-card>
@@ -57,11 +66,13 @@
                 currentPage: 1,
                 filter: null,
                 fields: [
-                    { key: 'Name', sortable: true },
-                    { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-                    { key: 'Availability', sortable: true },
-                    { key: 'IP', sortable: true },
-                    { key: 'Country', sortable: true },
+                    { key: 'name', sortable: true },
+                    //{ key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
+                    { key: 'availability', sortable: true },
+                    { key: 'version', sortable: true},
+                    { key: 'country', sortable: true },
+                    { key: 'ip', sortable: true },
+
                     { key: 'actions', label: '' }
                 ],
             }
@@ -78,11 +89,12 @@
             nodes: function () {
                 return this.network.nodes.map( node => {
                     return {
-                        "Name": node.name,
-                        "Availability": node.statistics.activeRating * 20 + "%",
-                        "IP": node.key,
+                        "name": node.displayName,
+                        "availability": node.statistics.activeRating * 20 + "%",
+                        "ip": node.key,
                         "publicKey": node.publicKey,
-                        "Country": node.geoData.countryName
+                        "country": node.geoData.countryName,
+                        "version": node.versionStr
                     }
                 })
             },
