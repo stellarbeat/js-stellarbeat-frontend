@@ -12,8 +12,8 @@
                     >
                         <g class="svg-pan-zoom_viewport">
                             <GraphLink v-if="graphInitialized" v-for="link in network.links" :link="link"
-                                       :selectedNode="selectedNode"></GraphLink>
-                            <GraphNode v-if="graphInitialized" v-for="node in network.nodes" :node="node"
+                                       :selectedNode="selectedNode" :key="link.id"></GraphLink>
+                            <GraphNode v-if="graphInitialized" v-for="node in network.nodes" :key="node.publicKey" :node="node"
                                        :selectedNode="selectedNode"
                                        :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
                                        v-on:node-selected="onNodeSelected"></GraphNode>
