@@ -149,6 +149,12 @@
                 $('[data-toggle="tooltip"]').tooltip(); //todo performance?
             });
         }*/
+        beforeDestroy: function () {
+            if(this.isSimulation) { //undo simulation
+                this.simulatedNodes.forEach(node => node.active = !node.active);
+                this.network.updateNetwork();
+            }
+        }
     }
 </script>
 
