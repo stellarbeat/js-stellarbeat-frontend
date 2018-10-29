@@ -2,25 +2,26 @@
     <div class="graph row">
 
         <div class="col-xs-12" style="width: 100%">
-            <div v-show="isLoading" class="progress">
-                <div class="progress-bar" role="progressbar" v-bind:style="progressBarWidth"
-                     v-bind:aria-valuenow="loadingProgress" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <svg class="graph" xmlns="http://www.w3.org/2000/svg"
-                 ref="graphSvg"
-                 width="100%"
-                 height="600px"
-            >
-                <g class="svg-pan-zoom_viewport">
-                    <GraphLink v-if="graphInitialized && !isLoading" v-for="link in network.links" :link="link"
-                               :selectedNode="selectedNode"></GraphLink>
-                    <GraphNode v-if="graphInitialized && !isLoading" v-for="node in network.nodes" :node="node"
-                               :selectedNode="selectedNode"
-                               :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
-                               v-on:node-selected="onNodeSelected"></GraphNode>
-                </g>
+            <div v-bind:class="dimmerClass">
+                <div class="loader"></div>
+                <div class="dimmer-content">
+                    <svg class="graph" xmlns="http://www.w3.org/2000/svg"
+                         ref="graphSvg"
+                         width="100%"
+                         height="600px"
+                    >
+                        <g class="svg-pan-zoom_viewport">
+                            <GraphLink v-if="graphInitialized" v-for="link in network.links" :link="link"
+                                       :selectedNode="selectedNode"></GraphLink>
+                            <GraphNode v-if="graphInitialized" v-for="node in network.nodes" :node="node"
+                                       :selectedNode="selectedNode"
+                                       :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
+                                       v-on:node-selected="onNodeSelected"></GraphNode>
+                        </g>
 
-            </svg>
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -30,6 +31,7 @@
     /* @flow */
     import GraphNode from "./graph-node.vue";
     import GraphLink from "./graph-link.vue";
+
     const svgPanZoom = require("svg-pan-zoom");
     //const work = require('webworkify');
     const ComputeGraphWorker = require('./../workers/compute-graph.worker.js');
@@ -70,8 +72,8 @@
                 let realNodeY = -node.y * zoom + height / 2;
                 this.panZoom.pan({x: realNodeX, y: realNodeY});
             },
-            '$route' (to, from) {
-                    this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
+            '$route'(to, from) {
+                this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
             }
 
         },
@@ -88,6 +90,12 @@
                 return this.network.links
                     .filter(link => link.source === this.selectedNode)
                     .map(link => link.target);
+            },
+            dimmerClass: function () {
+                return {
+                    'dimmer': true,
+                    'active': this.isLoading
+                }
             }
         },
         methods: {
@@ -199,4 +207,9 @@
         background-color: #1997c6;
         opacity: 0.6;
     }
+
+    .dimmer.active .dimmer-content {
+        opacity: 0.4;
+    }
+
 </style>
