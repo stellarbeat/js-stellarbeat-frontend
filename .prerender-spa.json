@@ -1,1 +1,1 @@
-{"renderRoutes":["/", "/nodes", "/quorum-monitor"],"useRenderEvent":true,"onlyProduction":true}
+{"renderRoutes":["/", "/nodes", "/quorum-monitor", "/about", "/api"],"useRenderEvent":true,"onlyProduction":true}

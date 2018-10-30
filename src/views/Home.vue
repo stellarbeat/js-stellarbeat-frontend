@@ -9,7 +9,7 @@
         <div v-if="!isLoading">
             <div class="page-header">
                 <h1 class="page-title">
-                    Stellar network
+                    Stellar Network
                 </h1>
                 <div class="page-subtitle">Last crawl on TODO UTC</div>
             </div>

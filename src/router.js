@@ -6,6 +6,9 @@ import Home from './views/Home.vue';
 import QuorumMonitor from './views/QuorumMonitor.vue';
 import Nodes from './views/Nodes';
 import NodeDetails from './views/NodeDetails';
+import About from './views/About';
+import Api from './views/Api';
+
 
 Vue.use(Router);
 
@@ -16,6 +19,8 @@ export default new Router({
       {name: 'home', path: '/', component: Home},
       {name: 'nodes', path: '/nodes', component: Nodes},
       {name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
+      {name: 'about', path: '/about', component: About},
+      {name: 'api', path: '/api', component: Api},
       {
           path: '/quorum-monitor', component: QuorumMonitor,
           children: [

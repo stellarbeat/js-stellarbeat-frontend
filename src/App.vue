@@ -23,7 +23,11 @@
                         <div class="d-flex order-lg-2 ml-auto">
                             <div class="nav-item d-none d-md-flex">
                                 <a href="https://github.com/stellarbeat"
-                                   class="btn btn-sm btn-outline-primary" target="_blank">Github</a>
+                                   class="btn btn-sm bt btn-outline-primary" target="_blank"><i
+                                        class="fe fe-github"></i> Github</a>
+                                <a href="mailto:stellarbeatio@gmail.com"
+                                   class="btn btn-sm bt btn-outline-primary ml-2" target="_blank"><i
+                                        class="fe fe-mail"></i> Mail</a>
                             </div>
                         </div>
                         <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
@@ -50,12 +54,17 @@
                                 </li>
                                 <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'quorum-monitor'}">
-                                        <i class="fe fe-share-2"></i>Quorum Monitor (experimental)
+                                        <i class="fe fe-target"></i>Quorum Monitor (experimental)
                                     </router-link>
                                 </li>
-                                <!--li class="nav-item">
+                                <li class="nav-item">
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'api'}">
+                                        <i class="fe fe-share-2"></i>API
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i class="fe fe-info"></i>about</router-link>
-                                </li!-->
+                                </li>
                             </ul>
                         </div>
                     </div>
