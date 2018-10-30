@@ -38,41 +38,8 @@
 
         <b-modal
                 ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal" v-bind:title="modalNode.displayName">
-            <div>
-            <dl>
-                <dt>public key</dt>
-                <dd>{{modalNode.publicKey}}</dd>
-            </dl>
-            <dl>
-                <dt>ip:port</dt>
-                <dd>{{modalNode.key}}</dd>
-            </dl>
-            <dl>
-                <dt>host</dt>
-                <dd>{{modalNode.host}}</dd>
-            </dl>
-            <dl>
-                <dt>Version</dt>
-                <dd>{{modalNode.versionStr}}</dd>
-            </dl>
-            <dl>
-                <dt>ledger version</dt>
-                <dd>{{modalNode.ledgerVersion}}</dd>
-            </dl>
-            <dl>
-                <dt>overlay version</dt>
-                <dd>{{modalNode.overlayVersion}}</dd>
-            </dl>
-            <dl>
-                <dt>date discovered</dt>
-                <dd>{{modalNode.dateDiscovered}}</dd>
-            </dl>
-
-            <dl>
-                <dt>date updated</dt>
-                <dd>{{modalNode.dateUpdated}}</dd>
-            </dl>
-            </div>
+            <b-table stacked striped hover responsive :items="modalItems" >
+            </b-table>
         </b-modal>
 
     </div>
@@ -99,6 +66,21 @@
             return {
                 node: null,
                 modalNode: {}
+            }
+        },
+        computed: {
+            modalItems: function() {
+                if(!this.node) {
+                    return [];
+                }
+                let item = JSON.parse(JSON.stringify(this.node)); //clone it
+                delete item.quorumSet;
+                delete item.geoData;
+                delete item.statistics;
+                item = Object.assign(item, this.node.geoData);
+                item = Object.assign(item, this.node.statistics);
+                item.quorumSet = '';
+                return [item];
             }
         },
         methods: {
@@ -145,4 +127,9 @@
         content: none !important;
     }
 
+</style>
+<style>
+    #node-details-modal {
+        word-break: break-all;
+    }
 </style>

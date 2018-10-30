@@ -57,8 +57,7 @@
 </script>
 
 <style>
-    .progress-bar-striped {
-        background-color: #1997c6;
-        opacity: 0.6;
+    .table {
+        word-break: break-all;
     }
 </style>

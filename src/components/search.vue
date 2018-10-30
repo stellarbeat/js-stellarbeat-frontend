@@ -13,7 +13,7 @@
                     :key="i"
                     @click="nodeSelected(node)"
                     :class="{ 'active': i === arrowCounter }">
-                {{ node.displayName }}
+                {{ node.displayName | truncate(20)}}
             </a>
         </div>
     </div>
