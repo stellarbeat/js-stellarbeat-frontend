@@ -24,7 +24,7 @@ export default new Router({
               },
               {
                   name: 'quorum-monitor-node',
-                  path: 'nodes/:publicKey',
+                  path: ':publicKey',
                   component: NodeExplorer
               }
           ]

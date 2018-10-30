@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h5 class="card-title">Manual</h5>
         <ul>
             <li>Click and drag on the Graph to pan</li>
             <li>Zoom the graph with the controls in the bottom right corner</li>
