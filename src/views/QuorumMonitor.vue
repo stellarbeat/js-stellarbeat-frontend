@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div class="row row-cards">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <b-card header="Manual"
                                 tag="article"
                                 style=""
@@ -87,7 +87,7 @@
                             <Manual></Manual>
                         </b-card>
                     </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <b-card header="Options"
                             tag="article"
                             style=""
