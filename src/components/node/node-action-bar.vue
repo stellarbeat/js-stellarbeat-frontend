@@ -1,13 +1,16 @@
 <template>
-    <div style="font-size: 0.5rem;">
+    <div class="action-bar ">
+        <div class="btn-group btn-group-sm" role="group" aria-label="actions">
+
         <button type="button" class="btn btn-sm btn-icon btn-secondary" v-on:click.prevent.stop="$emit('node-show-modal', node)">
-            <font-awesome-icon size="xs" icon="info"/>
+            <i class="fe fe-info"></i>
         </button>
         <button type="button" class="btn btn-sm btn-icon"
                 v-on:click.prevent.stop="$emit('node-toggle-active', node)"
                 v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
-            <font-awesome-icon size="xs" icon="power-off"/>
+            <i class="fe fe-power"></i>
         </button>
+        </div>
     </div>
 
 </template>
@@ -29,6 +32,9 @@
         font-size  : .875rem;
         line-height  : .5;
         border-radius : .2rem;
+    }
+    .action-bar {
+        float: right;
     }
 </style>
 

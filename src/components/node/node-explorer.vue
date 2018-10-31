@@ -15,12 +15,12 @@
                     <div class="btn-group btn-group-sm" role="group" aria-label="actions">
                         <button type="button" class="btn btn-sm btn-secondary"
                                 v-on:click="showModal(node)">
-                            <font-awesome-icon size="xs" icon="info"/>
+                            <i class="fe fe-info"/>
                         </button>
                         <button type="button" class="btn btn-sm"
                                 v-on:click.prevent.stop="$emit('node-toggle-active', node)"
                                 v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
-                            <font-awesome-icon size="xs" icon="power-off"/>
+                            <i class="fe fe-power"/>
                         </button>
                     </div>
                 </div>
@@ -125,6 +125,9 @@
 
     .close:before {
         content: none !important;
+    }
+    .btn-toolbar{
+        float:right;
     }
 
 </style>

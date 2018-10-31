@@ -12,4 +12,9 @@ module.exports = {
     chainWebpack: config => {
         config.module.rule('js').exclude.add(/\.worker\.js$/)
     }
+    /*pluginOptions: {
+        webpackBundleAnalyzer: {
+            openAnalyzer: false
+        }
+    }*/
 };

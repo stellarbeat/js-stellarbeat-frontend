@@ -1,13 +1,13 @@
 <template>
-    <li class="list-group-item">
+    <li class="list-group-item p-0 pt-3">
         <div @click="toggle" v-bind:class="quorumSetState">
-            <font-awesome-icon pull="left" class="caret" size="2x" v-bind:icon="caret"/>
+            <i class="caret fe mr-1" v-bind:class="caret"></i>
             <h5 class="quorumSetTitle">
                 Quorumset with threshold: {{quorumSet.threshold}}
             </h5>
         </div>
         <div v-show="open" class="list-group list-group-flush nested-tree">
-            <a href="#" v-for="validator in quorumSet.validators" class="list-group-item list-group-item-action" v-on:click.prevent.stop="selectNode(validator)">
+            <a href="#" v-for="validator in quorumSet.validators" class="list-group-item list-group-item-action p-1" v-on:click.prevent.stop="selectNode(validator)">
                 <div v-bind:class="nodeState(validator)">
                     {{validatorDisplayName(validator) | truncate(30)}}
                     <span class="fa-pull-right">
@@ -85,7 +85,7 @@
         },
         computed: {
             caret: function () {
-                return this.open ? 'caret-down' : 'caret-right';
+                return this.open ? 'fe-chevron-down' : 'fe-chevron-right';
             },
             quorumSetState: function () {
                 let failing = this.network.isQuorumSetFailing(this.quorumSet);
@@ -111,8 +111,8 @@
     }
 
     .caret {
-        height: 0.6em;
         cursor: pointer;
+        float: left;
     }
 
     .nested-tree {

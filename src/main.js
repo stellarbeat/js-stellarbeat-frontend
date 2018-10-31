@@ -4,13 +4,7 @@ import router from './router';
 
 Vue.config.productionTip = false;
 
-const Network = require('@stellarbeat/js-stellar-domain').Network;
-const Node = require('@stellarbeat/js-stellar-domain').Node;
 const VueTruncate = require('vue-truncate-filter');
-const FaSvgCore = require('@fortawesome/fontawesome-svg-core');
-const FaFree = require('@fortawesome/free-solid-svg-icons');
-const VueFontAwesome = require('@fortawesome/vue-fontawesome');
-const axios = require('axios');
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
@@ -30,16 +24,6 @@ async function main() {
     Vue.use(VueTruncate);
     Vue.use(BootstrapVue);
 
-    /*let data = await fetchData();
-    let nodesRaw = data.data;
-    let nodes = nodesRaw.map(node => Node.fromJSON(node));
-
-    let network = new Network(nodes);*/
-
-
-    FaSvgCore.library.add(FaFree.faPowerOff, FaFree.faInfo, FaFree.faSun, FaFree.faSpinner, FaFree.faCaretDown, FaFree.faCaretRight, FaFree.faArrowCircleLeft, FaFree.faArrowCircleRight);
-    Vue.component('font-awesome-icon', VueFontAwesome.FontAwesomeIcon);
-
     new Vue({
         router,
         render(createElement) {
@@ -53,8 +37,4 @@ async function main() {
             document.dispatchEvent(new Event("x-app-rendered"));
         },
     }).$mount('#app');
-}
-
-async function fetchData() {
-    return await axios.get('https://stellarbeat-backend-staging.herokuapp.com/api/v1/nodes');
 }
