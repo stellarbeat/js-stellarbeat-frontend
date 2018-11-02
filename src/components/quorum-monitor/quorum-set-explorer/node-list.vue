@@ -35,7 +35,7 @@
                 this.$emit("node-toggle-active", node);
             },
             selectNode: function (node) {
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true}});
+                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true, "no-scroll": true}});
             },
             nodeState: function (node) {
                 return {

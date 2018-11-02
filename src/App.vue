@@ -13,14 +13,17 @@
 <template>
     <div id="app" class="page">
         <div class="page-main">
-            <div class="header py-4 pl-4 pr-4">
+            <div class="header pt-2 pb-0 pl-4 pr-4">
                 <div class="container-fluid">
                     <div class="d-flex">
-                        <a class="header-brand" href="#">
+                        <router-link class="header-brand mt-2" :to="{ name: 'home'}" exact>
                             <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
-                            stellarbeat.io
-                        </a>
-                        <div class="d-flex order-lg-2 ml-auto">
+                        </router-link>
+                        <div class="d-flex flex-column ml-auto">
+                            <h2 class="brand-title mb-0">stellarbeat.io</h2>
+                            <h6 class="text-muted" id="brand-tagline">stellar network visibility</h6>
+                        </div>
+                        <div class="d-flex ml-auto">
                             <div class="nav-item d-none d-md-flex">
                                 <a href="https://github.com/stellarbeat"
                                    class="btn btn-sm bt btn-outline-primary" target="_blank"><i
@@ -126,5 +129,8 @@
 </script>
 
 <style scoped>
+    .brand-title{
+        color: #08b5e5;
+    }
 
 </style>

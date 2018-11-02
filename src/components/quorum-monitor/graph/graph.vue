@@ -1,5 +1,5 @@
 <template xmlns="http://www.w3.org/1999/html">
-    <div class="graph row">
+    <div class="graph row mr-1">
 
         <div class="col-xs-12" style="width: 100%">
             <div v-bind:class="dimmerClass">
@@ -183,11 +183,13 @@
 </script>
 
 <style scoped>
+
     svg.graph {
         height: inherit;
         width: 100%;
         cursor: move;
     }
+
 
     .progress {
         height: 20px;

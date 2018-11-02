@@ -79,7 +79,7 @@
         },
         methods: {
             nodeSelected: function () {
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: this.node.publicKey}, query: {center: false}});
+                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: this.node.publicKey}, query: {center: false, "no-scroll": true}});
             }
         }
     }

@@ -34,5 +34,18 @@ export default new Router({
               }
           ]
       }
-  ]
+  ],
+    scrollBehavior (to, from, savedPosition) {
+      if(to.query["no-scroll"]) {
+          return;
+      }
+
+      //default we scroll to top or use history
+      if (savedPosition) {
+          return savedPosition
+      } else {
+          return { x: 0, y: 0 }
+      }
+    }
+
 })

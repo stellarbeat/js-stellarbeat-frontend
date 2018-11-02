@@ -54,7 +54,7 @@
         methods: {
             nodeSelected: function (node) {
                 this.searchString = '';
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true}});
+                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true, "no-scroll": true}});
             },
             onArrowDown() {
                 if (this.arrowCounter < this.filteredList.length-1) {

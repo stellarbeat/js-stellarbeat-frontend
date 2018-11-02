@@ -82,7 +82,7 @@
                 this.$emit("node-show-modal", node);
             },
             selectNode: function (validator) {
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: validator}, query: {center: true}});
+                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: validator}, query: {center: true, "no-scroll": true}});
             }
         },
         computed: {
