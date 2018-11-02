@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import NodeActionBar from './node/node-action-bar.vue';
+    import NodeActionBar from './node-action-bar.vue';
 
     export default {
         name: "quorum-set",

@@ -35,9 +35,9 @@
 
 <script>
     import Statistics from "@/components/statistics.vue";
-    import NodesMap from "@/components/nodes-map.vue";
-    import NodesCountryDistribution from "@/components/nodes-country-distribution.vue";
-    import NodesVersions from "@/components/nodes-versions.vue";
+    import NodesMap from "@/components/home/nodes-map.vue";
+    import NodesCountryDistribution from "@/components/home/nodes-country-distribution.vue";
+    import NodesVersions from "@/components/home/nodes-versions.vue";
 
     export default {
         name: "home",

@@ -108,18 +108,18 @@
 </template>
 
 <script>
-    import Graph from "../components/graph.vue";
-    import GraphLegend from "../components/graph-legend.vue";
-    import NodeExplorer from "../components/node/node-explorer.vue";
-    import Search from '../components/search.vue';
+    import Graph from "../components/quorum-monitor/graph/graph.vue";
+    import GraphLegend from "../components/quorum-monitor/graph/graph-legend.vue";
+    import QuorumSetExplorer from "../components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue";
+    import Search from '../components/quorum-monitor/search.vue';
     import Statistics from '../components/statistics.vue';
-    import NodeList from '../components/node-list.vue';
-    import Manual from '../components/manual.vue';
+    import NodeList from '../components/quorum-monitor/quorum-set-explorer/node-list.vue';
+    import Manual from '../components/quorum-monitor/manual.vue';
 
     export default {
         name: "quorum-monitor",
         components: {
-            NodeExplorer,
+            QuorumSetExplorer,
             NodeList,
             Graph,
             GraphLegend,

@@ -46,16 +46,14 @@
 </template>
 
 <script>
-    import QuorumSet from '../quorum-set.vue';
-    import NodeExplorerBreadcrumbs from './node-explorer-breadcrumbs.vue';
+    import QuorumSet from './quorum-set.vue';
     import Search from './../search.vue';
 
     export default {
-        name: "node-explorer",
+        name: "quorum-set-explorer",
         components: {
             QuorumSet,
-            Search,
-            NodeExplorerBreadcrumbs
+            Search
         },
         props: {
             network: {

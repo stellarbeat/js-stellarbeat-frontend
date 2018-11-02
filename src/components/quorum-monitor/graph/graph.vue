@@ -28,12 +28,11 @@
 </template>
 
 <script>
-    /* @flow */
     import GraphNode from "./graph-node.vue";
     import GraphLink from "./graph-link.vue";
 
     const svgPanZoom = require("svg-pan-zoom");
-    const ComputeGraphWorker = require('./../workers/compute-graph.worker.js');
+    const ComputeGraphWorker = require('@/workers/compute-graph.worker.js');
     const computeGraphWorker = new ComputeGraphWorker();
 
     export default {

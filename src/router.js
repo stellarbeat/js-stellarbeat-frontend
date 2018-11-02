@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import NodeExplorer from './components/node/node-explorer.vue';
-import Manual from './components/manual.vue';
+import QuorumSetExplorer from './components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
+import Manual from './components/quorum-monitor/manual.vue';
 import Home from './views/Home.vue';
 import QuorumMonitor from './views/QuorumMonitor.vue';
 import Nodes from './views/Nodes';
@@ -30,7 +30,7 @@ export default new Router({
               {
                   name: 'quorum-monitor-node',
                   path: ':publicKey',
-                  component: NodeExplorer
+                  component: QuorumSetExplorer
               }
           ]
       }
