@@ -7,22 +7,25 @@
             </h5>
         </div>
         <div v-show="open" class="list-group list-group-flush nested-tree">
-            <a href="#" v-for="validator in quorumSet.validators" class="list-group-item list-group-item-action p-1" v-on:click.prevent.stop="selectNode(validator)">
-                <div v-bind:class="nodeState(validator)">
-                    {{validatorDisplayName(validator) | truncate(30)}}
-                    <span class="fa-pull-right">
-                    <NodeActionBar :node="getNode(validator)" :network="network" v-on:node-toggle-active="toggleNodeActive" v-on:node-show-modal="showModal"></NodeActionBar>
-                </span>
-                </div>
-            </a>
-            <quorum-set v-for="innerQuorumSet in quorumSet.innerQuorumSets"
-                        :network="network"
-                        :quorumSet="innerQuorumSet"
-                        :root="false"
-                        v-on:node-toggle-active="toggleNodeActive"
-                        v-on:node-show-modal="showModal">
-            </quorum-set>
-        </div>
+            <div v-for="validator in quorumSet.validators" class="list-group-item p-1 validator">
+                <a href="#" class="validator-link"
+                   v-on:click.prevent.stop="selectNode(validator)">
+                    <div v-bind:class="nodeState(validator)">
+                        {{validatorDisplayName(validator) | truncate(30)}}
+                    </div>
+                </a>
+                        <NodeActionBar :node="getNode(validator)" :network="network"
+                                       v-on:node-toggle-active="toggleNodeActive"
+                                       v-on:node-show-modal="showModal"></NodeActionBar>
+            </div>
+                    <quorum-set v-for="innerQuorumSet in quorumSet.innerQuorumSets" :key="innerQuorumSet.hashKey"
+                                :network="network"
+                                :quorumSet="innerQuorumSet"
+                                :root="false"
+                                v-on:node-toggle-active="toggleNodeActive"
+                                v-on:node-show-modal="showModal">
+                    </quorum-set>
+            </div>
     </li>
 </template>
 
@@ -58,8 +61,8 @@
                     return validator;
                 }
             },
-            getNode: function(publicKey) {
-                  return this.network.getNodeByPublicKey(publicKey);
+            getNode: function (publicKey) {
+                return this.network.getNodeByPublicKey(publicKey);
             },
             toggle: function () {
                 this.open = !this.open;
@@ -72,15 +75,14 @@
                     'failing': this.network.isNodeFailing(node)
                 }
             },
-            toggleNodeActive: function(node) {
+            toggleNodeActive: function (node) {
                 this.$emit("node-toggle-active", node);
             },
-            showModal: function(node) {
+            showModal: function (node) {
                 this.$emit("node-show-modal", node);
             },
             selectNode: function (validator) {
-                this.$emit("node-selected", this.network.getNodeByPublicKey(validator));
-                this.$router.push({ name: 'quorum-monitor-node', params: { publicKey: this.network.getNodeByPublicKey(validator).publicKey }});
+                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: validator}, query: {center: true}});
             }
         },
         computed: {
@@ -102,6 +104,7 @@
     .quorumSetTitle {
         margin-bottom: 1em;
     }
+
     .active-node {
         color: #1997c6;
     }
@@ -120,7 +123,7 @@
     }
 
     .inactive {
-        color: #ECEBE4
+        color: #c3c2bb
     }
 
     .active {
@@ -130,5 +133,25 @@
     .failing {
         color: red
     }
-    .list-group-item, .list-group-item:hover{ z-index: auto; }
+
+    .list-group-item, .list-group-item:hover {
+        z-index: auto;
+    }
+
+    .validator-link {
+        width: 100%;
+    }
+
+    .validator {
+        display: flex;
+        justify-content: space-between;
+    }
+    a:hover, a:visited, a:link, a:active
+    {
+        text-decoration: none;
+    }
+    a:hover
+    {
+        background-color: #f8f9fa;
+    }
 </style>

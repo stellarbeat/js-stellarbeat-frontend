@@ -72,7 +72,13 @@
             </div>
             <div class="my-3 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
-                    <router-view :network="network" :isLoading="isLoading">
+                    <div v-if="isLoading" class="row">
+                        <div class="col-5"></div>
+                        <div class="col-2 loader"></div>
+                        <div class="col-5"></div>
+
+                    </div>
+                    <router-view v-if="!isLoading" :network="network" :isLoading="isLoading">
 
                     </router-view>
                 </div>
@@ -91,7 +97,7 @@
     export default {
         data() {
             return {
-                network: new Network([]),
+                network: {},
                 isLoading: true
             }
         },

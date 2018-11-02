@@ -16,7 +16,7 @@
                             <GraphNode v-if="graphInitialized" v-for="node in network.nodes" :key="node.publicKey" :node="node"
                                        :selectedNode="selectedNode"
                                        :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
-                                       v-on:node-selected="onNodeSelected"></GraphNode>
+                                       ></GraphNode>
                         </g>
 
                     </svg>
@@ -33,7 +33,6 @@
     import GraphLink from "./graph-link.vue";
 
     const svgPanZoom = require("svg-pan-zoom");
-    //const work = require('webworkify');
     const ComputeGraphWorker = require('./../workers/compute-graph.worker.js');
     const computeGraphWorker = new ComputeGraphWorker();
 
@@ -46,7 +45,6 @@
         },
         data() {
             return {
-                selectedNode: null,
                 simulation: {},
                 simulationNodes: {},
                 panZoom: {},
@@ -61,21 +59,17 @@
             },
             centerNode: {
                 type: Object
+            },
+            selectedNode: {
+                type: Object
             }
         },
         watch: {
             centerNode: function (node) {
-                let height = this.panZoom.getSizes().height;
-                let width = this.panZoom.getSizes().width;
-                let zoom = this.panZoom.getSizes().realZoom;
-                let realNodeX = -node.x * zoom + width / 2;
-                let realNodeY = -node.y * zoom + height / 2;
-                this.panZoom.pan({x: realNodeX, y: realNodeY});
-            },
-            '$route'(to, from) {
-                this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
+                if(this.graphInitialized) {
+                    this.centerCorrectNode();
+                }
             }
-
         },
         computed: {
             progressBarWidth: function () {
@@ -99,11 +93,18 @@
             }
         },
         methods: {
-            onNodeSelected: function (node) {
-                this.$emit("node-selected", node);
-            },
             restartSimulation: function () {
                 this.computeGraph();
+            },
+            centerCorrectNode: function() {
+                if(this.centerNode) {
+                    let height = this.panZoom.getSizes().height;
+                    let width = this.panZoom.getSizes().width;
+                    let zoom = this.panZoom.getSizes().realZoom;
+                    let realNodeX = -this.centerNode.x * zoom + width / 2;
+                    let realNodeY = -this.centerNode.y * zoom + height / 2;
+                    this.panZoom.pan({x: realNodeX, y: realNodeY});
+                }
             },
             computeGraph: function () {
                 this.isLoading = true;
@@ -136,8 +137,8 @@
         },
         created() {//todo web worker
             this.network.nodes.forEach(node => {
-                this.$set(node, 'x', undefined);
-                this.$set(node, 'y', undefined);
+                    this.$set(node, 'x', undefined);
+                    this.$set(node, 'y', undefined);
             }); //trigger reactive changes on newly added x and y coordinates
 
             computeGraphWorker.onmessage = function (event) {
@@ -170,18 +171,13 @@
                                 });
                             this.graphInitialized = true;
                             this.panZoom.zoomBy(2);
+                            this.centerCorrectNode();
                         }
                     }
                         break;
                 }
             }.bind(this);
             this.computeGraph();
-
-        },
-        mounted() {
-            if (this.network.getNodeByPublicKey(this.$route.params.publicKey)) {
-                this.selectedNode = this.network.getNodeByPublicKey(this.$route.params.publicKey);
-            }
 
         }
     }
@@ -191,7 +187,7 @@
     svg.graph {
         height: inherit;
         width: 100%;
-        border-right: 1px solid rgba(0, 40, 100, 0.12);
+        cursor: move;
     }
 
     .progress {

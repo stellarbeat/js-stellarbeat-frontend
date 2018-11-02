@@ -1,31 +1,31 @@
 <template>
     <div class="card ">
         <div class="card-header">
-            <h3 class="card-title">Node geographical distribution</h3>
+            <h3 class="card-title">Node Versions</h3>
         </div>
         <div class="card-body p-3 pb-6">
             <canvas id="geoDoughnut" ref="geoDoughnut"></canvas>
             <!--table class="table table-striped table-bordered mt-4" id="locations-table">
                 <thead class="thead-light">
                 <tr>
-                    <th>Country</th>
+                    <th>Version</th>
                     <th>Nodes</th>
                     <th>%</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="country in sortedCountries.slice(0,4)">
+                <tr v-for="country in sortedVersions.slice(0,4)">
                     <td>{{ country[0] }}</td>
                     <td>{{ country[1] }}</td>
-                    <td>{{ Math.round( country[1] / activeNodesWithCountryCount * 100) }}
+                    <td>{{ Math.round( country[1] / activeNodesWithVersionCount * 100) }}
                         %
                     </td>
                 </tr>
                 <tr>
                     <td>Other countries</td>
-                    <td>{{ otherCountriesCount }}
+                    <td>{{ otherVersionsCount }}
                     </td>
-                    <td>{{ Math.round(otherCountriesCount / activeNodesWithCountryCount * 100) }}
+                    <td>{{ Math.round(otherVersionsCount / activeNodesWithVersionCount * 100) }}
                         %
                     </td>
                 </tr>
@@ -44,7 +44,7 @@
     const Chart = require("chart.js");
 
     export default {
-        name: "nodes-country-distribution",
+        name: "nodes-versions",
         data() {
             return {
                 chart: {}
@@ -55,25 +55,20 @@
                 type: Object
             }
         },
-        /*watch: {
-            network: function (network) {
-                this.initializeDoghnut();
-            }
-        },*/
         computed: {
-            otherCountriesCount: function () {
-               return this.sortedCountries.slice(4).reduce((accumulator, currentValue) => {
+            otherVersionsCount: function () {
+               return this.sortedVersions.slice(4).reduce((accumulator, currentValue) => {
                    return accumulator + currentValue[1];
                },0)
             },
-            activeNodesWithCountryCount: function () {
-                return this.network.nodes.filter(node => node.active && node.geoData.countryName).length;
+            activeNodesWithVersionCount: function () {
+                return this.network.nodes.filter(node => node.active && node.versionStr).length;
             },
-            sortedCountries: function () {
-                let countries = this.network.nodes
+            sortedVersions: function () {
+                let versions = this.network.nodes
                     .filter(node => node.active)
-                    .filter(node => node.geoData.countryName)
-                    .map(node => node.geoData.countryName)
+                    .filter(node => node.versionStr)
+                    .map(node => node.versionStr)
                     .reduce((accumulator, currentValue) => {
                         if(accumulator[currentValue] === undefined)
                             accumulator[currentValue] = 1;
@@ -82,12 +77,12 @@
                         return accumulator;
                     }, {});
 
-                let sortedCountries = [];
-                for(let countryName in countries ) {
-                    sortedCountries.push([countryName, countries[countryName]]);
+                let sortedVersions = [];
+                for(let versionStr in versions ) {
+                    sortedVersions.push([versionStr, versions[versionStr]]);
                 }
 
-                return sortedCountries.sort(function(a, b) {
+                return sortedVersions.sort(function(a, b) {
                     return b[1] - a[1];
                 });
             }
@@ -101,14 +96,14 @@
                     // The data for our dataset
                     data: {
                         labels: [
-                            this.sortedCountries[0][0],
-                            this.sortedCountries[1][0],
-                            this.sortedCountries[2][0],
-                            this.sortedCountries[3][0],
-                            "Other countries"
+                            this.sortedVersions[0][0],
+                            this.sortedVersions[1][0],
+                            this.sortedVersions[2][0],
+                            this.sortedVersions[3][0],
+                            "Other versions"
                         ],
                         datasets: [{
-                            label: "Node countries",
+                            label: "Node versions",
                             backgroundColor: [
                                 '#1997c6', // primary blue
                                 '#1bc98e', // success green
@@ -116,11 +111,11 @@
                                 '#e4d836' // warning yellow
                             ],
                             data: [
-                                this.sortedCountries[0][1],
-                                this.sortedCountries[1][1],
-                                this.sortedCountries[2][1],
-                                this.sortedCountries[3][1],
-                                this.sortedCountries.slice(4).reduce((accumulator, currentValue) => {
+                                this.sortedVersions[0][1],
+                                this.sortedVersions[1][1],
+                                this.sortedVersions[2][1],
+                                this.sortedVersions[3][1],
+                                this.sortedVersions.slice(4).reduce((accumulator, currentValue) => {
                                     return accumulator + currentValue[1];
                                 },0)
                             ],

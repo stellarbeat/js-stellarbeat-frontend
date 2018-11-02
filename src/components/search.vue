@@ -11,7 +11,7 @@
                     class="dropdown-item"
                     href="#" v-for="(node, i) in filteredList"
                     :key="i"
-                    @click="nodeSelected(node)"
+                    @click.prevent.stop="nodeSelected(node)"
                     :class="{ 'active': i === arrowCounter }">
                 {{ node.displayName | truncate(20)}}
             </a>
@@ -54,8 +54,7 @@
         methods: {
             nodeSelected: function (node) {
                 this.searchString = '';
-                this.$emit("center-node", node);
-                this.$emit("node-selected", node);
+                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true}});
             },
             onArrowDown() {
                 if (this.arrowCounter < this.filteredList.length-1) {
@@ -82,7 +81,6 @@
 <style scoped>
 .search{
     width:100%;
-    margin-bottom: 15px;
 }
     .dropdown-menu{
         min-width: 100%;

@@ -16,14 +16,18 @@
             <Statistics :network="network"></Statistics>
 
             <div class="row row-cards justify-content-center">
-                <div class="col-lg-12 col-12">
+                <div class="col-xl-12 col-12">
                     <NodesMap :network="network"></NodesMap>
                 </div>
             </div>
             <div class="row row-cards justify-content-center">
-                <div class="col-lg-12 col-12">
+                <div class="col-xl-6 col-12">
                     <NodesCountryDistribution :network="network"></NodesCountryDistribution>
                 </div>
+                <div class="col-xl-6 col-12">
+                    <NodesVersions :network="network"></NodesVersions>
+                </div>
+
             </div>
         </div>
     </div>
@@ -33,6 +37,7 @@
     import Statistics from "@/components/statistics.vue";
     import NodesMap from "@/components/nodes-map.vue";
     import NodesCountryDistribution from "@/components/nodes-country-distribution.vue";
+    import NodesVersions from "@/components/nodes-versions.vue";
 
     export default {
         name: "home",
@@ -47,7 +52,8 @@
         components: {
             Statistics,
             NodesMap,
-            NodesCountryDistribution
+            NodesCountryDistribution,
+            NodesVersions
         }
     }
 </script>

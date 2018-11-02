@@ -2,6 +2,8 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 
+const d3 = require("d3");
+
 Vue.config.productionTip = false;
 
 const VueTruncate = require('vue-truncate-filter');

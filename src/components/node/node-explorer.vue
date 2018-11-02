@@ -2,7 +2,7 @@
     <div>
         <div>
             <h4 class="node-details-title"
-                v-bind:title="node.displayName">{{node.displayName | truncate(30)}}
+                v-bind:title="selectedNode.displayName">Selected node: {{selectedNode.displayName | truncate(30)}}
                 <div class="btn-toolbar fa-pull-right" role="toolbar" aria-label="Toolbar with button groups">
                     <!--div class="btn-group btn-group-sm" role="group" aria-label="breadcrumb">
                         <button type="button" class="btn btn-secondary" disabled>
@@ -14,24 +14,24 @@
                     </div!-->
                     <div class="btn-group btn-group-sm" role="group" aria-label="actions">
                         <button type="button" class="btn btn-sm btn-secondary"
-                                v-on:click="showModal(node)">
+                                v-on:click="showModal(selectedNode)">
                             <i class="fe fe-info"/>
                         </button>
                         <button type="button" class="btn btn-sm"
-                                v-on:click.prevent.stop="$emit('node-toggle-active', node)"
-                                v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
+                                v-on:click.prevent.stop="$emit('node-toggle-active', selectedNode)"
+                                v-bind:class="[selectedNode.active ? 'btn-primary' : 'btn-secondary']">
                             <i class="fe fe-power"/>
                         </button>
                     </div>
                 </div>
             </h4>
             <ul class="tree list-group list-group-flush">
-                <QuorumSet :quorumSet="node.quorumSet"
+                <QuorumSet :quorumSet="selectedNode.quorumSet"
                            :network="network"
                            :root="true"
                            v-on:node-toggle-active="toggleNodeActive"
                            v-on:node-show-modal="showModal"
-                           v-on:node-selected="onNodeSelected">
+                           >
                 </QuorumSet>
             </ul>
         </div>
@@ -60,25 +60,27 @@
         props: {
             network: {
                 type: Object
+            },
+            selectedNode: {
+                type: Object
             }
         },
         data() {
             return {
-                node: null,
                 modalNode: {}
             }
         },
         computed: {
             modalItems: function() {
-                if(!this.node) {
+                if(!this.selectedNode) {
                     return [];
                 }
-                let item = JSON.parse(JSON.stringify(this.node)); //clone it
+                let item = JSON.parse(JSON.stringify(this.selectedNode)); //clone it
                 delete item.quorumSet;
                 delete item.geoData;
                 delete item.statistics;
-                item = Object.assign(item, this.node.geoData);
-                item = Object.assign(item, this.node.statistics);
+                item = Object.assign(item, this.selectedNode.geoData);
+                item = Object.assign(item, this.selectedNode.statistics);
                 item.quorumSet = '';
                 return [item];
             }
@@ -91,25 +93,9 @@
                 this.modalNode = node;
                 this.$refs.modal.show();
             },
-            onNodeSelected: function (node) {
-                this.$emit("center-node", node);
-            },
             onNodeCenter: function (node) {
-                this.$emit("center-node", node);
-            },
-        },
-        watch: {
-            '$route'(to, from) {
-                this.node = this.network.getNodeByPublicKey(to.params.publicKey);
+                //this.$emit("center-node", node);
             }
-        },
-        created() {
-            if (this.$route.params.publicKey && this.network.getNodeByPublicKey(this.$route.params.publicKey))
-                this.node = this.network.getNodeByPublicKey(this.$route.params.publicKey);
-            else
-                this.node = this.network.nodes[0];
-        },
-        mounted() {
         }
     }
 </script>

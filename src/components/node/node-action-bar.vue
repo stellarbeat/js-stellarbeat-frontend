@@ -7,7 +7,7 @@
         </button>
         <button type="button" class="btn btn-sm btn-icon"
                 v-on:click.prevent.stop="$emit('node-toggle-active', node)"
-                v-bind:class="[node.active ? 'btn-success' : 'btn-secondary']">
+                v-bind:class="[node.active ? 'btn-primary' : 'btn-secondary']">
             <i class="fe fe-power"></i>
         </button>
         </div>
@@ -32,9 +32,6 @@
         font-size  : .875rem;
         line-height  : .5;
         border-radius : .2rem;
-    }
-    .action-bar {
-        float: right;
     }
 </style>
 

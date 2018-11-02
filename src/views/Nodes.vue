@@ -1,4 +1,5 @@
 <template>
+    <div>
     <div v-if="isLoading" class="row">
         <div class="col-5"></div>
         <div class="col-2 loader"></div>
@@ -41,7 +42,7 @@
                 <template slot="actions" slot-scope="row">
                     <b-button-group class="btn-group-sm">
                     <router-link class="btn btn-secondary " role="button" :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">Details</router-link>
-                    <router-link class="btn btn-secondary" role="button" :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }}">Quorum monitor</router-link>
+                    <router-link class="btn btn-secondary" role="button" :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }, query: { center: 1 }}">Quorum monitor</router-link>
                     </b-button-group>
                 </template>
             </b-table>
@@ -52,7 +53,7 @@
             </b-col>
         </b-row>
     </div>
-
+    </div>
 </template>
 
 <script>
