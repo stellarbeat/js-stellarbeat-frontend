@@ -2,6 +2,10 @@
     <div class="card ">
         <div class="card-header">
             <h3 class="card-title">Node geographical distribution</h3>
+            <div class="card-options">
+                <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'nodes'}">View all nodes
+                </router-link>
+            </div>
         </div>
         <div class="card-body p-3 pb-6">
             <canvas id="geoDoughnut" ref="geoDoughnut"></canvas>

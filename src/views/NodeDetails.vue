@@ -11,12 +11,15 @@
                 <h1 class="page-title">
                     Node info
                 </h1>
-                <div class="page-subtitle">Last crawl on TODO UTC</div>
+                <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
             </div>
             <b-card class="mb-2 p-3">
-                <b-table stacked striped hover responsive :items="items" >
+                <b-table stacked striped hover responsive :items="items">
                     <template slot="quorumSet" slot-scope="row">
-                        <router-link class="btn btn-secondary btn-sm" role="button" :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }}">Go to quorum monitor</router-link>
+                        <router-link class="btn btn-secondary btn-sm" role="button"
+                                     :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }}">Go
+                            to quorum monitor
+                        </router-link>
                     </template>
                 </b-table>
             </b-card>
@@ -36,11 +39,11 @@
             }
         },
         computed: {
-            node: function() {
+            node: function () {
                 return this.network.getNodeByPublicKey(this.$route.params.publicKey)
             },
-            items: function() {
-                if(!this.node) {
+            items: function () {
+                if (!this.node) {
                     return [];
                 }
                 let item = JSON.parse(JSON.stringify(this.node)); //clone it
@@ -51,12 +54,16 @@
                 item = Object.assign(item, this.node.statistics);
                 item.quorumSet = '';
                 return [item];
+            },
+            lastCrawlDateString: function () {
+                return this.network.getLatestCrawlDate() ? this.network.getLatestCrawlDate().toLocaleString() : 'NA';
             }
+
         },
     }
 </script>
 
-<style>
+<style scoped>
     .table {
         word-break: break-all;
     }

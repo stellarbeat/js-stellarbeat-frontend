@@ -2,10 +2,11 @@
     <div class="action-bar ">
         <div class="btn-group btn-group-sm" role="group" aria-label="actions">
 
-        <button type="button" class="btn btn-sm btn-icon btn-secondary" v-on:click.prevent.stop="$emit('node-show-modal', node)">
+        <button type="button" class="btn btn-sm btn-icon btn-secondary" title="show info"
+                v-on:click.prevent.stop="$emit('node-show-modal', node)">
             <i class="fe fe-info"></i>
         </button>
-        <button type="button" class="btn btn-sm btn-icon"
+        <button type="button" class="btn btn-sm btn-icon" title="(de-)activate node"
                 v-on:click.prevent.stop="$emit('node-toggle-active', node)"
                 v-bind:class="[node.active ? 'btn-primary' : 'btn-secondary']">
             <i class="fe fe-power"></i>

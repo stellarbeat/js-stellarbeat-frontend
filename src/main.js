@@ -14,10 +14,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'tabler-ui/dist/assets/css/tabler.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
 import BootstrapVue from 'bootstrap-vue';
 
 main();

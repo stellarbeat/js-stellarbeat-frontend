@@ -30,7 +30,7 @@
                 <h1 class="page-title">
                     Quorum Monitor
                 </h1>
-                <div class="page-subtitle">Last crawl on {{lastCrawlDateString}}</div>
+                <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
             <div class="row row-cards">
@@ -50,7 +50,7 @@
                                            v-on:center-node="onNodeCenter"
                                            :centerNode="centerNode"
                                            :selectedNode="selectedNode"
-                                           ></Graph>
+                                    ></Graph>
                                     <div class="text-right pt-1">
                                         <GraphLegend></GraphLegend>
                                     </div>
@@ -163,7 +163,7 @@
             },
             '$route'(to, from) {
                 this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
-                if(to.query.center) {
+                if (to.query.center) {
                     this.centerNode = this.selectedNode;
                 }
             }
@@ -187,7 +187,7 @@
         },
         computed: {
             lastCrawlDateString: function () {
-                return this.lastCrawlDate ? this.lastCrawlDate.toLocaleString() : 'NA';
+                return this.network.getLatestCrawlDate() ? this.network.getLatestCrawlDate().toLocaleString() : 'NA';
             },
             isSimulation: function () {
                 return this.simulatedNodes.length > 0;
@@ -201,17 +201,6 @@
             }
             if (this.$route.query.center) {
                 this.centerNode = this.selectedNode;
-            }
-
-            //calculate last crawl date
-            let nodesSortedByLastModified = this.network.nodes
-                .map(node => node.dateUpdated)
-                .sort(function(a,b){
-                    return new Date(b) - new Date(a);
-                });
-
-            if(nodesSortedByLastModified.length > 0) {
-                this.lastCrawlDate = new Date(nodesSortedByLastModified[0]);
             }
         },
         beforeDestroy: function () {

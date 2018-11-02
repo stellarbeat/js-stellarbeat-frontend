@@ -10,10 +10,16 @@
 </template>
 
 <script>
-//    require('leaflet');
+    //    require('leaflet');
     require('leaflet.markercluster');
+    require('leaflet-sleep');
+
+    import 'leaflet/dist/leaflet.css';
+    import 'leaflet.markercluster/dist/MarkerCluster.css';
+    import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
     import L from 'leaflet';
+
     delete L.Icon.Default.prototype._getIconUrl;
 
     L.Icon.Default.mergeOptions({
@@ -42,7 +48,13 @@
         methods: {
             //todo: refactor to vue.js way
             initializeMap: function () {
-                this.map = L.map(this.$refs.map).setView([51.505, -0.09], 1.5);
+                this.map = L.map(this.$refs.map,{
+                    wakeTime: 250,
+                    sleepTime: 250,
+                    sleepNote: false,
+                    wakeMessage: false,
+                    sleepOpacity: 1
+                }).setView([51.505, -0.09], 1.5);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(this.map);
                 L.Icon.Default.imagePath = './assets/vendor/leaflet';
 
@@ -173,9 +185,11 @@
         border-radius: 15px;
         font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
     }
+
     .marker-cluster-small {
         background-color: #2880ca80 !important;
     }
+
     .marker-cluster-small div {
         background-color: #1997c6 !important;
     }
@@ -183,6 +197,7 @@
     .marker-cluster-medium {
         background-color: #2880ca80 !important;
     }
+
     .marker-cluster-medium div {
         background-color: #1997c6 !important;
     }
@@ -190,9 +205,11 @@
     .marker-cluster-large {
         background-color: #2880ca80 !important;
     }
+
     .marker-cluster-large div {
         background-color: #1997c6 !important;
     }
+
     #map {
         height: 420px;
     }

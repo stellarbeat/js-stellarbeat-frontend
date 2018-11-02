@@ -1,6 +1,6 @@
 <template>
     <li class="list-group-item p-0 pt-3">
-        <div @click="toggle" v-bind:class="quorumSetState">
+        <div @click="toggle" class="quorum-set" v-bind:class="quorumSetState">
             <i class="caret fe mr-1" v-bind:class="caret"></i>
             <h5 class="quorumSetTitle">
                 Quorumset with threshold: {{quorumSet.threshold}}
@@ -153,5 +153,9 @@
     a:hover
     {
         background-color: #f8f9fa;
+    }
+    .quorum-set
+    {
+        cursor: pointer;
     }
 </style>

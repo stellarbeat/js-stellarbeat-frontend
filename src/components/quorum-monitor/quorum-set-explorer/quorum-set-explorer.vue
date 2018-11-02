@@ -1,8 +1,7 @@
 <template>
     <div>
         <div>
-            <h4 class="node-details-title"
-                v-bind:title="selectedNode.displayName">Selected node: {{selectedNode.displayName | truncate(30)}}
+            <h4 class="node-details-title">Selected node: {{selectedNode.displayName | truncate(30)}}
                 <div class="btn-toolbar fa-pull-right" role="toolbar" aria-label="Toolbar with button groups">
                     <!--div class="btn-group btn-group-sm" role="group" aria-label="breadcrumb">
                         <button type="button" class="btn btn-secondary" disabled>
@@ -13,11 +12,11 @@
                         </button>
                     </div!-->
                     <div class="btn-group btn-group-sm" role="group" aria-label="actions">
-                        <button type="button" class="btn btn-sm btn-secondary"
+                        <button type="button" class="btn btn-sm btn-secondary" title="Show info"
                                 v-on:click="showModal(selectedNode)">
                             <i class="fe fe-info"/>
                         </button>
-                        <button type="button" class="btn btn-sm"
+                        <button type="button" class="btn btn-sm" title="(de-)activate node"
                                 v-on:click.prevent.stop="$emit('node-toggle-active', selectedNode)"
                                 v-bind:class="[selectedNode.active ? 'btn-primary' : 'btn-secondary']">
                             <i class="fe fe-power"/>

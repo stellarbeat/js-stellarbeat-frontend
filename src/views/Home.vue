@@ -11,7 +11,7 @@
                 <h1 class="page-title">
                     Stellar Network
                 </h1>
-                <div class="page-subtitle">Last crawl on {{lastCrawlDateString}}</div>
+                <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
 
@@ -57,18 +57,7 @@
         },
         computed: {
             lastCrawlDateString: function () {
-                return this.lastCrawlDate ? this.lastCrawlDate.toLocaleString() : 'NA';
-            }
-        },
-        created() {
-            let nodesSortedByLastModified = this.network.nodes
-                .map(node => node.dateUpdated)
-                .sort(function(a,b){
-                    return new Date(b) - new Date(a);
-                });
-
-            if(nodesSortedByLastModified.length > 0) {
-                this.lastCrawlDate = new Date(nodesSortedByLastModified[0]);
+                return this.network.getLatestCrawlDate() ? this.network.getLatestCrawlDate().toLocaleString() : 'NA';
             }
         }
     }
