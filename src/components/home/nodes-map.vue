@@ -4,9 +4,7 @@
             <div ref="map" id="map"></div>
         </div>
         <div class="card-footer">
-            Geolocation data was retrieved using the <a href="https://ipstack.com/">ipstack API</a> using
-            each
-            node's IP.
+            Geolocation data was retrieved using the <a href="https://ipstack.com/">ipstack API</a>
         </div>
     </div>
 </template>

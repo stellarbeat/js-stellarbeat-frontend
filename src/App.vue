@@ -72,13 +72,13 @@
             </div>
             <div class="my-3 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
-                    <div v-if="isLoading" class="row">
+                    <div v-if="isLoading && !isFullPreRenderRoute" class="row">
                         <div class="col-5"></div>
                         <div class="col-2 loader"></div>
                         <div class="col-5"></div>
 
                     </div>
-                    <router-view v-if="!isLoading" :network="network" :isLoading="isLoading">
+                    <router-view v-if="!isLoading || isFullPreRenderRoute" :network="network" :isLoading="isLoading">
 
                     </router-view>
                 </div>
@@ -102,24 +102,6 @@
             }
         },
         methods: {
-            onNodeSelected: function (node) {
-                this.$router.push({name: 'node', params: {publicKey: node.publicKey}});
-            },
-            onNodeCenter: function (node) {
-                this.centerNode = node;
-            },
-            toggleActive: function (node) {
-                node.active = !node.active;
-
-                if (this.simulatedNodes.includes(node)) {
-                    this.simulatedNodes = this.simulatedNodes.filter(simNode => node !== simNode);
-                } else {
-                    this.simulatedNodes.push(node);
-                }
-
-                this.network.updateNetwork();
-                this.$refs.graph.restartSimulation();
-            },
             fetchData: function () {
                 return axios.get('https://stellarbeat-backend-staging.herokuapp.com/api/v1/nodes');
             }
@@ -127,6 +109,9 @@
         computed: {
             isSimulation: function () {
                 return this.simulatedNodes.length > 0;
+            },
+            isFullPreRenderRoute: function () {
+                return this.$router.currentRoute.meta.fullPreRender;
             }
         },
         async created() {

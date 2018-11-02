@@ -19,8 +19,8 @@ export default new Router({
       {name: 'home', path: '/', component: Home},
       {name: 'nodes', path: '/nodes', component: Nodes},
       {name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
-      {name: 'about', path: '/about', component: About},
-      {name: 'api', path: '/api', component: Api},
+      {name: 'about', path: '/about', component: About, meta: { fullPreRender: true }},
+      {name: 'api', path: '/api', component: Api, meta: { fullPreRender: true }},
       {
           path: '/quorum-monitor', component: QuorumMonitor,
           children: [
