@@ -7,7 +7,7 @@
 
         </div>
         <div v-else>
-            <div class="page-header">
+            <div class="page-header  mt-2">
                 <h1 class="page-title">
                     Node info
                 </h1>

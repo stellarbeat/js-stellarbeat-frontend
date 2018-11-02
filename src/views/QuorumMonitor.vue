@@ -16,17 +16,11 @@
 
 <template>
     <div>
-        <div v-if="isLoading" class="row">
-            <div class="col-5"></div>
-            <div class="col-2 loader"></div>
-            <div class="col-5"></div>
-
-        </div>
-        <div v-else>
+        <div>
             <div v-show="isSimulation" class="alert alert-warning" role="alert">
                 You are viewing a simulation!
             </div>
-            <div class="page-header">
+            <div class="page-header  mt-2">
                 <h1 class="page-title">
                     Quorum Monitor
                 </h1>

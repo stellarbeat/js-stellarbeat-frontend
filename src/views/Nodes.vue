@@ -1,7 +1,7 @@
 <template>
     <div>
         <div>
-            <div class="page-header">
+            <div class="page-header  mt-2">
                 <h1 class="page-title">
                     Available nodes
                 </h1>

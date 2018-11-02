@@ -7,7 +7,7 @@
 
         </div>
         <div v-if="!isLoading">
-            <div class="page-header">
+            <div class="page-header mt-2">
                 <h1 class="page-title">
                     Stellar Network
                 </h1>

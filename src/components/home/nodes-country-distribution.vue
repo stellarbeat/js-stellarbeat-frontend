@@ -1,7 +1,7 @@
 <template>
     <div class="card ">
         <div class="card-header">
-            <h3 class="card-title">Node geographical distribution</h3>
+            <h3 class="card-title">Node countries</h3>
             <div class="card-options">
                 <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'nodes'}">View all nodes
                 </router-link>

@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="my-3 my-md-5 pl-4 pr-4">
+            <div class="my-0 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
                     <div v-if="isLoading && !isFullPreRenderRoute" class="row">
                         <div class="col-5"></div>
