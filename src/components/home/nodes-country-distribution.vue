@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    const Chart = require("chart.js");
+    import Chart from 'chart.js/dist/Chart.js'
 
     export default {
         name: "nodes-country-distribution",

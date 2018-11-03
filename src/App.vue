@@ -13,7 +13,8 @@
 <template>
     <div id="app" class="page">
         <div class="page-main">
-            <div class="header pt-2 pb-0 pl-4 pr-4">
+            <b-navbar class="m-0 p-0" toggleable="md">
+                <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                 <div class="container-fluid">
                     <div class="d-flex">
                         <router-link class="header-brand mt-2" :to="{ name: 'home'}" exact>
@@ -21,7 +22,7 @@
                         </router-link>
                         <div class="d-flex flex-column ml-auto">
                             <h2 class="brand-title mb-0">stellarbeat.io</h2>
-                            <h6 class="text-muted" id="brand-tagline">stellar network visibility</h6>
+                            <h6 class="text-muted">stellar network visibility</h6>
                         </div>
                         <div class="d-flex ml-auto">
                             <div class="nav-item d-none d-md-flex">
@@ -33,15 +34,19 @@
                                         class="fe fe-mail"></i> Mail</a>
                             </div>
                         </div>
-                        <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
+                        <b-navbar-toggle class="my-navbar-toggle mb-2" target="nav_collapse"></b-navbar-toggle>
+
+                        <!--a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
                            data-target="#headerMenuCollapse">
                             <span class="header-toggler-icon"></span>
-                        </a>
+                        </a!-->
                     </div>
                 </div>
-            </div>
-            <div class="header collapse d-lg-flex p-0 pl-4 pr-4" id="headerMenuCollapse">
-                <div class="container-fluid">
+                </div>
+
+            </b-navbar>
+            <b-collapse class="header collapse d-lg-flex p-0 pl-4 pr-4" is-nav id="nav_collapse">
+                <div class="container-fluid collapser">
                     <div class="row align-items-center">
                         <div class="col-lg order-lg-first">
                             <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
@@ -72,7 +77,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+
+            </b-collapse>
             <div class="my-0 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
                     <div v-if="isLoading && !isFullPreRenderRoute" class="row">
@@ -131,6 +137,18 @@
 <style scoped>
     .brand-title{
         color: #08b5e5;
+    }
+
+    .collapser {
+        background: white;
+    }
+
+    .my-header{
+        width: 100%;
+    }
+    .my-navbar-toggle{
+        border: none;
+
     }
 
 </style>

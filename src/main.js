@@ -2,16 +2,12 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 
-const d3 = require("d3");
-
 Vue.config.productionTip = false;
 
 const VueTruncate = require('vue-truncate-filter');
 
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/js/bootstrap.js';
+//import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-//import 'tabler-ui/dist/assets/css/tabler.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 
 import BootstrapVue from 'bootstrap-vue';
