@@ -13,7 +13,7 @@
 <template>
     <div id="app" class="page">
         <div class="page-main">
-            <b-navbar class="m-0 p-0" toggleable="md">
+            <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="md">
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                 <div class="container-fluid">
                     <div class="d-flex">
@@ -25,7 +25,7 @@
                             <h6 class="text-muted">stellar network visibility</h6>
                         </div>
                         <div class="d-flex ml-auto">
-                            <div class="nav-item d-none d-md-flex">
+                            <div class="nav-item d-none d-lg-flex">
                                 <a href="https://github.com/stellarbeat"
                                    class="btn btn-sm bt btn-outline-primary" target="_blank"><i
                                         class="fe fe-github"></i> Github</a>
