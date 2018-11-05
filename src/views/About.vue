@@ -6,43 +6,54 @@
             </h1>
         </div>
         <b-card>
-            <h5>Crawling the Stellar public network</h5>
+            <h2>Goal</h2>
             <p>
-                <br>We want to make the Stellar network more tangible by making it visible.
-                <br>To see how many nodes there are, where they are located, and how the network is growing and
-                performing.
+                To give insight in the Stellar public network through various tools & visualizations.
+            </p>
 
-                <br><br>Since Stellar is a decentralised network, there is no easy way to get this information.
-                <br>So we created a crawler that puts itself on the Stellar network and starts discovering nodes.
-                <br><br>This works as follows:
-            </p>
-            <ol>
-                <li>
-                    Start with a list of known nodes.
-                    <br>Right now this means 'use the result of our last run', but initially we started with a
-                    list of known nodes that comes with the example configuration of stellar-core.
-                </li>
-                <li>
-                    Connect to a node on the list and attempt to perform a basic 'hello' handshake.
-                    <br>If they respond we consider the node active and store it.
-                </li>
-                <li>
-                    Ask that active node to give us a list of its known peers.
-                    <br>If the response contains nodes that we don't know yet, we put them on the crawler's to-do
-                    list to be discovered and asked for peers too.
-                </li>
-                <li>
-                    Listen to the node traffic to gather it's quorumset information
-                </li>
-            </ol>
+            <h3>Crawler</h3>
             <p>
-                We end up with a full list of active nodes and their quorumsets in the network.
+                Every 10 minutes we crawl the stellar public network to gather all available nodes.
+
+                The crawler also listens for five minutes to the traffic in the network to determine if a node is
+                participating in the Stellar consensus protocol.
             </p>
+            <h3>Node information & statistics</h3>
+            <ul>
+                <li>
+                    Available node: The crawler succeeded at least one time to connect to the node and send commands.
+                </li>
+                <li>
+                    Active node: The crawler can connect to the node and send commands. This should happen at least once
+                    in the latest 300 crawls. The availability score of the node gives the percentage of time the node
+                    was active in the latest 300 crawls.
+                </li>
+                <li>
+                    Node availability score: Percentage of time the node was active in the latest 300 crawls.
+                </li>
+                <li>
+                    Validator: The crawler picks up "stellar consensus protocol" messages about the node and successfully
+                    requests its quorum set configuration.
+                </li>
+                <li>
+                    Failing validator: The quorum set configuration of the node does not meet its threshold. Either
+                    because the trusted validators are inactive, or failing.
+                </li>
+                <li>
+                    Node geo data: Lookup of node ip in <a href="https://ipstack.com/">ipstack API</a>
+                </li>
+            </ul>
+
+            <h2>Open source</h2>
             <p>
-                If you want to learn more or give us some feedback go to <a href="https://github.com/stellarbeat"
-                                                                            class="btn btn-sm bt btn-outline-primary"
-                                                                            target="_blank"><i
-                    class="fe fe-github"></i> Github</a> or contact us by
+            All code is available on <a href="https://github.com/stellarbeat"
+                                        class="btn btn-sm bt btn-outline-primary"
+                                        target="_blank"><i
+                class="fe fe-github"></i> Github</a>
+            </p>
+
+            <h2>Contact</h2>
+            <p>
                 <a href="mailto:stellarbeatio@gmail.com"
                    class="btn btn-sm bt btn-outline-primary" target="_blank"><i
                         class="fe fe-mail"></i> Mail</a>
