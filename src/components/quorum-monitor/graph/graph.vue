@@ -134,7 +134,7 @@
             }
 
         },
-        created() {//todo web worker
+        created() {
             this.network.nodes.forEach(node => {
                     this.$set(node, 'x', undefined);
                     this.$set(node, 'y', undefined);

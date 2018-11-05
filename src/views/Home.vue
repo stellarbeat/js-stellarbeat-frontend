@@ -21,11 +21,15 @@
                 </div>
             </div>
             <div class="row row-cards justify-content-center">
-                <div class="col-xl-6 col-12">
-                    <NodesCountryDistribution :network="network"></NodesCountryDistribution>
+                <div class="col-xl-6 col-lg-6 col-12">
+                    <QuorumSetConnections :network="network"></QuorumSetConnections>
                 </div>
-                <div class="col-xl-6 col-12">
+                <div class="col-xl-6 col-lg-6 col-12">
+                    <NodesCountryDistribution :network="network"></NodesCountryDistribution>
                     <NodesVersions :network="network"></NodesVersions>
+
+                </div>
+                <div class="col-xl-6 col-lg-6 col-12">
                 </div>
 
             </div>
@@ -38,6 +42,7 @@
     import NodesMap from "@/components/home/nodes-map.vue";
     import NodesCountryDistribution from "@/components/home/nodes-country-distribution.vue";
     import NodesVersions from "@/components/home/nodes-versions.vue";
+    import QuorumSetConnections from "@/components/home/quorum-set-connections.vue";
 
     export default {
         name: "home",
@@ -53,7 +58,8 @@
             Statistics,
             NodesMap,
             NodesCountryDistribution,
-            NodesVersions
+            NodesVersions,
+            QuorumSetConnections
         },
         computed: {
             lastCrawlDateString: function () {
