@@ -120,7 +120,6 @@
             fetchData: async function () {
                 try {
                     let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
-                    console.log(result);
                     return result.data;
                 } catch (error) { //todo logging
                     console.log(error);

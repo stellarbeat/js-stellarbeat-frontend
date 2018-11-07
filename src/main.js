@@ -12,23 +12,26 @@ import 'tabler-ui/dist/assets/css/dashboard.css';
 
 import BootstrapVue from 'bootstrap-vue';
 
-main();
+if(process.env.VUE_APP_ENABLE_SENTRY) {
+    const Sentry = require('@sentry/browser');
+    Sentry.init({
+        dsn: process.env.VUE_APP_SENTRY_DNS,
+        integrations: [new Sentry.Integrations.Vue({ Vue })]
+    })
+}
+Vue.use(VueTruncate);
+Vue.use(BootstrapVue);
 
-async function main() {
-    Vue.use(VueTruncate);
-    Vue.use(BootstrapVue);
-
-    new Vue({
-        router,
-        render(createElement) {
-            return createElement(App/*, {
+new Vue({
+    router,
+    render(createElement) {
+        return createElement(App/*, {
                 props: {
                     network: network
                 }
             }*/)
-        },
-        mounted() {
-            document.dispatchEvent(new Event("x-app-rendered"));
-        },
-    }).$mount('#app');
-}
+    },
+    mounted() {
+        document.dispatchEvent(new Event("x-app-rendered"));
+    },
+}).$mount('#app');

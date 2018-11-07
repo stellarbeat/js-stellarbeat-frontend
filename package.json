@@ -9,6 +9,7 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
+    "@sentry/browser": "^4.3.0",
     "@stellarbeat/js-stellar-domain": "github:stellarbeat/js-stellar-domain#master",
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
