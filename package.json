@@ -32,8 +32,8 @@
     "vue-truncate-filter": "^1.1.7"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.1.0",
-    "@vue/cli-service": "^3.1.1",
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-service": "^3.1.2",
     "prerender-spa-plugin": "^3.2.1",
     "vue-cli-plugin-prerender-spa": "^1.0.3",
     "vue-cli-plugin-webpack-bundle-analyzer": "^1.2.0",
