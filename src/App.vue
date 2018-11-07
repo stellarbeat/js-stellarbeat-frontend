@@ -82,6 +82,7 @@
             <div class="my-0 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
                     <div class="my-3 my-md-5">
+                        <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
                         <div v-if="isLoading && !isFullPreRenderRoute" class="row">
                             <div class="col-5"></div>
                             <div class="col-2 loader"></div>
@@ -110,12 +111,24 @@
         data() {
             return {
                 network: {},
-                isLoading: true
+                isLoading: true,
+                showError: false,
+                errorMessage: ""
             }
         },
         methods: {
-            fetchData: function () {
-                return axios.get('https://stellarbeat-backend-staging.herokuapp.com/api/v1/nodes');
+            fetchData: async function () {
+                try {
+                    let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
+                    console.log(result);
+                    return result.data;
+                } catch (error) { //todo logging
+                    console.log(error);
+                    this.showError = true;
+                    this.errorMessage = "Could not connect to api";
+                    return [];
+                }
+
             }
         },
         computed: {
@@ -127,8 +140,7 @@
             }
         },
         async created() {
-            let data = await this.fetchData();
-            let nodesRaw = data.data;
+            let nodesRaw = await this.fetchData();
             let nodes = nodesRaw.map(node => Node.fromJSON(node));
 
             this.network = new Network(nodes);

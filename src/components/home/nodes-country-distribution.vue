@@ -99,6 +99,9 @@
         methods: {
             //todo: refactor to vue.js way
             initializeDoghnut: function () {
+                if(this.sortedCountries.length === 0) {
+                    return;
+                }
                 let context = this.$refs.geoDoughnut.getContext('2d');
                this.chart = new Chart(context, {
                     type: 'doughnut',
