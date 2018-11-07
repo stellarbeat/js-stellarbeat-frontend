@@ -7,20 +7,22 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import BootstrapVue from 'bootstrap-vue';
 
+let isProd = process.env.NODE_ENV === 'production';
+
 if (process.env.VUE_APP_GA_ID) {
     Vue.use(VueAnalytics, {
         id: process.env.VUE_APP_GA_ID,
         router,
         debug: {
             enabled: process.env.VUE_APP_GA_DEBUG === '1',
-            sendHitTask: process.env.NODE_ENV === 'production'
+            sendHitTask: isProd
         }
     });
 }
 
 Vue.config.productionTip = false;
 
-if (process.env.VUE_APP_ENABLE_SENTRY === '1') {
+if (isProd) {
     const Sentry = require('@sentry/browser');
     Sentry.init({
         dsn: process.env.VUE_APP_SENTRY_DSN,
