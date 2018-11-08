@@ -6,6 +6,7 @@ const compression = require('compression');
 
 
 let port = process.env.PORT || 3000;
+
 app.use(compression());
 app.use(history({
     rewrites: [
@@ -15,12 +16,19 @@ app.use(history({
 }));
 let cacheTime = 86400000*7; //7 day cache for assets
 app.use(function (req, res, next) {
-    console.log(req.url);
     if (req.url.match(/^\/(css|js|img|fonts)\/.+/) ||
         req.url.match(/^\/favicon.ico$/) ||
         req.url.match(/^\/.*\.worker.js$/)
     ) {
         res.setHeader('Cache-Control', 'public, max-age=' + cacheTime); // cache header
+    }
+    next();
+});
+
+app.use(function (req, res, next) {
+    if (req.url.match(/^\/nodes\/raw/)
+    ) {
+        res.redirect(301,'https://api.stellarbeat.io/v1/nodes');
     }
     next();
 });
