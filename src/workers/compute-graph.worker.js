@@ -1,14 +1,14 @@
-const d3 = require("d3");
+import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3';
 
 addEventListener('message', (event) => {
         let nodes = event.data.nodes;
         let links = event.data.links;
 
-        let simulation = d3.forceSimulation(nodes)
-            .force('charge', d3.forceManyBody().strength(d => {
+        let simulation = forceSimulation(nodes)
+            .force('charge', forceManyBody().strength(d => {
                 return -120;
             }))
-            .force('link', d3.forceLink(links).strength(function (link) {
+            .force('link', forceLink(links).strength(function (link) {
                 if (link.isClusterLink) {
                     return 0.1;
                 } else {
@@ -17,8 +17,8 @@ addEventListener('message', (event) => {
             }).id(function (d) {
                 return d.publicKey;
             }))
-            .force('x', d3.forceX())
-            .force('y', d3.forceY())
+            .force('x', forceX())
+            .force('y', forceY())
             //.alphaDecay(0.1)
             //.alphaMin(0.15)
             //.velocityDecay(0.35);
@@ -31,9 +31,3 @@ addEventListener('message', (event) => {
 
         self.postMessage({type: "end", nodes: nodes, links: links});
     });
-/*module.exports = function (self) {
-    self.addEventListener('message', (event) => {
-        console.log("in worker");
-        self.postMessage("hello from worker");
-    });
-};*/
