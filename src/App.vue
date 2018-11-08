@@ -62,7 +62,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'quorum-monitor'}">
-                                        <i class="fe fe-target"></i>Quorum Monitor (experimental)
+                                        <i class="fe fe-target"></i>Quorum Monitor
                                     </router-link>
                                 </li>
                                 <li class="nav-item">

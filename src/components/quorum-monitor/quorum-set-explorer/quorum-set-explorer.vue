@@ -118,4 +118,7 @@
     #node-details-modal {
         word-break: break-all;
     }
+    .close::before {
+        content: none !important;
+    }
 </style>
