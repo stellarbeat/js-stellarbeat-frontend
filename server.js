@@ -6,7 +6,7 @@ const compression = require('compression');
 
 
 let port = process.env.PORT || 3000;
-app.use(compression());
+//app.use(compression());
 app.use(history({
     rewrites: [
         { from: /\/about/, to: '/about/index.html'},
