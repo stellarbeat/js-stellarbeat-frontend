@@ -1,10 +1,10 @@
 <template>
     <div class="dropdown search">
-        <input class="form-control" type="text" v-model="searchString" id="searchInput" placeholder="Search node"
-               autocomplete="off"
-               @keydown.down="onArrowDown"
-               @keydown.up="onArrowUp"
-               @keydown.enter.prevent.stop="onEnter"/>
+        <b-form-input class="form-control" type="text" v-model="searchString" id="searchInput" placeholder="Search node"
+                      autocomplete="off"
+                      @keydown.down="onArrowDown"
+                      @keydown.up="onArrowUp"
+                      @keydown.enter.prevent.stop="onEnter"></b-form-input>
         <div class="dropdown-menu dropdown-menu-right" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a
@@ -54,10 +54,14 @@
         methods: {
             nodeSelected: function (node) {
                 this.searchString = '';
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true, "no-scroll": true}});
+                this.$router.push({
+                    name: 'quorum-monitor-node',
+                    params: {publicKey: node.publicKey},
+                    query: {center: true, "no-scroll": true}
+                });
             },
             onArrowDown() {
-                if (this.arrowCounter < this.filteredList.length-1) {
+                if (this.arrowCounter < this.filteredList.length - 1) {
                     this.arrowCounter = this.arrowCounter + 1;
                 }
             },
@@ -79,10 +83,11 @@
 </script>
 
 <style scoped>
-.search{
-    width:100%;
-}
-    .dropdown-menu{
+    .search {
+        width: 100%;
+    }
+
+    .dropdown-menu {
         min-width: 100%;
     }
 </style>
