@@ -2,9 +2,9 @@
     <div class="dropdown search">
         <b-form-input class="form-control" type="text" v-model="searchString" id="searchInput" placeholder="Search node"
                       autocomplete="off"
-                      @keydown.down="onArrowDown"
-                      @keydown.up="onArrowUp"
-                      @keydown.enter.prevent.stop="onEnter"></b-form-input>
+                      @keydown.down.native="onArrowDown"
+                      @keydown.up.native="onArrowUp"
+                      @keydown.enter.native.prevent.stop="onEnter"/>
         <div class="dropdown-menu dropdown-menu-right" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a
