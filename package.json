@@ -31,6 +31,7 @@
     "transformation-matrix": "^1.14.1",
     "vue": "^2.5.17",
     "vue-analytics": "^5.16.0",
+    "vue-meta": "^1.5.5",
     "vue-router": "^3.0.1",
     "vue-truncate-filter": "^1.1.7"
   },

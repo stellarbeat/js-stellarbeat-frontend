@@ -133,6 +133,12 @@
 
         },
         beforeDestroy: function () {
+        },
+        metaInfo: {
+            title: 'Nodes overview - Stellarbeat.io',
+            meta: [
+                { name: 'description', content: 'Search through all available nodes' }
+            ]
         }
     }
 </script>

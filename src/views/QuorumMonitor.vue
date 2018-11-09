@@ -207,6 +207,12 @@
                 }
                 this.network.updateNetwork();
             } //todo: better way to manage network adjustments
+        },
+        metaInfo: {
+            title: 'Quorum monitor - Stellarbeat.io',
+            meta: [
+                { name: 'description', content: 'Inspect quorum set connections and metrics about network health' }
+            ]
         }
     }
 </script>

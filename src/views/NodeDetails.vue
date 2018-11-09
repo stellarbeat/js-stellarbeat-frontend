@@ -60,6 +60,12 @@
             }
 
         },
+        metaInfo: {
+            title: 'Node info - Stellarbeat.io',
+            meta: [
+                { name: 'description', content: 'Info about a single node' }
+            ]
+        }
     }
 </script>
 
