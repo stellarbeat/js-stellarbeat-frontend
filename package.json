@@ -9,6 +9,7 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
+    "@sentry/browser": "^4.3.0",
     "@stellarbeat/js-stellar-domain": "github:stellarbeat/js-stellar-domain#master",
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
@@ -28,12 +29,13 @@
     "tabler-ui": "0.0.32",
     "transformation-matrix": "^1.14.1",
     "vue": "^2.5.17",
+    "vue-analytics": "^5.16.0",
     "vue-router": "^3.0.1",
     "vue-truncate-filter": "^1.1.7"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.1.0",
-    "@vue/cli-service": "^3.1.1",
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-service": "^3.1.2",
     "prerender-spa-plugin": "^3.2.1",
     "vue-cli-plugin-prerender-spa": "^1.0.3",
     "vue-cli-plugin-webpack-bundle-analyzer": "^1.2.0",

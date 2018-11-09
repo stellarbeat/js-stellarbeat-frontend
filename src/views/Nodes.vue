@@ -1,13 +1,13 @@
 <template>
     <div>
         <div>
-            <div class="page-header  mt-2">
+            <div class="page-header">
                 <h1 class="page-title">
                     Available nodes
                 </h1>
                 <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
             </div>
-            <div class="card mb-2 p-3">
+            <div class="card mb-2 p-1">
                 <div class="card-header">
                     <div class="row header-row">
                         <div class="col-12 col-sm-6">
@@ -21,7 +21,8 @@
                             </label>
                         </div>
                         <div class="col-12 col-sm-6">
-                            <input class="form-control search" type="text" v-model.lazy="filter" id="searchInput" placeholder="Type public key, name, ... to search"/>
+                            <b-form-input class="form-control search mr-0" type="text" v-model="filter" id="searchInput"
+                                          placeholder="Type public key, name, ... to search"/>
 
                         </div>
                     </div>
@@ -29,38 +30,39 @@
                 </div>
                 <div class="card-body">
 
-                <b-table striped hover responsive :items="nodes" :fields="fields" :sort-by.sync="sortBy"
-                         :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
-                         :filter="filter" @filtered="onFiltered">
-                    <!--template slot="publicKey" slot-scope="data">
-                        {{data.value | truncate(20)}}
-                    </template!-->
-                    <template slot="name" slot-scope="data">
-                        {{data.value || " " | truncate(20)}}
-                    </template>
-                    <template slot="version" slot-scope="data">
-                        {{data.value || " " | truncate(28)}}
-                    </template>
-                    <template slot="actions" slot-scope="row">
-                        <b-button-group class="btn-group-sm">
-                            <router-link class="btn btn-secondary " role="button"
-                                         :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">
-                                Details
-                            </router-link>
-                            <router-link class="btn btn-secondary" role="button"
-                                         :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }, query: { center: 1 }}">
-                                Quorum monitor
-                            </router-link>
-                        </b-button-group>
-                    </template>
-                </b-table>
+                    <b-table striped hover responsive :items="nodes" :fields="fields" :sort-by.sync="sortBy"
+                             :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
+                             :filter="filter" @filtered="onFiltered">
+                        <!--template slot="publicKey" slot-scope="data">
+                            {{data.value | truncate(20)}}
+                        </template!-->
+                        <template slot="name" slot-scope="data">
+                            {{data.value || " " | truncate(20)}}
+                        </template>
+                        <template slot="version" slot-scope="data">
+                            {{data.value || " " | truncate(28)}}
+                        </template>
+                        <template slot="actions" slot-scope="row">
+                            <b-button-group class="btn-group-sm">
+                                <router-link class="btn btn-secondary " role="button"
+                                             :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">
+                                    Details
+                                </router-link>
+                                <router-link class="btn btn-secondary" role="button"
+                                             :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }, query: { center: 1 }}">
+                                    Quorum monitor
+                                </router-link>
+                            </b-button-group>
+                        </template>
+                    </b-table>
+                    <b-row>
+                        <b-col md="6" class="my-1">
+                            <b-pagination :totalRows="totalRows" :per-page="perPage" v-model="currentPage" class="my-1"/>
+                        </b-col>
+                    </b-row>
+                </div>
+
             </div>
-            <b-row>
-                <b-col md="6" class="my-1">
-                    <b-pagination :totalRows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0"/>
-                </b-col>
-            </b-row>
-        </div>
         </div>
     </div>
 </template>
@@ -109,7 +111,7 @@
                             "country": node.geoData.countryName,
                             "version": node.versionStr
                         }
-                })
+                    })
             },
             totalRows: function () {
                 return this.nodes.length;

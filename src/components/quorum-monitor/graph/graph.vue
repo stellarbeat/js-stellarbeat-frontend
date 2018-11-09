@@ -33,7 +33,6 @@
 
     const svgPanZoom = require("svg-pan-zoom");
     const ComputeGraphWorker = require('@/workers/compute-graph.worker.js');
-    const computeGraphWorker = new ComputeGraphWorker();
 
     export default {
         name: "graph",
@@ -49,7 +48,8 @@
                 panZoom: {},
                 isLoading: true,
                 graphInitialized: false,
-                loadingProgress: 0
+                loadingProgress: 0,
+                computeGraphWorker: new ComputeGraphWorker()
             }
         },
         props: {
@@ -126,7 +126,7 @@
                     }
                 });
 
-                computeGraphWorker.postMessage({
+                this.computeGraphWorker.postMessage({
                     nodes: simulationNodes,
                     links: simulationLinks
                 });
@@ -140,7 +140,7 @@
                     this.$set(node, 'y', undefined);
             }); //trigger reactive changes on newly added x and y coordinates
 
-            computeGraphWorker.onmessage = function (event) {
+            this.computeGraphWorker.onmessage = function (event) {
                 switch (event.data.type) {
                     case "tick": {
                         let newLoadingProgress = Math.round(event.data.progress * 100);
@@ -178,6 +178,9 @@
             }.bind(this);
             this.computeGraph();
 
+        },
+        beforeDestroy: function () {
+            this.computeGraphWorker.terminate();
         }
     }
 </script>
