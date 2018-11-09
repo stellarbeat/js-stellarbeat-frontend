@@ -42,7 +42,7 @@
     import NodesMap from "@/components/home/nodes-map.vue";
     import NodesCountryDistribution from "@/components/home/nodes-country-distribution.vue";
     import NodesVersions from "@/components/home/nodes-versions.vue";
-    import QuorumSetConnections from "@/components/home/quorum-set-connections.vue";
+    import QuorumSetConnections from "@/components/home/quorum-set-connections/quorum-set-connections.vue";
 
     export default {
         name: "home",
