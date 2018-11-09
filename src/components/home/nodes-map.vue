@@ -144,9 +144,6 @@
                 // Show IP
                 info += '<br>IP: ' + node.ip;
 
-                // Show verified status
-                if (node.verified) info += '<br><span class="oi oi-check" aria-hidden="true"></span> Verified node (*)';
-
                 // Link to node details page
                 info += '<br><br><a href="/nodes/' + node.publicKey + '">View node details</a>';
 

@@ -62,7 +62,8 @@
 </template>
 
 <script>
-    import {hierarchy, cluster, radialLine, curveBundle} from "d3";
+    import {hierarchy, cluster} from "d3-hierarchy";
+    import {radialLine, curveBundle} from "d3-shape";
     import QuorumSetNode from './quorum-set-node.vue';
 
     const QuorumSet = require("@stellarbeat/js-stellar-domain").QuorumSet;

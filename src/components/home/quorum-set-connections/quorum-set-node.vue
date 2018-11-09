@@ -19,11 +19,11 @@
         },
         computed: {
             isTarget: function() {
-                return false;//this.targetNodes.includes(this.node) && this.selectedNode !== this.node
+                return false;
             },
 
             isSource: function() {
-                return false;//this.sourceNodes.includes(this.node) && this.selectedNode !== this.node
+                return false;
             },
 
             classObject: function () {

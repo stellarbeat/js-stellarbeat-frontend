@@ -1,4 +1,4 @@
-import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3';
+import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-force';
 
 addEventListener('message', (event) => {
         let nodes = event.data.nodes;
