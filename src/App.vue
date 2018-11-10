@@ -71,7 +71,7 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i class="fe fe-info"></i>about</router-link>
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i class="fe fe-info"></i>About</router-link>
                                 </li>
                             </ul>
                         </div>
@@ -144,6 +144,12 @@
 
             this.network = new Network(nodes);
             this.isLoading = false;
+        },
+        metaInfo: {
+            title: 'Stellarbeat.io - Stellar network visibility',
+            meta: [
+                { name: 'description', content: 'Giving insight into the Stellar public network through various tools & visualizations.' }
+            ]
         }
     }
 </script>

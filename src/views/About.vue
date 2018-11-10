@@ -8,7 +8,7 @@
         <b-card>
             <h2>Goal</h2>
             <p>
-                To give insight in the Stellar public network through various tools & visualizations.
+                Give insight into the Stellar public network through various tools & visualizations.
             </p>
 
             <h3>Crawler</h3>
@@ -65,6 +65,12 @@
 
 <script>
     export default {
-        name: "about"
+        name: "about",
+        metaInfo: {
+            title: 'About - Stellarbeat.io',
+            meta: [
+                { name: 'description', content: 'About and contact info' }
+            ]
+        }
     }
 </script>

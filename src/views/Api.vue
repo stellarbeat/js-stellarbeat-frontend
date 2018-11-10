@@ -21,6 +21,12 @@
 
 <script>
     export default {
-        name: "api"
+        name: "api",
+        metaInfo: {
+            title: 'API - Stellarbeat.io',
+            meta: [
+                { name: 'description', content: 'Connect your app through our api' }
+            ]
+        }
     }
 </script>

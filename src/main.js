@@ -6,6 +6,7 @@ import VueTruncate from 'vue-truncate-filter';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import BootstrapVue from 'bootstrap-vue';
+import Meta from 'vue-meta'
 
 let isProd = process.env.NODE_ENV === 'production';
 
@@ -31,6 +32,7 @@ if (isProd) {
 }
 Vue.use(VueTruncate);
 Vue.use(BootstrapVue);
+Vue.use(Meta);
 
 new Vue({
     router,
