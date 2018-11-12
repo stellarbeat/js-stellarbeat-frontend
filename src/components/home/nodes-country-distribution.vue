@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="card-body p-3 pb-6">
-            <canvas id="geoDoughnut" ref="geoDoughnut"></canvas>
+            <canvas id="countryDistributionGraph" ref="countryDistributionGraph"></canvas>
             <!--table class="table table-striped table-bordered mt-4" id="locations-table">
                 <thead class="thead-light">
                 <tr>
@@ -102,7 +102,7 @@
                 if(this.sortedCountries.length === 0) {
                     return;
                 }
-                let context = this.$refs.geoDoughnut.getContext('2d');
+                let context = this.$refs.countryDistributionGraph.getContext('2d');
                this.chart = new Chart(context, {
                     type: 'doughnut',
                     // The data for our dataset
