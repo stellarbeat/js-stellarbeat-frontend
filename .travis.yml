@@ -9,4 +9,6 @@ install:
 - npm ci
 script:
 - npm run build
+- npm run start &
 - npm run test:e2e --headless
+- kill $(jobs -p) || true
