@@ -8,4 +8,5 @@ cache:
 install:
 - npm ci
 script:
+- npm run build
 - npm run test:e2e --headless
