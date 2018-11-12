@@ -10,5 +10,5 @@ install:
 script:
 - npm run build
 - npm run start &
-- npm run test:e2e --headless
+- npm run test:e2e --headless --url=localhost:3000
 - kill $(jobs -p) || true
