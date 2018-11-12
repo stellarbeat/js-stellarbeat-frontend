@@ -2,32 +2,54 @@
     <div class="row" style="width: 100%">
         <div class="col-12">
             <div class="row">
-                <div class="col-12 legend-link">
+                <div class="col-12 legend-link mb-2">
 
                     <a v-show="!showLegend" v-on:click.prevent.stop="showLegend=true" href="#">Show legend</a>
                     <a v-show="showLegend" v-on:click.prevent.stop="showLegend=false" href="#">Hide legend</a>
                 </div>
             </div>
-            <div v-show="showLegend" class="row text-center quorum-graph-legend">
-
-                <div class="col-2 element selected-node">
-                    Selected
-                </div>
-                <div class="col-2 element active-node">
-                    Active
-                </div>
-                <div class="col-2 element inactive-node">
-                    Inactive
+            <div v-show="showLegend" class="row quorum-graph-legend mb-2">
+                <div class="col-4 col-sm-2 d-flex">
+                    <div class="element selected-node px-2 m-2">
+                    </div>
+                    <div >
+                        Selected node
+                    </div>
                 </div>
 
-                <div class="col-2 element failing-node">
-                    Failing
+                <div class="col-4 col-sm-2  d-flex">
+                    <div class=" element active-node px-2 m-2"></div>
+                    <div >
+                        Active node
+                    </div>
                 </div>
-                <div class="col-2 element incoming-connection">
-                    Incoming Link
+
+                <div class="col-4 col-sm-2  d-flex">
+                    <div class=" element inactive-node px-2 m-2"></div>
+                    <div >
+                        Inactive node
+                    </div>
                 </div>
-                <div class="col-2 element outgoing-connection">
-                    Outgoing Link
+
+                <div class="col-4 col-sm-2  d-flex">
+                    <div class=" element failing-node px-2 m-2"></div>
+                    <div >
+                        Failing node
+                    </div>
+                </div>
+
+                <div class="col-4 col-sm-2  d-flex">
+                    <div class=" element incoming-connection px-2 m-2"></div>
+                    <div >
+                        Incoming Link
+                    </div>
+                </div>
+
+                <div class="col-4 col-sm-2  d-flex">
+                    <div class=" element outgoing-connection px-2 m-2"></div>
+                    <div >
+                        Outgoing Link
+                    </div>
                 </div>
             </div>
 
@@ -50,15 +72,11 @@
 </script>
 
 <style scoped>
-    .quorum-graph-legend {
-        margin-top: 20px;
-        font-size: 0.7rem;
-    }
-
     .quorum-graph-legend .element {
-        border-radius: 5px;
-        opacity: 0.8;
-
+        color: white;
+        border-radius: 0px;
+        width: 30px;
+        height: 10px;
     }
 
     .quorum-graph-legend .connection {
@@ -91,6 +109,5 @@
 
     .legend-link {
         font-size: 0.8rem;
-        margin-bottom: 0px;
     }
 </style>
