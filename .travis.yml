@@ -8,4 +8,4 @@ cache:
 install:
 - npm ci
 script:
-- $(npm bin)/cypress run
+- npm run test:e2e
