@@ -16,6 +16,7 @@ script:
 - npm run test:ci
 - kill $(jobs -p) || true
 deploy:
+  skip_cleanup: true
   provider: heroku
   api_key:
     secure: gqAtoP3DFms9sST6BDad2TyRNPvulekweOWv+bIm4pQpk4R9Eukvs1IEQE6x8CpbDv9238tJIFz38R6U0g217+uSkTu0WqS+HyTk1AgRxYcjFrQ+I3owJnSUNHubGVEkG827wh0McytEWjd+inuT1XK+/ZeEpdhC+q58PtMPwnG5zP0bBv7YeRgJniPvzmAQhCKeibn0nZ1evjXarjS4LNUq0zVBIpGMB4jOH+tam2jk/ItzQW83JC2n43tPCruBD4bHB9s7+O8nsUHnloq7zUR9p3/BiPNfIWBYVudLbo2e7Iq+uHuochJMc/xUURIWlNal8rTOS3ENB7TXxM+CELzHoHA3lxsC0zaaWvKrM+cN7aQUYfemCnApIBuB+RwkT1Q2mHG37wRBxKLZEk7S15gB89TDIaHPuxAa2LxVgyfZi4WpPNQNWXyqvEj+DsWh+QtIHVPBd6vCe11gSri3dThhlpSW5AGhU5UYLPjpin1NJfyxYTVc7N4rhwpg7kyjjlehGx2z0drsGtPo0YFqCYRf+7qTPsBxhRx0V2Dn4yUy/7GIu0IzhX8I2avkzK/QGWccsnyLDxqT/p4+brR+HSJ+wKPEFGBbMGlk2Mn4mqhxIastVmJL7foNQEuGv3cKQuTUaS4WFUNpPiMMYfWTT+YEEJpFGcpVUAMuC7Ng248=
