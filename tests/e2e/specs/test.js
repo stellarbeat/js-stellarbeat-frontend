@@ -2,13 +2,17 @@
 
 describe('views/Home', () => {
     it('Visits the app root url', () => {
+        //cy.fixture('nodes').as('nodesJSON');
+        //cy.server();
+        //cy.route('GET', '/v1/nodes', '@nodesJSON');
         cy.visit('/');
-        cy.contains('h1', 'Stellar Network');
         cy.contains('a', 'Home');
         cy.contains('a', 'Nodes');
         cy.contains('a', 'Quorum Monitor');
         cy.contains('a', 'API');
         cy.contains('a', 'About');
+        cy.get('.page-title');
+        cy.contains('h1', 'Stellar Network');
         cy.contains('div', "Nodes");
         cy.contains('div', "Validators");
         cy.contains('div', "Active Nodes");
