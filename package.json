@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "heroku-postbuild": "npm run build",
     "start": "node server.js",
     "test:e2e": "vue-cli-service test:e2e",
     "test:ci": "vue-cli-service test:e2e --headless --url=http://localhost:3000 --browser chrome"
