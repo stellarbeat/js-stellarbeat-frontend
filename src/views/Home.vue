@@ -11,7 +11,7 @@
                 <h1 class="page-title">
                     Stellar Network
                 </h1>
-                <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
+                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
 
@@ -62,8 +62,8 @@
             QuorumSetConnections
         },
         computed: {
-            lastCrawlDateString: function () {
-                return this.network.getLatestCrawlDate() ? this.network.getLatestCrawlDate().toLocaleString() : 'NA';
+            latestCrawlDateString: function () {
+                return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
             }
         }
     }

@@ -11,7 +11,7 @@
                 <h1 class="page-title">
                     Node info
                 </h1>
-                <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
+                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
             <b-card class="mb-2 p-3">
                 <b-table stacked striped hover responsive :items="items">
@@ -55,8 +55,8 @@
                 item.quorumSet = '';
                 return [item];
             },
-            lastCrawlDateString: function () {
-                return this.network.getLatestCrawlDate() ? this.network.getLatestCrawlDate().toLocaleString() : 'NA';
+            latestCrawlDateString: function () {
+                return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
             }
 
         },

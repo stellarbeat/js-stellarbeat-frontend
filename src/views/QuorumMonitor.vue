@@ -24,7 +24,7 @@
                 <h1 class="page-title">
                     Quorum Monitor
                 </h1>
-                <div class="page-subtitle">Latest crawl on {{lastCrawlDateString}}</div>
+                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
             <div class="row row-cards">
@@ -180,8 +180,8 @@
             }
         },
         computed: {
-            lastCrawlDateString: function () {
-                return this.network.getLatestCrawlDate() ? this.network.getLatestCrawlDate().toLocaleString() : 'NA';
+            latestCrawlDateString: function () {
+                return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
             },
             isSimulation: function () {
                 return this.simulatedNodes.length > 0;
