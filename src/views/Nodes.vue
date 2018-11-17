@@ -82,6 +82,7 @@
                     {key: 'name', sortable: true},
                     //{ key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
                     {key: 'availability', sortable: true},
+                    {key: 'overloaded', sortable: true},
                     {key: 'version', sortable: true},
                     {key: 'country', sortable: true},
                     {key: 'ip', sortable: true},
@@ -106,6 +107,7 @@
                         return {
                             "name": node.displayName,
                             "availability": node.statistics.activeRating * 20 + "%",
+                            "overloaded": node.statistics.overLoadedRating * 20 + "%",
                             "ip": node.key,
                             "publicKey": node.publicKey,
                             "country": node.geoData.countryName,
