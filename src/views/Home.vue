@@ -23,7 +23,7 @@
             <div class="row row-cards justify-content-center">
                 <div class="col-xl-6 col-lg-6 col-12">
                     <QuorumSetConnections :network="network"></QuorumSetConnections>
-                    <NodesOverLoaded :network="network"></NodesOverLoaded>
+                    <ValidatorLoad :network="network"></ValidatorLoad>
 
                 </div>
                 <div class="col-xl-6 col-lg-6 col-12">
@@ -42,7 +42,7 @@
 <script>
     import Statistics from "@/components/statistics.vue";
     import NodesMap from "@/components/home/nodes-map.vue";
-    import NodesOverLoaded from "@/components/home/nodes-overloaded.vue";
+    import ValidatorLoad from "@/components/home/validator-load.vue";
     import NodesCountryDistribution from "@/components/home/nodes-country-distribution.vue";
     import NodesVersions from "@/components/home/nodes-versions.vue";
     import QuorumSetConnections from "@/components/home/quorum-set-connections/quorum-set-connections.vue";
@@ -63,7 +63,7 @@
             NodesCountryDistribution,
             NodesVersions,
             QuorumSetConnections,
-            NodesOverLoaded
+            ValidatorLoad
         },
         computed: {
             latestCrawlDateString: function () {

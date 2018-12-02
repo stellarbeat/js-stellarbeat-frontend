@@ -1,10 +1,10 @@
 <template>
     <div class="card ">
         <div class="card-header">
-            <h3 class="card-title">Validators overloaded status </h3>
+            <h3 class="card-title">Validator loads </h3>
             <i id="overLoadedTooltip" class="fe fe-info ml-2 mt-0 text-muted"></i>
             <b-tooltip target="overLoadedTooltip" placement="top">
-                Shows the the percentage of time that the active validators were overloaded during the latest 300 crawls.
+                A validator has a high load when it disconnects due to 'high load' most of the time during the latest 300 crawls.
             </b-tooltip>
             <div class="card-options">
                 <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'nodes'}">View all nodes
@@ -21,7 +21,7 @@
     import Chart from 'chart.js/dist/Chart.js'
 
     export default {
-        name: "nodes-load",
+        name: "validators-server-load",
         data() {
             return {
                 chart: {}
@@ -65,14 +65,14 @@
                     // The data for our dataset
                     data: {
                         labels: [
-                            "0-40%",
-                            "40-80%",
-                            "80-100%"
+                            "low",
+                            "medium",
+                            "high"
                         ],
                         datasets: [{
                             label: "nodes",
                             backgroundColor: [
-                                '#1997c6', // success green
+                                '#1997c6', // success blue
                                 'rgba(228, 216, 54)', // warning yellow
                                 '#cd201f', // danger red
                             ],

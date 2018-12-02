@@ -32,7 +32,7 @@
                     Node availability status: Percentage of time the node was active in the latest 300 crawls.
                 </li>
                 <li>
-                    Node overloaded status: Percentage of time a node has sent an <a href="https://github.com/stellar/stellar-core/blob/master/src/xdr/Stellar-overlay.x">ERR_LOAD</a> message in the latest 300 crawls.
+                    Node load: Metric that shows how many times an <a href="https://github.com/stellar/stellar-core/blob/master/src/xdr/Stellar-overlay.x">ERR_LOAD</a> message is received in the latest 300 crawls.
                 </li>
                 <li>
                     Validator: The crawler picks up "stellar consensus protocol" messages about the node and successfully

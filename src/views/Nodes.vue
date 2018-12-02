@@ -57,7 +57,8 @@
                     </b-table>
                     <b-row>
                         <b-col md="6" class="my-1">
-                            <b-pagination :totalRows="totalRows" :per-page="perPage" v-model="currentPage" class="my-1"/>
+                            <b-pagination :totalRows="totalRows" :per-page="perPage" v-model="currentPage"
+                                          class="my-1"/>
                         </b-col>
                     </b-row>
                 </div>
@@ -82,7 +83,7 @@
                     {key: 'name', sortable: true},
                     //{ key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
                     {key: 'availability', sortable: true},
-                    {key: 'overloaded', sortable: true},
+                    {key: 'load', sortable: true},
                     {key: 'version', sortable: true},
                     {key: 'country', sortable: true},
                     {key: 'ip', sortable: true},
@@ -107,7 +108,7 @@
                         return {
                             "name": node.displayName,
                             "availability": node.statistics.activeRating * 20 + "%",
-                            "overloaded": node.statistics.overLoadedRating * 20 + "%",
+                            "load": this.getLoad(node),
                             "ip": node.key,
                             "publicKey": node.publicKey,
                             "country": node.geoData.countryName,
@@ -129,7 +130,20 @@
                 // Trigger pagination to update the number of buttons/pages due to filtering
                 //this.totalRows = filteredItems.length;
                 this.currentPage = 1;
+            },
+            getLoad(node) {
+                switch (true) {
+                    case node.statistics.activeRating === 0:
+                        return 'NA';
+                    case node.statistics.overLoadedRating <= 2:
+                        return 'low';
+                    case node.statistics.overLoadedRating <= 4:
+                        return 'medium';
+                    case node.statistics.overLoadedRating <= 5:
+                        return 'high';
+                }
             }
+
         },
         mounted() {
 
@@ -139,7 +153,7 @@
         metaInfo: {
             title: 'Nodes overview - Stellarbeat.io',
             meta: [
-                { name: 'description', content: 'Search through all available nodes' }
+                {name: 'description', content: 'Search through all available nodes'}
             ]
         }
     }
