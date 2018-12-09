@@ -7,7 +7,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import BootstrapVue from 'bootstrap-vue';
 import Meta from 'vue-meta';
-import Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/browser';
 
 const isProd = process.env.NODE_ENV === 'production';
 
