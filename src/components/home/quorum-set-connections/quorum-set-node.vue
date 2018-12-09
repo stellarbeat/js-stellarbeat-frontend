@@ -52,7 +52,7 @@
                 this.$router.push({
                     name: 'quorum-monitor-node',
                     params: {'publicKey': this.node.data.publicKey},
-                    query: {'center': '1', "no-scroll": 'false'}
+                    query: {'center': '1', "no-scroll": '0'}
                 });
             }
         }

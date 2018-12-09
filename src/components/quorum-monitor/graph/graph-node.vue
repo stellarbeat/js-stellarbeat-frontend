@@ -78,7 +78,7 @@ export default class GraphNode extends Vue {
             {
                 name: 'quorum-monitor-node',
                 params: {publicKey: this.node.publicKey},
-                query: {'center': '0', 'no-scroll': 'true'},
+                query: {'center': '0', 'no-scroll': '0'},
             },
             );
     }

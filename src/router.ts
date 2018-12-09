@@ -35,7 +35,7 @@ export default new Router({
       },
   ],
     scrollBehavior(to, from, savedPosition) {
-      if (to.query['no-scroll']) {
+      if (to.query['no-scroll'] === '1') {
           return;
       }
 
