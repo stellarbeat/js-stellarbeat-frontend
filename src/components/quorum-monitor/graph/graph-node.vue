@@ -15,74 +15,74 @@
     </g>
 </template>
 
-<script>
-    const QuorumService = require("@stellarbeat/js-stellar-domain").QuorumService;
-    const Node = require("@stellarbeat/js-stellar-domain").Node;
-    export default {
-        name: "graph-node",
-        props: {
-            node: {
-                type: Object
-            },
-            network: {
-                type: Object
-            },
-            selectedNode: {
-                type: Object
-            },
-            targetNodes: {
-                type: Array
-            },
-            sourceNodes: {
-                type: Array
-            }
-        },
-        computed: {
-            coordinateTransform: function() {
-                return `translate(${this.node.x},${this.node.y})`;
-            },
-            circleRadius: function () {
-                return "3px";
-            },
-            failing: function(){
-                return this.network.failingNodes.includes(this.node);
-            },
+<script lang="ts">
+import Vue from 'vue';
+import {QuorumService, Node, Network} from '@stellarbeat/js-stellar-domain';
+import {Component, Prop, Watch} from 'vue-property-decorator';
 
-            selected: function() {
-              return this.selectedNode === this.node
-            },
+@Component({})
+export default class GraphNode extends Vue {
+    public name: string = 'graph-node';
+    public circleRadius: string = '3px';
 
-            active: function() {
-                return this.node.active
-            },
+    @Prop()
+    public node!: Node;
+    @Prop()
+    public network!: Network;
+    @Prop()
+    public selectedNode!: Node;
+    @Prop()
+    public sourceNodes!: Node[];
+    @Prop()
+    public targetNodes!: Node[];
 
-            isTarget: function() {
-                return this.targetNodes.includes(this.node) && this.selectedNode !== this.node
-            },
-
-            isSource: function() {
-                return this.sourceNodes.includes(this.node) && this.selectedNode !== this.node
-            },
-
-            classObject: function () {
-                return {
-                    'active': this.active,
-                    'selected': this.selected,
-                    'failing': this.failing,
-                    'target': this.isTarget,
-                    'source' : this.isSource
-                }
-            },
-            displayName: function () {
-                return this.node.displayName;
-            }
-        },
-        methods: {
-            nodeSelected: function () {
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: this.node.publicKey}, query: {center: false, "no-scroll": true}});
-            }
-        }
+    get coordinateTransform(): string {
+        return `translate(${(this.node as any).x},${(this.node as any).y})`;
     }
+
+    get failing(): boolean {
+        return this.network.failingNodes.includes(this.node);
+    }
+
+    get selected(): boolean {
+        return this.selectedNode === this.node;
+    }
+
+    get active(): boolean {
+        return this.node.active;
+    }
+
+    get isTarget(): boolean {
+        return this.targetNodes.includes(this.node) && this.selectedNode !== this.node;
+    }
+
+    get isSource(): boolean {
+        return this.sourceNodes.includes(this.node) && this.selectedNode !== this.node;
+    }
+
+    get classObject() {
+        return {
+            active: this.active,
+            selected: this.selected,
+            failing: this.failing,
+            target: this.isTarget,
+            source : this.isSource,
+        };
+    }
+    get displayName(): string {
+        return this.node.displayName;
+    }
+
+    public nodeSelected() {
+        this.$router.push(
+            {
+                name: 'quorum-monitor-node',
+                params: {publicKey: this.node.publicKey},
+                query: {'center': '0', 'no-scroll': 'true'},
+            },
+            );
+    }
+}
 </script>
 
 <style scoped>

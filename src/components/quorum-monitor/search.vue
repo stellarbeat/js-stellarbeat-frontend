@@ -4,7 +4,8 @@
                       autocomplete="off"
                       @keydown.down.native="onArrowDown"
                       @keydown.up.native="onArrowUp"
-                      @keydown.enter.native.prevent.stop="onEnter"/>
+                      @keydown.enter.native.prevent.stop="onEnter">
+        </b-form-input>
         <div class="dropdown-menu dropdown-menu-right" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a
@@ -19,66 +20,65 @@
     </div>
 </template>
 
-<script>
-    export default {
-        name: "search",
-        data() {
-            return {
-                searchString: '',
-                arrowCounter: -1
+<script lang="ts">
+
+    import Vue from "vue";
+    import {Component, Prop} from "vue-property-decorator";
+
+    import {Node} from "@stellarbeat/js-stellar-domain";
+
+    @Component({
+        name: "search"
+    })
+    export default class QuorumSetDisplay extends Vue {
+        @Prop()
+        protected nodes!: Node[];
+
+        protected searchString: string = "";
+        protected arrowCounter: number = -1;
+
+        get showSuggestions() {
+            if (this.searchString === "") {
+                return false;
             }
-        },
-        props: {
-            nodes: {
-                type: Array,
-                required: true
-            }
-        },
-        computed: {
-            showSuggestions() {
-                if (this.searchString === '')
-                    return false;
 
-                if (this.filteredList.length === 0) {
-                    return false;
-                }
+            return this.filteredList.length !== 0;
+        }
 
-                return true;
-            },
-            filteredList() {
-                return this.nodes.filter(node => {
-                    return node.displayName.toLowerCase().includes(this.searchString.toLowerCase())
-                })
-            },
-        },
-        methods: {
-            nodeSelected: function (node) {
-                this.searchString = '';
-                this.$router.push({
-                    name: 'quorum-monitor-node',
-                    params: {publicKey: node.publicKey},
-                    query: {center: true, "no-scroll": true}
-                });
-            },
-            onArrowDown() {
-                if (this.arrowCounter < this.filteredList.length - 1) {
-                    this.arrowCounter = this.arrowCounter + 1;
-                }
-            },
-            onArrowUp() {
-                if (this.arrowCounter > 0) {
-                    this.arrowCounter = this.arrowCounter - 1;
-                }
-            },
-            onEnter() {
-                if (this.arrowCounter !== -1) {
-                    this.nodeSelected(this.filteredList[this.arrowCounter]);
-                }
+        get filteredList() {
+            return this.nodes.filter((node) => {
+                return node.displayName.toLowerCase().includes(this.searchString.toLowerCase());
+            });
+        }
 
-                this.arrowCounter = -1;
+        protected nodeSelected(node: Node) {
+            this.searchString = "";
+            this.$router.push({
+                name: "quorum-monitor-node",
+                params: {publicKey: node.publicKey},
+                query: {"center": "1", 'no-scroll': 'true'}
+            });
+        }
+
+        protected onArrowDown() {
+            if (this.arrowCounter < this.filteredList.length - 1) {
+                this.arrowCounter = this.arrowCounter + 1;
             }
         }
 
+        protected onArrowUp() {
+            if (this.arrowCounter > 0) {
+                this.arrowCounter = this.arrowCounter - 1;
+            }
+        }
+
+        protected onEnter() {
+            if (this.arrowCounter !== -1) {
+                this.nodeSelected(this.filteredList[this.arrowCounter]);
+            }
+
+            this.arrowCounter = -1;
+        }
     }
 </script>
 

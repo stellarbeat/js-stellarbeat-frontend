@@ -19,10 +19,12 @@
     </div>
 </template>
 
-<script>
-    export default {
-        name: "manual"
-    }
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+    name: 'manual',
+});
 </script>
 
 <style scoped>

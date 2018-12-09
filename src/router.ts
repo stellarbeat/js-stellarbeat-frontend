@@ -1,14 +1,13 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 import QuorumSetExplorer from './components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
 import Manual from './components/quorum-monitor/manual.vue';
 import Home from './views/Home.vue';
 import QuorumMonitor from './views/QuorumMonitor.vue';
-import Nodes from './views/Nodes';
-import NodeDetails from './views/NodeDetails';
-import About from './views/About';
-import Api from './views/Api';
-
+import Nodes from './views/Nodes.vue';
+import NodeDetails from './views/NodeDetails.vue';
+import About from './views/About.vue';
+import Api from './views/Api.vue';
 
 Vue.use(Router);
 
@@ -25,27 +24,27 @@ export default new Router({
           path: '/quorum-monitor', component: QuorumMonitor,
           children: [
               {
-                  name: 'quorum-monitor', path: '', component: Manual
+                  name: 'quorum-monitor', path: '', component: Manual,
               },
               {
                   name: 'quorum-monitor-node',
                   path: ':publicKey',
-                  component: QuorumSetExplorer
-              }
-          ]
-      }
+                  component: QuorumSetExplorer,
+              },
+          ],
+      },
   ],
-    scrollBehavior (to, from, savedPosition) {
-      if(to.query["no-scroll"]) {
+    scrollBehavior(to, from, savedPosition) {
+      if (to.query['no-scroll']) {
           return;
       }
 
-      //default we scroll to top or use history
+      // default we scroll to top or use history
       if (savedPosition) {
-          return savedPosition
+          return savedPosition;
       } else {
-          return { x: 0, y: 0 }
+          return { x: 0, y: 0 };
       }
-    }
+    },
 
-})
+});

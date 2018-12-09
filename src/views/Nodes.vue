@@ -49,7 +49,7 @@
                                     Details
                                 </router-link>
                                 <router-link class="btn btn-secondary" role="button"
-                                             :to="{ name: 'quorum-monitor-node', params: { publicKey: row.item.publicKey }, query: { center: 1 }}">
+                                             :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
                                     Quorum monitor
                                 </router-link>
                             </b-button-group>
@@ -68,95 +68,87 @@
     </div>
 </template>
 
-<script>
-    export default {
-        name: "nodes-table",
-        data() {
-            return {
-                optionShowInactive: 1,
-                sortBy: 'Name',
-                sortDesc: true,
-                perPage: 20,
-                currentPage: 1,
-                filter: null,
-                fields: [
-                    {key: 'name', sortable: true},
-                    //{ key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-                    {key: 'availability', sortable: true},
-                    {key: 'load', sortable: true},
-                    {key: 'version', sortable: true},
-                    {key: 'country', sortable: true},
-                    {key: 'ip', sortable: true},
+<script lang="ts">
+import Vue from 'vue';
+import {Component, Prop} from 'vue-property-decorator';
+import {Network, Node} from '@stellarbeat/js-stellar-domain';
 
-                    {key: 'actions', label: ''}
-                ],
-            }
-        },
-        props: {
-            network: {
-                type: Object
-            },
-            isLoading: {
-                type: Boolean
-            }
-        },
-        computed: {
-            nodes: function () {
-                return this.network.nodes
-                    .filter(node => node.active || this.optionShowInactive)
-                    .map(node => {
-                        return {
-                            "name": node.displayName,
-                            "availability": node.statistics.activeRating * 20 + "%",
-                            "load": this.getLoad(node),
-                            "ip": node.key,
-                            "publicKey": node.publicKey,
-                            "country": node.geoData.countryName,
-                            "version": node.versionStr
-                        }
-                    })
-            },
-            totalRows: function () {
-                return this.nodes.length;
-            },
+@Component({
+    name: 'nodes-table',
+    metaInfo: {
+        title: 'Nodes overview - Stellarbeat.io',
+        meta: [
+            {name: 'description', content: 'Search through all available nodes'},
+        ],
+    },
+})
+export default class NodeDetails extends Vue {
+    public optionShowInactive: number = 1;
+    public sortBy: string = 'Name';
+    public sortDesc: boolean = true;
+    public perPage: number = 20;
+    public currentPage: number = 1;
+    public filter: string = '';
+    public fields = [
+        {key: 'name', sortable: true},
+        // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
+        {key: 'availability', sortable: true},
+        {key: 'load', sortable: true},
+        {key: 'version', sortable: true},
+        {key: 'country', sortable: true},
+        {key: 'ip', sortable: true},
 
-            latestCrawlDateString: function () {
-                return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-            }
+        {key: 'actions', label: ''},
+    ];
 
-        },
-        methods: {
-            onFiltered(filteredItems) {
-                // Trigger pagination to update the number of buttons/pages due to filtering
-                //this.totalRows = filteredItems.length;
-                this.currentPage = 1;
-            },
-            getLoad(node) {
-                switch (true) {
-                    case node.statistics.activeRating === 0:
-                        return 'NA';
-                    case node.statistics.overLoadedRating <= 2:
-                        return 'low';
-                    case node.statistics.overLoadedRating <= 4:
-                        return 'medium';
-                    case node.statistics.overLoadedRating <= 5:
-                        return 'high';
-                }
-            }
+    @Prop()
+    public network!: Network;
+    @Prop()
+    public isLoading!: boolean;
 
-        },
-        mounted() {
+    get nodes(): any[] {
+        return this.network.nodes
+            .filter((node) => node.active || this.optionShowInactive)
+            .map((node) => {
+                return {
+                    name: node.displayName,
+                    availability: node.statistics.activeRating * 20 + '%',
+                    load: this.getLoad(node),
+                    ip: node.key,
+                    publicKey: node.publicKey,
+                    country: node.geoData.countryName,
+                    version: node.versionStr,
+                };
+            });
+    }
 
-        },
-        beforeDestroy: function () {
-        },
-        metaInfo: {
-            title: 'Nodes overview - Stellarbeat.io',
-            meta: [
-                {name: 'description', content: 'Search through all available nodes'}
-            ]
+    get totalRows(): number {
+        return this.nodes.length;
+    }
+
+    get latestCrawlDateString(): string {
+        return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
+    }
+
+    public onFiltered = (filteredItems: any[]) => {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        // this.totalRows = filteredItems.length;
+        this.currentPage = 1;
+    }
+
+    public getLoad = (node: Node) => {
+        switch (true) {
+            case node.statistics.activeRating === 0:
+                return 'NA';
+            case node.statistics.overLoadedRating <= 2:
+                return 'low';
+            case node.statistics.overLoadedRating <= 4:
+                return 'medium';
+            case node.statistics.overLoadedRating <= 5:
+                return 'high';
         }
     }
+}
 </script>
 <style scoped>
     .header-row {

@@ -25,17 +25,17 @@
                 </div>
             </h4>
             <ul class="tree list-group list-group-flush">
-                <QuorumSet :quorumSet="selectedNode.quorumSet"
+                <QuorumSetDisplay :quorumSet="selectedNode.quorumSet"
                            :network="network"
                            :root="true"
                            v-on:node-toggle-active="toggleNodeActive"
                            v-on:node-show-modal="showModal"
                            >
-                </QuorumSet>
+                </QuorumSetDisplay>
             </ul>
         </div>
 
-        <b-modal
+        <b-modal v-if="modalNode"
                 ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal" v-bind:title="modalNode.displayName">
             <b-table stacked striped hover responsive :items="modalItems" >
             </b-table>
@@ -44,57 +44,57 @@
     </div>
 </template>
 
-<script>
-    import QuorumSet from './quorum-set.vue';
-    import Search from './../search.vue';
+<script lang="ts">
+import QuorumSetDisplay from './quorum-set-display.vue';
+import Search from './../search.vue';
 
-    export default {
-        name: "quorum-set-explorer",
-        components: {
-            QuorumSet,
-            Search
-        },
-        props: {
-            network: {
-                type: Object
-            },
-            selectedNode: {
-                type: Object
-            }
-        },
-        data() {
-            return {
-                modalNode: {}
-            }
-        },
-        computed: {
-            modalItems: function() {
-                if(!this.selectedNode) {
-                    return [];
-                }
-                let item = JSON.parse(JSON.stringify(this.selectedNode)); //clone it
-                delete item.quorumSet;
-                delete item.geoData;
-                delete item.statistics;
-                item = Object.assign(item, this.selectedNode.geoData);
-                item = Object.assign(item, this.selectedNode.statistics);
-                item.quorumSet = '';
-                return [item];
-            }
-        },
-        methods: {
-            toggleNodeActive: function (node) {
-                this.$emit("node-toggle-active", node);
-            },
-            showModal: function (node) {
-                this.modalNode = node;
-                this.$refs.modal.show();
-            },
-            onNodeCenter: function (node) {
-                //this.$emit("center-node", node);
-            }
+import Vue from 'vue';
+import {Component, Prop} from 'vue-property-decorator';
+
+import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+import {Modal} from 'bootstrap-vue';
+
+@Component({
+    name: 'quorum-set-explorer',
+    components: {
+        Search,
+        QuorumSetDisplay,
+    },
+})
+export default class QuorumSetExplorer extends Vue {
+    @Prop()
+    public network!: Network;
+    @Prop()
+    public selectedNode!: Node;
+
+    public modalNode: Node|null = null;
+
+    get modalItems() {
+        if (!this.modalNode) {
+            return [];
         }
+
+        let item = JSON.parse(JSON.stringify(this.modalNode)); // clone it
+        delete item.quorumSet;
+        delete item.geoData;
+        delete item.statistics;
+        item = Object.assign(item, this.modalNode.geoData);
+        item = Object.assign(item, this.modalNode.statistics);
+        item.quorumSet = '';
+        return [item];
     }
+
+    public toggleNodeActive(node: Node) {
+        this.$emit('node-toggle-active', node);
+    }
+
+    public showModal(node: Node) {
+        this.modalNode = node;
+        this.$nextTick(function() {
+            (this.$refs.modal as Modal).show();
+        });
+    }
+}
 </script>
 
 <style scoped>

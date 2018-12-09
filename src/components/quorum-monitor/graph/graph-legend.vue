@@ -60,15 +60,15 @@
 
 </template>
 
-<script>
-    export default {
-        name: "graph-legend",
-        data() {
-            return {
-                showLegend: false
-            }
-        }
-    }
+<script lang="ts">
+export default {
+    name: 'graph-legend',
+    data() {
+        return {
+            showLegend: false,
+        };
+    },
+};
 </script>
 
 <style scoped>

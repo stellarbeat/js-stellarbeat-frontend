@@ -39,38 +39,40 @@
     </div>
 </template>
 
-<script>
-    import Statistics from "@/components/statistics.vue";
-    import NodesMap from "@/components/home/nodes-map.vue";
-    import ValidatorLoad from "@/components/home/validator-load.vue";
-    import NodesCountryDistribution from "@/components/home/nodes-country-distribution.vue";
-    import NodesVersions from "@/components/home/nodes-versions.vue";
-    import QuorumSetConnections from "@/components/home/quorum-set-connections/quorum-set-connections.vue";
+<script lang="ts">
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
 
-    export default {
-        name: "home",
-        props: {
-            network: {
-                type: Object
-            },
-            isLoading: {
-                type: Boolean
-            }
-        },
-        components: {
-            Statistics,
-            NodesMap,
-            NodesCountryDistribution,
-            NodesVersions,
-            QuorumSetConnections,
-            ValidatorLoad
-        },
-        computed: {
-            latestCrawlDateString: function () {
-                return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-            }
-        }
+import Statistics from './../components/statistics.vue';
+import NodesMap from './../components/home/nodes-map.vue';
+import ValidatorLoad from './../components/home/validator-load.vue';
+import NodesCountryDistribution from './../components/home/nodes-country-distribution.vue';
+import NodesVersions from './../components/home/nodes-versions.vue';
+import QuorumSetConnections from './../components/home/quorum-set-connections/quorum-set-connections.vue';
+
+import {Network} from '@stellarbeat/js-stellar-domain';
+
+@Component({
+    name: 'home',
+    components: {
+        Statistics,
+        NodesMap,
+        NodesCountryDistribution,
+        NodesVersions,
+        QuorumSetConnections,
+        ValidatorLoad,
+    },
+})
+export default class Home extends Vue {
+    @Prop()
+    protected network!: Network;
+    @Prop()
+    protected isLoading!: boolean;
+
+    get latestCrawlDateString() { // computed
+            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
     }
+}
 </script>
 
 <style>

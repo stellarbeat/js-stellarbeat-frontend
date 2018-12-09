@@ -27,162 +27,165 @@
 
 </template>
 
-<script>
-    import GraphNode from "./graph-node.vue";
-    import GraphLink from "./graph-link.vue";
+<script lang="ts">
+import Vue from 'vue';
+import {Network, Node} from '@stellarbeat/js-stellar-domain';
+import GraphNode from './graph-node.vue';
+import GraphLink from './graph-link.vue';
+import svgPanZoom from 'svg-pan-zoom';
 
-    const svgPanZoom = require("svg-pan-zoom");
-    const ComputeGraphWorker = require('@/workers/compute-graph.worker.js');
+import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graph.worker';
+import {Component, Prop, Watch} from 'vue-property-decorator';
 
-    export default {
-        name: "graph",
+const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
 
-        components: {
-            GraphNode,
-            GraphLink
-        },
-        data() {
-            return {
-                simulation: {},
-                simulationNodes: {},
-                panZoom: {},
-                isLoading: true,
-                graphInitialized: false,
-                loadingProgress: 0,
-                computeGraphWorker: new ComputeGraphWorker()
-            }
-        },
-        props: {
-            network: {
-                type: Object
-            },
-            centerNode: {
-                type: Object
-            },
-            selectedNode: {
-                type: Object
-            }
-        },
-        watch: {
-            centerNode: function (node) {
-                if(this.graphInitialized) {
-                    this.centerCorrectNode();
-                }
-            }
-        },
-        computed: {
-            progressBarWidth: function () {
-                return "width: " + this.loadingProgress + '%';
-            },
-            sourceNodes: function () {
-                return this.network.links
-                    .filter(link => link.target === this.selectedNode)
-                    .map(link => link.source);
-            },
-            targetNodes: function () {
-                return this.network.links
-                    .filter(link => link.source === this.selectedNode)
-                    .map(link => link.target);
-            },
-            dimmerClass: function () {
-                return {
-                    'dimmer': true,
-                    'active': this.isLoading
-                }
-            }
-        },
-        methods: {
-            restartSimulation: function () {
-                this.computeGraph();
-            },
-            centerCorrectNode: function() {
-                if(this.centerNode) {
-                    let height = this.panZoom.getSizes().height;
-                    let width = this.panZoom.getSizes().width;
-                    let zoom = this.panZoom.getSizes().realZoom;
-                    let realNodeX = -this.centerNode.x * zoom + width / 2;
-                    let realNodeY = -this.centerNode.y * zoom + height / 2;
-                    this.panZoom.pan({x: realNodeX, y: realNodeY});
-                }
-            },
-            computeGraph: function () {
-                this.isLoading = true;
-                //separate simnodes to avoid slow rendering
-                let simulationNodes = this.network.nodes.map((node, index) => {
-                    return {
-                        'publicKey': node.publicKey,
-                        'x': node.x,
-                        'y': node.y,
-                        'index': index
-                    }
-                });
+@Component({
+    components: {
+        GraphNode,
+        GraphLink,
+    },
+})
+export default class Graph extends Vue {
+    public name: string = 'graph';
+    public panZoom!: SvgPanZoom.Instance;
+    public isLoading: boolean = true;
+    public graphInitialized: boolean = false;
+    public loadingProgress: number = 0;
+    public computeGraphWorker = new _ComputeGraphWorker();
 
-                let simulationLinks = this.network.links.map((link, index) => {
-                    return {
-                        'source': link.source.publicKey,
-                        'target': link.target.publicKey,
-                        'isClusterLink': link.isClusterLink,
-                        'index': index
-                    }
-                });
+    @Prop()
+    public network!: Network;
+    @Prop()
+    public centerNode!: Node;
+    @Prop()
+    public selectedNode!: Node;
 
-                this.computeGraphWorker.postMessage({
-                    nodes: simulationNodes,
-                    links: simulationLinks
-                });
-
-            }
-
-        },
-        created() {
-            this.network.nodes.forEach(node => {
-                    this.$set(node, 'x', undefined);
-                    this.$set(node, 'y', undefined);
-            }); //trigger reactive changes on newly added x and y coordinates
-
-            this.computeGraphWorker.onmessage = function (event) {
-                switch (event.data.type) {
-                    case "tick": {
-                        let newLoadingProgress = Math.round(event.data.progress * 100);
-                        //if(newLoadingProgress % 25 === 0)
-                        this.loadingProgress = newLoadingProgress;
-                    }
-                        break;
-                    case "end": {
-                        event.data.nodes.forEach(
-                            node => {
-                                this.network.nodes[node.index].x = node.x;
-                                this.network.nodes[node.index].y = node.y;
-                            }
-                        );
-                        this.isLoading = false;
-                        if (!this.graphInitialized) {
-                            this.panZoom = svgPanZoom(this.$refs.graphSvg,
-                                {
-                                    mouseWheelZoomEnabled: false,
-                                    zoom: 2,
-                                    minZoom: 0.5
-                                    , maxZoom: 10
-                                    , fit: false
-                                    , contain: false
-                                    , center: true,
-                                    controlIconsEnabled: true
-                                });
-                            this.graphInitialized = true;
-                            this.panZoom.zoomBy(2);
-                            this.centerCorrectNode();
-                        }
-                    }
-                        break;
-                }
-            }.bind(this);
-            this.computeGraph();
-
-        },
-        beforeDestroy: function () {
-            this.computeGraphWorker.terminate();
+    @Watch('centerNode')
+    public onCenterNodeChanged() {
+        if (this.graphInitialized) {
+            this.centerCorrectNode();
         }
     }
+
+    get progressBarWidth() {
+        return 'width: ' + this.loadingProgress + '%';
+    }
+
+    get sourceNodes() {
+        return this.network.links
+            .filter((link) => link.target === this.selectedNode)
+            .map((link) => link.source);
+    }
+
+    get targetNodes() {
+        return this.network.links
+            .filter((link) => link.source === this.selectedNode)
+            .map((link) => link.target);
+    }
+
+    get dimmerClass() {
+        return {
+            dimmer: true,
+            active: this.isLoading,
+        };
+    }
+
+    public restartSimulation() {
+        this.computeGraph();
+    }
+
+    public centerCorrectNode() {
+        if (this.centerNode) {
+            // noinspection TypeScriptUnresolvedFunction
+            const height = this.panZoom.getSizes().height;
+            // noinspection TypeScriptUnresolvedFunction
+            const width = this.panZoom.getSizes().width;
+            // noinspection TypeScriptUnresolvedFunction
+            const sizes = this.panZoom.getSizes();
+            // noinspection TypeScriptUnresolvedVariable
+            const zoom = sizes.realZoom;
+            const realNodeX = -(this.centerNode as any).x * zoom + width / 2;
+            const realNodeY = -(this.centerNode as any).y * zoom + height / 2;
+            // noinspection TypeScriptValidateTypes
+            this.panZoom.pan({x: realNodeX, y: realNodeY});
+        }
+    }
+
+    public computeGraph() {
+        this.isLoading = true;
+        // separate sim nodes to avoid slow rendering
+        const simulationNodes = this.network.nodes.map((node, index) => {
+            return {
+                publicKey: node.publicKey,
+                x: (node as any).x,
+                y: (node as any).y,
+                index,
+            };
+        });
+
+        const simulationLinks = this.network.links.map((link, index) => {
+            return {
+                source: link.source.publicKey,
+                target: link.target.publicKey,
+                isClusterLink: link.isClusterLink,
+                index,
+            };
+        });
+
+        this.computeGraphWorker.postMessage({
+            nodes: simulationNodes,
+            links: simulationLinks,
+        });
+
+    }
+    public created() {
+        this.network.nodes.forEach((node) => {
+            this.$set(node, 'x', undefined);
+            this.$set(node, 'y', undefined);
+        }); // trigger reactive changes on newly added x and y coordinates
+
+        this.computeGraphWorker.onmessage = (event: any) => {
+            switch (event.data.type) {
+                case 'tick': {
+                    // if(newLoadingProgress % 25 === 0)
+                    this.loadingProgress = Math.round(event.data.progress * 100);
+                }
+                             break;
+                case 'end': {
+                    event.data.nodes.forEach(
+                        (node: {index: number, x: number, y: number, publicKey: string}) => {
+                            (this.network.nodes[node.index] as any).x = node.x;
+                            (this.network.nodes[node.index] as any).y = node.y;
+                        },
+                    );
+                    this.isLoading = false;
+                    if (!this.graphInitialized) {
+                        this.panZoom = svgPanZoom(this.$refs.graphSvg as SVGElement,
+                            {
+                                mouseWheelZoomEnabled: false,
+                                minZoom: 0.5
+                                , maxZoom: 10
+                                , fit: false
+                                , contain: false
+                                , center: true,
+                                controlIconsEnabled: true,
+                            });
+                        this.graphInitialized = true;
+                        // noinspection TypeScriptUnresolvedFunction
+                        this.panZoom.zoomBy(2);
+                        this.centerCorrectNode();
+                    }
+                }
+                            break;
+            }
+        };
+        this.computeGraph();
+
+    }
+    public beforeDestroy() {
+        this.computeGraphWorker.terminate();
+    }
+}
 </script>
 
 <style scoped>

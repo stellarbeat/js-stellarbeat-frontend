@@ -5,44 +5,35 @@
     />
 </template>
 
-<script>
-    //const getControlPoints = require("get-control-points");
+<script lang="ts">
+import {Component, Prop, Watch} from 'vue-property-decorator';
+import Vue from 'vue';
 
-    export default {
-        name: "graph-link",
-        data() {
-            return {
-                curveSpacing: 10,
-                curveAmount: 10
-            }
-        },
-        props: {
-            link: {
-                type: Object
-            },
-            selectedNode: {
-                type: Object
-            }
-        },
-        computed: {
-            path: function () {
-                /*let controlPoints = getControlPoints([this.link.source.x,this.link.source.y],[this.link.target.x,this.link.target.y],0.3);
-                return 'M' + this.link.source.x + ',' + this.link.source.y +
-                    ' C' + controlPoints[0][0] + ',' + controlPoints[0][1] +
-                    ' ' + controlPoints[1][0] + ',' + controlPoints[1][1] +
-                    ' ' + (this.link.target.x) + ',' + (this.link.target.y)*/
-                return 'M' + this.link.source.x + ' ' + this.link.source.y + ' L' + (this.link.target.x) + ' ' + (this.link.target.y);
-            },
-            classObject: function () {
-                return {
-                    'from-selected': this.link.source === this.selectedNode,
-                    'to-selected': this.link.target === this.selectedNode,
-                    'cluster': this.link.isClusterLink/*,
-                    'inactive': !this.link.originLink.active*/
-                }
-            }
-        }
+@Component({})
+export default class GraphLink extends Vue {
+    public name: string = 'graph-link';
+    @Prop()
+    public link!: {source: Node, target: Node, isClusterLink: boolean};
+    @Prop()
+    public selectedNode!: Node;
+
+    get path() {
+        return 'M' +
+            (this.link.source as any).x + ' ' +
+            (this.link.source as any).y + ' L' +
+            (this.link.target as any).x + ' ' +
+            (this.link.target as any).y;
     }
+
+    get classObject() {
+        return {
+            'from-selected': this.link.source === this.selectedNode,
+            'to-selected': this.link.target === this.selectedNode,
+            'cluster': this.link.isClusterLink, /*,
+                'inactive': !this.link.originLink.active*/
+        };
+    }
+}
 </script>
 
 <style scoped>

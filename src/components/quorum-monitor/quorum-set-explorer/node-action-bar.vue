@@ -16,15 +16,19 @@
 
 </template>
 
-<script>
-    export default {
-        name: "node-action-bar",
-        props: {
-            node: {
-                type: Object
-            }
-        }
-    }
+<script lang="ts">
+import Vue from 'vue';
+import {Component, Prop} from 'vue-property-decorator';
+
+import {Node} from '@stellarbeat/js-stellar-domain';
+
+@Component({
+    name: 'node-action-bar',
+})
+export default class NodeActionBar extends Vue {
+    @Prop()
+    public node!: Node;
+}
 </script>
 
 <style scoped>

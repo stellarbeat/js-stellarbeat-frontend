@@ -64,32 +64,35 @@
     </div>
 </template>
 
-<script>
-    export default {
-        name: "statistics",
-        props: {
-            network: {
-                type: Object
-            }
-        },
-        computed: {
-            totalNodes: function () {
-                return this.network.nodes.length;
-            },
-            numberOfActiveNodes: function () {
-                return this.network.nodes.filter(node => node.active).length;
-            },
-            numberOfFailingNodes: function () {
-                return this.network.failingNodes.length;
-            },
-            numberOfNodesWithQuorumSets: function () {
-                return this.network.nodes.filter(node => node.active && node.quorumSet.hasValidators()).length;
-            }
-        },
-        mounted() {
-        }
+<script lang="ts">
+import Vue from 'vue';
+import {Component, Prop} from 'vue-property-decorator';
 
+import {Network} from '@stellarbeat/js-stellar-domain';
+
+@Component({
+    name: 'statistics',
+})
+export default class Statistics extends Vue {
+    @Prop()
+    public network!: Network;
+
+    get totalNodes() {
+        return this.network.nodes.length;
     }
+
+    get numberOfActiveNodes() {
+        return this.network.nodes.filter((node) => node.active).length;
+    }
+
+    get numberOfFailingNodes() {
+        return this.network.failingNodes.length;
+    }
+
+    get numberOfNodesWithQuorumSets() {
+        return this.network.nodes.filter((node) => node.active && node.quorumSet.hasValidators()).length;
+    }
+}
 </script>
 
 <style scoped>

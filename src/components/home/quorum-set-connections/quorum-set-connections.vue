@@ -100,11 +100,10 @@
                         'origNode': node,
                         'isSource': false,
                         'isTarget': false
-                    }
+                    };
                 });
-            let hierarchyData = {publicKey: '', children: children, name: ''};
 
-            let root = hierarchy(hierarchyData);
+            let root = hierarchy({publicKey: '', children: children, name: ''});
             let myCluster = cluster()
                 .size([360, this.innerRadius]);
             myCluster(root);

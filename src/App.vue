@@ -71,7 +71,9 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i class="fe fe-info"></i>About</router-link>
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i
+                                            class="fe fe-info"></i>About
+                                    </router-link>
                                 </li>
                             </ul>
                         </div>
@@ -88,8 +90,9 @@
                             <div class="col-2 loader"></div>
                             <div class="col-5"></div>
 
-                    </div>
-                    <router-view v-if="!isLoading || isFullPreRenderRoute" :network="network" :isLoading="isLoading">
+                        </div>
+                        <router-view v-if="!isLoading || isFullPreRenderRoute" :network="network"
+                                     :isLoading="isLoading">
 
                         </router-view>
                     </div>
@@ -102,12 +105,12 @@
 
 </template>
 
-<script>
-    const Network = require('@stellarbeat/js-stellar-domain').Network;
-    const Node = require('@stellarbeat/js-stellar-domain').Node;
+<script lang="ts">
+    import Vue from 'vue';
+    import {Network, Node} from '@stellarbeat/js-stellar-domain';
     const axios = require('axios');
 
-    export default {
+    export default Vue.extend({
         data() {
             return {
                 network: {},
@@ -117,7 +120,7 @@
             }
         },
         methods: {
-            fetchData: async function () {
+            fetchData: async function ():Promise<Array<any>> {
                 try {
                     let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
                     return result.data;
@@ -127,13 +130,9 @@
                     this.errorMessage = "Could not connect to api";
                     return [];
                 }
-
             }
         },
         computed: {
-            isSimulation: function () {
-                return this.simulatedNodes.length > 0;
-            },
             isFullPreRenderRoute: function () {
                 return this.$router.currentRoute.meta.fullPreRender;
             }
@@ -148,14 +147,17 @@
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
             meta: [
-                { name: 'description', content: 'Giving insight into the Stellar public network through various tools & visualizations.' }
+                {
+                    name: 'description',
+                    content: 'Giving insight into the Stellar public network through various tools & visualizations.'
+                }
             ]
         }
-    }
+    })
 </script>
 
 <style scoped>
-    .brand-title{
+    .brand-title {
         color: #08b5e5;
     }
 
@@ -163,10 +165,11 @@
         background: white;
     }
 
-    .my-header{
+    .my-header {
         width: 100%;
     }
-    .my-navbar-toggle{
+
+    .my-navbar-toggle {
         border: none;
 
     }

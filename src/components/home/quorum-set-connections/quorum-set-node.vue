@@ -51,8 +51,8 @@
             clickNode: function () {
                 this.$router.push({
                     name: 'quorum-monitor-node',
-                    params: {publicKey: this.node.data.publicKey},
-                    query: {center: true, "no-scroll": false}
+                    params: {'publicKey': this.node.data.publicKey},
+                    query: {'center': '1', "no-scroll": 'false'}
                 });
             }
         }

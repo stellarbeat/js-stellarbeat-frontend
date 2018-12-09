@@ -5,7 +5,8 @@
                 About
             </h1>
         </div>
-        <b-card>
+        <div class="card">
+            <div class="card-body">
             <h2>Goal</h2>
             <p>
                 Give insight into the Stellar public network through various tools & visualizations.
@@ -32,10 +33,13 @@
                     Node availability status: Percentage of time the node was active in the latest 300 crawls.
                 </li>
                 <li>
-                    Node load: Metric that shows how many times an <a href="https://github.com/stellar/stellar-core/blob/master/src/xdr/Stellar-overlay.x">ERR_LOAD</a> message is received in the latest 300 crawls.
+                    Node load: Metric that shows how many times an <a
+                        href="https://github.com/stellar/stellar-core/blob/master/src/xdr/Stellar-overlay.x">ERR_LOAD</a>
+                    message is received in the latest 300 crawls.
                 </li>
                 <li>
-                    Validator: The crawler picks up "stellar consensus protocol" messages about the node and successfully
+                    Validator: The crawler picks up "stellar consensus protocol" messages about the node and
+                    successfully
                     requests its quorum set configuration.
                 </li>
                 <li>
@@ -49,10 +53,10 @@
 
             <h2>Open source</h2>
             <p>
-            All code is available on <a href="https://github.com/stellarbeat"
-                                        class="btn btn-sm bt btn-outline-primary"
-                                        target="_blank"><i
-                class="fe fe-github"></i> Github</a>
+                All code is available on <a href="https://github.com/stellarbeat"
+                                            class="btn btn-sm bt btn-outline-primary"
+                                            target="_blank"><i
+                    class="fe fe-github"></i> Github</a>
             </p>
 
             <h2>Contact</h2>
@@ -60,20 +64,25 @@
                 <a href="mailto:stellarbeatio@gmail.com"
                    class="btn btn-sm bt btn-outline-primary" target="_blank"><i
                         class="fe fe-mail"></i> Mail</a>
-            </p>
+            </p></div>
 
-        </b-card>
+        </div>
     </div>
 </template>
 
-<script>
-    export default {
-        name: "about",
-        metaInfo: {
-            title: 'About - Stellarbeat.io',
-            meta: [
-                { name: 'description', content: 'About and contact info' }
-            ]
-        }
-    }
+<script lang="ts">
+import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
+
+@Component({
+    name: 'about',
+    metaInfo: {
+        title: 'About - Stellarbeat.io',
+        meta: [
+            {name: 'description', content: 'About and contact info'},
+        ],
+    },
+})
+export default class About extends Vue {
+}
 </script>

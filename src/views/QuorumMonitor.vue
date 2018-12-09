@@ -76,145 +76,153 @@
             </div>
             <div class="row row-cards">
                 <div class="col-12 col-md-6">
-                    <b-card header="Manual"
-                            tag="article"
-                            style=""
-                            class="mb-2">
-                        <Manual></Manual>
-                    </b-card>
+
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            Manual
+                        </div>
+                        <div class="card-body">
+                            <Manual></Manual>
+
+                        </div>
+                    </div>
                 </div>
                 <div class="col-12 col-md-6">
-                    <b-card header="Options"
-                            tag="article"
-                            style=""
-                            class="mb-2">
-                        <label class="custom-switch">
-                            <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                                   v-model="optionNodeActiveBasedOnLatestCrawl">
-                            <span class="custom-switch-indicator"></span>
-                            <span class="custom-switch-description">Use latest crawl results for active status of nodes</span>
-                        </label>
-                    </b-card>
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            Options
+                        </div>
+                        <div class="card-body">
+                            <label class="custom-switch">
+                                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                                       v-model="optionNodeActiveBasedOnLatestCrawl">
+                                <span class="custom-switch-indicator"></span>
+                                <span class="custom-switch-description">Use latest crawl results for active status of nodes</span>
+                            </label>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-    import Graph from "../components/quorum-monitor/graph/graph.vue";
-    import GraphLegend from "../components/quorum-monitor/graph/graph-legend.vue";
-    import QuorumSetExplorer from "../components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue";
-    import Search from '../components/quorum-monitor/search.vue';
-    import Statistics from '../components/statistics.vue';
-    import NodeList from '../components/quorum-monitor/quorum-set-explorer/node-list.vue';
-    import Manual from '../components/quorum-monitor/manual.vue';
+<script lang="ts">
+import Vue from 'vue';
+import Graph from '../components/quorum-monitor/graph/graph.vue';
+import GraphLegend from '../components/quorum-monitor/graph/graph-legend.vue';
+import QuorumSetExplorer from '../components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
+import Search from '../components/quorum-monitor/search.vue';
+import Statistics from '../components/statistics.vue';
+import NodeList from '../components/quorum-monitor/quorum-set-explorer/node-list.vue';
+import Manual from '../components/quorum-monitor/manual.vue';
 
-    export default {
-        name: "quorum-monitor",
-        components: {
-            QuorumSetExplorer,
-            NodeList,
-            Graph,
-            GraphLegend,
-            Search,
-            Statistics,
-            Manual
-        },
-        data() {
-            return {
-                searchString: '',
-                centerNode: null,
-                selectedNode: null,
-                simulatedNodes: [],
-                optionNodeActiveBasedOnLatestCrawl: false
-            }
-        },
-        props: {
-            network: {
-                type: Object
-            },
-            isLoading: {
-                type: Boolean
-            }
-        },
-        watch: {
-            optionNodeActiveBasedOnLatestCrawl: function (val) {
-                //Use your source of truth to trigger events!
-                if (val === true) {
-                    this.network.nodes.forEach(
-                        node => node.active = node.statistics.activeInLastCrawl
-                    )
-                }
-                if (val === false) {
-                    this.network.nodes.forEach(
-                        node => node.statistics.activeCounter > 0 ? node.active = true : node.active = false
-                    )
-                }
+import {Node, Network} from '@stellarbeat/js-stellar-domain';
+import {Component, Prop, Watch} from 'vue-property-decorator';
 
-                this.network.updateNetwork();
-                this.$refs.graph.restartSimulation();
-            },
-            '$route'(to, from) {
-                this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
-                if (to.query.center) {
-                    this.centerNode = this.selectedNode;
-                }
-            }
-        },
-        methods: {
-            onNodeCenter: function (node) {
-                this.centerNode = node;
-            },
-            toggleActive: function (node) { //todo move to app
-                node.active = !node.active;
+@Component({
+    name: 'quorum-monitor',
+    components: {
+        QuorumSetExplorer,
+        NodeList,
+        Graph,
+        GraphLegend,
+        Search,
+        Statistics,
+        Manual,
+    },
+    metaInfo: {
+        title: 'Quorum monitor - Stellarbeat.io',
+        meta: [
+            {name: 'description', content: 'Inspect quorum set connections and metrics about network health'},
+        ],
+    },
+})
+export default class QuorumMonitor extends Vue {
+    public searchString: string = '';
+    public centerNode: Node|null = null;
+    public selectedNode: Node|null = null;
+    public simulatedNodes: Node[] = [];
+    public optionNodeActiveBasedOnLatestCrawl: boolean = false;
 
-                if (this.simulatedNodes.includes(node)) {
-                    this.simulatedNodes = this.simulatedNodes.filter(simNode => node !== simNode);
-                } else {
-                    this.simulatedNodes.push(node);
-                }
+    @Prop()
+    public network!: Network;
+    @Prop()
+    public isLoading!: boolean;
 
-                this.network.updateNetwork();
-                this.$refs.graph.restartSimulation();
-            }
-        },
-        computed: {
-            latestCrawlDateString: function () {
-                return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-            },
-            isSimulation: function () {
-                return this.simulatedNodes.length > 0;
-            }
-        },
-        created() {
-            //fix centering and selection in graph
-            let publicKey = this.$route.params.publicKey;
-            if (this.$route.params.publicKey) {
-                this.selectedNode = this.network.getNodeByPublicKey(this.$route.params.publicKey);
-            }
-            if (this.$route.query.center) {
-                this.centerNode = this.selectedNode;
-            }
-        },
-        beforeDestroy: function () {
-            if (this.isSimulation || this.optionNodeActiveBasedOnLatestCrawl) { //undo simulation
-                this.simulatedNodes.forEach(node => node.active = !node.active);
-                if (this.optionNodeActiveBasedOnLatestCrawl) {
-                    this.network.nodes.forEach(
-                        node => node.statistics.activeCounter > 0 ? node.active = true : node.active = false
-                    )
-                }
-                this.network.updateNetwork();
-            } //todo: better way to manage network adjustments
-        },
-        metaInfo: {
-            title: 'Quorum monitor - Stellarbeat.io',
-            meta: [
-                { name: 'description', content: 'Inspect quorum set connections and metrics about network health' }
-            ]
+    @Watch('optionNodeActiveBasedOnLatestCrawl')
+    public onOptionNodeActiveBasedOnLatestCrawlChanged(activeInLastCrawl: boolean) {
+        if (activeInLastCrawl === true) {
+            this.network.nodes.forEach(
+                (node) => node.active = node.statistics.activeInLastCrawl,
+            );
+        }
+        if (activeInLastCrawl === false) {
+            this.network.nodes.forEach(
+                (node) => node.statistics.activeCounter > 0 ? node.active = true : node.active = false,
+            );
+        }
+
+        this.network.updateNetwork(this.network.nodes);
+        (this.$refs.graph as Graph).restartSimulation();
+    }
+
+    @Watch('$route')
+    public on$routeChanged(to: any) {
+        this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
+        if (to.query.center === '1') {
+            this.centerNode = this.selectedNode;
         }
     }
+
+    public onNodeCenter(node: Node) {
+        this.centerNode = node;
+    }
+
+    public toggleActive(node: Node) { // todo move to app
+        node.active = !node.active;
+
+        if (this.simulatedNodes.includes(node)) {
+            this.simulatedNodes = this.simulatedNodes.filter((simNode) => node !== simNode);
+        } else {
+            this.simulatedNodes.push(node);
+        }
+
+        this.network.updateNetwork(this.network.nodes);
+        (this.$refs.graph as Graph).restartSimulation();
+    }
+
+    get latestCrawlDateString(): string {
+        return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
+    }
+
+    get isSimulation(): boolean {
+        return this.simulatedNodes.length > 0;
+    }
+
+    public created() {
+        // fix centering and selection in graph
+        if (this.$route.params.publicKey) {
+            this.selectedNode = this.network.getNodeByPublicKey(this.$route.params.publicKey);
+        }
+        if (this.$route.query.center === '1' || this.$route.query.center === undefined) {
+            this.centerNode = this.selectedNode;
+        }
+    }
+
+    public beforeDestroy() {
+        if (this.isSimulation || this.optionNodeActiveBasedOnLatestCrawl) { // undo simulation
+            this.simulatedNodes.forEach((node) => node.active = !node.active);
+            if (this.optionNodeActiveBasedOnLatestCrawl) {
+                this.network.nodes.forEach(
+                    (node) => node.statistics.activeCounter > 0 ? node.active = true : node.active = false,
+                );
+            }
+            this.network.updateNetwork(this.network.nodes);
+        } // todo: better way to manage network adjustments
+    }
+}
 </script>
 
 <style scoped>

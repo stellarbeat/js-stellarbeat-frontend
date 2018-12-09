@@ -14,38 +14,46 @@
     </div>
 </template>
 
-<script>
-    import NodeActionBar from './node-action-bar.vue';
+<script lang="ts">
+import NodeActionBar from './node-action-bar.vue';
 
-    export default {
-        name: "node-list",
-        components: {
-            NodeActionBar,
-        },
-        props: {
-            nodes: {
-                type: Array
-            },
-            network: {
-                type: Object
-            }
-        },
-        methods: {
-            toggleActive: function (node) {
-                this.$emit("node-toggle-active", node);
-            },
-            selectNode: function (node) {
-                this.$router.push({name: 'quorum-monitor-node', params: {publicKey: node.publicKey}, query: {center: true, "no-scroll": true}});
-            },
-            nodeState: function (node) {
-                return {
-                    'inactive': !node.active,
-                    'active': node.active,
-                    'failing': this.network.isNodeFailing(node)
-                }
-            }
-        }
+import Vue from 'vue';
+import {Component, Prop} from 'vue-property-decorator';
+
+import {Network, Node} from '@stellarbeat/js-stellar-domain';
+
+@Component({
+    name: 'node-list',
+    components: {
+        NodeActionBar,
+    },
+})
+export default class NodeList extends Vue {
+    @Prop()
+    public nodes!: Node[];
+    @Prop()
+    public network!: Network;
+
+    public toggleActive(node: Node) {
+        this.$emit('node-toggle-active', node);
     }
+
+    public selectNode(node: Node) {
+        this.$router.push({
+            name: 'quorum-monitor-node',
+            params: {publicKey: node.publicKey},
+            query: {'center': '1', 'no-scroll': '1'},
+        });
+    }
+
+    public nodeState(node: Node) {
+        return {
+            inactive: !node.active,
+            active: node.active,
+            failing: this.network.isNodeFailing(node),
+        };
+    }
+}
 </script>
 
 <style scoped>
