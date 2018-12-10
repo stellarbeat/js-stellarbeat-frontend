@@ -2,7 +2,7 @@
     <div class="action-bar ">
         <div class="btn-group btn-group-sm" role="group" aria-label="actions">
 
-        <button type="button" class="btn btn-sm btn-icon btn-secondary" title="show info"
+        <button type="button" class="btn btn-sm btn-icon btn-secondary node-info-btn" title="show info"
                 v-on:click.prevent.stop="$emit('node-show-modal', node)">
             <i class="fe fe-info"></i>
         </button>

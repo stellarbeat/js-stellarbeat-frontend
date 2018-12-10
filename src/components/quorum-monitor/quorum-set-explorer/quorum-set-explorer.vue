@@ -3,16 +3,8 @@
         <div>
             <h4 class="node-details-title">Selected node: {{selectedNode.displayName | truncate(30)}}
                 <div class="btn-toolbar fa-pull-right" role="toolbar" aria-label="Toolbar with button groups">
-                    <!--div class="btn-group btn-group-sm" role="group" aria-label="breadcrumb">
-                        <button type="button" class="btn btn-secondary" disabled>
-                            <font-awesome-icon size="sm" icon="arrow-circle-left"/>
-                        </button>
-                        <button type="button" class="btn btn-secondary" disabled>
-                            <font-awesome-icon size="sm" icon="arrow-circle-right"/>
-                        </button>
-                    </div!-->
                     <div class="btn-group btn-group-sm" role="group" aria-label="actions">
-                        <button type="button" class="btn btn-sm btn-secondary" title="Show info"
+                        <button type="button" class="node-info-btn btn btn-sm btn-secondary" title="Show info"
                                 v-on:click="showModal(selectedNode)">
                             <i class="fe fe-info"/>
                         </button>

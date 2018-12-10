@@ -15,7 +15,7 @@ describe("views", () => {
             userAgent: ''
         });
 
-        await page.goto('http://localhost:8080/');
+        await page.goto(process.env.VUE_APP_E2E_TEST_URL);
         await page.waitForSelector('.page-title');
 
         let title = await page.$eval('.page-title', el => el.innerText);

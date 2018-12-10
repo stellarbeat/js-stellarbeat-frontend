@@ -8,7 +8,8 @@
     "heroku-postbuild": "npm run build",
     "start": "node server.js",
     "test:ci": "vue-cli-service test:e2e --headless --url=http://localhost:3000 --browser chrome",
-    "test:e2e": "vue-cli-service test:e2e"
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "@sentry/browser": "^4.4.1",
@@ -41,10 +42,15 @@
     "vue-truncate-filter": "^1.1.7"
   },
   "devDependencies": {
+    "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-typescript": "^3.2.0",
+    "@vue/cli-plugin-unit-jest": "^3.2.0",
     "@vue/cli-service": "^3.2.0",
+    "@vue/test-utils": "^1.0.0-beta.20",
+    "babel-core": "7.0.0-bridge.0",
     "prerender-spa-plugin": "^3.2.1",
+    "ts-jest": "^23.0.0",
     "typescript": "^3.0.0",
     "vue-cli-plugin-prerender-spa": "^1.0.3",
     "vue-cli-plugin-webpack-bundle-analyzer": "^1.2.0",
