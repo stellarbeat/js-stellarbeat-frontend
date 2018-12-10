@@ -13,7 +13,7 @@ install:
 script:
 - npm run build
 - npm run start &
-- npm run test:ci
+- npm run test:unit
 - kill $(jobs -p) || true
 #deploy:
 #  skip_cleanup: true
