@@ -1,7 +1,7 @@
 <template>
     <li class="list-group-item p-0 pt-3">
         <div @click="toggle" class="quorum-set" v-bind:class="quorumSetState">
-            <i class="caret fe mr-1" v-bind:class="caret"></i>
+            <i class="caret fe mr-1" v-bind:class="chevron"></i>
             <h5 class="quorumSetTitle">
                 Quorumset with threshold: {{quorumSet.threshold}}
             </h5>
@@ -93,7 +93,7 @@ export default class QuorumSetDisplay extends Vue {
         });
     }
 
-    get caret() {
+    get chevron() {
         return this.open ? 'fe-chevron-down' : 'fe-chevron-right';
     }
 

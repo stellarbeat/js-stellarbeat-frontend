@@ -743,7 +743,7 @@
 
 "@stellarbeat/js-stellar-domain@github:stellarbeat/js-stellar-domain#master":
   version "0.2.0"
-  resolved "https://codeload.github.com/stellarbeat/js-stellar-domain/tar.gz/a099c0ade82061e62e41e3ec3cf092f170fb32bb"
+  resolved "https://codeload.github.com/stellarbeat/js-stellar-domain/tar.gz/90c37c8f0926106c0ad1ad3b2aa3e500deccc757"
   dependencies:
     lodash "^4.17.11"
 

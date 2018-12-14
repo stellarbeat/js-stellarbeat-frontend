@@ -61,6 +61,11 @@
                                         </div>
 
                                     </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <TomlConfigViewer :node="selectedNode" :network="network"></TomlConfigViewer>
+                                        </div>
+                                    </div>
                                     <div v-show="isSimulation" class="row pt-3">
                                         <div class="col-sm-12">
                                             <h4>Nodes modified by user</h4>
@@ -117,6 +122,7 @@ import Search from '../components/quorum-monitor/search.vue';
 import Statistics from '../components/statistics.vue';
 import NodeList from '../components/quorum-monitor/quorum-set-explorer/node-list.vue';
 import Manual from '../components/quorum-monitor/manual.vue';
+import TomlConfigViewer from '../components/quorum-monitor/toml-config-viewer.vue'
 
 import {Node, Network} from '@stellarbeat/js-stellar-domain';
 import {Component, Prop, Watch} from 'vue-property-decorator';
@@ -131,6 +137,7 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
         Search,
         Statistics,
         Manual,
+        TomlConfigViewer
     },
     metaInfo: {
         title: 'Quorum monitor - Stellarbeat.io',

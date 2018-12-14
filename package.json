@@ -7,9 +7,7 @@
     "build": "vue-cli-service build",
     "heroku-postbuild": "npm run build",
     "start": "node server.js",
-    "test:ci": "vue-cli-service test:e2e --headless --url=http://localhost:3000 --browser chrome",
-    "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "test": "vue-cli-service test:unit"
   },
   "dependencies": {
     "@sentry/browser": "^4.4.1",
