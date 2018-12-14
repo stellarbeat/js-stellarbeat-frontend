@@ -4,14 +4,16 @@ addons:
 language: node_js
 node_js:
 - 11
+before_cache:
+  - rm -rf "~/.cache/@stellarbeat*" #cache is not busted for new commits
 cache:
   yarn: true
   directories:
   - "~/.cache"
 script:
-- npm run build
-- npm run start &
-- npm run test:unit
+- yarn run build
+- yarn run start &
+- yarn run test
 - kill $(jobs -p) || true
 #deploy:
 #  skip_cleanup: true
