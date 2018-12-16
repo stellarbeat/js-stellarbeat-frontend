@@ -741,9 +741,10 @@
     "@sentry/types" "4.4.1"
     tslib "^1.9.3"
 
-"@stellarbeat/js-stellar-domain@github:stellarbeat/js-stellar-domain#master":
-  version "0.2.0"
-  resolved "https://codeload.github.com/stellarbeat/js-stellar-domain/tar.gz/90c37c8f0926106c0ad1ad3b2aa3e500deccc757"
+"@stellarbeat/js-stellar-domain@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.3.0.tgz#75def7b56dffb7d3b76d01b84d639fe7d49f1d19"
+  integrity sha512-Ubz6v7hCnDPVB7KxB/iW+4E0uE5h+dB/dJ3/B7mNhiBFdKh/Pr0YUnVeUd+iXjXNcje/NG7KipApGHb7Zm9R5A==
   dependencies:
     lodash "^4.17.11"
 
