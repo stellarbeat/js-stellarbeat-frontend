@@ -1,14 +1,13 @@
-#Stellarbeat frontend (new version)
-Not yet in production
+#Stellarbeat frontend 
 
 ## Install
-`npm install`
+`yarn install`
 
-`npm run serve`
+development: 
+`yarn run serve` 
 
-`npm run build`
-
-`npm run serve-prod`
+production:
+`yarn run build`
 
 ## Quorum Monitor
 ### Explore
@@ -49,7 +48,4 @@ https://vuejs.org/
 
 ### d3js
 https://d3js.org/
-
-### flow
-https://flow.org/
 
