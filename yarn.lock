@@ -741,10 +741,10 @@
     "@sentry/types" "4.4.1"
     tslib "^1.9.3"
 
-"@stellarbeat/js-stellar-domain@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.3.0.tgz#75def7b56dffb7d3b76d01b84d639fe7d49f1d19"
-  integrity sha512-Ubz6v7hCnDPVB7KxB/iW+4E0uE5h+dB/dJ3/B7mNhiBFdKh/Pr0YUnVeUd+iXjXNcje/NG7KipApGHb7Zm9R5A==
+"@stellarbeat/js-stellar-domain@0.3.*":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.3.1.tgz#8bc6a5ac832f7aba7bfe2b1ce8dcdf4b8c1b5d42"
+  integrity sha512-5HVOazl9Tnr84FYhMywHv8CENkuX6zvUJDjhCUpEvB5nd9dJb/0dWPejZcE5Z7Zl14eBluA2xPUuu8t+qZWDBA==
   dependencies:
     lodash "^4.17.11"
 
