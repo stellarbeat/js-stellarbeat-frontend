@@ -17,7 +17,7 @@
 <template>
     <div>
         <div>
-            <div v-show="isSimulation" class="alert alert-warning" role="alert">
+            <div v-show="updateQueue.hasUndo()" class="alert alert-warning" role="alert">
                 You are viewing a simulation!
             </div>
             <div class="page-header  mt-2">
@@ -51,6 +51,28 @@
                                 </div>
                                 <div class="col-12 col-xl-4">
                                     <div class="row">
+                                        <div class="col-8 pb-2">
+                                            <div class="btn-group" role="group" aria-label="UndoRedo">
+                                                <button type="button" class="btn btn-secondary btn-sm"
+                                                        v-on:click="undoUpdate" :disabled="!updateQueue.hasUndo()">
+                                                    <i class="fe fe-rotate-ccw"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-secondary btn-sm"
+                                                        v-on:click="resetUpdates" :disabled="!updateQueue.hasUndo()">
+                                                    Reset changes
+                                                </button>
+                                                <button type="button" class="btn btn-secondary btn-sm" v-on:click="redoUpdate"
+                                                        :disabled="!updateQueue.hasRedo()">
+                                                    <i class="fe fe-rotate-cw"></i>
+                                                </button>
+                                            </div>
+                                            <!--div v-show="updateQueue.hasUndo"
+                                                 class="alert alert-warning mt-0 mb-0 pt-0 pb-0" role="alert">
+                                                You are viewing a simulation! TODO:FLEXBOX
+                                            </div!-->
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col-12">
                                             <router-view v-on:node-toggle-active="toggleActive"
                                                          v-on:center-node="onNodeCenter"
@@ -64,13 +86,6 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <TomlConfigViewer :node="selectedNode" :network="network"></TomlConfigViewer>
-                                        </div>
-                                    </div>
-                                    <div v-show="isSimulation" class="row pt-3">
-                                        <div class="col-sm-12">
-                                            <h4>Nodes modified by user</h4>
-                                            <NodeList :nodes="simulatedNodes" :network="network"
-                                                      v-on:node-toggle-active="toggleActive"></NodeList>
                                         </div>
                                     </div>
                                 </div>
@@ -126,6 +141,8 @@ import TomlConfigViewer from '../components/quorum-monitor/toml-config-viewer.vu
 
 import {Node, Network} from '@stellarbeat/js-stellar-domain';
 import {Component, Prop, Watch} from 'vue-property-decorator';
+import {EntityPropertyUpdateQueueManager} from '@/services/entity-property-update-queue-manager';
+import {EntityPropertyUpdate} from '@/services/entity-property-update';
 
 @Component({
     name: 'quorum-monitor',
@@ -152,6 +169,7 @@ export default class QuorumMonitor extends Vue {
     public selectedNode: Node|null = null;
     public simulatedNodes: Node[] = [];
     public optionNodeActiveBasedOnLatestCrawl: boolean = false;
+    public updateQueue: EntityPropertyUpdateQueueManager = new EntityPropertyUpdateQueueManager();
 
     @Prop()
     public network!: Network;
@@ -188,15 +206,9 @@ export default class QuorumMonitor extends Vue {
     }
 
     public toggleActive(node: Node) { // todo move to app
-        node.active = !node.active;
-
-        if (this.simulatedNodes.includes(node)) {
-            this.simulatedNodes = this.simulatedNodes.filter((simNode) => node !== simNode);
-        } else {
-            this.simulatedNodes.push(node);
-        }
-
-        this.network.updateNetwork(this.network.nodes);
+        let update = new EntityPropertyUpdate(node, 'active', !node.active);
+        this.updateQueue.execute(update);
+        this.network.updateNetwork();
         (this.$refs.graph as Graph).restartSimulation();
     }
 
@@ -208,12 +220,38 @@ export default class QuorumMonitor extends Vue {
         return this.simulatedNodes.length > 0;
     }
 
+    public undoUpdate() {
+        if(!this.updateQueue.hasUndo()) {
+            return;
+        }
+        this.updateQueue.undo();
+        this.network.updateNetwork();
+        (this.$refs.graph as Graph).restartSimulation();
+    }
+
+    public redoUpdate() {
+        if(!this.updateQueue.hasRedo()) {
+            return;
+        }
+        this.updateQueue.redo();
+        this.network.updateNetwork();
+        (this.$refs.graph as Graph).restartSimulation();
+    }
+
+    public resetUpdates() {
+        if(!this.updateQueue.hasUndo()) {
+            return;
+        }
+        this.updateQueue.reset();
+        this.network.updateNetwork();
+        (this.$refs.graph as Graph).restartSimulation();
+    }
     public created() {
         // fix centering and selection in graph
-        if (this.$route.params.publicKey) {
-            this.selectedNode = this.network.getNodeByPublicKey(this.$route.params.publicKey);
+        if (this.$route.params['publicKey']) {
+            this.selectedNode = this.network.getNodeByPublicKey(this.$route.params['publicKey']);
         }
-        if (this.$route.query.center === '1' || this.$route.query.center === undefined) {
+        if (this.$route.query['center'] === '1' || this.$route.query['center'] === undefined) {
             this.centerNode = this.selectedNode;
         }
     }

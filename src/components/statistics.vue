@@ -12,7 +12,7 @@
                     </b-tooltip>
 
                     <div class="h1 m-2">{{totalNodes}}</div>
-                    <div class="text-muted mb-1">Nodes</div>
+                    <div class="text-muted mb-1">Discovered nodes</div>
                 </div>
             </div>
         </div>
