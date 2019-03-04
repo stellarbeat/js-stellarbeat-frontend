@@ -742,9 +742,9 @@
     tslib "^1.9.3"
 
 "@stellarbeat/js-stellar-domain@0.3.*":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.3.1.tgz#8bc6a5ac832f7aba7bfe2b1ce8dcdf4b8c1b5d42"
-  integrity sha512-5HVOazl9Tnr84FYhMywHv8CENkuX6zvUJDjhCUpEvB5nd9dJb/0dWPejZcE5Z7Zl14eBluA2xPUuu8t+qZWDBA==
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.3.2.tgz#fa82c49bf5e5b6b131d7a4bb809cbfbe4f00a518"
+  integrity sha512-yCLv81n5D6jFZTkyLbI+/ylmKGTJtTb5aqLfscEmueqzZplxnKXJ2bGzY3emmmUXHDSiVr9R6VhpDJdt5RWYQA==
   dependencies:
     lodash "^4.17.11"
 

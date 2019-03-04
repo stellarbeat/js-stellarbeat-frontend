@@ -56,7 +56,7 @@
             this.$router.push({
                 name: "quorum-monitor-node",
                 params: {publicKey: node.publicKey},
-                query: {"center": "1", 'no-scroll': '0'}
+                query: {"center": "1", 'no-scroll': '1'}
             });
         }
 

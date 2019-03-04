@@ -52,29 +52,16 @@
                                 <div class="col-12 col-xl-4">
                                     <div class="row">
                                         <div class="col-8 pb-2">
-                                            <div class="btn-group" role="group" aria-label="UndoRedo">
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                        v-on:click="undoUpdate" :disabled="!updateQueue.hasUndo()">
-                                                    <i class="fe fe-rotate-ccw"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                        v-on:click="resetUpdates" :disabled="!updateQueue.hasUndo()">
-                                                    Reset changes
-                                                </button>
-                                                <button type="button" class="btn btn-secondary btn-sm" v-on:click="redoUpdate"
-                                                        :disabled="!updateQueue.hasRedo()">
-                                                    <i class="fe fe-rotate-cw"></i>
-                                                </button>
-                                            </div>
-                                            <!--div v-show="updateQueue.hasUndo"
-                                                 class="alert alert-warning mt-0 mb-0 pt-0 pb-0" role="alert">
-                                                You are viewing a simulation! TODO:FLEXBOX
-                                            </div!-->
+                                            <UndoRedo v-if="selectedNode" :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
+                                                          :undoUpdate="undoUpdate"
+                                                          :hasUndo="updateQueue.hasUndo()"
+                                                          :hasRedo="updateQueue.hasRedo()"/>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
                                             <router-view v-on:node-toggle-active="toggleActive"
+                                                         v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                                          v-on:center-node="onNodeCenter"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
@@ -82,11 +69,6 @@
                                             </router-view>
                                         </div>
 
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <TomlConfigViewer :node="selectedNode" :network="network"></TomlConfigViewer>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -137,24 +119,24 @@ import Search from '../components/quorum-monitor/search.vue';
 import Statistics from '../components/statistics.vue';
 import NodeList from '../components/quorum-monitor/quorum-set-explorer/node-list.vue';
 import Manual from '../components/quorum-monitor/manual.vue';
-import TomlConfigViewer from '../components/quorum-monitor/toml-config-viewer.vue'
 
-import {Node, Network} from '@stellarbeat/js-stellar-domain';
+import {Node, Network, QuorumSet} from '@stellarbeat/js-stellar-domain';
 import {Component, Prop, Watch} from 'vue-property-decorator';
 import {EntityPropertyUpdateQueueManager} from '@/services/entity-property-update-queue-manager';
 import {EntityPropertyUpdate} from '@/services/entity-property-update';
+import UndoRedo from '@/components/quorum-monitor/UndoRedo.vue';
 
 @Component({
     name: 'quorum-monitor',
     components: {
+        UndoRedo,
         QuorumSetExplorer,
         NodeList,
         Graph,
         GraphLegend,
         Search,
         Statistics,
-        Manual,
-        TomlConfigViewer
+        Manual
     },
     metaInfo: {
         title: 'Quorum monitor - Stellarbeat.io',
@@ -205,8 +187,19 @@ export default class QuorumMonitor extends Vue {
         this.centerNode = node;
     }
 
-    public toggleActive(node: Node) { // todo move to app
+    public toggleActive(node: Node) {
         let update = new EntityPropertyUpdate(node, 'active', !node.active);
+        this.updateQueue.execute(update);
+        this.network.updateNetwork();
+        (this.$refs.graph as Graph).restartSimulation();
+    }
+
+    public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold:number) {
+        if (quorumSet.threshold === newThreshold) {
+            return;
+        }
+
+        let update = new EntityPropertyUpdate(quorumSet, 'threshold', newThreshold);
         this.updateQueue.execute(update);
         this.network.updateNetwork();
         (this.$refs.graph as Graph).restartSimulation();

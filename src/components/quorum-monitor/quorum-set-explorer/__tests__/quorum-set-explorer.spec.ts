@@ -36,4 +36,9 @@ describe('quorum-set-explorer', () => {
         expect(wrapper.findAll('#node-details-modal').at(0).isVisible())
             .toEqual(true);
     });
+
+    it('has three rows', () => {
+        expect(wrapper.findAll('.row').length)
+            .toEqual(2);
+    } )
 });

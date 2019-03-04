@@ -6,7 +6,6 @@
 
         <pre v-if="showing"><code>{{tomlConfig}}</code></pre>
     </div>
-
 </template>
 
 <script lang="ts">
@@ -30,9 +29,7 @@
             return this.showing ? 'fe-chevron-down' : 'fe-chevron-right';
         }
 
-        get tomlConfig():string{
-            console.log(this.network.getQuorumSetTomlConfig(this.node.quorumSet));
-
+        get tomlConfig():string {
             return this.network.getQuorumSetTomlConfig(this.node.quorumSet);
         }
 
