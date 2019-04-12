@@ -34,7 +34,7 @@ import GraphNode from './graph-node.vue';
 import GraphLink from './graph-link.vue';
 import svgPanZoom from 'svg-pan-zoom';
 
-import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graph.worker';
+import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graphv2.worker';
 import {Component, Prop, Watch} from 'vue-property-decorator';
 
 const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
