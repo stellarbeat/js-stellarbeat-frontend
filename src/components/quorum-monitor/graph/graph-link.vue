@@ -50,7 +50,7 @@ export default class GraphLink extends Vue {
     }
 
     path.cluster {
-        stroke-width: 1px;
+        stroke-width: 0.8px;
         stroke-opacity: 0.3;
     }
     path.from-selected {
