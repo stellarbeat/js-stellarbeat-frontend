@@ -8,13 +8,13 @@ ctx.addEventListener('message', (event) => {
 
     const simulation = forceSimulation(nodes)
         .force('charge', forceManyBody().strength((d) => {
-            return -120;
+            return -80;
         }))
         .force('link', forceLink(links).strength( (link: any) => {
             if (link.isClusterLink) {
-                return 0.1;
+                return 0.04;
             } else {
-                return 0.005;
+                return 0.02;
             }
         }).id( (d: any) => {
             return d.publicKey;
