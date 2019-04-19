@@ -64,7 +64,7 @@
         }
 
         get totalRows() {
-            return this.nodes.length;
+            return this.nodes.filter(node => node.active).length;
         }
 
         public toggleActive(node: Node) {
