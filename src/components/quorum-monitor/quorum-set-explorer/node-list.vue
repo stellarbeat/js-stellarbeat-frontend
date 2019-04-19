@@ -3,7 +3,7 @@
         <div class="trusting-nodes-title active" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i>
             <h5>Trusted by
-                {{nodes.length}} nodes
+                {{nodes.filter(node => node.active).length}} active nodes
             </h5>
         </div>
         <div v-if="showing" class="list-group list-group-flush nested-tree">
@@ -56,7 +56,11 @@
         protected showing: boolean = false;
 
         get paginatedNodes() {
-            return this.nodes.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
+            return this.nodes
+                .filter(node => node.active)
+                .slice(
+                    (this.currentPage - 1) * this.perPage, this.currentPage * this.perPage
+                );
         }
 
         get totalRows() {
