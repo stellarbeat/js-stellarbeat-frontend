@@ -37,6 +37,15 @@
         line-height: .5;
         border-radius: .2rem;
     }
+    .btn-primary {
+        background: #1997c6;
+        border-color: #1997c6;
+    }
+    .btn-primary:hover {
+        color: #fff;
+        background-color: #1a85ad;
+        border-color: #1a85ad;
+    }
 </style>
 
 

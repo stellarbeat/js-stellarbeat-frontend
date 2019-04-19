@@ -2,7 +2,7 @@
     <div class="quorum-set-explorer">
         <div class="row">
             <div class="col-sm-12">
-                <h3 class="selected-node-title" data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+                <h3 class="selected-node-title">
                     {{selectedNode.displayName | truncate(28)}}
                     <!--b-dropdown right id="more" size="sm" text="More" class="p-0 m-0 float-right" no-caret>
                         <template slot="button-content">
@@ -46,19 +46,21 @@
                         </button>
                     </div>
                 </div>
-                <ul class="tree list-group list-group-flush">
-                    <QuorumSetDisplay :quorumSet="selectedNode.quorumSet"
-                                      :network="network"
-                                      :root="true"
-                                      v-on:node-toggle-active="toggleNodeActive"
-                                      v-on:quorumset-edit-threshold="editQuorumSetThreshold"
-                                      v-on:node-show-modal="showModal"
-                    >
-                    </QuorumSetDisplay>
-                </ul>
+                <div v-show="selectedNode.quorumSet.hasValidators()">
+                    <ul class="tree list-group list-group-flush">
+                        <QuorumSetDisplay :quorumSet="selectedNode.quorumSet"
+                                          :network="network"
+                                          :root="true"
+                                          v-on:node-toggle-active="toggleNodeActive"
+                                          v-on:quorumset-edit-threshold="editQuorumSetThreshold"
+                                          v-on:node-show-modal="showModal"
+                        >
+                        </QuorumSetDisplay>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="row">
+        <div v-show="selectedNode.quorumSet.hasValidators()" class="row">
             <div class="col-sm-12">
                 <TomlConfigViewer :node="selectedNode" :network="network"></TomlConfigViewer>
             </div>
@@ -162,9 +164,15 @@
     }
 
     .btn-primary {
-        background: #1997c6
+        background: #1997c6;
+        border-color: #1997c6;
     }
 
+    .btn-primary:hover {
+        color: #fff;
+        background-color: #1a85ad;
+        border-color: #1a85ad;
+    }
     .dropdown {
         display: flex;
     }
