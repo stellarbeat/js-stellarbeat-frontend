@@ -95,7 +95,7 @@ export default class GraphNode extends Vue {
     }
 
     circle.failing {
-        fill: red
+        fill: #cd201f
     }
 
     circle.target {

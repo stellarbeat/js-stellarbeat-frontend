@@ -115,7 +115,6 @@ import GraphLegend from '../components/quorum-monitor/graph/graph-legend.vue';
 import QuorumSetExplorer from '../components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
 import Search from '../components/quorum-monitor/search.vue';
 import Statistics from '../components/statistics.vue';
-import NodeList from '../components/quorum-monitor/quorum-set-explorer/node-list.vue';
 import Manual from '../components/quorum-monitor/manual.vue';
 
 import {Node, Network, QuorumSet} from '@stellarbeat/js-stellar-domain';
@@ -129,7 +128,6 @@ import UndoRedo from '@/components/quorum-monitor/UndoRedo.vue';
     components: {
         UndoRedo,
         QuorumSetExplorer,
-        NodeList,
         Graph,
         GraphLegend,
         Search,

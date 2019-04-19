@@ -23,6 +23,9 @@
                       v-bind:class="[selectedNode.active ? 'badge-primary ' : 'badge-default']"
                 >{{selectedNode.active ? 'Active' : 'Inactive'}}
                 </span>
+                <span v-if="selectedNode.quorumSet.hasValidators() && network.isQuorumSetFailing(this.selectedNode.quorumSet)" class="badge sb-badge badge-danger"
+                >Failing
+                </span>
 
                 <span class="badge sb-badge"
                       v-bind:class="[selectedNode.statistics.activeRating * 20 === 100 ? 'badge-success ' : 'badge-warning']"
@@ -62,10 +65,21 @@
         </div>
         <div v-show="selectedNode.quorumSet.hasValidators()" class="row">
             <div class="col-sm-12">
+                <NodeList
+                        :nodes="network.getTrustingNodes(selectedNode) ? network.getTrustingNodes(selectedNode) : []"
+                        :network="network"
+                        v-on:node-toggle-active="toggleNodeActive"
+                        v-on:node-show-modal="showModal"
+                >
+
+                </NodeList>
+            </div>
+        </div>
+        <div v-show="selectedNode.quorumSet.hasValidators()" class="row">
+            <div class="col-sm-12">
                 <TomlConfigViewer :node="selectedNode" :network="network"></TomlConfigViewer>
             </div>
         </div>
-
         <b-modal v-if="modalNode"
                  ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal"
                  v-bind:title="modalNode.displayName">
@@ -78,6 +92,7 @@
 
 <script lang="ts">
     import QuorumSetDisplay from "./quorum-set-display.vue";
+    import NodeList from "./node-list.vue";
     import Search from "./../search.vue";
 
     import Vue from "vue";
@@ -93,7 +108,8 @@
         components: {
             Search,
             QuorumSetDisplay,
-            TomlConfigViewer
+            TomlConfigViewer,
+            NodeList
         },
     })
     export default class QuorumSetExplorer extends Vue {

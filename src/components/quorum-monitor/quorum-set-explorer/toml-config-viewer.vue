@@ -1,7 +1,7 @@
 <template>
-    <div class="p-0 pt-3 toml-config-viewer">
+    <div class="p-0 pt-1 toml-config-viewer">
         <div class="toml-title" v-on:click="toggleShow">
-            <i class="chevron fe mr-1" v-bind:class="chevron"></i><h5>Toml configuration</h5>
+            <i class="chevron fe mr-1" v-bind:class="chevron"></i><h5>Quorumset toml  configuration</h5>
         </div>
 
         <pre v-if="showing"><code>{{tomlConfig}}</code></pre>
@@ -34,7 +34,6 @@
         }
 
         toggleShow():void{
-            console.log("click");
             this.showing = !this.showing;
         }
     }
@@ -46,6 +45,7 @@
     }
     .toml-title{
         cursor:pointer;
+        color: #1997c6;
     }
 </style>
 

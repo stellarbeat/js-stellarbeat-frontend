@@ -4,7 +4,7 @@
             <div @click="toggle" class="quorum-set pt-1 d-flex" v-bind:class="quorumSetState">
                 <i class="caret fe mr-1" v-bind:class="chevron"></i>
                 <h5 class="quorumSetTitle">
-                    Quorumset with threshold:
+                    Quorumset with threshold
                 </h5>
             </div>
             <h5 v-show="!editingThreshold" class="quorumSetTitle pt-1" v-bind:class="quorumSetState">&nbsp;{{quorumSet.threshold}}</h5>
@@ -78,7 +78,7 @@
         @Prop()
         public root!: boolean;
 
-        public open: boolean = this.root;
+        public open: boolean = false;
         public editingThreshold: boolean = false;
         public newThreshold: number = this.quorumSet.threshold;
         public id: number = Math.ceil(Math.random() * 1000);
@@ -203,7 +203,7 @@
     }
 
     .failing {
-        color: red
+        color: #cd201f
     }
 
     .list-group-item, .list-group-item:hover {
