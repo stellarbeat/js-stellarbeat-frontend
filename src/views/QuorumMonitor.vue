@@ -32,7 +32,13 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Quorum set explorer</h3>
+
                             <div class="pull-right">
+                                <UndoRedo v-if="selectedNode" :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
+                                          :undoUpdate="undoUpdate"
+                                          :hasUndo="updateQueue.hasUndo()"
+                                          :hasRedo="updateQueue.hasRedo()"
+                                class="undo-redo"/>
                                 <search :nodes="this.network.nodes"
                                         v-on:center-node="onNodeCenter"></search>
                             </div>
@@ -50,14 +56,6 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-xl-4">
-                                    <div class="row">
-                                        <div class="col-8 pb-2">
-                                            <UndoRedo v-if="selectedNode" :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
-                                                          :undoUpdate="undoUpdate"
-                                                          :hasUndo="updateQueue.hasUndo()"
-                                                          :hasRedo="updateQueue.hasRedo()"/>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-12">
                                             <router-view v-on:node-toggle-active="toggleActive"
@@ -264,6 +262,9 @@ export default class QuorumMonitor extends Vue {
 </script>
 
 <style scoped>
+    .undo-redo {
+        margin-right: 10px;
+    }
     .graph-row {
         margin-bottom: 10px;
     }
