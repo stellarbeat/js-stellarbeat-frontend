@@ -1,7 +1,7 @@
 <template>
-    <div class="p-0 pt-1 toml-config-viewer">
-        <div class="toml-title" v-on:click="toggleShow">
-            <i class="chevron fe mr-1" v-bind:class="chevron"></i><h5>Quorumset toml  configuration</h5>
+    <div class="p-0 toml-config-viewer">
+        <div class="toml-title pt-1 pb-3f" v-on:click="toggleShow">
+            <i class="chevron fe mr-1" v-bind:class="chevron"></i><h5 class="m-0">Quorumset toml  configuration</h5>
         </div>
 
         <pre v-if="showing"><code>{{tomlConfig}}</code></pre>
@@ -46,6 +46,9 @@
     .toml-title{
         cursor:pointer;
         color: #1997c6;
+    }
+    .toml-title:hover {
+        background-color: #f8f9fa;
     }
 </style>
 

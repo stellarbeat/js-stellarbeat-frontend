@@ -1,13 +1,13 @@
 <template>
-    <li class="list-group-item p-0 pt-1">
-        <div class="titleContainer d-flex">
-            <div @click="toggle" class="quorum-set pt-1 d-flex" v-bind:class="quorumSetState">
+    <li class="list-group-item p-0">
+        <div class="titleContainer pt-1 pb-1 d-flex">
+            <div @click="toggle" class="quorum-set d-flex" v-bind:class="quorumSetState">
                 <i class="caret fe mr-1" v-bind:class="chevron"></i>
-                <h5 class="quorumSetTitle">
+                <h5 class="quorumSetTitle m-0">
                     Quorumset with threshold
                 </h5>
             </div>
-            <h5 v-show="!editingThreshold" class="quorumSetTitle pt-1" v-bind:class="quorumSetState">&nbsp;{{quorumSet.threshold}}</h5>
+            <h5 v-show="!editingThreshold" class="quorumSetTitle" v-bind:class="quorumSetState">&nbsp;{{quorumSet.threshold}}</h5>
             <b-form-input
                     :id='"editThresholdInput" + id'
                     :ref='"editThresholdInput" + id'
@@ -174,8 +174,8 @@
         width: 45px;
     }
 
-    .quorumSetTitle {
-
+    .titleContainer:hover{
+        background-color: #f8f9fa;
     }
 
     .active-node {
