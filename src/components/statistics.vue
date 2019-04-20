@@ -24,7 +24,7 @@
                     </div>
 
                     <b-tooltip target="activeNodesTooltip" placement="top">
-                        Number of nodes that were active at least one time in the latest 300 crawls (2 days).
+                        Number of nodes that were active at least one time in the latest 300 crawls.
                     </b-tooltip>
                     <div class="h1 m-2">{{numberOfActiveNodes}}</div>
                     <div class="text-muted mb-1">Active Nodes</div>
@@ -39,7 +39,7 @@
                     </div>
 
                     <b-tooltip target="ActiveValidatorsTooltip" placement="top">
-                        Number of nodes that supplied us with quorumset configurations and were active at least one time in the latest 300 crawls (2 days).
+                        Number of nodes that supplied us with quorumset configurations and were active at least one time in the latest 300 crawls.
                     </b-tooltip>
                     <div class="h1 m-2">{{numberOfNodesWithQuorumSets}}</div>
                     <div class="text-muted mb-1">Active Validators</div>

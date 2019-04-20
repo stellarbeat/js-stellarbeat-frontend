@@ -14,10 +14,7 @@
 
             <h3>Crawler</h3>
             <p>
-                Every 10 minutes we crawl the stellar public network to gather all available nodes.
-
-                The crawler also listens for five minutes to the traffic in the network to determine if a node is
-                participating in the Stellar consensus protocol.
+                Every 3 minutes we crawl the stellar public network to gather all available nodes and pickup scp messages to determine if a node is participating in the Stellar consensus protocol.
             </p>
             <h3>Node information & statistics</h3>
             <ul>
