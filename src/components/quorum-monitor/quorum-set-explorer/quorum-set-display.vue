@@ -22,11 +22,13 @@
 
             </b-form-input>
 
-            <b-dropdown right id="editDropdown" size="sm" text="Edit" class="p-0 edit-dropdown">
+            <b-dropdown right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" no-caret>
                 <template slot="button-content">
-                    <i class="fe fe-edit-2"></i>
+                    <i class="fe fe-more-vertical"></i>
                 </template>
-                <b-dropdown-item v-on:click="enableThresholdEditMode">Edit threshold</b-dropdown-item>
+                <b-dropdown-item v-on:click="enableThresholdEditMode">
+                    <i class="dropdown-icon fe fe-edit-2"></i>Edit threshold
+                </b-dropdown-item>
                 <!--b-dropdown-item>Add validator</b-dropdown-item>
                 <b-dropdown-item>Add inner quorumset</b-dropdown-item>
                 <b-dropdown-item v-if="!root">Remove</b-dropdown-item!-->
