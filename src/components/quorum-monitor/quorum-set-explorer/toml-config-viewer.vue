@@ -1,6 +1,6 @@
 <template>
     <div class="p-0 toml-config-viewer">
-        <div class="toml-title pt-1 pb-3f" v-on:click="toggleShow">
+        <div class="toml-title pt-1 pb-3" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i><h5 class="m-0">Quorumset toml  configuration</h5>
         </div>
 
