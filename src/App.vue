@@ -108,42 +108,11 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Network, Node} from '@stellarbeat/js-stellar-domain';
-    const axios = require('axios');
+    import axios from 'axios';
+    import {Component} from "vue-property-decorator";
 
-    export default Vue.extend({
-        data() {
-            return {
-                network: {},
-                isLoading: true,
-                showError: false,
-                errorMessage: ""
-            }
-        },
-        methods: {
-            fetchData: async function ():Promise<Array<any>> {
-                try {
-                    let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
-                    return result.data;
-                } catch (error) { //todo logging
-                    console.log(error);
-                    this.showError = true;
-                    this.errorMessage = "Could not connect to api";
-                    return [];
-                }
-            }
-        },
-        computed: {
-            isFullPreRenderRoute: function () {
-                return this.$router.currentRoute.meta.fullPreRender;
-            }
-        },
-        async created() {
-            let nodesRaw = await this.fetchData();
-            let nodes = nodesRaw.map(node => Node.fromJSON(node));
-
-            this.network = new Network(nodes);
-            this.isLoading = false;
-        },
+    @Component({
+        name: "app",
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
             meta: [
@@ -154,6 +123,37 @@
             ]
         }
     })
+
+    export default class App extends Vue {
+        protected network = {};
+        protected isLoading = true;
+        protected showError = false;
+        protected errorMessage = "";
+
+        async fetchData():Promise<Array<any>> {
+            try {
+                let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
+                return result.data;
+            } catch (error) { //todo logging
+                console.log(error);
+                this.showError = true;
+                this.errorMessage = "Could not connect to api";
+                return [];
+            }
+        }
+
+        async created() {
+            let nodesRaw = await this.fetchData();
+            let nodes = nodesRaw.map(node => Node.fromJSON(node));
+
+            this.network = new Network(nodes);
+            this.isLoading = false;
+        }
+
+        get isFullPreRenderRoute () {
+            return this.$router.currentRoute.meta.fullPreRender;
+        }
+    }
 </script>
 
 <style scoped>
