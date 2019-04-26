@@ -34,7 +34,8 @@
                             <h3 class="card-title">Quorum set explorer</h3>
 
                             <div class="pull-right">
-                                <UndoRedo v-if="selectedNode" :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
+                                <UndoRedo v-if="selectedNode && (updateQueue.hasRedo() || updateQueue.hasUndo())"
+                                          :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
                                           :undoUpdate="undoUpdate"
                                           :hasUndo="updateQueue.hasUndo()"
                                           :hasRedo="updateQueue.hasRedo()"
