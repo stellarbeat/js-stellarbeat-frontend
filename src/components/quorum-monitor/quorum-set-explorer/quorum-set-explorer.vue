@@ -3,22 +3,16 @@
         <div class="row">
             <div class="col-sm-12">
                 <h3 class="selected-node-title">
-                    {{selectedNode.displayName | truncate(28)}}
-                    <!--b-dropdown right id="more" size="sm" text="More" class="p-0 m-0 float-right" no-caret>
-                        <template slot="button-content">
-                            <i class="fe fe-more-vertical"></i>
-                        </template>
-                        <b-dropdown-item v-on:click="showModal(selectedNode)">
-                            <i class="dropdown-icon fe fe-info"></i>
-                            Info
-                        </b-dropdown-item>
-                        <b-dropdown-item v-on:click="$emit('node-toggle-active', selectedNode)">
-                            <i class="dropdown-icon fe fe-power"></i>
-                            {{selectedNode.active ? 'Disable' : 'Enable'}}
-                        </b-dropdown-item>
-                    </b-dropdown!-->
+                    <span v-if="selectedNode.isFullValidator" class="badge sb-badge badge-success full-validator-badge">
+                        <i class="fe fe-shield"></i>
+                    </span>{{selectedNode.displayName | truncate(27)}}
                 </h3>
-
+                <span class="badge sb-badge"
+                      v-bind:class="[selectedNode.isFullValidator || selectedNode.isValidator ? 'badge-success ' : 'badge-default']"
+                >
+                    {{selectedNode.isFullValidator ? 'Full Validator' :
+                    selectedNode.isValidator ? 'Basic Validator' : 'Watcher Node'}}
+                </span>
                 <span class="badge sb-badge"
                       v-bind:class="[selectedNode.active ? 'badge-primary ' : 'badge-default']"
                 >{{selectedNode.active ? 'Active' : 'Inactive'}}
@@ -32,6 +26,7 @@
                 >Availability
                     {{selectedNode.statistics.activeRating * 20 + '%'}}
                 </span>
+
 
                 <span class="badge badge-default sb-badge">{{selectedNode.versionStr}}</span>
                 <pre><code class="language-html" data-lang="html">{{selectedNode.publicKey}}</code></pre>
@@ -153,6 +148,10 @@
 </script>
 
 <style scoped>
+    .full-validator-badge {
+        margin-right: 5px !important;
+    }
+
     .selected-node-title {
         margin-bottom: 5px;
     }
