@@ -11,7 +11,7 @@
                       v-bind:class="[selectedNode.isFullValidator || selectedNode.isValidator ? 'badge-success ' : 'badge-default']"
                 >
                     {{selectedNode.isFullValidator ? 'Full Validator' :
-                    selectedNode.isValidator ? 'Basic Validator' : 'Watcher Node'}}
+                    selectedNode.isValidator ? 'Validator' : 'Watcher Node'}}
                 </span>
                 <span class="badge sb-badge"
                       v-bind:class="[selectedNode.active ? 'badge-primary ' : 'badge-default']"
