@@ -33,11 +33,10 @@
                     <b-table striped hover responsive :items="nodes" :fields="fields" :sort-by.sync="sortBy"
                              :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                              :filter="filter" @filtered="onFiltered">
-                        <!--template slot="publicKey" slot-scope="data">
-                            {{data.value | truncate(20)}}
-                        </template!-->
-                        <template slot="name" slot-scope="data">
-                            {{data.value || " " | truncate(20)}}
+                        <template slot="name" slot-scope="row">
+                            <router-link :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
+                                {{ row.item.name || " " | truncate(20)}}
+                            </router-link>
                         </template>
                         <template slot="version" slot-scope="data">
                             {{data.value || " " | truncate(28)}}
@@ -69,86 +68,88 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import {Component, Prop} from 'vue-property-decorator';
-import {Network, Node} from '@stellarbeat/js-stellar-domain';
+    import Vue from "vue";
+    import {Component, Prop} from "vue-property-decorator";
+    import {Network, Node} from "@stellarbeat/js-stellar-domain";
 
-@Component({
-    name: 'nodes-table',
-    metaInfo: {
-        title: 'Nodes overview - Stellarbeat.io',
-        meta: [
-            {name: 'description', content: 'Search through all available nodes'},
-        ],
-    },
-})
-export default class NodeDetails extends Vue {
-    public optionShowInactive: number = 1;
-    public sortBy: string = 'Name';
-    public sortDesc: boolean = true;
-    public perPage: number = 20;
-    public currentPage: number = 1;
-    public filter: string = '';
-    public fields = [
-        {key: 'name', sortable: true},
-        // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-        {key: 'availability', sortable: true},
-        {key: 'load', sortable: true},
-        {key: 'version', sortable: true},
-        {key: 'country', sortable: true},
-        {key: 'ip', sortable: true},
+    @Component({
+        name: "nodes-table",
+        metaInfo: {
+            title: "Nodes overview - Stellarbeat.io",
+            meta: [
+                {name: "description", content: "Search through all available nodes"},
+            ],
+        },
+    })
+    export default class NodeDetails extends Vue {
+        public optionShowInactive: number = 1;
+        public sortBy: string = "availability";
+        public sortDesc: boolean = true;
+        public perPage: number = 20;
+        public currentPage: number = 1;
+        public filter: string = "";
+        public fields = [
+            {key: "name", sortable: true},
+            {key: "type", label: "type (experimental)", sortable: true},
+            // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
+            {key: "availability", sortable: true},
+            {key: "load", sortable: true},
+            {key: "version", sortable: true},
+            {key: "country", sortable: true},
+            {key: "ip", sortable: true},
 
-        {key: 'actions', label: ''},
-    ];
+            {key: "actions", label: ""},
+        ];
 
-    @Prop()
-    public network!: Network;
-    @Prop()
-    public isLoading!: boolean;
+        @Prop()
+        public network!: Network;
+        @Prop()
+        public isLoading!: boolean;
 
-    get nodes(): any[] {
-        return this.network.nodes
-            .filter((node) => node.active || this.optionShowInactive)
-            .map((node) => {
-                return {
-                    name: node.displayName,
-                    availability: node.statistics.activeRating * 20 + '%',
-                    load: this.getLoad(node),
-                    ip: node.key,
-                    publicKey: node.publicKey,
-                    country: node.geoData.countryName,
-                    version: node.versionStr,
-                };
-            });
-    }
-
-    get totalRows(): number {
-        return this.nodes.length;
-    }
-
-    get latestCrawlDateString(): string {
-        return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-    }
-
-    public onFiltered = (filteredItems: any[]) => {
-        // Trigger pagination to update the number of buttons/pages due to filtering
-        // this.totalRows = filteredItems.length;
-        this.currentPage = 1;
-    }
-
-    public getLoad = (node: Node) => {
-        switch (true) {
-            case node.statistics.activeRating === 0:
-                return 'NA';
-            case node.statistics.overLoadedRating <= 2:
-                return 'low';
-            case node.statistics.overLoadedRating <= 4:
-                return 'medium';
-            case node.statistics.overLoadedRating <= 5:
-                return 'high';
+        get nodes(): any[] {
+            return this.network.nodes
+                .filter((node) => node.active || this.optionShowInactive)
+                .map((node) => {
+                    return {
+                        name: node.displayName,
+                        type: node.isFullValidator ? "Full validator" : node.isValidator ? "Validator" : "Watcher",
+                        availability: node.statistics.activeRating * 20 + "%",
+                        load: this.getLoad(node),
+                        ip: node.key,
+                        publicKey: node.publicKey,
+                        country: node.geoData.countryName,
+                        version: node.versionStr,
+                    };
+                });
         }
+
+        get totalRows(): number {
+            return this.nodes.length;
+        }
+
+        get latestCrawlDateString(): string {
+            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
+        }
+
+        public onFiltered = (filteredItems: any[]) => {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            // this.totalRows = filteredItems.length;
+            this.currentPage = 1;
+        };
+
+        public getLoad = (node: Node) => {
+            switch (true) {
+                case node.statistics.activeRating === 0:
+                    return "NA";
+                case node.statistics.overLoadedRating <= 2:
+                    return "low";
+                case node.statistics.overLoadedRating <= 4:
+                    return "medium";
+                case node.statistics.overLoadedRating <= 5:
+                    return "high";
+            }
+        };
     }
-}
 </script>
 <style scoped>
     .header-row {
