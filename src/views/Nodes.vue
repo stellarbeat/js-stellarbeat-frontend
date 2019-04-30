@@ -7,7 +7,13 @@
                 </h1>
                 <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
-            <b-alert show variant="info"><strong>Full validator detection (experimental):</strong> Support <a target="_blank" href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a> and update the linked  <a target="_blank" href="https://www.stellar.org/developers/guides/concepts/stellar-toml.html">stellar.toml</a> file to include your up-to-date history archive.</b-alert>
+            <b-alert show variant="info"><strong>Full validator detection (experimental):</strong> Support <a
+                    target="_blank"
+                    href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
+                and update the linked <a target="_blank"
+                                         href="https://www.stellar.org/developers/guides/concepts/stellar-toml.html">stellar.toml</a>
+                file to include your up-to-date history archive.
+            </b-alert>
             <div class="card mb-2 p-1">
                 <div class="card-header">
                     <div class="row header-row">
@@ -35,9 +41,18 @@
                              :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                              :filter="filter" @filtered="onFiltered">
                         <template slot="name" slot-scope="row">
-                            <router-link :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
-                                {{ row.item.name || " " | truncate(20)}}
+                            <span v-if="row.item.isFullValidator"
+                                  class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
+                                  v-b-tooltip.hover title="Full validator">
+                                <i class="fe fe-shield"></i>
+                            </span>
+                            <router-link
+                                    :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">{{ row.item.name || " " | truncate(20)}}
                             </router-link>
+                        </template>
+
+                        <template slot="type" slot-scope="row">
+                            {{row.item.type}}
                         </template>
                         <template slot="version" slot-scope="data">
                             {{data.value || " " | truncate(28)}}
@@ -120,6 +135,7 @@
                         publicKey: node.publicKey,
                         country: node.geoData.countryName,
                         version: node.versionStr,
+                        isFullValidator: node.isFullValidator
                     };
                 });
         }
