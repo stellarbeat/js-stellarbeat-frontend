@@ -99,7 +99,7 @@
     })
     export default class NodeDetails extends Vue {
         public optionShowInactive: number = 1;
-        public sortBy: string = "availability";
+        public sortBy: string = "index";
         public sortDesc: boolean = true;
         public perPage: number = 20;
         public currentPage: number = 1;
@@ -109,6 +109,7 @@
             {key: "type", label: "type (experimental)", sortable: true},
             // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
             {key: "availability", sortable: true},
+            {key: "index", label: "index (experimental)", sortable: true},
             {key: "load", sortable: true},
             {key: "version", sortable: true},
             {key: "country", sortable: true},
@@ -126,6 +127,7 @@
             return this.network.nodes
                 .filter((node) => node.active || this.optionShowInactive)
                 .map((node) => {
+                    console.log(node);
                     return {
                         name: node.displayName,
                         type: node.isFullValidator ? "Full validator" : node.isValidator ? "Validator" : "Watcher",
@@ -135,7 +137,8 @@
                         publicKey: node.publicKey,
                         country: node.geoData.countryName,
                         version: node.versionStr,
-                        isFullValidator: node.isFullValidator
+                        isFullValidator: node.isFullValidator,
+                        index: node.index
                     };
                 });
         }
