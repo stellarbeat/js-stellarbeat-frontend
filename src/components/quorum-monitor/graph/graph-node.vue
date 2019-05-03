@@ -100,13 +100,12 @@ export default class GraphNode extends Vue {
 
     circle.target {
         stroke:  #e4d836;
-
         stroke-opacity: 1;
     }
 
     circle.source {
         stroke:  #1bc98e;
-        stroke-opacity: 0.7;
+        stroke-opacity: 1;
     }
 
     circle {
