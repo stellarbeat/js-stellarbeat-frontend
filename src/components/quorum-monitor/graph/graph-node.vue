@@ -2,7 +2,7 @@
     <g :transform="coordinateTransform">
         <defs>
             <filter x="0" y="0" width="1" height="1" id="solid">
-                <feFlood flood-color="white" flood-opacity="0.7"/>
+                <feFlood flood-color="white" flood-opacity="0.8"/>
                 <feComposite in="SourceGraphic"/>
             </filter>
         </defs>
@@ -116,6 +116,6 @@ export default class GraphNode extends Vue {
         stroke-width: 1px;
     }
     text{
-        fill: #1997c6;
+        fill: #197baa;
     }
 </style>

@@ -144,7 +144,8 @@
 
         async created() {
             let nodesRaw = await this.fetchData();
-            let nodes = nodesRaw.map(node => Node.fromJSON(node));
+            let nodes = nodesRaw
+                .map(node => Node.fromJSON(node));
 
             this.network = new Network(nodes);
             this.isLoading = false;

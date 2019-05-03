@@ -94,14 +94,14 @@
                         </div>
                         <div class="card-body">
                             <b-row>
-                                <b-col-12>
+                                <b-col cols="12">
                                     <label class="custom-switch">
                                         <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
                                                v-model="optionNodeActiveBasedOnLatestCrawl">
                                         <span class="custom-switch-indicator"></span>
                                         <span class="custom-switch-description">Use latest crawl results for active status of nodes</span>
                                     </label>
-                                </b-col-12>
+                                </b-col>
                             </b-row>
                             <!--b-row class="mt-2">
                                 <b-col-12>

@@ -34,7 +34,7 @@ import GraphNode from './graph-node.vue';
 import GraphLink from './graph-link.vue';
 import svgPanZoom from 'svg-pan-zoom';
 
-import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graphv2.worker';
+import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graphv3.worker';
 import {Component, Prop, Watch} from 'vue-property-decorator';
 
 const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
@@ -140,17 +140,17 @@ export default class Graph extends Vue {
     }
     public created() {
         this.network.nodes.forEach((node) => {
-            this.$set(node, 'x', undefined);
-            this.$set(node, 'y', undefined);
+            this.$set(node, 'x', 0);
+            this.$set(node, 'y', 0);
         }); // trigger reactive changes on newly added x and y coordinates
 
         this.computeGraphWorker.onmessage = (event: any) => {
             switch (event.data.type) {
                 case 'tick': {
                     // if(newLoadingProgress % 25 === 0)
-                    this.loadingProgress = Math.round(event.data.progress * 100);
+                    //this.loadingProgress = Math.round(event.data.progress * 100);
                 }
-                             break;
+                break;
                 case 'end': {
                     event.data.nodes.forEach(
                         (node: {index: number, x: number, y: number, publicKey: string}) => {
