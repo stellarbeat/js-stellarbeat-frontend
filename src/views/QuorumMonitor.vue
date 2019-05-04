@@ -62,6 +62,7 @@
                                             <router-view v-on:node-toggle-active="toggleActive"
                                                          v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                                          v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
+                                                         v-on:quorumset-delete-inner-quorumset="deleteInnerQuorumSet"
                                                          v-on:center-node="onNodeCenter"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
@@ -135,6 +136,7 @@
     import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
     import UndoRedo from "@/components/quorum-monitor/UndoRedo.vue";
     import {QuorumSetValidatorDelete} from "@/services/change-queue/changes/quorum-set-validator-delete";
+    import {InnerQuorumSetDelete} from "@/services/change-queue/changes/inner-quorum-set-delete";
 
     @Component({
         name: "quorum-monitor",
@@ -216,6 +218,13 @@
 
         public deleteValidatorFromQuorumSet(quorumSet:QuorumSet, validator:Node) {
             let change = new QuorumSetValidatorDelete(quorumSet, validator.publicKey);
+            this.changeQueue.execute(change);
+            this.network.updateNetwork();
+            (this.$refs.graph as any).restartSimulation();
+        }
+
+        public deleteInnerQuorumSet(quorumSet:QuorumSet, fromQuorumSet:QuorumSet){
+            let change = new InnerQuorumSetDelete(fromQuorumSet, quorumSet);
             this.changeQueue.execute(change);
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();

@@ -1,5 +1,5 @@
-import {ChangeQueue} from "../change-queue/change-queue";
-import {EntityPropertyUpdate} from "../change-queue/changes/entity-property-update";
+import {ChangeQueue} from "../../change-queue/change-queue";
+import {EntityPropertyUpdate} from "../../change-queue/changes/entity-property-update";
 import {Node} from "@stellarbeat/js-stellar-domain";
 
 jest.mock('../entity-property-update');

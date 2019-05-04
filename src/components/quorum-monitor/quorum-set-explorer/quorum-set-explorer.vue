@@ -53,6 +53,7 @@
                                           v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                           v-on:node-show-modal="showModal"
                                           v-on:delete-validator-from-quorum-set="deleteValidatorFromQuorumSet"
+                                          v-on:delete-quorum-set="deleteInnerQuorumSet"
                         >
                         </QuorumSetDisplay>
                     </ul>
@@ -137,6 +138,14 @@
 
         public deleteValidatorFromQuorumSet(node: Node, quorumSet:QuorumSet) {
             this.$emit("quorumset-delete-validator", quorumSet, node);
+        }
+
+        public deleteInnerQuorumSet(innerQuorumSet: QuorumSet, fromQuorumSet?: QuorumSet) {
+            if(fromQuorumSet === undefined) {
+                fromQuorumSet = this.selectedNode.quorumSet;
+            }
+
+            this.$emit("quorumset-delete-inner-quorumset", innerQuorumSet, fromQuorumSet);
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {

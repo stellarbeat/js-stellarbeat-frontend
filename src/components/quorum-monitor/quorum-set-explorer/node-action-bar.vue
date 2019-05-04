@@ -12,7 +12,7 @@
                 <i class="dropdown-icon fe fe-power"></i>
                 {{node.active ? 'Disable' : 'Enable'}}
             </b-dropdown-item>
-            <b-dropdown-item v-on:click="$emit('node-delete', node)">
+            <b-dropdown-item v-if="supportsDelete" v-on:click="$emit('node-delete', node)">
                 <i class="dropdown-icon fe fe-minus-circle"></i>
                 Delete
             </b-dropdown-item>
@@ -44,6 +44,8 @@
     export default class NodeActionBar extends Vue {
         @Prop()
         public node!: Node;
+        @Prop({default: false})
+        public supportsDelete!: Boolean;
     }
 </script>
 

@@ -29,7 +29,11 @@
                 <b-dropdown-item v-on:click="enableThresholdEditMode">
                     <i class="dropdown-icon fe fe-edit-2"></i>Edit threshold
                 </b-dropdown-item>
-                <!--b-dropdown-item>Add validator</b-dropdown-item>
+                <b-dropdown-item v-if="!root" v-on:click="deleteQuorumSet">
+                    <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
+                </b-dropdown-item>
+
+                        <!--b-dropdown-item>Add validator</b-dropdown-item>
                 <b-dropdown-item>Add inner quorumset</b-dropdown-item>
                 <b-dropdown-item v-if="!root">Remove</b-dropdown-item!-->
             </b-dropdown>
@@ -42,7 +46,7 @@
                         {{validatorDisplayName(validator) | truncate(30)}}
                     </div>
                 </a>
-                <NodeActionBar :node="getNode(validator)" :network="network"
+                <NodeActionBar :node="getNode(validator)" :network="network" :supportsDelete="true"
                                v-on:node-toggle-active="toggleNodeActive"
                                v-on:node-show-modal="showModal"
                                v-on:node-delete="deleteNodeFromQuorumSet"
@@ -53,6 +57,8 @@
                                 :quorumSet="innerQuorumSet"
                                 :root="false"
                                 v-on:node-toggle-active="toggleNodeActive"
+                                v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
+                                v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
                                 v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                 v-on:node-show-modal="showModal">
             </quorum-set-display>
@@ -125,6 +131,22 @@
 
         public deleteNodeFromQuorumSet(node: Node) {
             this.$emit("delete-validator-from-quorum-set", node, this.quorumSet);
+        }
+
+        public deleteNodeFromInnerQuorumSet(node:Node, quorumSet:QuorumSet) {
+            this.$emit("delete-validator-from-quorum-set", node, quorumSet);
+        }
+
+        public deleteQuorumSetFromInnerQuorumSet(quorumSet:QuorumSet, fromQuorumSet?:QuorumSet){
+            if(fromQuorumSet === undefined) {
+                fromQuorumSet = this.quorumSet;
+            }
+
+            this.$emit("delete-quorum-set", quorumSet, fromQuorumSet);
+        }
+
+        public deleteQuorumSet() {
+            this.$emit("delete-quorum-set", this.quorumSet);
         }
 
         public enableThresholdEditMode() {
