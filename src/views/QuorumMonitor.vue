@@ -17,7 +17,7 @@
 <template>
     <div>
         <div>
-            <div v-show="updateQueue.hasUndo()" class="alert alert-warning" role="alert">
+            <div v-show="changeQueue.hasUndo()" class="alert alert-warning" role="alert">
                 You are viewing a simulation!
             </div>
             <div class="page-header  mt-2">
@@ -34,11 +34,11 @@
                             <h3 class="card-title">Quorum set explorer</h3>
 
                             <div class="pull-right">
-                                <UndoRedo v-if="selectedNode && (updateQueue.hasRedo() || updateQueue.hasUndo())"
+                                <UndoRedo v-if="selectedNode && (changeQueue.hasRedo() || changeQueue.hasUndo())"
                                           :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
                                           :undoUpdate="undoUpdate"
-                                          :hasUndo="updateQueue.hasUndo()"
-                                          :hasRedo="updateQueue.hasRedo()"
+                                          :hasUndo="changeQueue.hasUndo()"
+                                          :hasRedo="changeQueue.hasRedo()"
                                           class="undo-redo"/>
                                 <search :nodes="this.network.nodes"
                                         v-on:center-node="onNodeCenter"></search>
@@ -61,6 +61,7 @@
                                         <div class="col-12">
                                             <router-view v-on:node-toggle-active="toggleActive"
                                                          v-on:quorumset-edit-threshold="editQuorumSetThreshold"
+                                                         v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
                                                          v-on:center-node="onNodeCenter"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
@@ -130,9 +131,10 @@
 
     import {Node, Network, QuorumSet} from "@stellarbeat/js-stellar-domain";
     import {Component, Prop, Watch} from "vue-property-decorator";
-    import {EntityPropertyUpdateQueueManager} from "@/services/entity-property-update-queue-manager";
-    import {EntityPropertyUpdate} from "@/services/entity-property-update";
+    import {ChangeQueue} from "@/services/change-queue/change-queue";
+    import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
     import UndoRedo from "@/components/quorum-monitor/UndoRedo.vue";
+    import {QuorumSetValidatorDelete} from "@/services/change-queue/changes/quorum-set-validator-delete";
 
     @Component({
         name: "quorum-monitor",
@@ -158,7 +160,7 @@
         public selectedNode: Node | null = null;
         public simulatedNodes: Node[] = [];
         public optionNodeActiveBasedOnLatestCrawl: boolean = false;
-        public updateQueue: EntityPropertyUpdateQueueManager = new EntityPropertyUpdateQueueManager();
+        public changeQueue: ChangeQueue = new ChangeQueue();
 
         @Prop()
         public network!: Network;
@@ -196,7 +198,7 @@
 
         public toggleActive(node: Node) {
             let update = new EntityPropertyUpdate(node, "active", !node.active);
-            this.updateQueue.execute(update);
+            this.changeQueue.execute(update);
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();
         }
@@ -207,7 +209,14 @@
             }
 
             let update = new EntityPropertyUpdate(quorumSet, "threshold", newThreshold);
-            this.updateQueue.execute(update);
+            this.changeQueue.execute(update);
+            this.network.updateNetwork();
+            (this.$refs.graph as any).restartSimulation();
+        }
+
+        public deleteValidatorFromQuorumSet(quorumSet:QuorumSet, validator:Node) {
+            let change = new QuorumSetValidatorDelete(quorumSet, validator.publicKey);
+            this.changeQueue.execute(change);
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();
         }
@@ -221,28 +230,28 @@
         }
 
         public undoUpdate() {
-            if (!this.updateQueue.hasUndo()) {
+            if (!this.changeQueue.hasUndo()) {
                 return;
             }
-            this.updateQueue.undo();
+            this.changeQueue.undo();
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();
         }
 
         public redoUpdate() {
-            if (!this.updateQueue.hasRedo()) {
+            if (!this.changeQueue.hasRedo()) {
                 return;
             }
-            this.updateQueue.redo();
+            this.changeQueue.redo();
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();
         }
 
         public resetUpdates() {
-            if (!this.updateQueue.hasUndo()) {
+            if (!this.changeQueue.hasUndo()) {
                 return;
             }
-            this.updateQueue.reset();
+            this.changeQueue.reset();
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();
         }

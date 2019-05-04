@@ -52,6 +52,7 @@
                                           v-on:node-toggle-active="toggleNodeActive"
                                           v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                           v-on:node-show-modal="showModal"
+                                          v-on:delete-validator-from-quorum-set="deleteValidatorFromQuorumSet"
                         >
                         </QuorumSetDisplay>
                     </ul>
@@ -132,6 +133,10 @@
 
         public toggleNodeActive(node: Node) {
             this.$emit("node-toggle-active", node);
+        }
+
+        public deleteValidatorFromQuorumSet(node: Node, quorumSet:QuorumSet) {
+            this.$emit("quorumset-delete-validator", quorumSet, node);
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {

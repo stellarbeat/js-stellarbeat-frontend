@@ -44,7 +44,9 @@
                 </a>
                 <NodeActionBar :node="getNode(validator)" :network="network"
                                v-on:node-toggle-active="toggleNodeActive"
-                               v-on:node-show-modal="showModal"></NodeActionBar>
+                               v-on:node-show-modal="showModal"
+                               v-on:node-delete="deleteNodeFromQuorumSet"
+                ></NodeActionBar>
             </div>
             <quorum-set-display v-for="innerQuorumSet in quorumSet.innerQuorumSets" :key="innerQuorumSet.hashKey"
                                 :network="network"
@@ -119,6 +121,10 @@
 
         public toggleNodeActive(node: Node) {
             this.$emit("node-toggle-active", node);
+        }
+
+        public deleteNodeFromQuorumSet(node: Node) {
+            this.$emit("delete-validator-from-quorum-set", node, this.quorumSet);
         }
 
         public enableThresholdEditMode() {

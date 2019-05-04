@@ -1,6 +1,8 @@
+import {Change} from '@/services/change-queue/change-queue';
+
 type Entity = any; //any object
 
-export class EntityPropertyUpdate {
+export class EntityPropertyUpdate implements Change{
     protected _originalValue:any;
     protected _entity: Entity;
     protected _propertyName: string;

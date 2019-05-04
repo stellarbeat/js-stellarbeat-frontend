@@ -1,5 +1,5 @@
 import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
-import {EntityPropertyUpdate} from "../entity-property-update";
+import {EntityPropertyUpdate} from "../change-queue/changes/entity-property-update";
 
 describe("entity property update", () => {
 

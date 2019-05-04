@@ -12,6 +12,10 @@
                 <i class="dropdown-icon fe fe-power"></i>
                 {{node.active ? 'Disable' : 'Enable'}}
             </b-dropdown-item>
+            <b-dropdown-item v-on:click="$emit('node-delete', node)">
+                <i class="dropdown-icon fe fe-minus-circle"></i>
+                Delete
+            </b-dropdown-item>
         </b-dropdown>
         <!--div class="btn-group btn-group-sm" role="group" aria-label="actions">
             <button type="button" class="btn btn-sm btn-icon btn-secondary node-info-btn" title="show info"
