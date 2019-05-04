@@ -1,4 +1,4 @@
-import {forceManyBody, forceSimulation, forceLink, forceX, forceY, forceCenter} from 'd3-force';
+import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-force';
 
 const ctx: Worker = self as any;
 
@@ -27,7 +27,7 @@ ctx.addEventListener('message', (event) => {
         .stop();
 
     for (let i = 0,
-             n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n*2; ++i) {
+             n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n; ++i) {
         //ctx.postMessage({type: 'tick', progress: i / n});
         simulation.tick();
     }

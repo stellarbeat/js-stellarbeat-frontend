@@ -127,7 +127,6 @@
             return this.network.nodes
                 .filter((node) => node.active || this.optionShowInactive)
                 .map((node) => {
-                    console.log(node);
                     return {
                         name: node.displayName,
                         type: node.isFullValidator ? "Full validator" : node.isValidator ? "Validator" : "Watcher",
