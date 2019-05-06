@@ -63,6 +63,7 @@
                                                          v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                                          v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
                                                          v-on:quorumset-delete-inner-quorumset="deleteInnerQuorumSet"
+                                                         v-on:quorumset-add-inner-quorumset="addInnerQuorumSet"
                                                          v-on:center-node="onNodeCenter"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
@@ -132,11 +133,12 @@
 
     import {Node, Network, QuorumSet} from "@stellarbeat/js-stellar-domain";
     import {Component, Prop, Watch} from "vue-property-decorator";
-    import {ChangeQueue} from "@/services/change-queue/change-queue";
+    import {Change, ChangeQueue} from "@/services/change-queue/change-queue";
     import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
     import UndoRedo from "@/components/quorum-monitor/UndoRedo.vue";
     import {QuorumSetValidatorDelete} from "@/services/change-queue/changes/quorum-set-validator-delete";
     import {InnerQuorumSetDelete} from "@/services/change-queue/changes/inner-quorum-set-delete";
+    import {InnerQuorumSetAdd} from "@/services/change-queue/changes/inner-quorum-set-add";
 
     @Component({
         name: "quorum-monitor",
@@ -199,10 +201,7 @@
         }
 
         public toggleActive(node: Node) {
-            let update = new EntityPropertyUpdate(node, "active", !node.active);
-            this.changeQueue.execute(update);
-            this.network.updateNetwork();
-            (this.$refs.graph as any).restartSimulation();
+            this.processChange(new EntityPropertyUpdate(node, "active", !node.active));
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
@@ -210,21 +209,22 @@
                 return;
             }
 
-            let update = new EntityPropertyUpdate(quorumSet, "threshold", newThreshold);
-            this.changeQueue.execute(update);
-            this.network.updateNetwork();
-            (this.$refs.graph as any).restartSimulation();
+            this.processChange(new EntityPropertyUpdate(quorumSet, "threshold", newThreshold));
         }
 
         public deleteValidatorFromQuorumSet(quorumSet:QuorumSet, validator:Node) {
-            let change = new QuorumSetValidatorDelete(quorumSet, validator.publicKey);
-            this.changeQueue.execute(change);
-            this.network.updateNetwork();
-            (this.$refs.graph as any).restartSimulation();
+            this.processChange(new QuorumSetValidatorDelete(quorumSet, validator.publicKey));
         }
 
         public deleteInnerQuorumSet(quorumSet:QuorumSet, fromQuorumSet:QuorumSet){
-            let change = new InnerQuorumSetDelete(fromQuorumSet, quorumSet);
+            this.processChange(new InnerQuorumSetDelete(fromQuorumSet, quorumSet));
+        }
+
+        public addInnerQuorumSet(toQuorumSet:QuorumSet){
+            this.processChange(new InnerQuorumSetAdd(toQuorumSet));
+        }
+
+        protected processChange(change:Change) {
             this.changeQueue.execute(change);
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();

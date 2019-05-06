@@ -49,11 +49,13 @@
                         <QuorumSetDisplay :quorumSet="selectedNode.quorumSet"
                                           :network="network"
                                           :root="true"
+                                          :level=1
                                           v-on:node-toggle-active="toggleNodeActive"
                                           v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                           v-on:node-show-modal="showModal"
                                           v-on:delete-validator-from-quorum-set="deleteValidatorFromQuorumSet"
                                           v-on:delete-quorum-set="deleteInnerQuorumSet"
+                                          v-on:add-quorum-set="addInnerQuorumSet"
                         >
                         </QuorumSetDisplay>
                     </ul>
@@ -146,6 +148,10 @@
             }
 
             this.$emit("quorumset-delete-inner-quorumset", innerQuorumSet, fromQuorumSet);
+        }
+
+        public addInnerQuorumSet(toQuorumSet: QuorumSet) {
+            this.$emit("quorumset-add-inner-quorumset", toQuorumSet);
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {

@@ -29,7 +29,10 @@
                 <b-dropdown-item v-on:click="enableThresholdEditMode">
                     <i class="dropdown-icon fe fe-edit-2"></i>Edit threshold
                 </b-dropdown-item>
-                <b-dropdown-item v-if="!root" v-on:click="deleteQuorumSet">
+                <b-dropdown-item v-if="!(level === 3)" v-on:click="addQuorumSet">
+                    <i class="dropdown-icon fe fe-plus-circle"></i>Add QuorumSet
+                </b-dropdown-item>
+                <b-dropdown-item v-if="!(level === 1)" v-on:click="deleteQuorumSet">
                     <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
                 </b-dropdown-item>
 
@@ -56,9 +59,11 @@
                                 :network="network"
                                 :quorumSet="innerQuorumSet"
                                 :root="false"
+                                :level="level + 1"
                                 v-on:node-toggle-active="toggleNodeActive"
                                 v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
                                 v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
+                                v-on:add-quorum-set="addQuorumSetToInnerQuorumSet"
                                 v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                 v-on:node-show-modal="showModal">
             </quorum-set-display>
@@ -87,7 +92,13 @@
         public quorumSet!: QuorumSet;
         @Prop()
         public root!: boolean;
+        @Prop()
+        public level!: number;
 
+        constructor(){
+            super();
+            console.log(this.level);
+        }
         public open: boolean = false;
         public editingThreshold: boolean = false;
         public newThreshold: number = this.quorumSet.threshold;
@@ -147,6 +158,19 @@
 
         public deleteQuorumSet() {
             this.$emit("delete-quorum-set", this.quorumSet);
+        }
+
+        public addQuorumSetToInnerQuorumSet(ToQuorumSet:QuorumSet){
+            if(ToQuorumSet === undefined) {
+                ToQuorumSet = this.quorumSet;
+            }
+
+            this.$emit("add-quorum-set", ToQuorumSet);
+        }
+
+        public addQuorumSet() {
+            this.open = true;
+            this.$emit("add-quorum-set", this.quorumSet);
         }
 
         public enableThresholdEditMode() {
