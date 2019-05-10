@@ -1,6 +1,6 @@
 <template>
     <div class="pt-0">
-        <div class="pt-1 pb-3 trusting-nodes-title active" v-on:click="toggleShow">
+        <div class="pt-2 pb-3 trusting-nodes-title active" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i>
             <h5 class="mb-0">Trusted by
                 {{nodes.filter(node => node.active).length}} active nodes
