@@ -17,7 +17,8 @@
                       v-bind:class="[selectedNode.active ? 'badge-primary ' : 'badge-default']"
                 >{{selectedNode.active ? 'Active' : 'Inactive'}}
                 </span>
-                <span v-if="selectedNode.quorumSet.hasValidators() && network.isQuorumSetFailing(this.selectedNode.quorumSet)" class="badge sb-badge badge-danger"
+                <span v-if="selectedNode.quorumSet.hasValidators() && network.isQuorumSetFailing(this.selectedNode.quorumSet)"
+                      class="badge sb-badge badge-danger"
                 >Failing
                 </span>
 
@@ -50,6 +51,7 @@
                                           :network="network"
                                           :root="true"
                                           :level=1
+                                          :possibleValidatorsToAdd="possibleValidatorsToAdd"
                                           v-on:node-toggle-active="toggleNodeActive"
                                           v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                           v-on:node-show-modal="showModal"
@@ -73,11 +75,6 @@
                 >
 
                 </NodeList>
-            </div>
-        </div>
-        <div v-show="selectedNode.quorumSet.hasValidators()" class="row">
-            <div class="col-sm-12">
-                <TomlConfigViewer :node="selectedNode" :network="network"></TomlConfigViewer>
             </div>
         </div>
         <b-modal v-if="modalNode"
@@ -139,12 +136,19 @@
             this.$emit("node-toggle-active", node);
         }
 
-        public deleteValidatorFromQuorumSet(node: Node, quorumSet:QuorumSet) {
+        public get possibleValidatorsToAdd() {
+            return this.network.nodes.filter((node: Node) =>
+                node.active
+                && node.isValidator
+                && QuorumSet.getAllValidators(this.selectedNode.quorumSet).indexOf(node.publicKey) < 0);
+        }
+
+        public deleteValidatorFromQuorumSet(node: Node, quorumSet: QuorumSet) {
             this.$emit("quorumset-delete-validator", quorumSet, node);
         }
 
         public deleteInnerQuorumSet(innerQuorumSet: QuorumSet, fromQuorumSet?: QuorumSet) {
-            if(fromQuorumSet === undefined) {
+            if (fromQuorumSet === undefined) {
                 fromQuorumSet = this.selectedNode.quorumSet;
             }
 
@@ -155,7 +159,7 @@
             this.$emit("quorumset-add-inner-quorumset", toQuorumSet);
         }
 
-        public addValidators(toQuorumSet: QuorumSet, validators:string[]) {
+        public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
             this.$emit("quorumset-add-validators", toQuorumSet, validators);
         }
 
@@ -213,6 +217,7 @@
         background-color: #1a85ad;
         border-color: #1a85ad;
     }
+
     .dropdown {
         display: flex;
     }

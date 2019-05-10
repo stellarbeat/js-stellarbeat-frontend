@@ -23,7 +23,7 @@
                 <b-dropdown-item v-if="!(level === 1)" v-on:click="deleteQuorumSet">
                     <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
                 </b-dropdown-item>
-                <b-dropdown-form inline="true">
+                <b-dropdown-form inline>
                     <i class="dropdown-icon fe fe-edit-2"></i>
                     <b-form-group
                             label-size="sm"
@@ -31,7 +31,7 @@
                             label-for="dropdown-edit-threshold"
                             @submit.stop.prevent>
                         <b-form-input
-                                :id="dropdown-edit-threshold"
+                                id="dropdown-edit-threshold"
                                 :state="inputState"
                                 class="thresholdEdit"
                                 size="sm"
@@ -42,6 +42,10 @@
                     </b-form-group>
                     <b-button variant="primary" size="sm" @click="saveThresholdFromInput" class="mt-2">Save Threshold</b-button>
                 </b-dropdown-form>
+                <b-dropdown-divider v-if="root"></b-dropdown-divider>
+                <b-dropdown-item v-if="root" v-b-modal.tomlConfigModal>
+                    <i class="dropdown-icon fe fe-save"></i>Export Config
+                </b-dropdown-item>
             </b-dropdown>
         </div>
         <div v-show="open" class="list-group list-group-flush nested-tree">
@@ -66,6 +70,7 @@
                     :root="false"
                     :level="level + 1"
                     :index="quorumSet.innerQuorumSets.indexOf(innerQuorumSet)"
+                    :possibleValidatorsToAdd="possibleValidatorsToAdd"
                     v-on:node-toggle-active="toggleNodeActive"
                     v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
                     v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
@@ -84,12 +89,18 @@
                                     v-on:validators-selected="onValidatorsSelected"/>
             </template>
         </b-modal>
+        <b-modal v-if="root"lazy size="lg" id="tomlConfigModal"
+                 title="Toml Configuration" ok-only ok-title="Close"
+        >
+            <TomlConfigViewer :quorumSet="quorumSet" :network="network"></TomlConfigViewer>
+        </b-modal>
     </li>
 </template>
 
 <script lang="ts">
     import NodeActionBar from "./node-action-bar.vue";
     import AddValidatorsTable from "./add-validators-table.vue";
+    import TomlConfigViewer from "./toml-config-viewer.vue";
 
     import Vue from "vue";
     import {Component, Prop, Watch} from "vue-property-decorator";
@@ -100,7 +111,8 @@
         name: "quorum-set-display",
         components: {
             NodeActionBar,
-            AddValidatorsTable
+            AddValidatorsTable,
+            TomlConfigViewer
         },
     })
     export default class QuorumSetDisplay extends Vue {
@@ -114,6 +126,8 @@
         public level!: number;
         @Prop({default: 0})
         public index!: number;
+        @Prop()
+        public possibleValidatorsToAdd!: Node[];
 
         public open: boolean = false;
         public editingThreshold: boolean = false;
@@ -130,13 +144,6 @@
 
         public get validatorsToAddModalId() {
             return this.level + "." + this.index;
-        }
-
-        public get possibleValidatorsToAdd() {
-            return this.network.nodes.filter((node: Node) =>
-                node.active
-                && node.isValidator
-                && QuorumSet.getAllValidators(this.quorumSet).indexOf(node.publicKey) < 0);
         }
 
         public validatorDisplayName(validator: string) {
@@ -271,7 +278,7 @@
 <style scoped>
     .thresholdEdit {
         margin-left: 10px;
-        width: 45px!important;
+        width: 45px !important;
     }
 
     .titleContainer:hover {
@@ -330,12 +337,13 @@
 
     .quorum-set {
         cursor: pointer;
-        widows: 100%;
+        width: 100%;
     }
 
     .edit-dropdown {
         margin-left: auto;
     }
+
     .dropdown-header {
         padding: 0.5rem 1rem;
     }
