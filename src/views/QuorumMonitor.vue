@@ -31,7 +31,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Quorum set explorer</h3>
+                            <h3 class="card-title">Quorum-set explorer</h3>
 
                             <div class="pull-right">
                                 <UndoRedo v-if="selectedNode && (changeQueue.hasRedo() || changeQueue.hasUndo())"
@@ -71,7 +71,19 @@
                                             >
                                             </router-view>
                                         </div>
-
+                                        <div class="col-12">
+                                            <b-button v-b-modal.simulate-node-modal class="mt-2" variant="primary">
+                                                <i class="fe fe-plus-circle"></i>
+                                                Simulate a new node
+                                            </b-button>
+                                            <b-modal
+                                                    ok-title="Simulate Node" size="lg" id="simulate-node-modal"
+                                                    title="Simulate a new node"
+                                                    v-on:ok="simulateNewNode"
+                                            >
+                                                <b-form-input v-model="newNodeName" placeholder="Enter a name"></b-form-input>
+                                            </b-modal>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +96,7 @@
 
                     <div class="card mb-2">
                         <div class="card-header">
-                            Manual
+                            Quorum-set explorer manual
                         </div>
                         <div class="card-body">
                             <Manual></Manual>
@@ -107,14 +119,6 @@
                                     </label>
                                 </b-col>
                             </b-row>
-                            <!--b-row class="mt-2">
-                                <b-col-12>
-                                    <b-button v-b-modal.add-node-modal variant="primary">Add new node (simulation)</b-button>
-                                </b-col-12>
-                                <b-modal id="add-node-modal" title="Simulate a new node">
-                                    <p class="my-4">Hello from modal!</p>
-                                </b-modal>
-                            </b-row!-->
                         </div>
                     </div>
                 </div>
@@ -141,6 +145,7 @@
     import {InnerQuorumSetDelete} from "@/services/change-queue/changes/inner-quorum-set-delete";
     import {InnerQuorumSetAdd} from "@/services/change-queue/changes/inner-quorum-set-add";
     import {QuorumSetValidatorsAdd} from "@/services/change-queue/changes/quorum-set-validators-add";
+    import {NetworkAddNode} from "@/services/change-queue/changes/network-add-node";
 
     @Component({
         name: "quorum-monitor",
@@ -167,6 +172,7 @@
         public simulatedNodes: Node[] = [];
         public optionNodeActiveBasedOnLatestCrawl: boolean = false;
         public changeQueue: ChangeQueue = new ChangeQueue();
+        public newNodeName: string = '';
 
         @Prop()
         public network!: Network;
@@ -276,9 +282,46 @@
             if (this.$route.params["publicKey"]) {
                 this.selectedNode = this.network.getNodeByPublicKey(this.$route.params["publicKey"]);
             }
+            if(!this.selectedNode) {
+                this.$router.push(
+                    {
+                        name: 'quorum-monitor'
+                    },
+                );
+            }
             if (this.$route.query["center"] === "1" || this.$route.query["center"] === undefined) {
                 this.centerNode = this.selectedNode;
             }
+        }
+
+        public simulateNewNode() {
+            let node = new Node('localhost');
+            node.name = this.newNodeName === '' ? 'MyNewNode' : this.newNodeName;
+            node.publicKey = this.makePublicKey();
+            node.quorumSet.threshold = 1;
+            node.active = true;
+            this.$set(node, 'x', 0); //doesn't belong here, needs better solution
+            this.$set(node, 'y', 0);
+            this.changeQueue.execute(new NetworkAddNode(this.network, node));
+            this.network.updateNetwork(this.network.nodes); //needs better solution
+            (this.$refs.graph as any).restartSimulation();
+            this.$router.push(
+                {
+                    name: 'quorum-monitor-node',
+                    params: {publicKey: node.publicKey},
+                    query: {'center': '1', 'no-scroll': '1'},
+                },
+            );
+        }
+
+        protected makePublicKey() {
+            let result           = 'G';
+            let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let charactersLength = characters.length;
+            for ( let i = 0; i < 56; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
         }
 
         public beforeDestroy() {

@@ -8,6 +8,8 @@ import 'tabler-ui/dist/assets/css/dashboard.css';
 import BootstrapVue from 'bootstrap-vue';
 import Meta from 'vue-meta';
 import * as Sentry from '@sentry/browser';
+// Importing the global css file
+import "@/assets/global.css"
 
 const isProd = process.env.NODE_ENV === 'production';
 

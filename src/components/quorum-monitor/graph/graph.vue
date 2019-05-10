@@ -52,6 +52,7 @@ export default class Graph extends Vue {
     public graphInitialized: boolean = false;
     public loadingProgress: number = 0;
     public computeGraphWorker = new _ComputeGraphWorker();
+    public delayedCenter: boolean = false;
 
     @Prop()
     public network!: Network;
@@ -62,8 +63,12 @@ export default class Graph extends Vue {
 
     @Watch('centerNode')
     public onCenterNodeChanged() {
-        if (this.graphInitialized) {
+        if (this.graphInitialized && !this.isLoading) {
             this.centerCorrectNode();
+        }
+
+        if (this.graphInitialized && this.isLoading) {
+            this.delayedCenter = true;
         }
     }
 
@@ -173,6 +178,9 @@ export default class Graph extends Vue {
                         this.graphInitialized = true;
                         // noinspection TypeScriptUnresolvedFunction
                         this.panZoom.zoomBy(2);
+                        this.centerCorrectNode();
+                    }
+                    if(this.delayedCenter) {
                         this.centerCorrectNode();
                     }
                 }

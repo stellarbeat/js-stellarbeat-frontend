@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import QuorumSetExplorer from './components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
 import Manual from './components/quorum-monitor/manual.vue';
+import SelectOrSimulateNodeAlert from './components/quorum-monitor/select-or-simulate-node-alert.vue';
 import Home from './views/Home.vue';
 import QuorumMonitor from './views/QuorumMonitor.vue';
 import Nodes from './views/Nodes.vue';
@@ -24,7 +25,7 @@ export default new Router({
             path: '/quorum-monitor', component: QuorumMonitor,
             children: [
                 {
-                    name: 'quorum-monitor', path: '', component: Manual,
+                    name: 'quorum-monitor', path: '', component: SelectOrSimulateNodeAlert,
                 },
                 {
                     name: 'quorum-monitor-node',

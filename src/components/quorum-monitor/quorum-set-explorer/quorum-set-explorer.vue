@@ -1,5 +1,5 @@
 <template>
-    <div class="quorum-set-explorer">
+    <div v-if="selectedNode" class="quorum-set-explorer">
         <div class="row">
             <div class="col-sm-12">
                 <h3 class="selected-node-title">
@@ -45,7 +45,7 @@
                         </button>
                     </div>
                 </div>
-                <div v-show="selectedNode.quorumSet.hasValidators()">
+                <div>
                     <ul class="tree list-group list-group-flush">
                         <QuorumSetDisplay :quorumSet="selectedNode.quorumSet"
                                           :network="network"
@@ -203,20 +203,7 @@
         margin-right: 2px;
     }
 
-    .badge-primary {
-        background: #1997c6
-    }
 
-    .btn-primary {
-        background: #1997c6;
-        border-color: #1997c6;
-    }
-
-    .btn-primary:hover {
-        color: #fff;
-        background-color: #1a85ad;
-        border-color: #1a85ad;
-    }
 
     .dropdown {
         display: flex;

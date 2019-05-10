@@ -1,0 +1,23 @@
+.btn-primary {
+    background: #1997c6;
+    border-color: #1997c6;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #1a85ad;
+    border-color: #1a85ad;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active {
+    background-color: #166e8f;
+    border-color: #166e8f;
+}
+
+.badge-primary {
+    background: #1997c6
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #1a85ad;
+}

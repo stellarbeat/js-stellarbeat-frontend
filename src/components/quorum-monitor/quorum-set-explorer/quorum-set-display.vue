@@ -3,9 +3,12 @@
         <div  class="titleContainer pt-1 pb-1 d-flex">
             <div @click="toggle" class="quorum-set d-flex pt-1 pb-2" v-bind:class="quorumSetState">
                     <i class="caret fe mr-1" v-bind:class="chevron"></i>
-                    <h5 class="quorumSetTitle m-0">
+                    <h5 v-if="quorumSet.hasValidators()" class="quorumSetTitle m-0">
                         Quorumset with threshold {{quorumSet.threshold}}
                     </h5>
+                <h5 v-else class="quorumSetTitle m-0">
+                    Empty QuorumSet
+                </h5>
             </div>
             <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" no-caret>
                 <template slot="button-content">
