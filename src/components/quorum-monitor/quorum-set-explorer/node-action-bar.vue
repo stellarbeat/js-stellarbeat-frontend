@@ -4,30 +4,24 @@
             <template slot="button-content">
                 <i class="fe fe-more-vertical"></i>
             </template>
-            <b-dropdown-item v-on:click="$emit('node-show-modal', node)">
-                <i class="dropdown-icon fe fe-info"></i>
-                Info
-            </b-dropdown-item>
+            <b-dropdown-header id="dropdown-header-label">
+                Simulation options
+            </b-dropdown-header>
+
             <b-dropdown-item v-on:click="$emit('node-toggle-active', node)">
                 <i class="dropdown-icon fe fe-power"></i>
                 {{node.active ? 'Disable' : 'Enable'}}
             </b-dropdown-item>
             <b-dropdown-item v-if="supportsDelete" v-on:click="$emit('node-delete', node)">
                 <i class="dropdown-icon fe fe-minus-circle"></i>
-                Delete
+                Remove
+            </b-dropdown-item>
+            <b-dropdown-divider class="ml-0"></b-dropdown-divider>
+            <b-dropdown-item v-on:click="$emit('node-show-modal', node)">
+                <i class="dropdown-icon fe fe-info"></i>
+                Info
             </b-dropdown-item>
         </b-dropdown>
-        <!--div class="btn-group btn-group-sm" role="group" aria-label="actions">
-            <button type="button" class="btn btn-sm btn-icon btn-secondary node-info-btn" title="show info"
-                    v-on:click.prevent.stop="$emit('node-show-modal', node)">
-                <i class="fe fe-info"></i>
-            </button>
-            <button type="button" class="btn btn-sm btn-icon" title="(de-)activate node"
-                    v-on:click.prevent.stop="$emit('node-toggle-active', node)"
-                    v-bind:class="[node.active ? 'btn-primary' : 'btn-secondary']">
-                <i class="fe fe-power"></i>
-            </button>
-        </div!-->
     </div>
 
 </template>
@@ -67,6 +61,9 @@
         color: #fff;
         background-color: #1a85ad;
         border-color: #1a85ad;
+    }
+    .dropdown-header {
+        padding: 0.5rem 1rem;
     }
 </style>
 

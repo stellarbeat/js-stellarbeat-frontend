@@ -1,34 +1,19 @@
 <template>
     <li class="list-group-item p-0">
-        <div class="titleContainer pt-1 pb-1 d-flex">
-            <div @click="toggle" class="quorum-set d-flex" v-bind:class="quorumSetState">
-                <i class="caret fe mr-1" v-bind:class="chevron"></i>
-                <h5 class="quorumSetTitle m-0">
-                    Quorumset with threshold
-                </h5>
+        <div  class="titleContainer pt-1 pb-1 d-flex">
+            <div @click="toggle" class="quorum-set d-flex pt-1 pb-2" v-bind:class="quorumSetState">
+                    <i class="caret fe mr-1" v-bind:class="chevron"></i>
+                    <h5 class="quorumSetTitle m-0">
+                        Quorumset with threshold {{quorumSet.threshold}}
+                    </h5>
             </div>
-            <h5 v-show="!editingThreshold" class="quorumSetTitle" v-bind:class="quorumSetState">&nbsp;{{quorumSet.threshold}}</h5>
-            <b-form-input
-                    :id='"editThresholdInput" + id'
-                    :ref='"editThresholdInput" + id'
-                    :state="inputState"
-                    v-show="editingThreshold"
-                    class="thresholdEdit m-0 py-0 mx-2 mb-2"
-                    size="sm"
-                    v-model="newThreshold"
-                    type="number"
-                    v-on:keyup.enter.native="saveThresholdFromInput"
-            >
-
-            </b-form-input>
-
-            <b-dropdown right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" no-caret>
+            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" no-caret>
                 <template slot="button-content">
                     <i class="fe fe-more-vertical"></i>
                 </template>
-                <b-dropdown-item v-on:click="enableThresholdEditMode">
-                    <i class="dropdown-icon fe fe-edit-2"></i>Edit threshold
-                </b-dropdown-item>
+                <b-dropdown-header id="dropdown-header-label">
+                    Simulation options
+                </b-dropdown-header>
                 <b-dropdown-item v-b-modal="validatorsToAddModalId">
                     <i class="dropdown-icon fe fe-plus-circle"></i>Add Validators
                 </b-dropdown-item>
@@ -38,6 +23,25 @@
                 <b-dropdown-item v-if="!(level === 1)" v-on:click="deleteQuorumSet">
                     <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
                 </b-dropdown-item>
+                <b-dropdown-form inline="true">
+                    <i class="dropdown-icon fe fe-edit-2"></i>
+                    <b-form-group
+                            label-size="sm"
+                            label="Threshold: "
+                            label-for="dropdown-edit-threshold"
+                            @submit.stop.prevent>
+                        <b-form-input
+                                :id="dropdown-edit-threshold"
+                                :state="inputState"
+                                class="thresholdEdit"
+                                size="sm"
+                                v-model="newThreshold"
+                                type="number"
+                        >
+                        </b-form-input>
+                    </b-form-group>
+                    <b-button variant="primary" size="sm" @click="saveThresholdFromInput" class="mt-2">Save Threshold</b-button>
+                </b-dropdown-form>
             </b-dropdown>
         </div>
         <div v-show="open" class="list-group list-group-flush nested-tree">
@@ -76,7 +80,8 @@
                  ok-title="Add"
                  v-on:ok="validatorsToAddModalOk">
             <template slot="default" slot-scope="{ visible }">
-                <AddValidatorsTable v-if="visible" :validators="possibleValidatorsToAdd" v-on:validators-selected="onValidatorsSelected"/>
+                <AddValidatorsTable v-if="visible" :validators="possibleValidatorsToAdd"
+                                    v-on:validators-selected="onValidatorsSelected"/>
             </template>
         </b-modal>
     </li>
@@ -128,10 +133,10 @@
         }
 
         public get possibleValidatorsToAdd() {
-            return this.network.nodes.filter((node:Node) =>
-            node.active
-            && node.isValidator
-            && QuorumSet.getAllValidators(this.quorumSet).indexOf(node.publicKey) < 0)
+            return this.network.nodes.filter((node: Node) =>
+                node.active
+                && node.isValidator
+                && QuorumSet.getAllValidators(this.quorumSet).indexOf(node.publicKey) < 0);
         }
 
         public validatorDisplayName(validator: string) {
@@ -211,17 +216,16 @@
             this.$emit("quorumset-edit-threshold", quorumSet, newThreshold);
         }
 
-        public saveThresholdFromInput(event: KeyboardEvent) {
-            let input = (event.target as HTMLInputElement);
-            let newThreshold = Number(input.value);
-            if (newThreshold <= 0) {
+        public saveThresholdFromInput() {
+            if (this.newThreshold <= 0) {
                 this.inputState = false;
                 return;
             }
 
             this.inputState = null;
             this.editingThreshold = false;
-            this.$emit("quorumset-edit-threshold", this.quorumSet, newThreshold);
+            (this.$refs.dropdown as any).hide(true);
+            this.$emit("quorumset-edit-threshold", this.quorumSet, this.newThreshold);
         }
 
         public showModal(node: Node) {
@@ -249,7 +253,7 @@
         }
 
         onValidatorsSelected(validators: Node[]) {
-            this.validatorsToAdd = validators.map((validator:Node) => validator.publicKey);
+            this.validatorsToAdd = validators.map((validator: Node) => validator.publicKey);
         }
 
         validatorsToAddModalOk(bvEvent: any, modalId: string) {
@@ -266,11 +270,14 @@
 
 <style scoped>
     .thresholdEdit {
-        width: 45px;
+        margin-left: 10px;
+        width: 45px!important;
     }
 
     .titleContainer:hover {
         background-color: #f8f9fa;
+        cursor: pointer;
+        width: 100%;
     }
 
     .active-node {
@@ -323,9 +330,13 @@
 
     .quorum-set {
         cursor: pointer;
+        widows: 100%;
     }
 
     .edit-dropdown {
         margin-left: auto;
+    }
+    .dropdown-header {
+        padding: 0.5rem 1rem;
     }
 </style>
