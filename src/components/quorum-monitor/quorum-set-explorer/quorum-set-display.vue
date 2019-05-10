@@ -29,16 +29,15 @@
                 <b-dropdown-item v-on:click="enableThresholdEditMode">
                     <i class="dropdown-icon fe fe-edit-2"></i>Edit threshold
                 </b-dropdown-item>
+                <b-dropdown-item v-b-modal="validatorsToAddModalId">
+                    <i class="dropdown-icon fe fe-plus-circle"></i>Add Validators
+                </b-dropdown-item>
                 <b-dropdown-item v-if="!(level === 3)" v-on:click="addQuorumSet">
                     <i class="dropdown-icon fe fe-plus-circle"></i>Add QuorumSet
                 </b-dropdown-item>
                 <b-dropdown-item v-if="!(level === 1)" v-on:click="deleteQuorumSet">
                     <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
                 </b-dropdown-item>
-
-                        <!--b-dropdown-item>Add validator</b-dropdown-item>
-                <b-dropdown-item>Add inner quorumset</b-dropdown-item>
-                <b-dropdown-item v-if="!root">Remove</b-dropdown-item!-->
             </b-dropdown>
         </div>
         <div v-show="open" class="list-group list-group-flush nested-tree">
@@ -55,24 +54,37 @@
                                v-on:node-delete="deleteNodeFromQuorumSet"
                 ></NodeActionBar>
             </div>
-            <quorum-set-display v-for="innerQuorumSet in quorumSet.innerQuorumSets" :key="innerQuorumSet.hashKey"
-                                :network="network"
-                                :quorumSet="innerQuorumSet"
-                                :root="false"
-                                :level="level + 1"
-                                v-on:node-toggle-active="toggleNodeActive"
-                                v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
-                                v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
-                                v-on:add-quorum-set="addQuorumSetToInnerQuorumSet"
-                                v-on:quorumset-edit-threshold="editQuorumSetThreshold"
-                                v-on:node-show-modal="showModal">
+            <quorum-set-display
+                    v-for="innerQuorumSet in quorumSet.innerQuorumSets"
+                    :key="quorumSet.innerQuorumSets.indexOf(innerQuorumSet)"
+                    :network="network"
+                    :quorumSet="innerQuorumSet"
+                    :root="false"
+                    :level="level + 1"
+                    :index="quorumSet.innerQuorumSets.indexOf(innerQuorumSet)"
+                    v-on:node-toggle-active="toggleNodeActive"
+                    v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
+                    v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
+                    v-on:add-quorum-set="addQuorumSetToInnerQuorumSet"
+                    v-on:add-validators="addValidatorsToQuorumSet"
+                    v-on:quorumset-edit-threshold="editQuorumSetThreshold"
+                    v-on:node-show-modal="showModal">
             </quorum-set-display>
         </div>
+        <b-modal lazy size="lg" :id="validatorsToAddModalId"
+                 title="Select validators to add"
+                 ok-title="Add"
+                 v-on:ok="validatorsToAddModalOk">
+            <template slot="default" slot-scope="{ visible }">
+                <AddValidatorsTable v-if="visible" :validators="possibleValidatorsToAdd" v-on:validators-selected="onValidatorsSelected"/>
+            </template>
+        </b-modal>
     </li>
 </template>
 
 <script lang="ts">
     import NodeActionBar from "./node-action-bar.vue";
+    import AddValidatorsTable from "./add-validators-table.vue";
 
     import Vue from "vue";
     import {Component, Prop, Watch} from "vue-property-decorator";
@@ -83,6 +95,7 @@
         name: "quorum-set-display",
         components: {
             NodeActionBar,
+            AddValidatorsTable
         },
     })
     export default class QuorumSetDisplay extends Vue {
@@ -94,21 +107,31 @@
         public root!: boolean;
         @Prop()
         public level!: number;
+        @Prop({default: 0})
+        public index!: number;
 
-        constructor(){
-            super();
-            console.log(this.level);
-        }
         public open: boolean = false;
         public editingThreshold: boolean = false;
         public newThreshold: number = this.quorumSet.threshold;
         public id: number = Math.ceil(Math.random() * 1000);
-        public inputState:boolean|null = null;
+        public inputState: boolean | null = null;
+        public validatorsToAdd: string[] = [];
 
-        @Watch('quorumSet')
-        public onQuorumSetChanged(quorumSet:QuorumSet) {//todo should this be handled by routing (component destroy?)
+        @Watch("quorumSet")
+        public onQuorumSetChanged(quorumSet: QuorumSet) {//todo should this be handled by routing (component destroy?)
             this.editingThreshold = false;
             this.newThreshold = quorumSet.threshold;
+        }
+
+        public get validatorsToAddModalId() {
+            return this.level + "." + this.index;
+        }
+
+        public get possibleValidatorsToAdd() {
+            return this.network.nodes.filter((node:Node) =>
+            node.active
+            && node.isValidator
+            && QuorumSet.getAllValidators(this.quorumSet).indexOf(node.publicKey) < 0)
         }
 
         public validatorDisplayName(validator: string) {
@@ -144,12 +167,12 @@
             this.$emit("delete-validator-from-quorum-set", node, this.quorumSet);
         }
 
-        public deleteNodeFromInnerQuorumSet(node:Node, quorumSet:QuorumSet) {
+        public deleteNodeFromInnerQuorumSet(node: Node, quorumSet: QuorumSet) {
             this.$emit("delete-validator-from-quorum-set", node, quorumSet);
         }
 
-        public deleteQuorumSetFromInnerQuorumSet(quorumSet:QuorumSet, fromQuorumSet?:QuorumSet){
-            if(fromQuorumSet === undefined) {
+        public deleteQuorumSetFromInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet?: QuorumSet) {
+            if (fromQuorumSet === undefined) {
                 fromQuorumSet = this.quorumSet;
             }
 
@@ -160,12 +183,16 @@
             this.$emit("delete-quorum-set", this.quorumSet);
         }
 
-        public addQuorumSetToInnerQuorumSet(ToQuorumSet:QuorumSet){
-            if(ToQuorumSet === undefined) {
-                ToQuorumSet = this.quorumSet;
+        public addQuorumSetToInnerQuorumSet(toQuorumSet: QuorumSet) {
+            if (toQuorumSet === undefined) {
+                toQuorumSet = this.quorumSet;
             }
 
-            this.$emit("add-quorum-set", ToQuorumSet);
+            this.$emit("add-quorum-set", toQuorumSet);
+        }
+
+        public addValidatorsToQuorumSet(toQuorumSet: QuorumSet, validators: string[]) {
+            this.$emit("add-validators", toQuorumSet, validators);
         }
 
         public addQuorumSet() {
@@ -180,14 +207,14 @@
             });
         }
 
-        public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold:number) {
-            this.$emit('quorumset-edit-threshold', quorumSet, newThreshold);
+        public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
+            this.$emit("quorumset-edit-threshold", quorumSet, newThreshold);
         }
 
         public saveThresholdFromInput(event: KeyboardEvent) {
             let input = (event.target as HTMLInputElement);
             let newThreshold = Number(input.value);
-            if(newThreshold <= 0) {
+            if (newThreshold <= 0) {
                 this.inputState = false;
                 return;
             }
@@ -220,6 +247,20 @@
                 active: !failing,
             };
         }
+
+        onValidatorsSelected(validators: Node[]) {
+            this.validatorsToAdd = validators.map((validator:Node) => validator.publicKey);
+        }
+
+        validatorsToAddModalOk(bvEvent: any, modalId: string) {
+            this.open = true;
+            if (this.validatorsToAdd.length > 0) {
+                this.addValidatorsToQuorumSet(
+                    this.quorumSet,
+                    this.validatorsToAdd
+                );
+            }
+        }
     }
 </script>
 
@@ -228,7 +269,7 @@
         width: 45px;
     }
 
-    .titleContainer:hover{
+    .titleContainer:hover {
         background-color: #f8f9fa;
     }
 

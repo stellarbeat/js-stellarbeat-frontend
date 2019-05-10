@@ -64,6 +64,7 @@
                                                          v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
                                                          v-on:quorumset-delete-inner-quorumset="deleteInnerQuorumSet"
                                                          v-on:quorumset-add-inner-quorumset="addInnerQuorumSet"
+                                                         v-on:quorumset-add-validators="addValidators"
                                                          v-on:center-node="onNodeCenter"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
@@ -139,6 +140,7 @@
     import {QuorumSetValidatorDelete} from "@/services/change-queue/changes/quorum-set-validator-delete";
     import {InnerQuorumSetDelete} from "@/services/change-queue/changes/inner-quorum-set-delete";
     import {InnerQuorumSetAdd} from "@/services/change-queue/changes/inner-quorum-set-add";
+    import {QuorumSetValidatorsAdd} from "@/services/change-queue/changes/quorum-set-validators-add";
 
     @Component({
         name: "quorum-monitor",
@@ -222,6 +224,10 @@
 
         public addInnerQuorumSet(toQuorumSet:QuorumSet){
             this.processChange(new InnerQuorumSetAdd(toQuorumSet));
+        }
+
+        public addValidators(toQuorumSet:QuorumSet, validators: string[]) {
+            this.processChange(new QuorumSetValidatorsAdd(toQuorumSet, validators));
         }
 
         protected processChange(change:Change) {

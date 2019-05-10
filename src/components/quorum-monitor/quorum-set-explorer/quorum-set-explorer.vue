@@ -56,6 +56,7 @@
                                           v-on:delete-validator-from-quorum-set="deleteValidatorFromQuorumSet"
                                           v-on:delete-quorum-set="deleteInnerQuorumSet"
                                           v-on:add-quorum-set="addInnerQuorumSet"
+                                          v-on:add-validators="addValidators"
                         >
                         </QuorumSetDisplay>
                     </ul>
@@ -152,6 +153,10 @@
 
         public addInnerQuorumSet(toQuorumSet: QuorumSet) {
             this.$emit("quorumset-add-inner-quorumset", toQuorumSet);
+        }
+
+        public addValidators(toQuorumSet: QuorumSet, validators:string[]) {
+            this.$emit("quorumset-add-validators", toQuorumSet, validators);
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
