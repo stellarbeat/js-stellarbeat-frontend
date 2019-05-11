@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^4.4.1",
-    "@stellarbeat/js-stellar-domain": "^0.5.2",
+    "@stellarbeat/js-stellar-domain": "^0.6.1",
     "@types/chart.js": "^2.7.41",
     "@types/d3-force": "^1.1.1",
     "axios": "^0.18.0",

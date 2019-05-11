@@ -74,6 +74,7 @@
                     :level="level + 1"
                     :index="quorumSet.innerQuorumSets.indexOf(innerQuorumSet)"
                     :possibleValidatorsToAdd="possibleValidatorsToAdd"
+                    :selectedNode="selectedNode"
                     v-on:node-toggle-active="toggleNodeActive"
                     v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
                     v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
@@ -129,6 +130,8 @@
         public level!: number;
         @Prop({default: 0})
         public index!: number;
+        @Prop()
+        public selectedNode!:Node;
         @Prop()
         public possibleValidatorsToAdd!: Node[];
 
@@ -255,7 +258,7 @@
         }
 
         get quorumSetState() {
-            const failing = this.network.isQuorumSetFailing(this.quorumSet);
+            const failing = this.network.isQuorumSetFailing(this.selectedNode, this.quorumSet);
             return {
                 failing,
                 active: !failing,

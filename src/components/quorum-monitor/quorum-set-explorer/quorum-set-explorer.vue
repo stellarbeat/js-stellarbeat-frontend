@@ -17,7 +17,7 @@
                       v-bind:class="[selectedNode.active ? 'badge-primary ' : 'badge-default']"
                 >{{selectedNode.active ? 'Active' : 'Inactive'}}
                 </span>
-                <span v-if="selectedNode.quorumSet.hasValidators() && network.isQuorumSetFailing(this.selectedNode.quorumSet)"
+                <span v-if="selectedNode.quorumSet.hasValidators() && network.isQuorumSetFailing(this.selectedNode)"
                       class="badge sb-badge badge-danger"
                 >Failing
                 </span>
@@ -52,6 +52,7 @@
                                           :root="true"
                                           :level=1
                                           :possibleValidatorsToAdd="possibleValidatorsToAdd"
+                                          :selectedNode="selectedNode"
                                           v-on:node-toggle-active="toggleNodeActive"
                                           v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                           v-on:node-show-modal="showModal"

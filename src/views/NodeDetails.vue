@@ -59,6 +59,7 @@ export default class NodeDetails extends Vue {
         if (!this.node) {
             return [];
         }
+        console.log(this.node);
         let item = JSON.parse(JSON.stringify(this.node)); // clone it
         delete item.quorumSet;
         delete item.geoData;
