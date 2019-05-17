@@ -1,13 +1,16 @@
 <template>
     <div class="action-bar ">
-        <b-dropdown right id="more" size="sm" text="More" class="p-0 m-0 more-button" no-caret>
+        <b-dropdown right id="more" size="sm" text="More" class="p-0 m-0" toggle-class="more-button" no-caret>
             <template slot="button-content">
                 <i class="fe fe-more-vertical"></i>
             </template>
             <b-dropdown-header id="dropdown-header-label">
                 Simulation options
             </b-dropdown-header>
-
+            <b-dropdown-item v-on:click="$emit('node-toggle-validating', node)">
+                <i class="dropdown-icon fe fe-activity"></i>
+                {{node.isValidating ? 'Stop validating' : 'Start validating'}}
+            </b-dropdown-item>
             <b-dropdown-item v-on:click="$emit('node-toggle-active', node)">
                 <i class="dropdown-icon fe fe-power"></i>
                 {{node.active ? 'Disable' : 'Enable'}}
@@ -66,11 +69,3 @@
         padding: 0.5rem 1rem;
     }
 </style>
-
-<style>
-    .dropdown-toggle {
-        border: none !important;
-    }
-</style>
-
-

@@ -840,10 +840,10 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
-"@stellarbeat/js-stellar-domain@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.6.1.tgz#d04f088956b5b512e37118f18384811a296c4455"
-  integrity sha512-7/Je7YjxLWVuZoHuDwOE7JAxrgdZCkZruKTUh9b+Wb9F1V5fsG4mkhqnbskz/FRZ0OUIAISUwJUGOxbntTipxg==
+"@stellarbeat/js-stellar-domain@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.6.4.tgz#696f35e547a9e809fe0bf09c6b0ed1d57e34e553"
+  integrity sha512-ZQhn52+KJSVAvHbdUgy/ZCdbK9u3omLlQsYc/v7gTaTounMz6p87rOkD+hY0cWJUQRkiUFTjyPouqtLmDPvRmQ==
   dependencies:
     find-versions "^3.1.0"
     latest-semver "^2.0.0"

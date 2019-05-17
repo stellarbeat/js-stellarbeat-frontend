@@ -60,6 +60,7 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <router-view v-on:node-toggle-active="toggleActive"
+                                                         v-on:node-toggle-validating="toggleValidating"
                                                          v-on:quorumset-edit-threshold="editQuorumSetThreshold"
                                                          v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
                                                          v-on:quorumset-delete-inner-quorumset="deleteInnerQuorumSet"
@@ -103,7 +104,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
+                <!--div class="col-12 col-md-6">
                     <div class="card mb-2">
                         <div class="card-header">
                             Options
@@ -121,7 +122,7 @@
                             </b-row>
                         </div>
                     </div>
-                </div>
+                </div!-->
             </div>
         </div>
     </div>
@@ -170,7 +171,7 @@
         public centerNode: Node | null = null;
         public selectedNode: Node | null = null;
         public simulatedNodes: Node[] = [];
-        public optionNodeActiveBasedOnLatestCrawl: boolean = false;
+        public optionNodeActiveBasedOnLatestCrawl: boolean = true;
         public changeQueue: ChangeQueue = new ChangeQueue();
         public newNodeName: string = '';
 
@@ -178,23 +179,6 @@
         public network!: Network;
         @Prop()
         public isLoading!: boolean;
-
-        @Watch("optionNodeActiveBasedOnLatestCrawl")
-        public onOptionNodeActiveBasedOnLatestCrawlChanged(activeInLastCrawl: boolean) {
-            if (activeInLastCrawl) {
-                this.network.nodes.forEach(
-                    (node) => node.active = node.statistics.activeInLastCrawl,
-                );
-            }
-            if (!activeInLastCrawl) {
-                this.network.nodes.forEach(
-                    (node) => node.statistics.activeCounter > 0 ? node.active = true : node.active = false,
-                );
-            }
-
-            this.network.updateNetwork(this.network.nodes);
-            (this.$refs.graph as any).restartSimulation();
-        }
 
         @Watch("$route")
         public on$routeChanged(to: any) {
@@ -210,6 +194,10 @@
 
         public toggleActive(node: Node) {
             this.processChange(new EntityPropertyUpdate(node, "active", !node.active));
+        }
+
+        public toggleValidating(node: Node) {
+            this.processChange(new EntityPropertyUpdate(node, "isValidating", !node.isValidating));
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
@@ -278,6 +266,7 @@
         }
 
         public created() {
+
             // fix centering and selection in graph
             if (this.$route.params["publicKey"]) {
                 this.selectedNode = this.network.getNodeByPublicKey(this.$route.params["publicKey"]);

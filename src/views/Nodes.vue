@@ -101,7 +101,7 @@
         public optionShowInactive: number = 1;
         public sortBy: string = "index";
         public sortDesc: boolean = true;
-        public perPage: number = 20;
+        public perPage: number = 50;
         public currentPage: number = 1;
         public filter: string = "";
         public fields = [
@@ -110,6 +110,7 @@
             // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
             {key: "availability", sortable: true},
             {key: "index", label: "index (experimental)", sortable: true},
+            {key: "validating", sortable: true},
             {key: "load", sortable: true},
             {key: "version", sortable: true},
             {key: "country", sortable: true},
@@ -137,7 +138,8 @@
                         country: node.geoData.countryName,
                         version: node.versionStr,
                         isFullValidator: node.isFullValidator,
-                        index: node.index
+                        index: node.index,
+                        validating: node.isValidating
                     };
                 });
         }

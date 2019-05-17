@@ -10,7 +10,7 @@
                     Empty QuorumSet
                 </h5>
             </div>
-            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" no-caret>
+            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
                 <template slot="button-content">
                     <i class="fe fe-more-vertical"></i>
                 </template>
@@ -61,6 +61,7 @@
                 </a>
                 <NodeActionBar :node="getNode(validator)" :network="network" :supportsDelete="true"
                                v-on:node-toggle-active="toggleNodeActive"
+                               v-on:node-toggle-validating="toggleNodeValidating"
                                v-on:node-show-modal="showModal"
                                v-on:node-delete="deleteNodeFromQuorumSet"
                 ></NodeActionBar>
@@ -76,6 +77,7 @@
                     :possibleValidatorsToAdd="possibleValidatorsToAdd"
                     :selectedNode="selectedNode"
                     v-on:node-toggle-active="toggleNodeActive"
+                    v-on:node-toggle-validating="toggleNodeValidating"
                     v-on:delete-validator-from-quorum-set="deleteNodeFromInnerQuorumSet"
                     v-on:delete-quorum-set="deleteQuorumSetFromInnerQuorumSet"
                     v-on:add-quorum-set="addQuorumSetToInnerQuorumSet"
@@ -175,6 +177,10 @@
                 active: node.active,
                 failing: this.network.isNodeFailing(node),
             };
+        }
+
+        public toggleNodeValidating(node: Node) {
+            this.$emit("node-toggle-validating", node);
         }
 
         public toggleNodeActive(node: Node) {

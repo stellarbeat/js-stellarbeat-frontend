@@ -22,8 +22,7 @@
                     Available node: The crawler succeeded at least one time to connect to the node and send commands.
                 </li>
                 <li>
-                    Active node: The crawler can connect to the node and send commands. This should happen at least once
-                    in the latest 300 crawls. The availability score of the node gives the percentage of time the node
+                    Active node: The crawler can connect to the node and send commands. The availability score of the node gives the percentage of time the node
                     was active in the latest 300 crawls.
                 </li>
                 <li>
@@ -40,7 +39,7 @@
                     requests its quorum set configuration.
                 </li>
                 <li>
-                    Failing validator: The quorum set configuration of the node does not meet its threshold. Either
+                    Failing validator: The validator is not participating in the consensus protocol or the quorum set configuration of the node does not meet its threshold. Either
                     because the trusted validators are inactive, or failing.
                 </li>
                 <li>
