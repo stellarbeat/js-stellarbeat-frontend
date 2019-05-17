@@ -17,6 +17,7 @@
                 </a>
                 <NodeActionBar :node="node" :network="network"
                                v-on:node-toggle-active="toggleActive(node)"
+                               v-on:node-toggle-validating="toggleValidating(node)"
                                v-on:node-show-modal="showModal"></NodeActionBar>
             </div>
             <div class="pagination" v-if="nodes.length > 0">
@@ -69,6 +70,10 @@
 
         public toggleActive(node: Node) {
             this.$emit("node-toggle-active", node);
+        }
+
+        public toggleValidating(node: Node) {
+            this.$emit("node-toggle-validating", node);
         }
 
         public selectNode(node: Node) {

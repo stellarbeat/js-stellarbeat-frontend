@@ -100,6 +100,7 @@
                         :nodes="network.getTrustingNodes(selectedNode) ? network.getTrustingNodes(selectedNode) : []"
                         :network="network"
                         v-on:node-toggle-active="toggleNodeActive"
+                        v-on:node-toggle-validating="toggleNodeValidating"
                         v-on:node-show-modal="showModal"
                 >
 
