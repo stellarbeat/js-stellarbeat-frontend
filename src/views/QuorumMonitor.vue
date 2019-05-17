@@ -170,8 +170,6 @@
         public searchString: string = "";
         public centerNode: Node | null = null;
         public selectedNode: Node | null = null;
-        public simulatedNodes: Node[] = [];
-        public optionNodeActiveBasedOnLatestCrawl: boolean = true;
         public changeQueue: ChangeQueue = new ChangeQueue();
         public newNodeName: string = '';
 
@@ -235,7 +233,7 @@
         }
 
         get isSimulation(): boolean {
-            return this.simulatedNodes.length > 0;
+            return this.changeQueue.hasUndo();
         }
 
         public undoUpdate() {
@@ -314,13 +312,8 @@
         }
 
         public beforeDestroy() {
-            if (this.isSimulation || this.optionNodeActiveBasedOnLatestCrawl) { // undo simulation
-                this.simulatedNodes.forEach((node) => node.active = !node.active);
-                if (this.optionNodeActiveBasedOnLatestCrawl) {
-                    this.network.nodes.forEach(
-                        (node) => node.statistics.activeCounter > 0 ? node.active = true : node.active = false,
-                    );
-                }
+            if (this.isSimulation) { // undo simulation
+                this.changeQueue.reset();
                 this.network.updateNetwork(this.network.nodes);
             } // todo: better way to manage network adjustments
         }
