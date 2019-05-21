@@ -101,7 +101,7 @@
         public optionShowInactive: number = 1;
         public sortBy: string = "index";
         public sortDesc: boolean = true;
-        public perPage: number = 50;
+        public perPage: number = 200;
         public currentPage: number = 1;
         public filter: string = "";
         public fields = [
