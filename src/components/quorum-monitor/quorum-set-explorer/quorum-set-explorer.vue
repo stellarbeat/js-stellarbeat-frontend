@@ -1,12 +1,17 @@
 <template>
     <div v-if="selectedNode" class="quorum-set-explorer">
+        <fieldset class="rounded border p-2 mb-2">
+            <legend  class="w-auto pl-3 pr-3 mb-0"><span v-if="selectedNode.isFullValidator" class="badge sb-badge badge-success full-validator-badge">
+                        <i class="fe fe-shield"></i>
+                    </span>{{selectedNode.displayName | truncate(26)}}</legend>
         <div class="row">
             <div class="col-sm-12">
-                <h3 class="selected-node-title">
+
+                <!--h3 class="selected-node-title">
                     <span v-if="selectedNode.isFullValidator" class="badge sb-badge badge-success full-validator-badge">
                         <i class="fe fe-shield"></i>
                     </span>{{selectedNode.displayName | truncate(27)}}
-                </h3>
+                </h3!-->
                 <span class="badge sb-badge"
                       v-bind:class="[selectedNode.isFullValidator || selectedNode.isValidator ? 'badge-success ' : 'badge-default']"
                 >
@@ -30,50 +35,13 @@
                 >Quorumset not reaching threshold
                 </span>
 
-                <span class="badge sb-badge"
-                      v-bind:class="[selectedNode.statistics.activeRating * 20 === 100 ? 'badge-success ' : 'badge-warning']"
-                >Availability
-                    {{selectedNode.statistics.activeRating * 20 + '%'}}
-                </span>
-
-
                 <span class="badge badge-default sb-badge">{{selectedNode.versionStr}}</span>
-                <pre><code class="language-html" data-lang="html">{{selectedNode.publicKey}}</code></pre>
+                <pre><code data-lang="html">{{selectedNode.publicKey}}</code></pre>
 
-                <b-button-group  size="sm">
-                        <b-button title="Show info"
-                                v-on:click="showModal(selectedNode)">
-                           Show info  <i class="fe fe-info"/>
-                        </b-button>
-                        <b-dropdown size="sm" variant="secondary" right id="more" no-caret
-                        >
-                            <template slot="button-content">
-                                Simulation options
-                                <i class="fe fe-more-vertical"></i>
-                            </template>
-                            <b-dropdown-item v-on:click="$emit('node-toggle-validating', selectedNode)">
-                                <i class="dropdown-icon fe fe-activity"></i>
-                                {{selectedNode.isValidating ? 'Stop validating' : 'Start validating'}}
-                            </b-dropdown-item>
-                            <b-dropdown-item v-on:click="$emit('node-toggle-active', selectedNode)">
-                                <i class="dropdown-icon fe fe-power"></i>
-                                {{selectedNode.active ? 'Disable' : 'Enable'}}
-                            </b-dropdown-item>
-                        </b-dropdown>
-                        <!--button v-if="selectedNode.isValidator" type="button" class="btn btn-sm" title="toggle validating"
-                                v-on:click.prevent.stop="$emit('node-toggle-validating', selectedNode)"
-                                v-bind:class="[selectedNode.isValidating ? 'btn-success' : 'btn-danger']">
-                            <i class="fe fe-activity"/> {{selectedNode.isValidating ? 'Stop validating' : 'Start validating'}}
-                        </button>
-                        <button type="button" class="btn btn-sm" title="(de-)activate node"
-                                v-on:click.prevent.stop="$emit('node-toggle-active', selectedNode)"
-                                v-bind:class="[selectedNode.active ? 'btn-primary' : 'btn-secondary']">
-                            <i class="fe fe-power"/> {{selectedNode.active ? 'Disable node' : 'Enable node'}}
-                        </button!-->
 
-                </b-button-group>
+
                 <div>
-                    <ul class="tree list-group list-group-flush">
+                    <ul class="mt-0 tree list-group list-group-flush">
                         <QuorumSetDisplay :quorumSet="selectedNode.quorumSet"
                                           :network="network"
                                           :root="true"
@@ -92,6 +60,7 @@
                         </QuorumSetDisplay>
                     </ul>
                 </div>
+
             </div>
         </div>
         <div v-show="selectedNode.quorumSet.hasValidators()" class="row">
@@ -106,13 +75,53 @@
 
                 </NodeList>
             </div>
+
         </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <NodeStatistics :node="selectedNode" :network="network"></NodeStatistics>
+                </div>
+            </div>
+            <b-button-group size="md" class="mt-1">
+                <b-button title="Show info"
+                          v-on:click="showModal(selectedNode)">
+                    Show info <i class="fe fe-info"/>
+                </b-button>
+                <b-dropdown size="sm" variant="secondary" right id="more" no-caret
+                >
+                    <template slot="button-content">
+                        Simulation options
+                        <i class="fe fe-more-vertical"></i>
+                    </template>
+                    <b-dropdown-item v-on:click="$emit('node-toggle-validating', selectedNode)">
+                        <i class="dropdown-icon fe fe-activity"></i>
+                        {{selectedNode.isValidating ? 'Stop validating' : 'Start validating'}}
+                    </b-dropdown-item>
+                    <b-dropdown-item v-on:click="$emit('node-toggle-active', selectedNode)">
+                        <i class="dropdown-icon fe fe-power"></i>
+                        {{selectedNode.active ? 'Disable' : 'Enable'}}
+                    </b-dropdown-item>
+                </b-dropdown>
+                <!--button v-if="selectedNode.isValidator" type="button" class="btn btn-sm" title="toggle validating"
+                        v-on:click.prevent.stop="$emit('node-toggle-validating', selectedNode)"
+                        v-bind:class="[selectedNode.isValidating ? 'btn-success' : 'btn-danger']">
+                    <i class="fe fe-activity"/> {{selectedNode.isValidating ? 'Stop validating' : 'Start validating'}}
+                </button>
+                <button type="button" class="btn btn-sm" title="(de-)activate node"
+                        v-on:click.prevent.stop="$emit('node-toggle-active', selectedNode)"
+                        v-bind:class="[selectedNode.active ? 'btn-primary' : 'btn-secondary']">
+                    <i class="fe fe-power"/> {{selectedNode.active ? 'Disable node' : 'Enable node'}}
+                </button!-->
+
+            </b-button-group>
+
         <b-modal v-if="modalNode"
                  ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal"
                  v-bind:title="modalNode.displayName">
             <b-table stacked striped hover responsive :items="modalItems">
             </b-table>
         </b-modal>
+        </fieldset>
 
     </div>
 </template>
@@ -120,6 +129,7 @@
 <script lang="ts">
     import QuorumSetDisplay from "./quorum-set-display.vue";
     import NodeList from "./node-list.vue";
+    import NodeStatistics from "./node-statistics.vue";
     import Search from "./../search.vue";
 
     import Vue from "vue";
@@ -136,7 +146,8 @@
             Search,
             QuorumSetDisplay,
             TomlConfigViewer,
-            NodeList
+            NodeList,
+            NodeStatistics
         },
     })
     export default class QuorumSetExplorer extends Vue {
@@ -236,7 +247,6 @@
     .sb-badge {
         margin-right: 2px;
     }
-
 
 
     .dropdown {

@@ -98,7 +98,7 @@
         },
     })
     export default class NodeDetails extends Vue {
-        public optionShowInactive: number = 1;
+        public optionShowInactive: number = 0;
         public sortBy: string = "index";
         public sortDesc: boolean = true;
         public perPage: number = 200;
@@ -108,10 +108,13 @@
             {key: "name", sortable: true},
             {key: "type", label: "type (experimental)", sortable: true},
             // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-            {key: "availability", sortable: true},
+            {key: "active24Hour", label:"24H active", sortable: true},
+            {key: "active7Days", label:"7D active", sortable: true},
+            {key: "validating24Hour", label:"24H validating", sortable: true},
+            {key: "validating7Days", label:"7D validating", sortable: true},
+            {key: "overLoaded24Hour", label:"24H overloaded", sortable: true},
             {key: "index", label: "index (experimental)", sortable: true},
             {key: "validating", sortable: true},
-            {key: "load", sortable: true},
             {key: "version", sortable: true},
             {key: "country", sortable: true},
             {key: "ip", sortable: true},
@@ -131,8 +134,11 @@
                     return {
                         name: node.displayName,
                         type: node.isFullValidator ? "Full validator" : node.isValidator ? "Validator" : "Watcher",
-                        availability: node.statistics.activeRating * 20 + "%",
-                        load: this.getLoad(node),
+                        active24Hour: node.statistics.active24HoursPercentage + "%",
+                        active7Days: node.statistics.active7DaysPercentage + "%",
+                        validating24Hour: node.statistics.validating24HoursPercentage + "%",
+                        validating7Days: node.statistics.validating7DaysPercentage + "%",
+                        overLoaded24Hour: node.statistics.overLoaded24HoursPercentage + "%",
                         ip: node.key,
                         publicKey: node.publicKey,
                         country: node.geoData.countryName,
