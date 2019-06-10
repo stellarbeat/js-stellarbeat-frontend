@@ -18,17 +18,32 @@
                 <div class="card-header">
                     <div class="row header-row">
                         <div class="col-12 col-sm-6">
-                            <label class="custom-switch mt-2">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label class="custom-switch mt-2">
 
-                                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                                       v-model="optionShowInactive">
-                                <span class="custom-switch-indicator"></span>
-                                <span class="custom-switch-description">Include inactive nodes</span>
+                                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                                               v-model="optionShowInactive">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Include inactive nodes</span>
 
-                            </label>
+                                    </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="custom-switch mt-2">
+
+                                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                                               v-model="optionShowWatchers">
+                                        <span class="custom-switch-indicator"></span>
+                                        <span class="custom-switch-description">Include watcher nodes</span>
+
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
-                            <b-form-input class="form-control search mr-0" type="text" v-model="filter" id="searchInput"
+                            <b-form-input class="form-control search mr-0" type="text" v-model="filter"
+                                          id="searchInput"
                                           placeholder="Type public key, name, ... to search"/>
 
                         </div>
@@ -46,8 +61,13 @@
                                   v-b-tooltip.hover title="Full validator">
                                 <i class="fe fe-shield"></i>
                             </span>
-                            <router-link
-                                    :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">{{ row.item.name || " " | truncate(20)}}
+                            <router-link v-if="row.item.isValidator"
+                                         :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
+                                {{ row.item.name || " " | truncate(20)}}
+                            </router-link>
+                            <router-link v-else
+                                         :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">{{
+                                row.item.name || " " | truncate(20)}}
                             </router-link>
                         </template>
 
@@ -79,6 +99,23 @@
                 </div>
 
             </div>
+            <div class="card mb-2">
+                <div class="card-body">
+                    <div class="text-wrap">
+                        <h2 class="mt-0 mb-4">Index formula (experimental)</h2>
+                        <pre><code>
+Index = (TypeIndex + ActiveIndex + ValidationIndex + VersionIndex + TrustIndex + AgeIndex)/6
+
+TypeIndex = Full validator | Basic validator | Watcher node
+ActiveIndex = Active percentage last 7 days
+ValidationIndex = Validation percentage last 7 days
+Version = How far away from the latest stable Stellar core version
+Trust = How many active validators trust this node
+Age = Time since discovery
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -98,7 +135,8 @@
         },
     })
     export default class NodeDetails extends Vue {
-        public optionShowInactive: number = 0;
+        public optionShowInactive: boolean = false;
+        public optionShowWatchers: boolean = false;
         public sortBy: string = "index";
         public sortDesc: boolean = true;
         public perPage: number = 200;
@@ -106,13 +144,14 @@
         public filter: string = "";
         public fields = [
             {key: "name", sortable: true},
-            {key: "type", label: "type (experimental)", sortable: true},
+            {key: "organization", sortable: true},
+            {key: "type", label: "type", sortable: true},
             // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-            {key: "active24Hour", label:"24H active", sortable: true},
-            {key: "active7Days", label:"7D active", sortable: true},
-            {key: "validating24Hour", label:"24H validating", sortable: true},
-            {key: "validating7Days", label:"7D validating", sortable: true},
-            {key: "overLoaded24Hour", label:"24H overloaded", sortable: true},
+            {key: "active24Hour", label: "24H active", sortable: true},
+            {key: "active7Days", label: "7D active", sortable: true},
+            {key: "validating24Hour", label: "24H validating", sortable: true},
+            {key: "validating7Days", label: "7D validating", sortable: true},
+            {key: "overLoaded24Hour", label: "24H overloaded", sortable: true},
             {key: "index", label: "index (experimental)", sortable: true},
             {key: "validating", sortable: true},
             {key: "version", sortable: true},
@@ -130,6 +169,7 @@
         get nodes(): any[] {
             return this.network.nodes
                 .filter((node) => node.active || this.optionShowInactive)
+                .filter((node) => node.isValidator || this.optionShowWatchers)
                 .map((node) => {
                     return {
                         name: node.displayName,
@@ -144,8 +184,10 @@
                         country: node.geoData.countryName,
                         version: node.versionStr,
                         isFullValidator: node.isFullValidator,
+                        isValidator: node.isValidator,
                         index: node.index,
-                        validating: node.isValidating
+                        validating: node.isValidating,
+                        organization: this.getOrganization(node),
                     };
                 });
         }
@@ -158,23 +200,22 @@
             return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
         }
 
+        getOrganization(node: Node): string {
+            if (!node.organizationId) {
+                return "-";
+            }
+            let organization = this.network.getOrganizationById(node.organizationId);
+            if (organization) {
+                return organization.name;
+            } else {
+                return "-";
+            }
+        }
+
         public onFiltered = (filteredItems: any[]) => {
             // Trigger pagination to update the number of buttons/pages due to filtering
             // this.totalRows = filteredItems.length;
             this.currentPage = 1;
-        };
-
-        public getLoad = (node: Node) => {
-            switch (true) {
-                case node.statistics.activeRating === 0:
-                    return "NA";
-                case node.statistics.overLoadedRating <= 2:
-                    return "low";
-                case node.statistics.overLoadedRating <= 4:
-                    return "medium";
-                case node.statistics.overLoadedRating <= 5:
-                    return "high";
-            }
         };
     }
 </script>

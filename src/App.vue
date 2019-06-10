@@ -70,6 +70,11 @@
                                         <i class="fe fe-share-2"></i>API
                                     </router-link>
                                 </li>
+                                <!--li class="nav-item">
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'help'}"><i
+                                            class="fe fe-help-circle"></i>Help
+                                    </router-link>
+                                </li!-->
                                 <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i
                                             class="fe fe-info"></i>About
@@ -130,25 +135,35 @@
         protected showError = false;
         protected errorMessage = "";
 
-        async fetchData():Promise<Array<any>> {
+        async fetchData():Promise<any> {
             try {
                 let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
                 return result.data;
             } catch (error) { //todo logging
                 console.log(error);
                 this.showError = true;
-                this.errorMessage = "Could not connect to api";
+                this.errorMessage = "Could not connect to stellarbeat.io api";
                 return [];
             }
         }
 
         async created() {
-            let nodesRaw = await this.fetchData();
-            let nodes = nodesRaw
-                .map(node => Node.fromJSON(node));
+            let result = await this.fetchData();
+            if(result.nodes) {
+                let nodes = result['nodes']
+                    .map((node:any) => Node.fromJSON(node));
 
-            this.network = new Network(nodes);
-            this.isLoading = false;
+                let organizations = [];
+                if(result.organizations) {
+                    organizations = result.organizations;
+                }
+                this.network = new Network(nodes, organizations);
+                this.isLoading = false;
+            } else {
+                this.showError = true;
+                this.errorMessage = "Stellarbeat.io API data error, nodes missing";
+            }
+
         }
 
         get isFullPreRenderRoute () {

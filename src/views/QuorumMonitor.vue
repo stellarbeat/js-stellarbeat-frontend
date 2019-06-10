@@ -287,6 +287,7 @@
             node.publicKey = this.makePublicKey();
             node.quorumSet.threshold = 1;
             node.active = true;
+            node.isValidating = true;
             this.$set(node, 'x', 0); //doesn't belong here, needs better solution
             this.$set(node, 'y', 0);
             this.changeQueue.execute(new NetworkAddNode(this.network, node));

@@ -62,7 +62,6 @@
                 .map((node) => {
                     return {
                         name: node.displayName,
-                        availability: node.statistics.activeRating * 20 + "%",
                         version: node.versionStr,
                         isFullValidator: node.isFullValidator,
                         index: node.index,

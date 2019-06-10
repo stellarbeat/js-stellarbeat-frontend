@@ -119,16 +119,16 @@
             addNodePopup: function (node, marker) {
                 let info = '';
 
-                let rating = 'Availability: ';
+                let rating = 'Active: ';
 
                 let counter = 0;
 
-                if (node.statistics.activeRating >= 4) {
-                    rating += '<span class="badge badge-success" style="font-size: 0.8rem;">' + node.statistics.activeRating * 20 + '%</span>';
-                } else if (node.statistics.activeRating >= 2) {
-                    rating += '<span class="badge badge-warning" style="font-size: 0.8rem;">' + node.statistics.activeRating * 20 + '%</span>';
+                if (node.statistics.active7DaysPercentage >= 80) {
+                    rating += '<span class="badge badge-success" style="font-size: 0.8rem;">' + node.statistics.active7DaysPercentage + '%</span>';
+                } else if (node.statistics.activeRating >= 40) {
+                    rating += '<span class="badge badge-warning" style="font-size: 0.8rem;">' + node.statistics.active7DaysPercentage + '%</span>';
                 } else {
-                    rating += '<span class="badge badge-danger" style="font-size: 0.8rem;">' + node.statistics.activeRating * 20 + '%</span>';
+                    rating += '<span class="badge badge-danger" style="font-size: 0.8rem;">' + node.active7DaysPercentage + '%</span>';
                 }
 
                 info += rating;

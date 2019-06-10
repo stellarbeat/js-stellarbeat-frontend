@@ -13,7 +13,7 @@
                         <g class="svg-pan-zoom_viewport">
                             <GraphLink v-if="graphInitialized" v-for="link in network.links" :link="link"
                                        :selectedNode="selectedNode" :key="link.id"></GraphLink>
-                            <GraphNode v-if="graphInitialized" v-for="node in network.nodes" :key="node.publicKey" :node="node"
+                            <GraphNode v-if="graphInitialized" v-for="node in nodesToVisualize" :key="node.publicKey" :node="node"
                                        :selectedNode="selectedNode"
                                        :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
                                        ></GraphNode>
@@ -72,6 +72,12 @@ export default class Graph extends Vue {
         }
     }
 
+    get nodesToVisualize() {
+        return this.network.nodes.filter(node => {
+            return this.network.getTrustingNodes(node).length !== 0 || node.quorumSet.hasValidators() || node.isValidating
+        });
+    }
+
     get progressBarWidth() {
         return 'width: ' + this.loadingProgress + '%';
     }
@@ -119,7 +125,8 @@ export default class Graph extends Vue {
     public computeGraph() {
         this.isLoading = true;
         // separate sim nodes to avoid slow rendering
-        const simulationNodes = this.network.nodes.map((node, index) => {
+        const simulationNodes = this.nodesToVisualize
+            .map((node, index) => {
             return {
                 publicKey: node.publicKey,
                 x: (node as any).x,
@@ -144,7 +151,7 @@ export default class Graph extends Vue {
 
     }
     public created() {
-        this.network.nodes.forEach((node) => {
+        this.nodesToVisualize.forEach((node) => {
             this.$set(node, 'x', 0);
             this.$set(node, 'y', 0);
         }); // trigger reactive changes on newly added x and y coordinates
@@ -159,8 +166,8 @@ export default class Graph extends Vue {
                 case 'end': {
                     event.data.nodes.forEach(
                         (node: {index: number, x: number, y: number, publicKey: string}) => {
-                            (this.network.nodes[node.index] as any).x = node.x;
-                            (this.network.nodes[node.index] as any).y = node.y;
+                            (this.nodesToVisualize[node.index] as any).x = node.x;
+                            (this.nodesToVisualize[node.index] as any).y = node.y;
                         },
                     );
                     this.isLoading = false;

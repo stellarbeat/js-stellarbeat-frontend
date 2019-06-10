@@ -4,8 +4,7 @@
             <h3 class="card-title">Validator loads </h3>
             <i id="overLoadedTooltip" class="fe fe-info ml-2 mt-0 text-muted"></i>
             <b-tooltip target="overLoadedTooltip" placement="top">
-                A validator has a high load when it disconnects due to 'high load' most of the time during the latest
-                300 crawls.
+                A validator has a high load when it disconnects due to 'high load' most of the time during the last 30 days.
             </b-tooltip>
             <div class="card-options">
                 <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'nodes'}">View all nodes
@@ -37,15 +36,15 @@ export default class ValidatorsServerLoad extends Vue {
 
     get overloadedBuckets() {
         const buckets: number[] = Array(3).fill(0);
-        const bucketReducer = (buckets: number[], currentOverLoadedRating: number) => {
+        const bucketReducer = (buckets: number[], currentOverLoadedPercentage: number) => {
             switch (true) {
-                case currentOverLoadedRating <= 2:
+                case currentOverLoadedPercentage <= 40:
                     buckets[0]++;
                     break;
-                case currentOverLoadedRating <= 4:
+                case currentOverLoadedPercentage <= 80:
                     buckets[1]++;
                     break;
-                case currentOverLoadedRating <= 5:
+                case currentOverLoadedPercentage <= 100:
                     buckets[2]++;
                     break;
             }
@@ -54,7 +53,7 @@ export default class ValidatorsServerLoad extends Vue {
         };
         return this.network.nodes
             .filter((node) => node.active && node.quorumSet.hasValidators())
-            .map((node) => node.statistics.overLoadedRating)
+            .map((node) => node.statistics.overLoaded7DaysPercentage)
             .reduce(bucketReducer, buckets);
     }
 
