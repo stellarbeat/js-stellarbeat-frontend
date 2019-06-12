@@ -46,9 +46,16 @@
             textAnchor: function () {
                 return this.node.x < 180 ? "start" : "end";
             },
+
+            isEmbedded: function () {
+                return this.$router.currentRoute.meta.isHeadlessRoute;
+            }
         },
         methods: {
             clickNode: function () {
+                if(this.isEmbedded) {
+                    return;//disable click on embedded graph
+                }
                 this.$router.push({
                     name: 'quorum-monitor-node',
                     params: {'publicKey': this.node.data.publicKey},
@@ -65,7 +72,6 @@
         fill: #bbb;
         cursor: pointer;
     }
-
     .quorum-set-node:hover {
         fill: #1997c6;
     }
