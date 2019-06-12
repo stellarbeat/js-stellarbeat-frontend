@@ -10,6 +10,7 @@ import NodeDetails from './views/NodeDetails.vue';
 import About from './views/About.vue';
 import Help from './views/Help.vue';
 import Api from './views/Api.vue';
+import QuorumSetConnectionsGraph from './views/embeds/QuorumSetConnectionsGraph.vue';
 
 Vue.use(Router);
 
@@ -35,6 +36,12 @@ export default new Router({
                     component: QuorumSetExplorer,
                 },
             ],
+        },
+        {
+            name: 'quorum-set-connections-graph',
+            path: '/quorum-set-connections-graph',
+            component: QuorumSetConnectionsGraph,
+            meta: {isHeadlessRoute: true}
         },
     ],
 

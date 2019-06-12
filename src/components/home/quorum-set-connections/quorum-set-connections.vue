@@ -1,63 +1,93 @@
 <template>
-    <div class="card ">
-        <div class="card-header">
-            <h3 class="card-title">Quorumset connections</h3>
-            <div class="card-options">
-                <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'quorum-monitor'}">Go to Quorum Monitor
-                </router-link>
+    <div>
+        <div v-if="!isHeadlessRoute" class="card ">
+            <div class="card-header">
+                <h3 class="card-title">Quorumset connections</h3>
+                <div class="card-options">
+                    <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'quorum-monitor'}">Go to Quorum
+                        Monitor
+                    </router-link>
+                </div>
+            </div>
+            <div class="card-body p-3 pb-6">
+                <div class="row">
+                    <div class="col-6 d-flex">
+                        <div class="quorum-connections-legend incoming-connection px-2 m-2">
+
+                        </div>
+                        <div class="text-right">
+                            Incoming (trusted by)
+                        </div>
+
+                    </div>
+                    <div class="col-6 d-flex">
+                        <div class="quorum-connections-legend outgoing-connection px-2 m-2">
+                        </div>
+                        <div class="text-right">
+                            Outgoing (trusts)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <svg class="graph" xmlns="http://www.w3.org/2000/svg"
+                         height="100%"
+                         width="100%"
+                         viewBox="0 0 720 720"
+                    >
+                        <g v-bind:transform="svgTransform" ref="quorumSvg">
+                            <g>
+                                <QuorumSetNode v-for="node in treeNodes" :node="node"
+                                               v-on:node-selected="showTrustLinks(node)"
+                                               v-on:node-deselected="removeTrustLinks()">
+                                </QuorumSetNode>
+                            </g>
+                            <g>
+                                <path v-for="link in links" class="quorum-set-link"
+                                      v-bind:d="path(link)"
+                                />
+                                <path v-for="link in targetLinks" class="link-target"
+                                      v-bind:d="path(link)"
+                                />
+                                <path v-for="link in sourceLinks" class="link-source"
+                                      v-bind:d="path(link)"
+                                />
+                            </g>
+
+                        </g>
+
+                    </svg>
+                </div>
             </div>
         </div>
-        <div class="card-body p-3 pb-6">
-            <div class="row">
-                <div class="col-6 d-flex">
-                    <div class="quorum-connections-legend incoming-connection px-2 m-2">
-
-                    </div>
-                    <div class="text-right">
-                        Incoming (trusted by)
-                    </div>
-
-                </div>
-                <div class="col-6 d-flex">
-                    <div class="quorum-connections-legend outgoing-connection px-2 m-2">
-                    </div>
-                    <div class="text-right">
-                        Outgoing (trusts)
-                    </div>
-                </div>
-            </div>
-            <div class="row quorum-selected-node">
-            </div>
-            <div class="row">
-                <svg class="graph" xmlns="http://www.w3.org/2000/svg"
-                     height="100%"
-                     width="100%"
-                     viewBox="0 0 720 720"
-                >
-                    <g v-bind:transform="svgTransform" ref="quorumSvg">
-                        <g>
-                            <QuorumSetNode v-for="node in treeNodes" :node="node"
-                                           v-on:node-selected="showTrustLinks(node)"
-                                           v-on:node-deselected="removeTrustLinks()">
-                            </QuorumSetNode>
-                        </g>
-                        <g>
-                            <path v-for="link in links" class="quorum-set-link"
-                                  v-bind:d="path(link)"
-                            />
-                            <path v-for="link in targetLinks" class="link-target"
-                                  v-bind:d="path(link)"
-                            />
-                            <path v-for="link in sourceLinks" class="link-source"
-                                  v-bind:d="path(link)"
-                            />
-                        </g>
-
+        <div class="headless" v-else>
+            <svg class="graph" xmlns="http://www.w3.org/2000/svg"
+                 height="100%"
+                 width="100%"
+                 viewBox="0 0 720 720"
+            >
+                <g v-bind:transform="svgTransform" ref="quorumSvg">
+                    <g>
+                        <QuorumSetNode v-for="node in treeNodes" :node="node"
+                                       v-on:node-selected="showTrustLinks(node)"
+                                       v-on:node-deselected="removeTrustLinks()">
+                        </QuorumSetNode>
+                    </g>
+                    <g>
+                        <path v-for="link in links" class="quorum-set-link"
+                              v-bind:d="path(link)"
+                        />
+                        <path v-for="link in targetLinks" class="link-target"
+                              v-bind:d="path(link)"
+                        />
+                        <path v-for="link in sourceLinks" class="link-source"
+                              v-bind:d="path(link)"
+                        />
                     </g>
 
-                </svg>
-            </div>
+                </g>
+            </svg>
         </div>
+
     </div>
 </template>
 
@@ -134,15 +164,17 @@
                 this.treeNodes.forEach(function (treeNode) {
                     QuorumSet.getAllValidators(treeNode.data.origNode.quorumSet).forEach(
                         validator => {
-                            if(nodesMap[validator])
+                            if (nodesMap[validator])
                                 newLinks.push(nodesMap[treeNode.data.publicKey].path(nodesMap[validator]));
                         }
                     );
                 });
 
                 return newLinks;
+            },
+            isHeadlessRoute: function () {
+                return this.$router.currentRoute.meta.isHeadlessRoute;
             }
-
         },
         methods: {
             path: function (link) {
@@ -164,12 +196,12 @@
                 this.links.forEach(link => {
                     if (link[0] === node) {
                         this.sourceLinks.push(link);
-                        if(node !== link[link.length - 1]) //do not mark selected node as target
+                        if (node !== link[link.length - 1]) //do not mark selected node as target
                             link[link.length - 1].data.isTarget = true;
                     }
                     if (link[link.length - 1] === node) {
                         this.targetLinks.push(link);
-                        if(node !== link[0]) //do not mark selected node as source
+                        if (node !== link[0]) //do not mark selected node as source
                             link[0].data.isSource = true;
                     }
                 });
@@ -229,5 +261,8 @@
 
     .outgoing-connection {
         background: #e4d836;
+    }
+    .headless {
+        background: white;
     }
 </style>

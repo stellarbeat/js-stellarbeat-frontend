@@ -1,18 +1,8 @@
-<style>
-    .red {
-        color: #f00;
-    }
-
-    .graph-toolbar {
-        justify-content: flex-end;
-        float: right;
-    }
-
-</style>
-
 <template>
     <div id="app" class="page">
         <div class="page-main">
+            <div v-if="!isHeadlessRoute">
+
             <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="md">
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                     <div class="container-fluid">
@@ -86,7 +76,9 @@
                 </div>
 
             </b-collapse>
-            <div class="my-0 my-md-5 pl-4 pr-4">
+            </div>
+
+            <div v-if="!isHeadlessRoute" class="my-0 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
                     <div class="my-3 my-md-5">
                         <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
@@ -104,6 +96,11 @@
 
                 </div>
             </div>
+            <div v-else>
+                <router-view :network="network" :isLoading="isLoading">
+                </router-view>
+            </div>
+
         </div>
     </div>
 
@@ -111,19 +108,19 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import {Network, Node} from '@stellarbeat/js-stellar-domain';
-    import axios from 'axios';
+    import Vue from "vue";
+    import {Network, Node} from "@stellarbeat/js-stellar-domain";
+    import axios from "axios";
     import {Component} from "vue-property-decorator";
 
     @Component({
         name: "app",
         metaInfo: {
-            title: 'Stellarbeat.io - Stellar network visibility',
+            title: "Stellarbeat.io - Stellar network visibility",
             meta: [
                 {
-                    name: 'description',
-                    content: 'Giving insight into the Stellar public network through various tools & visualizations.'
+                    name: "description",
+                    content: "Giving insight into the Stellar public network through various tools & visualizations."
                 }
             ]
         }
@@ -135,7 +132,7 @@
         protected showError = false;
         protected errorMessage = "";
 
-        async fetchData():Promise<any> {
+        async fetchData(): Promise<any> {
             try {
                 let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
                 return result.data;
@@ -149,12 +146,12 @@
 
         async created() {
             let result = await this.fetchData();
-            if(result.nodes) {
-                let nodes = result['nodes']
-                    .map((node:any) => Node.fromJSON(node));
+            if (result.nodes) {
+                let nodes = result["nodes"]
+                    .map((node: any) => Node.fromJSON(node));
 
                 let organizations = [];
-                if(result.organizations) {
+                if (result.organizations) {
                     organizations = result.organizations;
                 }
                 this.network = new Network(nodes, organizations);
@@ -166,8 +163,12 @@
 
         }
 
-        get isFullPreRenderRoute () {
+        get isFullPreRenderRoute() {
             return this.$router.currentRoute.meta.fullPreRender;
+        }
+
+        get isHeadlessRoute() {
+            return this.$router.currentRoute.meta.isHeadlessRoute;
         }
     }
 </script>
