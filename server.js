@@ -8,8 +8,9 @@ let port = process.env.PORT || 3000;
 
 app.use(history({
     rewrites: [
-        { from: /\/about/, to: '/about/index.html'},
-        { from: /\/api/, to: '/api/index.html'},
+        { from: /\/about/, to: '/about.html'},
+        { from: /\/api/, to: '/api.html'},
+        { from: /\/quorum-set-connections-graph/, to: '/quorum-set-connections-graph.html'}, //to avoid rendering the navbar in index.html
     ]
 }));
 let cacheTime = 86400000*7; //7 day cache for assets
