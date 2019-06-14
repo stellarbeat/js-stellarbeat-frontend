@@ -134,7 +134,7 @@ Age = Time since discovery
             ],
         },
     })
-    export default class NodeDetails extends Vue {
+    export default class Nodes extends Vue {
         public optionShowInactive: boolean = false;
         public optionShowWatchers: boolean = false;
         public sortBy: string = "index";

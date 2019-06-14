@@ -24,7 +24,7 @@
                     <b-tooltip target="ActiveValidatorsTooltip" placement="top">
                         Number of active validators in the latest crawl.
                     </b-tooltip>
-                    <div class="h1 m-2">{{numberOfNodesWithQuorumSets}}</div>
+                    <div class="h1 m-2">{{numberOfActiveValidators}}</div>
                     <div class="text-muted mb-1">Active Validators</div>
                 </div>
             </div>
@@ -77,7 +77,7 @@ export default class Statistics extends Vue {
     public network!: Network;
 
     get numberOfFullValidators() {
-        return this.network.nodes.filter(node => node.isFullValidator).length;
+        return this.network.nodes.filter(node => node.active && node.isValidating && node.isFullValidator).length;
     }
 
     get numberOfActiveNodes() {
@@ -88,8 +88,8 @@ export default class Statistics extends Vue {
         return this.network.failingNodes.length;
     }
 
-    get numberOfNodesWithQuorumSets() {
-        return this.network.nodes.filter((node) => node.active && node.quorumSet.hasValidators()).length;
+    get numberOfActiveValidators() {
+        return this.network.nodes.filter((node) => node.active && node.isValidating).length;
     }
 }
 </script>
