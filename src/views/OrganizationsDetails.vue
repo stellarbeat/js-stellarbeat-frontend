@@ -93,7 +93,11 @@
                         </div>
                         <div class="card-body">
                             <b-list-group flush>
-
+                                <b-list-group-item v-if="organization.url">
+                                    <a :href="organization.url"
+                                       target="_blank"><i class="fe fe-external-link"> </i>
+                                        {{organization.url}}</a>
+                                </b-list-group-item>
                                 <!--b-list-group-item v-if="organization.dba">
                                     <i class="fe fe-briefcase"> </i> {{organization.dba}}
                                 </b-list-group-item!-->
