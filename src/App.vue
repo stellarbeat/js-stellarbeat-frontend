@@ -50,11 +50,11 @@
                                             class="fe fe-list"></i>Nodes
                                     </router-link>
                                 </li>
-                                <!--li class="nav-item">
+                                <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'organizations'}"><i
                                             class="fe fe-globe"></i>Organizations
                                     </router-link>
-                                </li!-->
+                                </li>
                                 <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'quorum-monitor'}">
                                         <i class="fe fe-target"></i>Quorum Monitor

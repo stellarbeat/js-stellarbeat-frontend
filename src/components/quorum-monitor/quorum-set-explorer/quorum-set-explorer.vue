@@ -38,7 +38,21 @@
                 <span class="badge badge-default sb-badge">{{selectedNode.versionStr}}</span>
                 <pre><code data-lang="html">{{selectedNode.publicKey}}</code></pre>
 
+                <div v-if="selectedNode.organizationId" class="row">
+                    <div class="col-sm-12">
+                        <NodeList
+                                :nodes="getFellowOrganizationNodes(selectedNode)"
+                                :network="network"
+                                :title="network.getOrganizationById(selectedNode.organizationId).name"
+                                v-on:node-toggle-active="toggleNodeActive"
+                                v-on:node-toggle-validating="toggleNodeValidating"
+                                v-on:node-show-modal="showModal"
+                        >
 
+                        </NodeList>
+                    </div>
+
+                </div>
 
                 <div>
                     <ul class="mt-0 tree list-group list-group-flush">
@@ -68,6 +82,7 @@
                 <NodeList
                         :nodes="network.getTrustingNodes(selectedNode) ? network.getTrustingNodes(selectedNode) : []"
                         :network="network"
+                        :title="'Trusted by ' + network.getTrustingNodes(selectedNode).filter(node => node.active).length + ' active nodes'"
                         v-on:node-toggle-active="toggleNodeActive"
                         v-on:node-toggle-validating="toggleNodeValidating"
                         v-on:node-show-modal="showModal"
@@ -211,7 +226,11 @@
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
             this.$emit("quorumset-edit-threshold", quorumSet, newThreshold);
         }
-
+        public getFellowOrganizationNodes(node:Node){
+            return this.network.nodes
+                .filter(fellowNode => fellowNode.organizationId === node.organizationId)
+                .sort((a:Node,b:Node) => a.displayName.localeCompare(b.displayName))
+        }
         public showModal(node: Node) {
             this.modalNode = node;
             this.$nextTick(function () {

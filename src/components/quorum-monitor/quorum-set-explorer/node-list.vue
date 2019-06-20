@@ -1,9 +1,8 @@
 <template>
     <div class="pt-0">
-        <div class="pt-2 pb-3 trusting-nodes-title active" v-on:click="toggleShow">
+        <div class="pt-2 pb-3 nodes-title active" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i>
-            <h5 class="mb-0">Trusted by
-                {{nodes.filter(node => node.active).length}} active nodes
+            <h5 class="mb-0">{{title}}
             </h5>
         </div>
         <div v-if="showing" class="list-group list-group-flush nested-tree">
@@ -50,6 +49,8 @@
         public nodes!: Node[];
         @Prop()
         public network!: Network;
+        @Prop()
+        public title!: string;
 
         protected currentPage: number = 1;
         protected perPage: number = 10;
@@ -58,7 +59,6 @@
 
         get paginatedNodes() {
             return this.nodes
-                .filter(node => node.active)
                 .slice(
                     (this.currentPage - 1) * this.perPage, this.currentPage * this.perPage
                 );
@@ -141,10 +141,10 @@
         float: left;
     }
 
-    .trusting-nodes-title {
+    .nodes-title {
         cursor: pointer;
     }
-    .trusting-nodes-title:hover {
+    .nodes-title:hover {
         background-color: #f8f9fa;
     }
 

@@ -11,7 +11,7 @@
                     target="_blank"
                     href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
                 and update the linked <a target="_blank"
-                                         href="https://www.stellar.org/developers/guides/concepts/stellar-toml.html">stellar.toml</a>
+                                         href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                 file to include your organization info.
             </b-alert>
             <div class="card mb-2 p-1">
@@ -31,10 +31,49 @@
                     <b-table striped hover responsive :items="organizations" :fields="fields" :sort-by.sync="sortBy"
                              :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                              :filter="filter" @filtered="onFiltered">
-                        <template slot="validators" slot-scope="data">
+                        <template slot="validators" slot-scope="row">
+                            <ul>
+                                <li v-for="validator in row.item.validators">
+                                    <span v-if="validator.isFullValidator"
+                                          class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
+                                          v-b-tooltip.hover title="Full validator">
+                                            <i class="fe fe-shield"></i>
+                                        </span>
+                                    <router-link
+                                            :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
 
-                            {{data.item.validators}}
+                                        {{ validator.name}}
+
+                                    </router-link>
+                                    <span v-if="!validator.active"
+                                          class="badge sb-badge badge-danger"
+                                    >Not active
+                </span>
+                                    <span v-if="!validator.isValidating"
+                                          class="badge sb-badge badge-danger"
+                                    >Not validating
+                </span>
+                                </li>
+                            </ul>
                         </template>
+                        <template slot="name" slot-scope="row">
+                            <router-link
+                                    :to="{ name: 'organization-details', params: { 'organizationId': row.item.id }}">
+                                {{ row.item.name}}
+                            </router-link>
+                        </template>
+                        <template slot="url" slot-scope="row">
+                            <a :href="row.item.url" target="_blank">{{row.item.url}}</a>
+                        </template>
+                        https://keybase.io/
+                        <template slot="keybase" slot-scope="row">
+                            <a :href="'https://keybase.io/' + row.item.keybase" target="_blank">{{row.item.keybase}}</a>
+                        </template>
+                        <template slot="email" slot-scope="row">
+                            <a v-if="row.item.email" :href="'mailto:' + row.item.email"
+                               class="" target="_blank">{{row.item.email}}</a>
+                        </template>
+
                     </b-table>
                     <b-row>
                         <b-col md="6" class="my-1">
@@ -65,15 +104,17 @@
     })
     export default class Organizations extends Vue {
         public sortBy: string = "name";
-        public sortDesc: boolean = true;
+        public sortDesc: boolean = false;
         public perPage: number = 200;
-        public totalRows:number = 1;
+        public totalRows: number = 1;
         public currentPage: number = 1;
         public filter: string = "";
         public fields = [
             {key: "name", sortable: true},
             {key: "validators", sortable: false},
-
+            {key: "url", sortable: true},
+            {key: "keybase", sortable: true},
+            {key: "email", sortable: true}
         ];
 
         @Prop()
@@ -86,20 +127,31 @@
                 .map((organization) => {
                     return {
                         name: organization.name,
-                        validators: this.getValidators(organization)
+                        validators: this.getValidators(organization),
+                        keybase: organization.keybase,
+                        github: organization.github,
+                        url: organization.url,
+                        email: organization.officialEmail,
+                        id: organization.id
                     };
                 });
         }
 
-        getValidators(organization:Organization) {
+        getValidators(organization: Organization) {
             return organization.validators.map(publicKey => {
                 let node = this.network.getNodeByPublicKey(publicKey);
-                if(node) {
-                    return node.displayName;
+                if (node) {
+                    return {
+                        "name": node.displayName,
+                        "publicKey": node.publicKey,
+                        "isFullValidator": node.isFullValidator,
+                        "isValidating": node.isValidating,
+                        "active": node.active
+                    };
                 } else {
-                    return publicKey;
+                    return {"publicKey": publicKey, "name": publicKey};
                 }
-            })
+            }).sort((a:any,b:any) => a.name.localeCompare(b.name));
         }
 
         get latestCrawlDateString(): string {
@@ -122,5 +174,9 @@
 <style scoped>
     .header-row {
         width: 100%
+    }
+
+    ul {
+        list-style-type: none;
     }
 </style>

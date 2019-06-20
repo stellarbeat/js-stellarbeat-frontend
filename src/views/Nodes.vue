@@ -70,7 +70,12 @@
                                 row.item.name || " " | truncate(20)}}
                             </router-link>
                         </template>
-
+                        <template slot="organization" slot-scope="row">
+                            <router-link
+                                    :to="{ name: 'organization-details', params: { 'organizationId': row.item.organizationId }}">
+                                {{ row.item.organization}}
+                            </router-link>
+                        </template>
                         <template slot="type" slot-scope="row">
                             {{row.item.type}}
                         </template>
@@ -188,6 +193,7 @@ Age = Time since discovery
                         index: node.index,
                         validating: node.isValidating,
                         organization: this.getOrganization(node),
+                        organizationId: node.organizationId
                     };
                 });
         }

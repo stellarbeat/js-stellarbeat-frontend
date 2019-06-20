@@ -7,6 +7,7 @@ import Home from './views/Home.vue';
 import QuorumMonitor from './views/QuorumMonitor.vue';
 import Nodes from './views/Nodes.vue';
 import Organizations from './views/Organizations.vue';
+import OrganizationDetails from './views/OrganizationsDetails.vue';
 import NodeDetails from './views/NodeDetails.vue';
 import About from './views/About.vue';
 import Help from './views/Help.vue';
@@ -23,6 +24,8 @@ export default new Router({
         {name: 'nodes', path: '/nodes', component: Nodes},
         {name: 'organizations', path: '/organizations', component: Organizations},
         {name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
+        {name: 'organization-details', path: '/organizations/:organizationId', component: OrganizationDetails},
+
         {name: 'help', path: '/help', component: Help, meta: {fullPreRender: true}},
         {name: 'about', path: '/about', component: About, meta: {fullPreRender: true}},
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
