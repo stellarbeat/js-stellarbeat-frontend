@@ -53,7 +53,7 @@ export default class ValidatorsServerLoad extends Vue {
         };
         return this.network.nodes
             .filter((node) => node.active && node.quorumSet.hasValidators())
-            .map((node) => node.statistics.overLoaded7DaysPercentage)
+            .map((node) => node.statistics.overLoaded30DaysPercentage)
             .reduce(bucketReducer, buckets);
     }
 

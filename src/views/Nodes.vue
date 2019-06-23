@@ -112,8 +112,8 @@
 Index = (TypeIndex + ActiveIndex + ValidationIndex + VersionIndex + TrustIndex + AgeIndex)/6
 
 TypeIndex = Full validator | Basic validator | Watcher node
-ActiveIndex = Active percentage last 7 days
-ValidationIndex = Validation percentage last 7 days
+ActiveIndex = Active percentage last 30 days
+ValidationIndex = Validation percentage last 30 days
 Version = How far away from the latest stable Stellar core version
 Trust = How many active validators trust this node
 Age = Time since discovery
@@ -153,9 +153,9 @@ Age = Time since discovery
             {key: "type", label: "type", sortable: true},
             // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
             {key: "active24Hour", label: "24H active", sortable: true},
-            {key: "active7Days", label: "7D active", sortable: true},
+            {key: "active30Days", label: "30D active", sortable: true},
             {key: "validating24Hour", label: "24H validating", sortable: true},
-            {key: "validating7Days", label: "7D validating", sortable: true},
+            {key: "validating30Days", label: "30D validating", sortable: true},
             {key: "overLoaded24Hour", label: "24H overloaded", sortable: true},
             {key: "index", label: "index (experimental)", sortable: true},
             {key: "validating", sortable: true},
@@ -180,9 +180,9 @@ Age = Time since discovery
                         name: node.displayName,
                         type: node.isFullValidator ? "Full validator" : node.isValidator ? "Validator" : "Watcher",
                         active24Hour: node.statistics.active24HoursPercentage + "%",
-                        active7Days: node.statistics.active7DaysPercentage + "%",
+                        active30Days: node.statistics.active30DaysPercentage + "%",
                         validating24Hour: node.statistics.validating24HoursPercentage + "%",
-                        validating7Days: node.statistics.validating7DaysPercentage + "%",
+                        validating30Days: node.statistics.validating30DaysPercentage + "%",
                         overLoaded24Hour: node.statistics.overLoaded24HoursPercentage + "%",
                         ip: node.key,
                         publicKey: node.publicKey,

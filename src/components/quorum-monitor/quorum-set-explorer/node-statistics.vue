@@ -16,9 +16,9 @@
             </div>
             <div class="list-group-item p-1 pr-0 node-list">
                 <b-progress height="1rem">
-                    <b-progress-bar :value="node.statistics.active7DaysPercentage"
-                                    v-bind:variant="node.statistics.active7DaysPercentage === 100 ? 'success ' : 'warning'">
-                        7D active: {{node.statistics.active7DaysPercentage}}%
+                    <b-progress-bar :value="node.statistics.active30DaysPercentage"
+                                    v-bind:variant="node.statistics.active30DaysPercentage === 100 ? 'success ' : 'warning'">
+                        30D active: {{node.statistics.active30DaysPercentage}}%
                     </b-progress-bar>
                 </b-progress>
             </div>
@@ -32,9 +32,9 @@
             </div>
             <div class="list-group-item p-1 pr-0 node-list">
                 <b-progress height="1rem">
-                    <b-progress-bar :value="node.statistics.validating7DaysPercentage"
-                                    v-bind:variant="node.statistics.validating7DaysPercentage === 100 ? 'success ' : 'warning'">
-                        7D validating: {{node.statistics.validating7DaysPercentage}}%
+                    <b-progress-bar :value="node.statistics.validating30DaysPercentage"
+                                    v-bind:variant="node.statistics.validating30DaysPercentage === 100 ? 'success ' : 'warning'">
+                        30D validating: {{node.statistics.validating30DaysPercentage}}%
                     </b-progress-bar>
                 </b-progress>
             </div>
@@ -48,9 +48,9 @@
             </div>
             <div class="list-group-item p-1 pr-0 node-list">
                 <b-progress height="1rem">
-                    <b-progress-bar :value="node.statistics.overLoaded7DaysPercentage"
-                                    v-bind:variant="node.statistics.overLoaded7DaysPercentage === 100 ? 'danger ' : 'warning'">
-                        7D overloaded: {{node.statistics.overLoaded7DaysPercentage}}%
+                    <b-progress-bar :value="node.statistics.overLoaded30DaysPercentage"
+                                    v-bind:variant="node.statistics.overLoaded30DaysPercentage === 100 ? 'danger ' : 'warning'">
+                        30D overloaded: {{node.statistics.overLoaded30DaysPercentage}}%
                     </b-progress-bar>
                 </b-progress>
             </div>
