@@ -71,7 +71,7 @@
                             </router-link>
                         </template>
                         <template slot="organization" slot-scope="row">
-                            <router-link
+                            <router-link v-if="row.item.organizationId"
                                     :to="{ name: 'organization-details', params: { 'organizationId': row.item.organizationId }}">
                                 {{ row.item.organization}}
                             </router-link>
