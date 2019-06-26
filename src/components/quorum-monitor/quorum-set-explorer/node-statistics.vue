@@ -1,6 +1,6 @@
 <template>
     <div class="pt-0">
-        <div class="pt-2 pb-3 nodes-title active" v-on:click="toggleShow">
+        <div class="pt-2 pb-2 nodes-title active" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i>
             <h5 class="mb-0">Statistics
             </h5>

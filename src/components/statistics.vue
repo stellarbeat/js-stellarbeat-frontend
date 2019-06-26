@@ -53,10 +53,10 @@
                     </div>
 
                     <b-tooltip target="FailingValidatorsTooltip" placement="top">
-                        Number of active validators that are not participating in scp or that don't reach their quorumset thresholds.
+                        Experimental! Number of detected organizations. See organization page for more info.
                     </b-tooltip>
-                    <div class="h1 m-2">{{numberOfFailingNodes}}</div>
-                    <div class="text-muted mb-1">Failing Validators</div>
+                    <div class="h1 m-2">{{numberOfOrganizations}}</div>
+                    <div class="text-muted mb-1">Organizations (Experimental)</div>
                 </div>
             </div>
         </div>
@@ -90,6 +90,10 @@ export default class Statistics extends Vue {
 
     get numberOfActiveValidators() {
         return this.network.nodes.filter((node) => node.active && node.isValidating).length;
+    }
+
+    get numberOfOrganizations() {
+        return this.network.organizations.length;
     }
 }
 </script>

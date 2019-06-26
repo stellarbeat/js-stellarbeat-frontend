@@ -50,11 +50,28 @@
                                     >Not active
                 </span>
                                     <span v-if="!validator.isValidating"
-                                          class="badge sb-badge badge-danger"
+                                          class="badge sb-badge badge-danger ml-1"
                                     >Not validating
                 </span>
                                 </li>
                             </ul>
+                        </template>
+                        <template slot="failAt" slot-scope="row">
+                            <span v-if="row.item.failAt > 1"
+                                  class="badge sb-badge badge-success"
+                                  v-b-tooltip.hover title="More than 1 validator can fail before this subquorum goes down"
+                            >Ok
+                            </span>
+                            <span v-else-if="row.item.failAt === 1"
+                                  class="badge sb-badge badge-warning ml-1"
+                                  v-b-tooltip.hover title="If one more validator fails, this subquorum goes down"
+                            >Warning
+                            </span>
+                            <span v-else
+                                  class="badge sb-badge badge-danger ml-1"
+                                  v-b-tooltip.hover title="This subquorum is failing"
+                            >Danger
+                            </span>
                         </template>
                         <template slot="name" slot-scope="row">
                             <router-link
@@ -112,6 +129,7 @@
         public fields = [
             {key: "name", sortable: true},
             {key: "validators", sortable: false},
+            {key: "failAt", label: "Subquorum availability", sortable: true},
             {key: "url", sortable: true},
             {key: "keybase", sortable: true},
             {key: "email", sortable: true}
@@ -132,7 +150,8 @@
                         github: organization.github,
                         url: organization.url,
                         email: organization.officialEmail,
-                        id: organization.id
+                        id: organization.id,
+                        failAt: this.getFailAt(organization)
                     };
                 });
         }
@@ -152,6 +171,18 @@
                     return {"publicKey": publicKey, "name": publicKey};
                 }
             }).sort((a:any,b:any) => a.name.localeCompare(b.name));
+        }
+
+        getFailAt(organization: Organization) {
+            let nrOfValidatingNodes = organization.validators
+                .map(validator => this.network.getNodeByPublicKey(validator))
+                .filter(node => node.isValidating).length;
+
+            let nrOfValidators = organization.validators.length;
+
+            let simpleMajority = Math.floor(nrOfValidators - (nrOfValidators - 1) / 2);
+
+            return nrOfValidatingNodes - simpleMajority + 1;
         }
 
         get latestCrawlDateString(): string {

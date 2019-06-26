@@ -1,14 +1,18 @@
 <template>
     <li class="list-group-item p-0">
         <div  class="titleContainer pt-1 pb-1 d-flex">
-            <div @click="toggle" class="quorum-set d-flex pt-1 pb-2" v-bind:class="quorumSetState">
+            <div @click="toggle" class="quorum-set d-flex pt-1 pb-1" v-bind:class="quorumSetState">
                     <i class="caret fe mr-1" v-bind:class="chevron"></i>
+                <div class="quorum-set-title">
                     <h5 v-if="quorumSet.hasValidators()" class="quorumSetTitle m-0">
                         Quorumset with threshold {{quorumSet.threshold}}
                     </h5>
                 <h5 v-else class="quorumSetTitle m-0">
                     Empty QuorumSet
                 </h5>
+                    <span v-if="isOrganizationSubQuorum" class="organizationTitle"><i
+                            class="fe fe-globe"></i> {{subQuorumOrganizationName}}</span>
+                </div>
             </div>
             <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
                 <template slot="button-content">
@@ -51,8 +55,8 @@
                 </b-dropdown-item>
             </b-dropdown>
         </div>
-        <div v-show="open" class="list-group list-group-flush nested-tree">
-            <div v-for="validator in quorumSet.validators" class="list-group-item p-1 validator d-flex">
+        <div v-show="open" class="list-group nested-tree">
+            <div v-for="validator in quorumSet.validators" class="list-group-item p-1 pr-0 validator d-flex border-top">
                 <a href="#" class="validator-link"
                    v-on:click.prevent.stop="selectNode(validator)">
                     <div v-bind:class="nodeState(validator)">
@@ -148,6 +152,34 @@
         public onQuorumSetChanged(quorumSet: QuorumSet) {//todo should this be handled by routing (component destroy?)
             this.editingThreshold = false;
             this.newThreshold = quorumSet.threshold;
+        }
+
+        public get isOrganizationSubQuorum():boolean {
+            if(this.root) {
+                return false;
+            }
+
+            if(this.validators.length === 0 ) {
+                return false;
+            }
+
+            if(this.validators[0].organizationId === undefined) {
+                return false;
+            }
+
+            return this.validators.every((validator, index, validators) => validator.organizationId === validators[0].organizationId);
+        }
+
+        public get subQuorumOrganizationName(): string {
+            if(!this.isOrganizationSubQuorum) {
+                return '';
+            }
+
+            return this.network.getOrganizationById(this.validators[0].organizationId).name;
+        }
+
+        public get validators():Node[] {
+            return this.quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator))
         }
 
         public get validatorsToAddModalId() {
@@ -312,7 +344,7 @@
     }
 
     .nested-tree {
-        margin-left: 20px;
+        margin-left: 16px;
     }
 
     .inactive {
@@ -350,6 +382,10 @@
     .quorum-set {
         cursor: pointer;
         width: 100%;
+    }
+    .quorum-set-title {
+        display: flex;
+        flex-direction: column;
     }
 
     .edit-dropdown {
