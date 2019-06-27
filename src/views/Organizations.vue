@@ -59,18 +59,18 @@
                         <template slot="failAt" slot-scope="row">
                             <span v-if="row.item.failAt > 1"
                                   class="badge sb-badge badge-success"
-                                  v-b-tooltip.hover title="More than 1 validator can fail before this subquorum goes down"
+                                  v-b-tooltip.hover title="More than 1 validator can fail before this subquorum will fail"
                             >Ok
                             </span>
                             <span v-else-if="row.item.failAt === 1"
                                   class="badge sb-badge badge-warning ml-1"
-                                  v-b-tooltip.hover title="If one more validator fails, this subquorum goes down"
+                                  v-b-tooltip.hover title="If one more validator fails, this subquorum will fail"
                             >Warning
                             </span>
                             <span v-else
                                   class="badge sb-badge badge-danger ml-1"
                                   v-b-tooltip.hover title="This subquorum is failing"
-                            >Danger
+                            >Failing
                             </span>
                         </template>
                         <template slot="name" slot-scope="row">
