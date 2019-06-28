@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="page">
+    <div id="app" class="page" :class="backgroundClass">
         <div class="page-main">
             <div v-if="!isHeadlessRoute">
 
@@ -168,6 +168,13 @@
 
         }
 
+        get backgroundClass() {
+            return {
+                'headless': this.isHeadlessRoute,
+                'full': !this.isHeadlessRoute
+            }
+        }
+
         get isFullPreRenderRoute() {
             return this.$router.currentRoute.meta.fullPreRender;
         }
@@ -179,6 +186,12 @@
 </script>
 
 <style scoped>
+    .headless {
+        background: #FBFAF7;
+    }
+    .full {
+        background: #f5f7fb;
+    }
     .brand-title {
         color: #08b5e5;
     }

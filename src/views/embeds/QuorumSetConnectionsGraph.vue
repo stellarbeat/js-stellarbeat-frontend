@@ -3,11 +3,6 @@
             <div class="col-5"></div>
             <div class="col-2 loader"></div>
             <div class="col-5"></div>
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 height="100%"
-                 width="100%"
-                 viewBox="0 0 716 720"
-            ></svg>
         </div>
         <div v-else>
             <QuorumSetConnections class="parenty" :network="network"></QuorumSetConnections>
@@ -38,10 +33,6 @@
     }
 </script>
 <style scoped>
-    .embed {
-        background: #FBFAF7;
-    }
-
     .parenty >>> .quorum-set-link {
         stroke: #7d24fa !important;
     }
