@@ -32,34 +32,29 @@
                              :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                              :filter="filter" @filtered="onFiltered">
                         <template slot="validators" slot-scope="row">
-                            <ul>
+                            <ul class="validator-list">
                                 <li v-for="validator in row.item.validators">
+                                    <div class="">
                                     <span v-if="validator.isFullValidator"
-                                          class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
-                                          v-b-tooltip.hover title="Full validator">
-                                            <i class="fe fe-shield"></i>
-                                        </span>
-                                    <router-link
-                                            :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
-
-                                        {{ validator.name}}
-
-                                    </router-link>
-                                    <span v-if="!validator.active"
-                                          class="badge sb-badge badge-danger"
-                                    >Not active
-                </span>
-                                    <span v-if="!validator.isValidating"
-                                          class="badge sb-badge badge-danger ml-1"
-                                    >Not validating
-                </span>
+                                          class="badge sb-badge badge-success pt-1 mr-1"
+                                          v-b-tooltip.hover title="Full validator"><i class="fe fe-shield"></i></span>
+                                        <router-link
+                                                :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">{{ validator.name | truncate(30)}}</router-link>
+                                        <span v-if="!validator.active"
+                                              class="badge sb-badge badge-danger"
+                                        >Not active</span>
+                                        <span v-if="!validator.isValidating"
+                                              class="badge sb-badge badge-danger ml-1"
+                                        >Not validating
+                </span></div>
                                 </li>
                             </ul>
                         </template>
                         <template slot="failAt" slot-scope="row">
                             <span v-if="row.item.failAt > 1"
                                   class="badge sb-badge badge-success"
-                                  v-b-tooltip.hover title="More than 1 validator can fail before this subquorum will fail"
+                                  v-b-tooltip.hover
+                                  title="More than 1 validator can fail before this subquorum will fail"
                             >Ok
                             </span>
                             <span v-else-if="row.item.failAt === 1"
@@ -130,6 +125,8 @@
             {key: "name", sortable: true},
             {key: "validators", sortable: false},
             {key: "failAt", label: "Subquorum availability", sortable: true},
+            {key: "subQuorum24HAvailability", label: "24H subquorum availability", sortable: true},
+            {key: "subQuorum30DAvailability", label: "30D subquorum availability", sortable: true},
             {key: "url", sortable: true},
             {key: "keybase", sortable: true},
             {key: "email", sortable: true}
@@ -151,7 +148,9 @@
                         url: organization.url,
                         email: organization.officialEmail,
                         id: organization.id,
-                        failAt: this.getFailAt(organization)
+                        failAt: this.getFailAt(organization),
+                        subQuorum24HAvailability: organization.subQuorum24HoursAvailability + "%",
+                        subQuorum30DAvailability: organization.subQuorum30DaysAvailability + "%"
                     };
                 });
         }
@@ -170,7 +169,7 @@
                 } else {
                     return {"publicKey": publicKey, "name": publicKey};
                 }
-            }).sort((a:any,b:any) => a.name.localeCompare(b.name));
+            }).sort((a: any, b: any) => a.name.localeCompare(b.name));
         }
 
         getFailAt(organization: Organization) {
@@ -178,11 +177,7 @@
                 .map(validator => this.network.getNodeByPublicKey(validator))
                 .filter(node => node.isValidating).length;
 
-            let nrOfValidators = organization.validators.length;
-
-            let simpleMajority = Math.floor(nrOfValidators - (nrOfValidators - 1) / 2);
-
-            return nrOfValidatingNodes - simpleMajority + 1;
+            return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
         }
 
         get latestCrawlDateString(): string {
@@ -209,5 +204,9 @@
 
     ul {
         list-style-type: none;
+    }
+
+    .validator-list {
+        width: 370px;
     }
 </style>

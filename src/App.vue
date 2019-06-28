@@ -114,7 +114,7 @@
 
 <script lang="ts">
     import Vue from "vue";
-    import {Network, Node} from "@stellarbeat/js-stellar-domain";
+    import {Network, Node, Organization} from "@stellarbeat/js-stellar-domain";
     import axios from "axios";
     import {Component} from "vue-property-decorator";
 
@@ -157,7 +157,7 @@
 
                 let organizations = [];
                 if (result.organizations) {
-                    organizations = result.organizations;
+                    organizations = result.organizations.map((organization:any) => Organization.fromJSON(organization));
                 }
                 this.network = new Network(nodes, organizations);
                 this.isLoading = false;
