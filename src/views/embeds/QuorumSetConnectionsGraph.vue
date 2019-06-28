@@ -1,12 +1,16 @@
 <template>
-    <div v-if="isLoading" class="row mt-9 embed">
-        <div class="col-5"></div>
-        <div class="col-2 loader"></div>
-        <div class="col-5"></div>
+    <div class="card embed">
 
-    </div>
-    <div v-else>
-        <QuorumSetConnections class="parenty" :network="network"></QuorumSetConnections>
+        <div v-if="isLoading" class="row mt-9">
+
+            <div class="col-5"></div>
+            <div class="col-2 loader"></div>
+            <div class="col-5"></div>
+
+        </div>
+        <div v-else>
+            <QuorumSetConnections class="parenty" :network="network"></QuorumSetConnections>
+        </div>
     </div>
 </template>
 
@@ -34,6 +38,11 @@
     }
 </script>
 <style scoped>
+    .embed {
+        background: #FBFAF7;
+        height: 720px;
+    }
+
     .parenty >>> .quorum-set-link {
         stroke: #7d24fa !important;
     }
