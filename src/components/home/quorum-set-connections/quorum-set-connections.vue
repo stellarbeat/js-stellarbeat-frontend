@@ -61,7 +61,7 @@
         </div>
         <div class="headless" v-else>
             <svg class="graph" xmlns="http://www.w3.org/2000/svg"
-                 height="720px"
+                 height="100%"
                  width="100%"
                  viewBox="0 0 716 720"
             >
