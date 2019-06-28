@@ -236,11 +236,11 @@
     }
 
     .link-source {
-        stroke: #e4d836 !important;
+        stroke: #e4d836;
     }
 
     .link-target {
-        stroke: #1bc98e !important;
+        stroke: #1bc98e;
     }
 
     #quorum {
@@ -263,6 +263,6 @@
         background: #e4d836;
     }
     .headless {
-        background: white;
+        background: #FBFAF7;
     }
 </style>
