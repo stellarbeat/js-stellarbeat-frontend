@@ -840,7 +840,7 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
-"@stellarbeat/js-stellar-domain@^0.9.2":
+"@stellarbeat/js-stellar-domain@^0.9.1":
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.9.1.tgz#a51e044ee96c4f761abfa9a7fd30a568c3371ee1"
   integrity sha512-fYz5wwWAV1TnMOxvS9htYMCiLupg7xN9OZf4AD685hZrtUaMmLOe9CJCZwtmN1takhCi4K/vVujTPOcB8juXPQ==
