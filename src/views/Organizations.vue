@@ -115,7 +115,7 @@
         },
     })
     export default class Organizations extends Vue {
-        public sortBy: string = "failAt";
+        public sortBy: string = "subQuorum30DAvailability";
         public sortDesc: boolean = true;
         public perPage: number = 200;
         public totalRows: number = 1;
