@@ -35,7 +35,7 @@
 <style scoped>
     .embed {
         background: #FBFAF7;
-        height: 650px;
+        height: 720px;
     }
 
     .parenty >>> .quorum-set-link {

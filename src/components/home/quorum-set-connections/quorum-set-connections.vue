@@ -60,10 +60,10 @@
             </div>
         </div>
         <div class="headless" v-else>
-            <svg class="graph pb-4" xmlns="http://www.w3.org/2000/svg"
+            <svg class="graph" xmlns="http://www.w3.org/2000/svg"
                  height="100%"
                  width="100%"
-                 viewBox="0 0 720 720"
+                 viewBox="0 0 716 720"
             >
                 <g v-bind:transform="svgTransform" ref="quorumSvg">
                     <g>
