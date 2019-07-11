@@ -14,48 +14,123 @@
                                          href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                 file to include your organization info.
             </b-alert>
-            <div class="page-header  mt-2">
-                <h1 class="page-title">
-                    {{organization.name}}
-                </h1>
-                <div class="page-subtitle">{{organization.description}}</div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6 col-6 ">
-                    <div class="card">
-                        <div class="card-body m-2 p-0 text-center">
-                            <div class="text-right text-gray info">
-                                <i id="activeValidatorsTooltip" class="fe fe-info"></i>
-                            </div>
-                            <b-tooltip target="activeValidatorsTooltip" placement="top">
-                                Number of active validators
-                            </b-tooltip>
-                            <div class="h1 m-2">{{validators.filter(validator => validator.active).length}} /
-                                {{validators.length}}
-                            </div>
-                            <div class="text-muted mb-1">Active Validators</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-6 ">
-                    <div class="card">
-                        <div class="card-body m-2 p-0 text-center">
-                            <div class="text-right text-gray info">
-                                <i id="activeFullValidatorsTooltip" class="fe fe-info"></i>
-                            </div>
-                            <b-tooltip target="activeFullValidatorsTooltip" placement="top">
-                                Number of active full validators
-                            </b-tooltip>
-                            <div class="h1 m-2">{{validators.filter(validator => validator.active &&
-                                validator.isFullValidator).length}} / {{validators.length}}
-                            </div>
-                            <div class="text-muted mb-1">Active Full Validators</div>
+            <div class="row row-cards">
+                <div class="col-sm-12">
+                    <div class="card card-profile">
+                        <div class="card-body text-center mt-5">
+                            <h3 class="mb-3">{{organization.name}}</h3>
+                            <p class="m-4">
+                                {{organization.description}}
+                            </p>
+                            <b-alert class="mx-5" v-if="!organization.description" show variant="info">Update your <a
+                                    target="_blank"
+                                    href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
+                                file to include a description
+                            </b-alert>
+
+
+                            <ul class="social-links list-inline mb-4 mt-2">
+                                <li v-if="organization.url" class="list-inline-item">
+                                    <a :href="organization.url"
+                                       v-b-tooltip.hover :title="organization.url"
+                                       class="social-link"
+                                       target="_blank">
+                                        <i class="fe fe-link"></i>
+                                    </a>
+                                </li>
+                                <li v-if="organization.physicalAddress" class="list-inline-item">
+                                    <a :href="'https://www.google.com/maps/search/?api=1&query=' + organization.physicalAddress"
+                                       target="_blank" class="social-link" v-b-tooltip.hover
+                                       :title="organization.physicalAddress"><i class="fe fe-map-pin"> </i>
+                                    </a>
+                                </li>
+                                <li v-if="organization.officialEmail" class="list-inline-item">
+                                    <a class="social-link" v-b-tooltip.hover :title="organization.officialEmail"
+                                       :href="'mailto:' + organization.officialEmail" target="_blank"><i
+                                            class="fe fe-mail"> </i>
+                                    </a>
+                                </li>
+                                <li v-if="organization.phoneNumber" class="list-inline-item">
+                                    <a class="social-link" v-b-tooltip.hover :title="organization.phoneNumber"
+                                       :href="'tel:' + organization.phoneNumber" target="_blank">
+                                        <i class="fe fe-phone"> </i>
+                                    </a>
+                                </li>
+                                <li v-if="organization.twitter" class="list-inline-item">
+                                    <a :href="'https://twitter.com/' + organization.twitter" class="social-link"
+                                       v-b-tooltip.hover title="Twitter"
+                                       target="_blank">
+                                        <i class="fe fe-twitter"></i></a>
+                                </li>
+                                <li v-if="organization.github" class="list-inline-item">
+                                    <a :href="'https://github.com/' + organization.github" target="_blank"
+                                       v-b-tooltip.hover title="Github" class="social-link"><i
+                                            class="fe fe-github"> </i>
+                                    </a>
+                                </li>
+                                <li v-if="organization.keybase" class="list-inline-item">
+                                    <a :href="'https://keybase.io/' + organization.keybase"
+                                       v-b-tooltip.hover title="Keybase"
+                                       target="_blank" class="social-link"
+                                    >
+                                        <img class="mb-2" width="16px" src="../assets/keybase-brands-grey.svg">
+
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row row-cards">
-                <div class="col-md-6">
+                <div class="col-sm-6 col-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Subquorum Availability</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <h1 class="mb-2 mt-2"><span v-if="failAt > 1"
+                                                        class="badge sb-badge badge-success"
+                                                        v-b-tooltip.hover
+                                                        title="More than 1 validator can fail before this subquorum will fail"
+                            ><i class="fe fe-check-circle"></i>
+                            </span>
+                                <span v-else-if="failAt === 1"
+                                      class="badge sb-badge badge-warning ml-1"
+                                      v-b-tooltip.hover title="If one more validator fails, this subquorum will fail"
+                                ><i class="fe fe-alert-circle"></i>
+                            </span>
+                                <span v-else
+                                      class="badge sb-badge badge-danger ml-1"
+                                      v-b-tooltip.hover title="This subquorum is failing"
+                                >Failing
+                            </span>
+                            </h1>
+                            <div class="list-group list-group-flush nested-tree px-4 pb-4">
+                                <!--div class="list-group-item p-1 pr-0">
+
+                                </div!-->
+                                <div class="list-group-item p-1 pr-0">
+                                    <b-progress height="1rem">
+                                        <b-progress-bar :value="organization.subQuorum24HoursAvailability"
+                                                        v-bind:variant="organization.subQuorum24HoursAvailability === 100 ? 'success ' : 'warning'">
+                                            24H availability: {{organization.subQuorum24HoursAvailability}}%
+                                        </b-progress-bar>
+                                    </b-progress>
+                                </div>
+                                <div class="list-group-item p-1 pr-0">
+                                    <b-progress height="1rem">
+                                        <b-progress-bar :value="organization.subQuorum30DaysAvailability"
+                                                        v-bind:variant="organization.subQuorum30DaysAvailability > 99.9 ? 'success ' : 'warning'">
+                                            30D availability: {{organization.subQuorum30DaysAvailability}}%
+                                        </b-progress-bar>
+                                    </b-progress>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-9">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Validators</h3>
@@ -86,56 +161,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Contact</h3>
-                        </div>
-                        <div class="card-body">
-                            <b-list-group flush>
-                                <b-list-group-item v-if="organization.url">
-                                    <a :href="organization.url"
-                                       target="_blank"><i class="fe fe-external-link"> </i>
-                                        {{organization.url}}</a>
-                                </b-list-group-item>
-                                <!--b-list-group-item v-if="organization.dba">
-                                    <i class="fe fe-briefcase"> </i> {{organization.dba}}
-                                </b-list-group-item!-->
-                                <b-list-group-item v-if="organization.physicalAddress">
-                                    <a :href="'https://www.google.com/maps/search/?api=1&query=' + organization.physicalAddress"
-                                       target="_blank"><i class="fe fe-map-pin"> </i>
-                                        {{organization.physicalAddress}}</a>
-                                </b-list-group-item>
+            </div>
+        </div>
+        <div class="row row-cards">
+            <div class="col-md-6">
 
-
-                                <b-list-group-item v-if="organization.officialEmail">
-                                    <a :href="'mailto:' + organization.officialEmail" target="_blank"><i
-                                            class="fe fe-mail"> </i>
-                                        {{organization.officialEmail}}</a>
-                                </b-list-group-item>
-                                <b-list-group-item v-if="organization.phoneNumber">
-                                    <i class="fe fe-phone"> </i> {{organization.phoneNumber}}
-                                </b-list-group-item>
-                                <b-list-group-item v-if="organization.twitter">
-                                    <a :href="'https://twitter.com/' + organization.twitter" target="_blank"><i
-                                            class="fe fe-twitter"> </i>
-                                        {{organization.twitter}}</a>
-                                </b-list-group-item>
-                                <b-list-group-item v-if="organization.github">
-                                    <a :href="'https://github.com/' + organization.github" target="_blank"><i
-                                            class="fe fe-github"> </i>
-                                        {{organization.github}}</a>
-                                </b-list-group-item>
-                                <b-list-group-item v-if="organization.keybase">
-                                    <a :href="'https://keybase.io/' + organization.keybase" target="_blank">
-                                        <img width="35px" src="./../assets/Keybase_logo_official.svg">
-
-                                        {{organization.keybase}}</a>
-                                </b-list-group-item>
-                            </b-list-group>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -175,10 +205,26 @@
         get latestCrawlDateString() {
             return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
         }
+
+        get failAt() {
+            let nrOfValidatingNodes = this.organization.validators
+                .map(validator => this.network.getNodeByPublicKey(validator))
+                .filter(node => node.isValidating).length;
+
+            return nrOfValidatingNodes - this.organization.subQuorumThreshold + 1;
+        }
     }
 </script>
 
 <style scoped>
+    .social-link {
+        text-decoration: none;
+    }
+
+    .full-width-badge {
+        width: 100%
+    }
+
     .info {
         float: right;
         padding-bottom: 1px;

@@ -858,6 +858,11 @@
   resolved "https://registry.yarnpkg.com/@types/chart.js/-/chart.js-2.7.51.tgz#b5dd40a30c8fc5e1910e77c82079aaad9f7d486b"
   integrity sha512-bGIgvM8SzTSkKLWa6+uF5hNyH2K9Zdz6F8HUfsdP0j2744vuxXyY+hkHVvPeDuaWocltf4DRwInRN3+bqXW3ow==
 
+"@types/cytoscape@^3.4.3":
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.4.3.tgz#8b9353154dc895231cd344ed1c7eff2d1391c103"
+  integrity sha512-uADb/vBj/xTeNNRvtYlzPz1rftMR4Jf6ipq4jqKfYibMZ173sAbdFM3Fl2fPbGfP28CWJpqhcpHp4+NUq3Ma4g==
+
 "@types/d3-force@^1.1.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@types/d3-force/-/d3-force-1.2.1.tgz#c28803ea36fe29788db69efa0ad6c2dc09544e83"
@@ -1822,6 +1827,13 @@ autoprefixer@^9.5.1:
     num2fraction "^1.2.2"
     postcss "^7.0.14"
     postcss-value-parser "^3.3.1"
+
+avsdf-base@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/avsdf-base/-/avsdf-base-1.0.0.tgz#80c437d7d15d2bd201d9c31804e7b7a15a84781a"
+  integrity sha512-APhZNUFJwIwrLsSfE95QjobEntdUhFQgfNtC/BrYmjUpwHh5Y2fbRv8lxAlMr1hdf/CuQYsqJxK3dRzcCL77qw==
+  dependencies:
+    layout-base "^1.0.0"
 
 aws-sign2@~0.7.0:
   version "0.7.0"
@@ -2913,6 +2925,13 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
 
+cose-base@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cose-base/-/cose-base-1.0.0.tgz#a44197e835b30b2b5bf4ab7e9dd06e6201c8798c"
+  integrity sha512-f0HADhG7lnoa+rzzAHBMG5SfxHKDbXiGzwmjVzLNAw8DzqMEVZ86VZ0f8dCWBf8sy7L06S2StytVbqm9Hb5Qog==
+  dependencies:
+    layout-base "^1.0.0"
+
 cosmiconfig@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-4.0.0.tgz#760391549580bbd2df1e562bc177b13c290972dc"
@@ -3213,6 +3232,22 @@ cyclist@~0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
   integrity sha1-GzN5LhHpFKL9bW7WRHRkRE5fpkA=
+
+cytoscape-cise@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cytoscape-cise/-/cytoscape-cise-1.0.0.tgz#29ac061c74e036441c0b5687e7ebc25e919d507c"
+  integrity sha512-Y1NPaUo4fN992XJTEIDd4oPVkv8BsDSrFBHSB38caDu8PcmHUyl8/Q8K5wvqdTeti1mLR9IX4/o2RyuObh+P7Q==
+  dependencies:
+    avsdf-base "^1.0.0"
+    cose-base "^1.0.0"
+
+cytoscape@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.8.1.tgz#0b87f646054ea3e86f347e9c53a2fc64df1be31b"
+  integrity sha512-hfoGBlqj8LJPnU5WgmQKdGpZaMknk8dPyGEJlzLa1xPwhmBscPMrmPxK2ffyKJIozeHm4UoYw4gPc0rAif4kVA==
+  dependencies:
+    heap "^0.2.6"
+    lodash.debounce "^4.0.8"
 
 d3-collection@1:
   version "1.0.7"
@@ -4663,6 +4698,11 @@ he@1.2.x, he@^1.1.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
+heap@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/heap/-/heap-0.2.6.tgz#087e1f10b046932fc8594dd9e6d378afc9d1e5ac"
+  integrity sha1-CH4fELBGky/IWU3Z5tN4r8nR5aw=
+
 hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
@@ -6087,6 +6127,11 @@ launch-editor@^2.2.1:
     chalk "^2.3.0"
     shell-quote "^1.6.1"
 
+layout-base@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/layout-base/-/layout-base-1.0.1.tgz#247175d33c2a1da1fcaecfc9e2127ef47ff851fd"
+  integrity sha512-ROrEqaKkA3IIOEgtsRE4qk4XWTXRhJq54CvWr+5EqMjMWBtxc/yngFOGXwG8iztipot6sTujXS5zjUOU6OZnnQ==
+
 lcid@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lcid/-/lcid-1.0.0.tgz#308accafa0bc483a3867b4b6f2b9506251d1b835"
@@ -6184,6 +6229,11 @@ locate-path@^3.0.0:
   dependencies:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+  integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
 lodash.defaultsdeep@^4.6.0:
   version "4.6.0"
