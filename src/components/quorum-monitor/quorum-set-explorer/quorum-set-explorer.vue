@@ -97,10 +97,14 @@
                     <NodeStatistics :node="selectedNode" :network="network"></NodeStatistics>
                 </div>
             </div>
-            <b-button-group size="md" class="mt-1">
-                <b-button title="Show info"
+            <b-button-group size="sm" class="mt-1">
+                <b-button title="Node info"
                           v-on:click="showModal(selectedNode)">
-                    Show info <i class="fe fe-info"/>
+                    Node <i class="fe fe-info"/>
+                </b-button>
+                <b-button v-if="selectedNode.organizationId" title="Organization info"
+                          v-on:click="navigateToOrg">
+                    Organization <i class="fe fe-info"/>
                 </b-button>
                 <b-dropdown size="sm" variant="secondary" right id="more" no-caret
                 >
@@ -236,6 +240,9 @@
             this.$nextTick(function () {
                 (this.$refs.modal as Modal).show();
             });
+        }
+        public navigateToOrg() {
+            this.$router.push({ name: 'organization-details', params: { organizationId: this.selectedNode.organizationId }});
         }
     }
 </script>

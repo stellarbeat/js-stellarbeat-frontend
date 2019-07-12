@@ -41,7 +41,7 @@
                                         <router-link
                                                 :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">{{ validator.name | truncate(30)}}</router-link>
                                         <span v-if="!validator.active"
-                                              class="badge sb-badge badge-danger"
+                                              class="badge sb-badge badge-danger ml-1"
                                         >Not active</span>
                                         <span v-if="!validator.isValidating"
                                               class="badge sb-badge badge-danger ml-1"
@@ -54,7 +54,7 @@
                             <span v-if="row.item.failAt > 1"
                                   class="badge sb-badge badge-success"
                                   v-b-tooltip.hover
-                                  title="More than 1 validator can fail before this subquorum will fail"
+                                  :title="'At least ' + row.item.failAt + ' validators have to fail to bring this subquorum down'"
                             >Ok
                             </span>
                             <span v-else-if="row.item.failAt === 1"

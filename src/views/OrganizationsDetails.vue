@@ -92,7 +92,7 @@
                             <h1 class="mb-2 mt-2"><span v-if="failAt > 1"
                                                         class="badge sb-badge badge-success"
                                                         v-b-tooltip.hover
-                                                        title="More than 1 validator can fail before this subquorum will fail"
+                                                        :title="'At least ' + failAt + ' validators have to fail to bring this subquorum down'"
                             ><i class="fe fe-check-circle"></i>
                             </span>
                                 <span v-else-if="failAt === 1"
@@ -149,11 +149,11 @@
 
                                     </router-link>
                                     <span v-if="!validator.active"
-                                          class="badge sb-badge badge-danger"
+                                          class="badge sb-badge badge-danger ml-1"
                                     >Not active
                 </span>
                                     <span v-if="!validator.isValidating"
-                                          class="badge sb-badge badge-danger"
+                                          class="badge sb-badge badge-danger ml-1"
                                     >Not validating
                 </span>
                                 </b-list-group-item>
