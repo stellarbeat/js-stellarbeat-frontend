@@ -89,7 +89,7 @@
                     </b-table>
                     <b-row>
                         <b-col md="6" class="my-1">
-                            <b-pagination :totalRows="totalRows" :per-page="perPage" v-model="currentPage"
+                            <b-pagination ref="paginator" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"
                                           class="my-1"/>
                         </b-col>
                     </b-row>
