@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
 describe("views", () => {
-    test("home", async () => {
+    /*test("home", async () => {
         let browser = await puppeteer.launch({
             headless: true
         });
@@ -26,7 +26,7 @@ describe("views", () => {
 
 
         browser.close();
-    }, 16000);
+    }, 16000);*/
 });
 /*
         cy.get('.page-title');

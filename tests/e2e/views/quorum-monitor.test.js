@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
 describe("views", () => {
-    test("toml-config-viewer", async () => {
+    /*test("toml-config-viewer", async () => {
         let browser = await puppeteer.launch({
             headless: true
         });
@@ -26,7 +26,7 @@ describe("views", () => {
         expect(tomlConfigViewer).toBeDefined();
 
         browser.close();
-    }, 16000);
+    }, 16000);*/
 });
 /*
         cy.get('.page-title');
