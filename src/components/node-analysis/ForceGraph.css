@@ -1,0 +1,54 @@
+.node {
+  fill: white;
+  stroke: gray;
+  stroke-width: 1;
+}
+
+.node.dead {
+  stroke: red;
+  fill: #fecccc;
+}
+
+.node[data-vulnerable="true"] {
+  animation: nodepulse 1s ease-out infinite;
+  fill: white;
+}
+
+@keyframes nodepulse {
+  0% {
+    stroke-width: 2;
+  }
+  100% {
+    stroke-width: 10;
+  }
+}
+
+.node.self {
+  stroke: blue;
+  stroke-width: 3;
+}
+
+.node.self + text {
+  transform: translate(-9px, 7px);
+  font-size: 20px;
+}
+text {
+  font-size: 10px;
+}
+
+.link {
+  stroke-width: 0.5px;
+  stroke: rgba(0, 0, 0, 0.2);
+}
+
+.link.dead {
+  stroke-dasharray: 10 3;
+  animation: dash 1s linear infinite;
+  stroke: red;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 13;
+  }
+}
