@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import VueAnalytics from 'vue-analytics';
+import SimpleAnalytics from "simple-analytics-vue";
 import VueTruncate from 'vue-truncate-filter';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import 'tabler-ui/dist/assets/css/dashboard.css';
@@ -12,17 +12,6 @@ import * as Sentry from '@sentry/browser';
 import "@/assets/global.css"
 
 const isProd = process.env.NODE_ENV === 'production';
-
-if (process.env.VUE_APP_GA_ID) {
-    Vue.use(VueAnalytics, {
-        id: process.env.VUE_APP_GA_ID,
-        router,
-        debug: {
-            enabled: process.env.VUE_APP_GA_DEBUG === '1',
-            sendHitTask: isProd,
-        },
-    });
-}
 
 Vue.config.productionTip = false;
 
@@ -35,6 +24,7 @@ if (isProd) {
 Vue.use(VueTruncate);
 Vue.use(BootstrapVue);
 Vue.use(Meta);
+Vue.use(SimpleAnalytics, { skip: !isProd });
 
 new Vue({
     router,

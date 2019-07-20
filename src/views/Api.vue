@@ -12,9 +12,13 @@
                 </h2>
                 <p><a href="https://api.stellarbeat.io" target="_blank">https://api.stellarbeat.io</a></p>
                 <h3>/v1/nodes</h3>
-                <p>Node data from latest crawl result.</p>
+                <p>Retrieve all nodes from latest crawl result.</p>
+                <h3>/v1/nodes/{publicKey}</h3>
+                <p>Retrieve a single node from latest crawl result.</p>
                 <h3>/v1/organizations</h3>
-                <p>Organization data from latest crawl result.</p>
+                <p>Retrieve all organizations from latest crawl result.</p>
+                <h3>/v1/organizations/{organizationID}</h3>
+                <p>Retrieve a single organization from latest crawl result.</p>
                 <a href="https://api.stellarbeat.io/docs" class="btn btn-primary" target="_blank"><i
                         class="fe fe-external-link"></i>View documentation</a>
             </div>

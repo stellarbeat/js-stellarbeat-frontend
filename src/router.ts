@@ -9,9 +9,9 @@ import Nodes from './views/Nodes.vue';
 import Organizations from './views/Organizations.vue';
 import OrganizationDetails from './views/OrganizationsDetails.vue';
 import NodeDetails from './views/NodeDetails.vue';
-import About from './views/About.vue';
-import Help from './views/Help.vue';
+import FAQ from './views/FAQ.vue';
 import Api from './views/Api.vue';
+import TermsAndConditions from './views/TermsAndConditions.vue';
 import QuorumSetConnectionsGraph from './views/embeds/QuorumSetConnectionsGraph.vue';
 
 Vue.use(Router);
@@ -26,9 +26,9 @@ export default new Router({
         {name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
         {name: 'organization-details', path: '/organizations/:organizationId', component: OrganizationDetails},
 
-        {name: 'help', path: '/help', component: Help, meta: {fullPreRender: true}},
-        {name: 'about', path: '/about', component: About, meta: {fullPreRender: true}},
+        {name: 'faq', path: '/faq', component: FAQ, meta: {fullPreRender: true}},
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
+        {name: 'terms-and-conditions', path: '/terms-and-conditions', component: TermsAndConditions, meta: {fullPreRender: true}},
         {
             path: '/quorum-monitor', component: QuorumMonitor,
             children: [

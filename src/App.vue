@@ -65,14 +65,9 @@
                                         <i class="fe fe-share-2"></i>API
                                     </router-link>
                                 </li>
-                                <!--li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'help'}"><i
-                                            class="fe fe-help-circle"></i>Help
-                                    </router-link>
-                                </li!-->
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'about'}"><i
-                                            class="fe fe-info"></i>About
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'faq'}"><i
+                                            class="fe fe-help-circle"></i>FAQ
                                     </router-link>
                                 </li>
                             </ul>
@@ -107,6 +102,24 @@
             </div>
 
         </div>
+        <footer class="footer">
+            <div class="pl-4 pr-6 container-fluid">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-auto ml-lg-auto">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <ul class="list-inline list-inline-dots mb-0">
+                                    <li class="list-inline-item">
+                                        <router-link active-class="active" class="nav-link" :to="{ name: 'terms-and-conditions'}" exact> Terms and Conditions
+                                        </router-link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 
 

@@ -53,10 +53,10 @@
                     </div>
 
                     <b-tooltip target="FailingValidatorsTooltip" placement="top">
-                        Experimental! Number of detected organizations. See organization page for more info.
+                        Number of detected organizations.
                     </b-tooltip>
                     <div class="h1 m-2">{{numberOfOrganizations}}</div>
-                    <div class="text-muted mb-1">Organizations (Experimental)</div>
+                    <div class="text-muted mb-1">Organizations</div>
                 </div>
             </div>
         </div>

@@ -7,13 +7,6 @@
 
         </div>
         <div v-else>
-            <b-alert show variant="info"><strong>Organization detection (experimental):</strong> Support <a
-                    target="_blank"
-                    href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                and update the linked <a target="_blank"
-                                         href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
-                file to include your organization info.
-            </b-alert>
             <div class="row row-cards">
                 <div class="col-sm-12">
                     <div class="card card-profile">

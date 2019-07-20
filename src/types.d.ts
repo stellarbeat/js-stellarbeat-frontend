@@ -1,2 +1,2 @@
-declare module 'vue-analytics';
+declare module 'simple-analytics-vue';
 declare module 'vue-truncate-filter';

@@ -7,13 +7,6 @@
                 </h1>
                 <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
-            <b-alert show variant="info"><strong>Organization detection (experimental):</strong> Support <a
-                    target="_blank"
-                    href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                and update the linked <a target="_blank"
-                                         href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
-                file to include your organization info.
-            </b-alert>
             <div class="card mb-2 p-1">
                 <div class="card-header">
                     <div class="row header-row">
