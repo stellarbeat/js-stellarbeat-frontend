@@ -102,7 +102,7 @@
             </div>
 
         </div>
-        <footer class="footer">
+        <footer v-if="!isHeadlessRoute" class="footer">
             <div class="pl-4 pr-6 container-fluid">
                 <div class="row align-items-center flex-row-reverse">
                     <div class="col-auto ml-lg-auto">
