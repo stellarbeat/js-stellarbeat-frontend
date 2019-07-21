@@ -10,7 +10,7 @@ const SimValues = {
 const NodeStyles = {
   radius: 6,
   className: (n: SimNode) => {
-    const classes = ["node"];
+    const classes = ["nody"];
     if (n.data.distance === 0) classes.push("self");
     if (n.vulnerable) classes.push("vulnerable");
     classes.push(n.live ? "live" : "dead");
@@ -94,7 +94,7 @@ const ForceGraph = (
 
     return simNode;
   });
-console.log(links);
+
   const simulation: d3.Simulation<SimNode, SimLink> = d3
     .forceSimulation(nodes)
     .force("link", d3.forceLink<SimNode, SimLink>(links).id(n => n.id))
@@ -140,7 +140,9 @@ console.log(links);
     .data<SimNode>(nodes)
     .join("text")
     .text(n => n.id)
-    .attr("pointer-events", "none");
+    .attr("pointer-events", "none")
+    .attr("class", 'texty');
+
 
   const nodeGroup = container
     .append("g")

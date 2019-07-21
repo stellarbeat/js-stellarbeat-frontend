@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@sentry/browser": "^4.4.1",
-    "@stellar/halting-analysis": "https://github.com/stellar/halting-analysis",
+    "@stellar/halting-analysis": "^1.0.2",
     "@stellarbeat/js-stellar-domain": "^0.9.1",
     "@types/chart.js": "^2.7.41",
     "@types/d3": "^5.7.2",

@@ -13,7 +13,6 @@ import About from './views/About.vue';
 import Help from './views/Help.vue';
 import Api from './views/Api.vue';
 import QuorumSetConnectionsGraph from './views/embeds/QuorumSetConnectionsGraph.vue';
-import Scratch from './views/Scratch.vue';
 
 Vue.use(Router);
 
@@ -48,9 +47,7 @@ export default new Router({
             path: '/quorum-set-connections-graph',
             component: QuorumSetConnectionsGraph,
             meta: {isHeadlessRoute: true}
-        },
-        {name: 'scratch', path: '/scratch', component: Scratch},
-
+        }
     ],
 
     scrollBehavior(to, from, savedPosition) {

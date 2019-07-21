@@ -1,15 +1,15 @@
-.node {
+.nody {
   fill: white;
   stroke: gray;
   stroke-width: 1;
 }
 
-.node.dead {
+.nody.dead {
   stroke: red;
   fill: #fecccc;
 }
 
-.node[data-vulnerable="true"] {
+.nody[data-vulnerable="true"] {
   animation: nodepulse 1s ease-out infinite;
   fill: white;
 }
@@ -23,16 +23,16 @@
   }
 }
 
-.node.self {
+.nody.self {
   stroke: blue;
   stroke-width: 3;
 }
 
-.node.self + text {
+.nody.self + text {
   transform: translate(-9px, 7px);
   font-size: 20px;
 }
-text {
+.texty {
   font-size: 10px;
 }
 

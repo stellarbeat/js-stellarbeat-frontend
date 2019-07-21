@@ -1,4 +1,5 @@
 <template xmlns="http://www.w3.org/1999/html">
+    <div>
     <div class="graph row mr-1">
 
         <div class="col-xs-12" style="width: 100%">
@@ -24,13 +25,17 @@
             </div>
         </div>
     </div>
-
+        <div class="text-right pt-1">
+            <GraphLegend></GraphLegend>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import {Network, Node} from '@stellarbeat/js-stellar-domain';
 import GraphNode from './graph-node.vue';
+import GraphLegend from './graph-legend.vue';
 import GraphLink from './graph-link.vue';
 import svgPanZoom from 'svg-pan-zoom';
 
@@ -43,6 +48,7 @@ const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescrip
     components: {
         GraphNode,
         GraphLink,
+        GraphLegend
     },
 })
 export default class Graph extends Vue {
@@ -229,5 +235,4 @@ export default class Graph extends Vue {
     .dimmer.active .dimmer-content {
         opacity: 0.4;
     }
-
 </style>

@@ -120,6 +120,10 @@
                         <i class="dropdown-icon fe fe-power"></i>
                         {{selectedNode.active ? 'Disable' : 'Enable'}}
                     </b-dropdown-item>
+                    <b-dropdown-item v-on:click="showHaltingAnalysis()" v-if="selectedView !== 'halting-analysis'">
+                        <i class="dropdown-icon fe fe-cloud-lightning"></i>
+                        Halting Analysis
+                    </b-dropdown-item>
                 </b-dropdown>
                 <!--button v-if="selectedNode.isValidator" type="button" class="btn btn-sm" title="toggle validating"
                         v-on:click.prevent.stop="$emit('node-toggle-validating', selectedNode)"
@@ -174,6 +178,8 @@
         public network!: Network;
         @Prop()
         public selectedNode!: Node;
+        @Prop()
+        public selectedView!: string;
 
         public modalNode: Node | null = null;
 
@@ -243,6 +249,15 @@
         }
         public navigateToOrg() {
             this.$router.push({ name: 'organization-details', params: { organizationId: this.selectedNode.organizationId }});
+        }
+        public showHaltingAnalysis() {
+            this.$router.push(
+                {
+                    name: 'quorum-monitor-node',
+                    params: {publicKey: this.selectedNode.publicKey},
+                    query: {'view': 'halting-analysis', 'no-scroll': '1'},
+                },
+            );
         }
     }
 </script>

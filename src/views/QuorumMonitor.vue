@@ -47,14 +47,15 @@
                         <div class="card-body" style="height: 100%">
                             <div class="row">
                                 <div class="col-12 col-xl-8 graph-row">
-                                    <Graph ref="graph" :network="network"
+                                    <Graph v-if="selectedView === 'network-graph'" ref="graph" :network="network"
                                            v-on:center-node="onNodeCenter"
                                            :centerNode="centerNode"
                                            :selectedNode="selectedNode"
                                     ></Graph>
-                                    <div class="text-right pt-1">
-                                        <GraphLegend></GraphLegend>
-                                    </div>
+                                    <HaltingAnalysisGraph v-if="selectedView === 'halting-analysis'" ref="graph" :network="network"
+                                           :selectedNode="selectedNode"
+                                    ></HaltingAnalysisGraph>
+
                                 </div>
                                 <div class="col-12 col-xl-4">
                                     <div class="row">
@@ -69,6 +70,7 @@
                                                          v-on:center-node="onNodeCenter"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
+                                                         :selectedView="selectedView"
                                             >
                                             </router-view>
                                         </div>
@@ -131,6 +133,8 @@
 <script lang="ts">
     import Vue from "vue";
     import Graph from "../components/quorum-monitor/graph/graph.vue";
+    import HaltingAnalysisGraph from "../components/quorum-monitor/halting-analysis/halting-analysis-graph.vue";
+
     import GraphLegend from "../components/quorum-monitor/graph/graph-legend.vue";
     import QuorumSetExplorer from "../components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue";
     import Search from "../components/quorum-monitor/search.vue";
@@ -154,6 +158,7 @@
             UndoRedo,
             QuorumSetExplorer,
             Graph,
+            HaltingAnalysisGraph,
             GraphLegend,
             Search,
             Statistics,
@@ -172,6 +177,7 @@
         public selectedNode: Node | null = null;
         public changeQueue: ChangeQueue = new ChangeQueue();
         public newNodeName: string = '';
+        public selectedView: string = 'network-graph';
 
         @Prop()
         public network!: Network;
@@ -183,6 +189,10 @@
             this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
             if (to.query.center === "1") {
                 this.centerNode = this.selectedNode;
+            }
+            console.log(to.query.view);
+            if(to.query.view === 'network-graph' || to.query.view === 'halting-analysis') {
+                this.selectedView = to.query.view;
             }
         }
 
@@ -278,6 +288,10 @@
             }
             if (this.$route.query["center"] === "1" || this.$route.query["center"] === undefined) {
                 this.centerNode = this.selectedNode;
+            }
+
+            if(this.$route.query.view === 'network-graph' || this.$route.query.view === 'halting-analysis') {
+                this.selectedView = this.$route.query.view;
             }
         }
 

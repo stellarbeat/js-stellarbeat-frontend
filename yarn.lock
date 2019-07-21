@@ -1052,9 +1052,10 @@
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
-"@stellar/halting-analysis@https://github.com/stellar/halting-analysis":
-  version "1.0.0"
-  resolved "https://github.com/stellar/halting-analysis#73763fcda96e1f989ff60bd12e09156dbafaca93"
+"@stellar/halting-analysis@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@stellar/halting-analysis/-/halting-analysis-1.0.2.tgz#f0d7fe958c3cd05a347cb32d2da0660ba14ac388"
+  integrity sha512-+jL/ggoy3IRfk1tJtwgEzT5guOf9KZd+ZcgH8hAzQuOHf7E4W2jTNxErlqMKIpQ0TrRubj4JFGa605fMDX1Wbg==
 
 "@stellarbeat/js-stellar-domain@^0.9.1":
   version "0.9.1"

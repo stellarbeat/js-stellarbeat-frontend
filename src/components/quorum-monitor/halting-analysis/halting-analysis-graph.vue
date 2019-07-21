@@ -1,63 +1,54 @@
 <template>
     <div>
-        <div>
-            <div class="page-header">
-                <h1 class="page-title">
-                    Halting analysis
-                </h1>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <svg width="100%"
-                         height="600px" ref="svg" />
-                </div>
-            </div>
-        </div>
+        <h5>Halting analysis</h5>
+        <svg width="100%"
+             height="600px" ref="svg"/>
     </div>
 </template>
 
 <script lang="ts">
     import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
+    import {Component, Prop, Watch} from "vue-property-decorator";
     import {Network, Node, QuorumSet} from "@stellarbeat/js-stellar-domain";
-    import {haltingAnalysis} from "@stellar/halting-analysis";
-    import { networkNodesToGraphData } from "./../services/core-node-admin-panel/util/QuorumParsing";
-    import ForceGraph from "../components/node-analysis/ForceGraph";
-    import "../components/node-analysis/ForceGraph.css";
+    import {haltingAnalysis, HaltingFailure} from "@stellar/halting-analysis";
+    import {networkNodesToGraphData} from "@/services/core-node-admin-panel/util/QuorumParsing";
+    import ForceGraph from "./../../node-analysis/ForceGraph";
     import {
         NetworkGraphNode,
         QuorumSet as NetworkQuorumSet
     } from "@stellar/halting-analysis";
 
     @Component({
-        name: "scratch",
-        metaInfo: {
-            title: "Scratch - Stellarbeat.io",
-            meta: [
-                {name: "description", content: "Scratch"},
-            ],
-        },
+        name: "halting-analysis-graph"
     })
-    export default class Scratch extends Vue {
+
+    export default class HaltingAnalysisGraph extends Vue {
 
         @Prop()
         public network!: Network;
+
         @Prop()
-        public isLoading!: boolean;
+        public selectedNode!: Node;
+
+        public failures: HaltingFailure[] = [];
+
+        @Watch('selectedNode')
+        public onSelectedNodeChanged() {
+            this.restartSimulation();
+        }
 
         mounted() {
-            let rootNode = this.network.nodes.find(node => node.publicKey === 'GDRA72H7JWXAXWJKOONQOPH3JKNSH5MQ6BO5K74C3X6FO2G3OG464BPU');
-            if(!rootNode) {
-                return;
-            }
+            this.restartSimulation();
+        }
+
+        restartSimulation(){
             let networkGraphNodes = this.network.nodes
                 .filter(node => node.isValidator || node.isValidating || this.network.getTrustingNodes(node).length > 0)
-                .map(node => this.mapNodeToNetworkGraphNode(node, node === rootNode));
+                .map(node => this.mapNodeToNetworkGraphNode(node, node === this.selectedNode));
 
-            let failures = haltingAnalysis(networkGraphNodes, 4);
+            let failures = haltingAnalysis(networkGraphNodes, 3);
             let quorum = networkNodesToGraphData(networkGraphNodes);
             ForceGraph(this.$refs.svg as SVGSVGElement, quorum, failures[0]);
-
         }
 
         mapNodeToNetworkGraphNode(node: Node, isRoot: boolean) {
@@ -69,7 +60,7 @@
             } as NetworkGraphNode;
         }
 
-        mapQuorumSetToNetworkQuorumSet(quorumSet: QuorumSet):NetworkQuorumSet {
+        mapQuorumSetToNetworkQuorumSet(quorumSet: QuorumSet): NetworkQuorumSet {
             let innerQSets = quorumSet.innerQuorumSets.map(innerQSet => this.mapQuorumSetToNetworkQuorumSet(innerQSet));
             let v = [];
             v.push(...quorumSet.validators);
@@ -82,5 +73,5 @@
         }
     }
 </script>
-<style scoped>
+<style src="./../../node-analysis/ForceGraph.css">
 </style>
