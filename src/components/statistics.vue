@@ -89,7 +89,7 @@ export default class Statistics extends Vue {
     }
 
     get numberOfActiveValidators() {
-        return this.network.nodes.filter((node) => node.active && node.isValidating).length;
+        return this.network.nodes.filter((node) => node.active && node.isValidating && !this.network.failingNodes.includes(node)).length;
     }
 
     get numberOfOrganizations() {

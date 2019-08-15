@@ -5,16 +5,21 @@ const ctx: Worker = self as any;
 ctx.addEventListener('message', (event) => {
     const nodes = event.data.nodes;
     const links = event.data.links;
+    const width = event.data.width;
+    const height = event.data.height;
 
     const simulation = forceSimulation(nodes)
         .force('charge', forceManyBody().strength((d) => {
             return -80;
         }))
         .force('link', forceLink(links).strength( (link: any) => {
-            if (link.isClusterLink) {
-                return 0.01;
+            if (link.isPartOfTransitiveQuorumSet) {
+                return 0.007;
+            }
+            else if (link.isPartOfStronglyConnectedComponent) {
+                return 0.05;
             } else {
-                return 0.005;
+                return 0.004;
             }
         }).id( (d: any) => {
             return d.publicKey;

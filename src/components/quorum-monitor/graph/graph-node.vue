@@ -23,7 +23,6 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
 @Component({})
 export default class GraphNode extends Vue {
     public name: string = 'graph-node';
-    public circleRadius: string = '3px';
 
     @Prop()
     public node!: Node;
@@ -32,9 +31,15 @@ export default class GraphNode extends Vue {
     @Prop()
     public selectedNode!: Node;
     @Prop()
-    public sourceNodes!: Node[];
+    public sourceNodes!: Set<Node>;
     @Prop()
-    public targetNodes!: Node[];
+    public targetNodes!: Set<Node>;
+    @Prop()
+    public partOfTransitiveQuorumSet!: boolean;
+
+    get circleRadius(): string {
+        return this.partOfTransitiveQuorumSet ? '3px' : '3px';
+    }
 
     get coordinateTransform(): string {
         return `translate(${(this.node as any).x},${(this.node as any).y})`;
@@ -53,20 +58,21 @@ export default class GraphNode extends Vue {
     }
 
     get isTarget(): boolean {
-        return this.targetNodes.includes(this.node) && this.selectedNode !== this.node;
+        return this.targetNodes.has(this.node) && this.selectedNode !== this.node;
     }
 
     get isSource(): boolean {
-        return this.sourceNodes.includes(this.node) && this.selectedNode !== this.node;
+        return this.sourceNodes.has(this.node) && this.selectedNode !== this.node;
     }
 
     get classObject() {
         return {
-            active: this.active,
+            active: this.active && !this.partOfTransitiveQuorumSet,
             selected: this.selected,
             failing: this.failing,
             target: this.isTarget,
-            source : this.isSource,
+            source : this.isSource && !this.isTarget,
+            transitive: this.partOfTransitiveQuorumSet
         };
     }
     get displayName(): string {
@@ -90,6 +96,10 @@ export default class GraphNode extends Vue {
         fill: #1997c6;
     }
 
+    circle.transitive {
+        fill: #1997c6;
+    }
+
     circle.selected {
         stroke:  yellow;
     }
@@ -99,12 +109,12 @@ export default class GraphNode extends Vue {
     }
 
     circle.target {
-        stroke:  #e4d836;
+        stroke:  #fec601;
         stroke-opacity: 1;
     }
 
     circle.source {
-        stroke:  #1bc98e;
+        stroke:  #73bfb8;
         stroke-opacity: 1;
     }
 
@@ -115,6 +125,6 @@ export default class GraphNode extends Vue {
         stroke-width: 1px;
     }
     text{
-        fill: #197baa;
+        fill: #2364aa;
     }
 </style>

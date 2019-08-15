@@ -84,11 +84,11 @@ export default {
     }
 
     .quorum-graph-legend .incoming-connection {
-        background: #1bc98e;
+        background: #73bfb8;
     }
 
     .quorum-graph-legend .outgoing-connection {
-        background: #e4d836;
+        background: #fec601;
     }
 
     .quorum-graph-legend .active-node {

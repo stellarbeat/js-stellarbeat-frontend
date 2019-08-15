@@ -8,12 +8,13 @@
 <script lang="ts">
 import {Component, Prop, Watch} from 'vue-property-decorator';
 import Vue from 'vue';
+import {Link, Node} from '@stellarbeat/js-stellar-domain'
 
 @Component({})
 export default class GraphLink extends Vue {
     public name: string = 'graph-link';
     @Prop()
-    public link!: {source: Node, target: Node, isClusterLink: boolean};
+    public link!: Link;
     @Prop()
     public selectedNode!: Node;
 
@@ -29,7 +30,8 @@ export default class GraphLink extends Vue {
         return {
             'from-selected': this.link.source === this.selectedNode,
             'to-selected': this.link.target === this.selectedNode,
-            'cluster': this.link.isClusterLink, /*,
+            'transitive-quorum-set': this.link.isPartOfTransitiveQuorumSet,
+            'strongly-connected': this.link.isPartOfStronglyConnectedComponent, /*,
                 'inactive': !this.link.originLink.active*/
         };
     }
@@ -44,24 +46,41 @@ export default class GraphLink extends Vue {
         fill-opacity: 0;
     }
 
-    path.inactive{
-        stroke: #ECEBE4;
-        stroke-opacity: 0.6;
-    }
-
-    path.cluster {
-        stroke-width: 0.8px;
+    path.strongly-connected {
+        stroke: #1997c6;
+        stroke-width:0.8px;
         stroke-opacity: 0.25;
     }
+
+    path.transitive-quorum-set {
+        stroke: #1997c6;
+        stroke-width:0.8px;
+        stroke-opacity: 0.25;
+    }
+
+    spath.strongly-connected {
+        animation: nodepulse 1s ease-in-out infinite;
+        fill: black;
+    }
+
+    @keyframes nodepulse {
+        0% {
+            stroke-width: 0.7;
+        }
+        100% {
+            stroke-width: 1;
+        }
+    }
     path.from-selected {
-        stroke: #e4d836;
-        stroke-opacity: 0.6;
+        stroke: #fec601;
+        stroke-opacity: 1;
         stroke-width: 1px;
     }
 
+
     path.to-selected {
-        stroke: #1bc98e;
-        stroke-opacity: 0.6;
+        stroke: #73bfb8;
+        stroke-opacity: 1;
         stroke-width: 1px;
     }
 </style>
