@@ -18,6 +18,9 @@
                     {{selectedNode.isFullValidator ? 'Full Validator' :
                     selectedNode.isValidator ? 'Validator' : 'Watcher Node'}}
                 </span>
+                <span v-if="selectedNodePartOfTransitiveQuorumSet" class="badge sb-badge badge-primary"
+                >Transitive Quorum Set
+                </span>
                 <span class="badge sb-badge"
                       v-bind:class="[selectedNode.active ? 'badge-primary ' : 'badge-default']"
                 >{{selectedNode.active ? 'Active' : 'Inactive'}}
@@ -198,6 +201,10 @@
 
         public toggleNodeValidating(node: Node) {
             this.$emit("node-toggle-validating", node);
+        }
+
+        public get selectedNodePartOfTransitiveQuorumSet() {
+            return this.network.getTransitiveQuorumSet() ? this.network.getTransitiveQuorumSet().nodes.has(this.selectedNode.publicKey) : false;
         }
 
         public get possibleValidatorsToAdd() {
