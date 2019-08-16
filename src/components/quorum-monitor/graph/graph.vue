@@ -1,6 +1,6 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div class="graph row mr-1">
-
+        <b-alert v-if="!network.getTransitiveQuorumSet()" variant="danger" class="w-100" show>No Transitive Quorum Set Detected!</b-alert>
         <div class="col-xs-12" style="width: 100%">
             <div v-bind:class="dimmerClass">
                 <div class="loader"></div>
