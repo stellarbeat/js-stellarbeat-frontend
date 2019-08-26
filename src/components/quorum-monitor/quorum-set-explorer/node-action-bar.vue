@@ -9,11 +9,7 @@
             </b-dropdown-header>
             <b-dropdown-item v-on:click="$emit('node-toggle-validating', node)">
                 <i class="dropdown-icon fe fe-activity"></i>
-                {{node.isValidating ? 'Stop validating' : 'Start validating'}}
-            </b-dropdown-item>
-            <b-dropdown-item v-on:click="$emit('node-toggle-active', node)">
-                <i class="dropdown-icon fe fe-power"></i>
-                {{node.active ? 'Disable' : 'Enable'}}
+                {{node.isValidating ? 'Stop validating' : 'Try validating'}}
             </b-dropdown-item>
             <b-dropdown-item v-if="supportsDelete" v-on:click="$emit('node-delete', node)">
                 <i class="dropdown-icon fe fe-minus-circle"></i>

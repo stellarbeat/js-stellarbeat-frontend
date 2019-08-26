@@ -17,73 +17,58 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {QuorumService, Node, Network} from '@stellarbeat/js-stellar-domain';
-import {Component, Prop, Watch} from 'vue-property-decorator';
+import {Component, Prop} from 'vue-property-decorator';
 
 @Component({})
 export default class GraphNode extends Vue {
-    public name: string = 'graph-node';
+    public name: string = 'graph-vertex';
 
     @Prop()
-    public node!: Node;
+    public publicKey!: string;
     @Prop()
-    public network!: Network;
+    public selected!: boolean;
     @Prop()
-    public selectedNode!: Node;
+    public highlightAsOutgoing!: boolean;
     @Prop()
-    public sourceNodes!: Set<Node>;
-    @Prop()
-    public targetNodes!: Set<Node>;
+    public highlightAsIncoming!: boolean;
     @Prop()
     public partOfTransitiveQuorumSet!: boolean;
+    @Prop()
+    public x!: boolean;
+    @Prop()
+    public y!: boolean;
+    @Prop()
+    public isValidating!: boolean;
+    @Prop()
+    public label!: string;
 
     get circleRadius(): string {
         return this.partOfTransitiveQuorumSet ? '3px' : '3px';
     }
 
     get coordinateTransform(): string {
-        return `translate(${(this.node as any).x},${(this.node as any).y})`;
-    }
-
-    get failing(): boolean {
-        return this.network.failingNodes.includes(this.node);
-    }
-
-    get selected(): boolean {
-        return this.selectedNode === this.node;
-    }
-
-    get active(): boolean {
-        return this.node.active;
-    }
-
-    get isTarget(): boolean {
-        return this.targetNodes.has(this.node) && this.selectedNode !== this.node;
-    }
-
-    get isSource(): boolean {
-        return this.sourceNodes.has(this.node) && this.selectedNode !== this.node;
+        return `translate(${this.x},${this.y})`;
     }
 
     get classObject() {
         return {
-            active: this.active && !this.partOfTransitiveQuorumSet,
+            active: this.isValidating,
             selected: this.selected,
-            failing: this.failing,
-            target: this.isTarget,
-            source : this.isSource && !this.isTarget,
+            failing: !this.isValidating,
+            target: this.highlightAsIncoming,
+            source : this.highlightAsOutgoing,
             transitive: this.partOfTransitiveQuorumSet
         };
     }
     get displayName(): string {
-        return this.node.displayName;
+        return this.label;
     }
 
     public nodeSelected() {
         this.$router.push(
             {
                 name: 'quorum-monitor-node',
-                params: {publicKey: this.node.publicKey},
+                params: {publicKey: this.publicKey},
                 query: {'center': '0', 'no-scroll': '1'},
             },
             );

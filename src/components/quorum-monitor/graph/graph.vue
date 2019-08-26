@@ -1,6 +1,8 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div class="graph row mr-1">
-        <b-alert v-if="!network.getTransitiveQuorumSet()" variant="danger" class="w-100" show>No Transitive Quorum Set Detected!</b-alert>
+        <b-alert v-if="!network.graph.transitiveQuorumSet" variant="danger" class="w-100" show>No Transitive Quorum Set
+            Detected!
+        </b-alert>
         <div class="col-xs-12" style="width: 100%">
             <div v-bind:class="dimmerClass">
                 <div class="loader"></div>
@@ -11,6 +13,7 @@
                          height="600px"
                     >
                         <g class="svg-pan-zoom_viewport">
+
                             <g class="transitive-quorum-set">
                                 <path
                                         class="transitive-path"
@@ -18,18 +21,26 @@
                                         v-bind:transform="transitiveTransform"
                                 />
                             </g>
-                            <GraphLink v-if="graphInitialized" v-for="link in linksFiltered" :link="link"
-                                       :selectedNode="selectedNode" :key="link.id"></GraphLink>
-                            <GraphLink v-if="graphInitialized" v-for="link in incomingLinks" :link="link"
-                                       :selectedNode="selectedNode" :key="link.id"></GraphLink>
-                            <GraphLink v-if="graphInitialized" v-for="link in outgoingLinks" :link="link"
-                                       :selectedNode="selectedNode" :key="link.id"></GraphLink>
-                            <GraphNode v-if="graphInitialized" v-for="node in nodesToVisualize" :key="node.publicKey"
-                                       :node="node"
-                                       :selectedNode="selectedNode"
-                                       :network="network" :targetNodes="targetNodes" :sourceNodes="sourceNodes"
-                                       :partOfTransitiveQuorumSet="nodeInTransitiveQuorumSet(node)"
-                            ></GraphNode>
+                            <GraphEdge v-for="edge in edgesViewData"
+                                       :highlightAsOutgoing="edge.highlightAsOutgoing"
+                                       :highlightAsIncoming="edge.highlightAsIncoming"
+                                       :isPartOfStronglyConnectedComponent="edge.isPartOfStronglyConnectedComponent"
+                                       :parentX="edge.source.x"
+                                       :parentY="edge.source.y"
+                                       :childX="edge.target.x"
+                                       :childY="edge.target.y"
+                            ></GraphEdge>
+                            <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
+                                         :publicKey="vertex.publicKey"
+                                         :selected="vertex.selected"
+                                         :highlightAsOutgoing="vertex.highlightAsOutgoing"
+                                         :highlightAsIncoming="vertex.highlightAsIncoming"
+                                         :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
+                                         :x="vertex.x"
+                                         :y="vertex.y"
+                                         :isValidating="vertex.isValidating"
+                                         :label="vertex.label"
+                            ></GraphVertex>
                         </g>
                     </svg>
                 </div>
@@ -41,52 +52,48 @@
 
 <script lang="ts">
     import Vue from "vue";
-    import {Network, Node, PublicKey} from "@stellarbeat/js-stellar-domain";
-    import GraphNode from "./graph-node.vue";
-    import GraphLink from "./graph-link.vue";
+    import {Network, Node, PublicKey, Vertex} from "@stellarbeat/js-stellar-domain";
+    import GraphVertex from "./graph-vertex.vue";
     import svgPanZoom from "svg-pan-zoom";
     import {line, curveLinearClosed} from "d3-shape";
     import {polygonHull, polygonCentroid} from "d3-polygon";
 
-    import ComputeGraphWorker from "worker-loader?name=dist/[name].js!./../../../workers/compute-graphv5.worker";
+    import ComputeGraphWorker from "worker-loader?name=dist/[name].js!./../../../workers/compute-graphv6.worker";
     import {Component, Prop, Watch} from "vue-property-decorator";
+    import {DirectedGraphManager, DirectedGraph} from "@stellarbeat/js-stellar-domain";
+    import GraphEdge from "@/components/quorum-monitor/graph/graph-edge.vue";
 
-    type SimulationNode = {
+    import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-force';
+
+    type VertexViewData = {
         publicKey: PublicKey,
+        label: string,
         x: number,
         y: number,
         isPartOfTransitiveQuorumSet: boolean,
-        index: number
+        highlightAsOutgoing: boolean,
+        highlightAsIncoming: boolean,
+        selected: boolean,
+        isValidating: boolean
     };
 
-    type SimulationLink = {
-        source: PublicKey,
-        target: PublicKey,
+    type EdgeViewData = {
+        source: any, //publicKey is replaced by object in d3
+        target: any,//publicKey is replaced by object in d3
         isPartOfStronglyConnectedComponent: boolean,
-        isPartOfTransitiveQuorumSet: boolean,
-        index: number
+        highlightAsOutgoing: boolean,
+        highlightAsIncoming: boolean
     }
-
 
     const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
 
     @Component({
         components: {
-            GraphNode,
-            GraphLink,
+            GraphEdge,
+            GraphVertex
         },
     })
     export default class Graph extends Vue {
-        public name: string = "graph";
-        public panZoom!: SvgPanZoom.Instance;
-        public isLoading: boolean = true;
-        public graphInitialized: boolean = false;
-        public loadingProgress: number = 0;
-        public computeGraphWorker = new _ComputeGraphWorker();
-        public delayedCenter: boolean = false;
-        public transitivePath: string = "";
-        public transitiveCentroid: { 0: number, 1: number } = {0: 0, 1: 0};
-
         @Prop()
         public network!: Network;
         @Prop()
@@ -94,58 +101,68 @@
         @Prop()
         public selectedNode!: Node;
 
+        public name: string = "graph";
+        public panZoom!: SvgPanZoom.Instance;
+        public isLoading: boolean = true;
+        public computeGraphWorker = new _ComputeGraphWorker();
+        public delayedCenter: boolean = false;
+        public delayedVisualizeCenterNode: boolean = false;
+        public transitivePath: string = "";
+        public transitiveCentroid: { 0: number, 1: number } = {0: 0, 1: 0};
+        public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
+        public edgesViewData: EdgeViewData[] = [];
+
         @Watch("centerNode")
         public onCenterNodeChanged() {
-            if (this.graphInitialized && !this.isLoading) {
+            if (!this.isLoading) {
                 this.centerCorrectNode();
             }
 
-            if (this.graphInitialized && this.isLoading) {
+            if (this.isLoading) {
                 this.delayedCenter = true;
             }
         }
 
-        get nodesToVisualize() {
-            return this.network.nodes.filter(node => {
-                return this.network.getTrustingNodes(node).length !== 0 || node.quorumSet.hasValidators() || node.isValidating;
+
+        @Watch("selectedNode")
+        public onSelectedNodeChanged() {
+            if (!this.isLoading) {
+                this.visualizeSelectedNode();
+            } else {
+                this.delayedVisualizeCenterNode = true;
+            }
+        }
+
+        protected visualizeSelectedNode(){
+            this.verticesViewData.forEach(vertex => {
+                let dataVertex = this.network.graph.getVertex(vertex.publicKey);
+                vertex.selected = this.selectedNode ? this.selectedNode.publicKey === vertex.publicKey : false;
+                vertex.highlightAsOutgoing = this.highlightVertexAsOutgoing(dataVertex);
+                vertex.highlightAsIncoming = this.highLightVertexAsIncoming(dataVertex)
             });
+
+            this.edgesViewData.forEach(edge => {
+                edge.highlightAsOutgoing =
+                    this.selectedNode ? edge.source.publicKey === this.selectedNode.publicKey : false;
+                edge.highlightAsIncoming =
+                    this.selectedNode ? edge.target.publicKey === this.selectedNode.publicKey : false
+            });
+
+            this.edgesViewData.sort(
+                function(a:EdgeViewData, b:EdgeViewData)
+                {
+                    return a.highlightAsOutgoing ? +10 : a.highlightAsIncoming ? 0 : -10
+                });
+
+            this.delayedVisualizeCenterNode = false;
         }
 
-        get linksFiltered() {
-            if (!this.selectedNode) {
-                return this.network.links;
-            }
-            return this.network.links.filter(link => link.source !== this.selectedNode && link.target !== this.selectedNode);
+        get width() {
+            return (this.$refs.graphSvg as SVGElement).clientWidth;
         }
 
-        get incomingLinks() {
-            if (!this.selectedNode) {
-                return [];
-            }
-            return this.network.links.filter(link => link.source !== link.target && link.target === this.selectedNode);
-        }
-
-        get outgoingLinks() {
-            if (!this.selectedNode) {
-                return [];
-            }
-            return this.network.links.filter(link => link.source !== link.target && link.source === this.selectedNode);
-        }
-
-        get progressBarWidth() {
-            return "width: " + this.loadingProgress + "%";
-        }
-
-        get sourceNodes() {
-            return new Set(this.network.links
-                .filter((link) => link.target === this.selectedNode)
-                .map((link) => link.source));
-        }
-
-        get targetNodes() {
-            return new Set(this.network.links
-                .filter((link) => link.source === this.selectedNode)
-                .map((link) => link.target));
+        get height() {
+            return (this.$refs.graphSvg as SVGElement).clientHeight;
         }
 
         get dimmerClass() {
@@ -163,12 +180,9 @@
             this.computeGraph();
         }
 
-        nodeInTransitiveQuorumSet(node: Node) {
-            return this.network.getTransitiveQuorumSet() ? this.network.getTransitiveQuorumSet().nodes.has(node.publicKey) : false;
-        }
-
         public centerCorrectNode() {
-            if (this.centerNode) {
+            if (this.centerVertex() !== undefined) {
+                let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.publicKey);
                 // noinspection TypeScriptUnresolvedFunction
                 const height = this.panZoom.getSizes().height;
                 // noinspection TypeScriptUnresolvedFunction
@@ -177,15 +191,15 @@
                 const sizes = this.panZoom.getSizes();
                 // noinspection TypeScriptUnresolvedVariable
                 const zoom = sizes.realZoom;
-                const realNodeX = -(this.centerNode as any).x * zoom + width / 2;
-                const realNodeY = -(this.centerNode as any).y * zoom + height / 2;
+                const realNodeX = -centerVertexViewData!.x * zoom + width / 2;
+                const realNodeY = -centerVertexViewData!.y * zoom + height / 2;
                 // noinspection TypeScriptValidateTypes
                 this.panZoom.pan({x: realNodeX, y: realNodeY});
+                this.delayedCenter = false;
             }
         }
 
-
-        public getTransitiveQuorumSetHull(simulationNodes: Array<SimulationNode>) {
+        public getTransitiveQuorumSetHull(simulationNodes: Array<VertexViewData>) {
             let valueLine = line()
                 .x(function (d) {
                     return d[0];
@@ -196,8 +210,8 @@
                 .curve(curveLinearClosed);
             let transitiveQSetHull = polygonHull(
                 simulationNodes
-                    .filter(node => node.isPartOfTransitiveQuorumSet)
-                    .map(node => [node.x, node.y]));
+                    .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
+                    .map(vertex => [vertex.x, vertex.y]));
             if (!transitiveQSetHull)
                 return "";
             this.transitiveCentroid = polygonCentroid(transitiveQSetHull);
@@ -214,78 +228,134 @@
             return "";
         }
 
+        highlightVertexAsOutgoing(vertex: Vertex) {
+            if (!this.selectedNode)
+                return false;
+            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey);
+            if(selectedVertex === undefined) {
+                return false;
+            }
+            return vertex.isValidating &&
+                selectedVertex.isValidating
+                && this.selectedNode.publicKey !== vertex.publicKey
+                && this.network.graph.getChildren(vertex).has(selectedVertex)
+                && !this.network.graph.getChildren(selectedVertex).has(vertex);
+        }
+
+
+        highLightVertexAsIncoming(vertex: Vertex):boolean {
+            if (!this.selectedNode)
+                return false;
+            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey);
+            if(selectedVertex === undefined) {
+                return false;
+            }
+            return vertex.isValidating
+                && selectedVertex.isValidating
+                && this.selectedNode.publicKey !== vertex.publicKey
+                && this.network.graph.getChildren(selectedVertex).has(vertex);
+        }
+
+        centerVertex():Vertex|undefined {
+            if (this.centerNode)
+                return this.network.graph.getVertex(this.centerNode.publicKey);
+
+            return undefined;
+        }
+
+
         public computeGraph() {
             this.isLoading = true;
             // separate sim nodes to avoid slow rendering
-            const simulationNodes: Array<SimulationNode> = this.nodesToVisualize
-                .map((node, index) => {
+            console.log(Array.from(this.network.graph.vertices.values()).length);
+            const simulationVertices: Array<VertexViewData> = Array.from(this.network.graph.vertices.values())
+                .map((vertex) => {
                     return {
-                        publicKey: node.publicKey,
-                        x: (node as any).x,
-                        y: (node as any).y,
-                        isPartOfTransitiveQuorumSet: this.network.getTransitiveQuorumSet() ? this.network.getTransitiveQuorumSet().nodes.has(node.publicKey) : false,
-                        index: index
+                        publicKey: vertex.publicKey,
+                        label: vertex.label,
+                        x: this.verticesViewData.get(vertex.publicKey) ?
+                            this.verticesViewData.get(vertex.publicKey)!.x : 0,
+                        y: this.verticesViewData.get(vertex.publicKey) ?
+                            this.verticesViewData.get(vertex.publicKey)!.y : 0,
+                        isPartOfTransitiveQuorumSet: this.network.graph.isVertexPartOfTransitiveQuorumSet(vertex.publicKey),
+                        selected: this.selectedNode ?
+                            this.selectedNode.publicKey === vertex.publicKey : false,
+                        highlightAsIncoming:
+                            this.highLightVertexAsIncoming(vertex),
+                        highlightAsOutgoing:
+                            this.highlightVertexAsOutgoing(vertex),
+                        isValidating: vertex.isValidating
                     };
                 });
 
-            const simulationLinks: Array<SimulationLink> = this.network.links.map((link, index) => {
-                return {
-                    source: link.source.publicKey,
-                    target: link.target.publicKey,
-                    isPartOfStronglyConnectedComponent: link.isPartOfStronglyConnectedComponent,
-                    isPartOfTransitiveQuorumSet: link.isPartOfTransitiveQuorumSet,
-                    index: index
-                };
-            });
+            const simulationEdges: Array<EdgeViewData> = Array.from(this.network.graph.edges.values())
+                .filter((edge) => edge.isActive)
+                .map((edge) => {
+                    return {
+                        source: edge.parent.publicKey,
+                        target: edge.child.publicKey,
+                        isPartOfTransitiveQuorumSet: this.network.graph.isEdgePartOfTransitiveQuorumSet(edge),
+                        isPartOfStronglyConnectedComponent: this.network.graph.isEdgePartOfStronglyConnectedComponent(edge),
+                        highlightAsOutgoing:
+                            this.selectedNode ? edge.parent.publicKey === this.selectedNode.publicKey : false,
+                        highlightAsIncoming:
+                            this.selectedNode ? edge.child.publicKey === this.selectedNode.publicKey : false
+                    };
+                });
 
             this.computeGraphWorker.postMessage({
-                nodes: simulationNodes,
-                links: simulationLinks
+                vertices: simulationVertices,
+                edges: simulationEdges,
+                width: this.width,
+                height: this.height
             });
-
         }
 
-        public created() {
-            this.nodesToVisualize.forEach((node) => {
-                this.$set(node, "x", 0);
-                this.$set(node, "y", 0);
-            }); // trigger reactive changes on newly added x and y coordinates
+        public mounted() {
+            this.panZoom = svgPanZoom(this.$refs.graphSvg as SVGElement,
+                {
+                    mouseWheelZoomEnabled: false,
+                    minZoom: 0.5
+                    , maxZoom: 10
+                    , fit: false
+                    , contain: false
+                    , center: false,
+                    controlIconsEnabled: true,
+                });
+            this.panZoom.zoomBy(2);
 
-            this.computeGraphWorker.onmessage = (event: any) => {
+            if(this.centerNode)
+                this.delayedCenter = true;
+
+            this.computeGraphWorker.onmessage = (
+                    event: {data: {type:string, vertices: VertexViewData[], edges: EdgeViewData[]}}
+                ) => {
                 switch (event.data.type) {
                     case "tick": {
-                        // if(newLoadingProgress % 25 === 0)
-                        //this.loadingProgress = Math.round(event.data.progress * 100);
+
                     }
                         break;
                     case "end": {
-                        event.data.nodes.forEach(
-                            (node: { index: number, x: number, y: number, publicKey: string }) => {
-                                (this.nodesToVisualize[node.index] as any).x = node.x;
-                                (this.nodesToVisualize[node.index] as any).y = node.y;
-                            },
+                        this.verticesViewData = new Map<PublicKey, VertexViewData>();
+                        event.data.vertices.forEach(
+                            vertex => this.verticesViewData.set(vertex.publicKey, vertex)
                         );
+
+                        event.data.edges.sort(function(a:EdgeViewData, b:EdgeViewData){
+                            return a.highlightAsOutgoing ? +10 : a.highlightAsIncoming ? 0 : -10
+                        });
+
+                        this.edgesViewData = event.data.edges;
+
                         this.isLoading = false;
-                        if (!this.graphInitialized) {
-                            this.panZoom = svgPanZoom(this.$refs.graphSvg as SVGElement,
-                                {
-                                    mouseWheelZoomEnabled: false,
-                                    minZoom: 0.5
-                                    , maxZoom: 10
-                                    , fit: false
-                                    , contain: false
-                                    , center: true,
-                                    controlIconsEnabled: true,
-                                });
-                            this.graphInitialized = true;
-                            // noinspection TypeScriptUnresolvedFunction
-                            this.panZoom.zoomBy(2);
-                            this.centerCorrectNode();
-                        }
+
                         if (this.delayedCenter) {
                             this.centerCorrectNode();
                         }
-                        this.transitivePath = this.getTransitiveQuorumSetHull(event.data.nodes);
+                        if (this.delayedVisualizeCenterNode) {
+                            this.visualizeSelectedNode();
+                        }
+                        this.transitivePath = this.getTransitiveQuorumSetHull(event.data.vertices);
                     }
                         break;
                 }

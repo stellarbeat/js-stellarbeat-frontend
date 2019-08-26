@@ -3,29 +3,29 @@ import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-forc
 const ctx: Worker = self as any;
 
 ctx.addEventListener('message', (event) => {
-    const nodes = event.data.nodes;
-    const links = event.data.links;
+    const vertices = event.data.vertices;
+    const edges = event.data.edges;
     const width = event.data.width;
     const height = event.data.height;
 
-    const simulation = forceSimulation(nodes)
+    const simulation = forceSimulation(vertices)
         .force('charge', forceManyBody().strength((d) => {
-            return -80;
+            return -60;
         }))
-        .force('link', forceLink(links).strength( (link: any) => {
-            if (link.isPartOfTransitiveQuorumSet) {
-                return 0.007;
+        .force('link', forceLink(edges).strength( (edge: any) => {
+            if (edge.isPartOfTransitiveQuorumSet) {
+                return 0.005;
             }
-            else if (link.isPartOfStronglyConnectedComponent) {
+            else if (edge.isPartOfStronglyConnectedComponent) {
                 return 0.05;
             } else {
-                return 0.004;
+                return 0.001;
             }
         }).id( (d: any) => {
             return d.publicKey;
         }))
-        .force('x', forceX())
-        .force('y', forceY())
+        .force('x', forceX(width / 2))
+        .force('y', forceY(height/2))
         // .alphaDecay(0.1)
         // .alphaMin(0.15)
         // .velocityDecay(0.35);
@@ -37,7 +37,7 @@ ctx.addEventListener('message', (event) => {
         simulation.tick();
     }
 
-    ctx.postMessage({type: 'end', nodes, links});
+    ctx.postMessage({type: 'end', vertices: vertices, edges: edges});
 });
 
 export default ctx;

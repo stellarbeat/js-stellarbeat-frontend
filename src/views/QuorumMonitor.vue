@@ -195,6 +195,8 @@
         }
 
         public toggleValidating(node: Node) {
+            if(!node.active)
+                this.changeQueue.execute(new EntityPropertyUpdate(node, "active", !node.active));
             this.processChange(new EntityPropertyUpdate(node, "isValidating", !node.isValidating));
         }
 
@@ -242,6 +244,15 @@
             }
             this.changeQueue.undo();
             this.network.updateNetwork();
+            if(this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
+                this.$router.push(
+                    {
+                        name: 'quorum-monitor',
+                        query: {'no-scroll': '1'}
+
+                    },
+                );
+            }
             (this.$refs.graph as any).restartSimulation();
         }
 
@@ -260,6 +271,12 @@
             }
             this.changeQueue.reset();
             this.network.updateNetwork();
+            this.$router.push(
+                {
+                    name: 'quorum-monitor',
+                    query: {'no-scroll': '1'}
+                },
+            );
             (this.$refs.graph as any).restartSimulation();
         }
 
@@ -288,6 +305,7 @@
             node.quorumSet.threshold = 1;
             node.active = true;
             node.isValidating = true;
+            node.isValidator = true;
             this.$set(node, 'x', 0); //doesn't belong here, needs better solution
             this.$set(node, 'y', 0);
             this.changeQueue.execute(new NetworkAddNode(this.network, node));
