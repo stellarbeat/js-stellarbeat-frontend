@@ -25,13 +25,6 @@
                 </div>
 
                 <div class="col-4 col-sm-2  d-flex">
-                    <div class=" element inactive-node px-2 m-2"></div>
-                    <div >
-                        Inactive node
-                    </div>
-                </div>
-
-                <div class="col-4 col-sm-2  d-flex">
                     <div class=" element failing-node px-2 m-2"></div>
                     <div >
                         Failing node

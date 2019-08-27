@@ -29,6 +29,8 @@
                                        :parentY="edge.source.y"
                                        :childX="edge.target.x"
                                        :childY="edge.target.y"
+                                       :isFailing="edge.isFailing"
+                                       :hideRegular="!optionShowRegularEdges"
                             ></GraphEdge>
                             <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
                                          :publicKey="vertex.publicKey"
@@ -45,6 +47,40 @@
                     </svg>
                 </div>
             </div>
+        </div>
+        <div>
+            <label class="custom-switch mt-2 mr-2">
+
+                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                       v-model="optionHighlightTrustedNodes">
+                <span class="custom-switch-indicator"></span>
+                <span class="custom-switch-description">Highlight trusted nodes</span>
+
+            </label>
+            <label class="custom-switch mt-2 mr-2">
+
+                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                       v-model="optionHighlightTrustingNodes">
+                <span class="custom-switch-indicator"></span>
+                <span class="custom-switch-description">Highlight trusting nodes</span>
+
+            </label>
+            <label class="custom-switch mt-2 mr-2">
+
+                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                       v-model="optionShowRegularEdges">
+                <span class="custom-switch-indicator"></span>
+                <span class="custom-switch-description">Show regular edges</span>
+
+            </label>
+            <label class="custom-switch mt-2 mr-2">
+
+                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                       v-model="optionShowFailingEdges">
+                <span class="custom-switch-indicator"></span>
+                <span class="custom-switch-description">Show failing edges</span>
+
+            </label>
         </div>
     </div>
 
@@ -63,7 +99,7 @@
     import {DirectedGraphManager, DirectedGraph} from "@stellarbeat/js-stellar-domain";
     import GraphEdge from "@/components/quorum-monitor/graph/graph-edge.vue";
 
-    import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-force';
+    import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from "d3-force";
 
     type VertexViewData = {
         publicKey: PublicKey,
@@ -82,7 +118,8 @@
         target: any,//publicKey is replaced by object in d3
         isPartOfStronglyConnectedComponent: boolean,
         highlightAsOutgoing: boolean,
-        highlightAsIncoming: boolean
+        highlightAsIncoming: boolean,
+        isFailing: boolean
     }
 
     const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
@@ -111,6 +148,10 @@
         public transitiveCentroid: { 0: number, 1: number } = {0: 0, 1: 0};
         public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
         public edgesViewData: EdgeViewData[] = [];
+        public optionShowFailingEdges: boolean = false;
+        public optionHighlightTrustingNodes:boolean = true;
+        public optionHighlightTrustedNodes:boolean = true;
+        public optionShowRegularEdges:boolean = true;
 
         @Watch("centerNode")
         public onCenterNodeChanged() {
@@ -123,6 +164,18 @@
             }
         }
 
+        @Watch("optionShowFailingEdges")
+        public onOptionShowFailingEdgesChanged() {
+            this.computeGraph();
+        }
+        @Watch("optionHighlightTrustingNodes")
+        public onOptionHighlightTrustingNodesChanged() {
+            this.computeGraph();
+        }
+        @Watch("optionHighlightTrustedNodes")
+        public onOptionHighlightTrustedNodesChanged() {
+            this.computeGraph();
+        }
 
         @Watch("selectedNode")
         public onSelectedNodeChanged() {
@@ -133,26 +186,38 @@
             }
         }
 
-        protected visualizeSelectedNode(){
+        protected sortEdges (a: EdgeViewData, b: EdgeViewData) {
+            if(a.highlightAsOutgoing)
+                return +5;
+            if(b.highlightAsOutgoing)
+                return -5;
+            if(a.highlightAsIncoming)
+                return +5;
+            if(b.highlightAsIncoming)
+                return -5;
+            if(a.isFailing)
+                return +5;
+            if(b.isFailing)
+                return -5;
+            return 0;
+        };
+
+        protected visualizeSelectedNode() {
             this.verticesViewData.forEach(vertex => {
                 let dataVertex = this.network.graph.getVertex(vertex.publicKey);
                 vertex.selected = this.selectedNode ? this.selectedNode.publicKey === vertex.publicKey : false;
-                vertex.highlightAsOutgoing = this.highlightVertexAsOutgoing(dataVertex);
-                vertex.highlightAsIncoming = this.highLightVertexAsIncoming(dataVertex)
+                vertex.highlightAsOutgoing = this.highlightVertexAsTrusting(dataVertex);
+                vertex.highlightAsIncoming = this.highLightVertexAsTrusted(dataVertex);
             });
 
             this.edgesViewData.forEach(edge => {
                 edge.highlightAsOutgoing =
-                    this.selectedNode ? edge.source.publicKey === this.selectedNode.publicKey : false;
+                    this.selectedNode && this.optionHighlightTrustedNodes ? edge.source.publicKey === this.selectedNode.publicKey : false;
                 edge.highlightAsIncoming =
-                    this.selectedNode ? edge.target.publicKey === this.selectedNode.publicKey : false
+                    this.selectedNode && this.optionHighlightTrustingNodes ? edge.target.publicKey === this.selectedNode.publicKey : false;
             });
 
-            this.edgesViewData.sort(
-                function(a:EdgeViewData, b:EdgeViewData)
-                {
-                    return a.highlightAsOutgoing ? +10 : a.highlightAsIncoming ? 0 : -10
-                });
+            this.edgesViewData.sort(this.sortEdges);
 
             this.delayedVisualizeCenterNode = false;
         }
@@ -228,26 +293,29 @@
             return "";
         }
 
-        highlightVertexAsOutgoing(vertex: Vertex) {
+        highlightVertexAsTrusting(vertex: Vertex) {
+            if(!this.optionHighlightTrustingNodes)
+                return false;
             if (!this.selectedNode)
                 return false;
             let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey);
-            if(selectedVertex === undefined) {
+            if (selectedVertex === undefined) {
                 return false;
             }
             return vertex.isValidating &&
                 selectedVertex.isValidating
                 && this.selectedNode.publicKey !== vertex.publicKey
                 && this.network.graph.getChildren(vertex).has(selectedVertex)
-                && !this.network.graph.getChildren(selectedVertex).has(vertex);
+                && (!this.network.graph.getChildren(selectedVertex).has(vertex) || !this.optionHighlightTrustedNodes);
         }
 
-
-        highLightVertexAsIncoming(vertex: Vertex):boolean {
+        highLightVertexAsTrusted(vertex: Vertex): boolean {
+            if(!this.optionHighlightTrustedNodes)
+                return false;
             if (!this.selectedNode)
                 return false;
             let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey);
-            if(selectedVertex === undefined) {
+            if (selectedVertex === undefined) {
                 return false;
             }
             return vertex.isValidating
@@ -256,7 +324,7 @@
                 && this.network.graph.getChildren(selectedVertex).has(vertex);
         }
 
-        centerVertex():Vertex|undefined {
+        centerVertex(): Vertex | undefined {
             if (this.centerNode)
                 return this.network.graph.getVertex(this.centerNode.publicKey);
 
@@ -266,8 +334,6 @@
 
         public computeGraph() {
             this.isLoading = true;
-            // separate sim nodes to avoid slow rendering
-            console.log(Array.from(this.network.graph.vertices.values()).length);
             const simulationVertices: Array<VertexViewData> = Array.from(this.network.graph.vertices.values())
                 .map((vertex) => {
                     return {
@@ -281,15 +347,15 @@
                         selected: this.selectedNode ?
                             this.selectedNode.publicKey === vertex.publicKey : false,
                         highlightAsIncoming:
-                            this.highLightVertexAsIncoming(vertex),
+                            this.highLightVertexAsTrusted(vertex),
                         highlightAsOutgoing:
-                            this.highlightVertexAsOutgoing(vertex),
+                            this.highlightVertexAsTrusting(vertex),
                         isValidating: vertex.isValidating
                     };
                 });
 
             const simulationEdges: Array<EdgeViewData> = Array.from(this.network.graph.edges.values())
-                .filter((edge) => edge.isActive)
+                .filter((edge) => edge.isActive || this.optionShowFailingEdges)
                 .map((edge) => {
                     return {
                         source: edge.parent.publicKey,
@@ -297,9 +363,10 @@
                         isPartOfTransitiveQuorumSet: this.network.graph.isEdgePartOfTransitiveQuorumSet(edge),
                         isPartOfStronglyConnectedComponent: this.network.graph.isEdgePartOfStronglyConnectedComponent(edge),
                         highlightAsOutgoing:
-                            this.selectedNode ? edge.parent.publicKey === this.selectedNode.publicKey : false,
+                            this.selectedNode && this.optionHighlightTrustedNodes ? edge.parent.publicKey === this.selectedNode.publicKey : false,
                         highlightAsIncoming:
-                            this.selectedNode ? edge.child.publicKey === this.selectedNode.publicKey : false
+                            this.selectedNode && this.optionHighlightTrustingNodes? edge.child.publicKey === this.selectedNode.publicKey : false,
+                        isFailing: !edge.isActive
                     };
                 });
 
@@ -324,12 +391,12 @@
                 });
             this.panZoom.zoomBy(2);
 
-            if(this.centerNode)
+            if (this.centerNode)
                 this.delayedCenter = true;
 
             this.computeGraphWorker.onmessage = (
-                    event: {data: {type:string, vertices: VertexViewData[], edges: EdgeViewData[]}}
-                ) => {
+                event: { data: { type: string, vertices: VertexViewData[], edges: EdgeViewData[] } }
+            ) => {
                 switch (event.data.type) {
                     case "tick": {
 
@@ -341,9 +408,7 @@
                             vertex => this.verticesViewData.set(vertex.publicKey, vertex)
                         );
 
-                        event.data.edges.sort(function(a:EdgeViewData, b:EdgeViewData){
-                            return a.highlightAsOutgoing ? +10 : a.highlightAsIncoming ? 0 : -10
-                        });
+                        event.data.edges.sort(this.sortEdges);
 
                         this.edgesViewData = event.data.edges;
 

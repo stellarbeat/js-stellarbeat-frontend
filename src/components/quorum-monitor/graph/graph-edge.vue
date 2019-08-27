@@ -26,6 +26,10 @@ export default class GraphLink extends Vue {
     public childX!: boolean;
     @Prop()
     public childY!: boolean;
+    @Prop()
+    public isFailing!: boolean;
+    @Prop()
+    public hideRegular!: boolean;
 
     get path() {
         return 'M' +
@@ -39,7 +43,9 @@ export default class GraphLink extends Vue {
         return {
             'outgoing': this.highlightAsOutgoing,
             'incoming': this.highlightAsIncoming,
-            'strongly-connected': this.isPartOfStronglyConnectedComponent
+            'strongly-connected': this.isPartOfStronglyConnectedComponent,
+            'failing': this.isFailing,
+            'hide-regular': this.hideRegular
         };
     }
 }
@@ -57,6 +63,14 @@ export default class GraphLink extends Vue {
         stroke: #1997c6;
         stroke-width:0.8px;
         stroke-opacity: 0.25;
+    }
+
+    path.hide-regular {
+        stroke: white;
+    }
+
+    path.failing {
+        stroke: #cd201f;
     }
 
     path.outgoing {
