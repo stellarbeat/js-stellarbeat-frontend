@@ -168,6 +168,7 @@
         getFailAt(organization: Organization) {
             let nrOfValidatingNodes = organization.validators
                 .map(validator => this.network.getNodeByPublicKey(validator))
+                .filter(validator => validator !== undefined)
                 .filter(node => node.isValidating).length;
 
             return nrOfValidatingNodes - organization.subQuorumThreshold + 1;

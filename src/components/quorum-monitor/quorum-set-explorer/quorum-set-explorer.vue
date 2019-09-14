@@ -114,6 +114,10 @@
                         <i class="dropdown-icon fe fe-activity"></i>
                         {{selectedNode.isValidating ? 'Stop validating' : 'Try validating'}}
                     </b-dropdown-item>
+                    <b-dropdown-item v-on:click="$emit('show-halting-analysis', selectedNode.publicKey)">
+                        <i class="dropdown-icon fe fe-settings"></i>
+                        Perform halting analysis (beta)
+                    </b-dropdown-item>
                 </b-dropdown>
             </b-button-group>
 
@@ -138,9 +142,9 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Network, Node, QuorumSet} from "@stellarbeat/js-stellar-domain";
-    import {Modal} from "bootstrap-vue";
 
     import TomlConfigViewer from "./toml-config-viewer.vue";
+    import {Modal} from "bootstrap-vue";
 
     @Component({
         name: "quorum-set-explorer",
@@ -190,7 +194,7 @@
         }
 
         public get selectedNodePartOfTransitiveQuorumSet() {
-            return this.network.graph.transitiveQuorumSet ? this.network.graph.isVertexPartOfTransitiveQuorumSet(this.selectedNode.publicKey) : false;
+            return this.network.graph.networkTransitiveQuorumSet ? this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(this.selectedNode.publicKey) : false;
         }
 
         public get possibleValidatorsToAdd() {

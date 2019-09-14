@@ -34,9 +34,9 @@ export default class GraphNode extends Vue {
     @Prop()
     public partOfTransitiveQuorumSet!: boolean;
     @Prop()
-    public x!: boolean;
+    public x!: number;
     @Prop()
-    public y!: boolean;
+    public y!: number;
     @Prop()
     public isValidating!: boolean;
     @Prop()

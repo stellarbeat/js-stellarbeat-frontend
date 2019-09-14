@@ -10,6 +10,7 @@ import Meta from 'vue-meta';
 import * as Sentry from '@sentry/browser';
 // Importing the global css file
 import "@/assets/global.css"
+import VueScrollTo from 'vue-scrollto';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -21,10 +22,12 @@ if (isProd) {
         integrations: [new Sentry.Integrations.Vue({Vue})],
     });
 }
+
 Vue.use(VueTruncate);
 Vue.use(BootstrapVue);
 Vue.use(Meta);
 Vue.use(SimpleAnalytics, { skip: !isProd });
+Vue.use(VueScrollTo);
 
 new Vue({
     router,

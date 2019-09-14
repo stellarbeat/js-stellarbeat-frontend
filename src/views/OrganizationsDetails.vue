@@ -185,11 +185,13 @@
         @Prop()
         public isLoading!: boolean;
 
-        get organization(): Organization {
+        get organization(): Organization | undefined {
             return this.network.getOrganizationById(this.$route.params.organizationId);
         }
 
         get validators(): (Node | any)[] {
+            if(!this.organization)
+                return [];
             return this.organization.validators
                 .map(publicKey => this.network.getNodeByPublicKey(publicKey))
                 .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
@@ -200,6 +202,9 @@
         }
 
         get failAt() {
+            if(!this.organization){
+                return 0;
+            }
             let nrOfValidatingNodes = this.organization.validators
                 .map(validator => this.network.getNodeByPublicKey(validator))
                 .filter(node => node.isValidating).length;

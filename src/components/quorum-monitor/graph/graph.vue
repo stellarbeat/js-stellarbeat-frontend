@@ -1,7 +1,7 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div class="graph row mr-1">
-        <b-alert v-if="!network.graph.transitiveQuorumSet" variant="danger" class="w-100" show>No Transitive Quorum Set
-            Detected!
+        <b-alert v-if="network.graph.networkTransitiveQuorumSet.size === 0" variant="danger" class="w-100" show>No Transitive Quorum Set
+            Detected in network!
         </b-alert>
         <div class="col-xs-12" style="width: 100%">
             <div v-bind:class="dimmerClass">
@@ -49,7 +49,7 @@
             </div>
         </div>
         <div>
-            <label class="custom-switch mt-2 mr-2">
+            <label v-if="selectedNode" class="custom-switch mt-2 mr-2">
 
                 <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
                        v-model="optionHighlightTrustedNodes">
@@ -57,7 +57,7 @@
                 <span class="custom-switch-description">Highlight trusted nodes</span>
 
             </label>
-            <label class="custom-switch mt-2 mr-2">
+            <label  v-if="selectedNode" class="custom-switch mt-2 mr-2">
 
                 <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
                        v-model="optionHighlightTrustingNodes">
@@ -88,7 +88,7 @@
 
 <script lang="ts">
     import Vue from "vue";
-    import {Network, Node, PublicKey, Vertex} from "@stellarbeat/js-stellar-domain";
+    import {Network, Node, PublicKey, Vertex, QuorumSet} from "@stellarbeat/js-stellar-domain";
     import GraphVertex from "./graph-vertex.vue";
     import svgPanZoom from "svg-pan-zoom";
     import {line, curveLinearClosed} from "d3-shape";
@@ -96,10 +96,14 @@
 
     import ComputeGraphWorker from "worker-loader?name=dist/[name].js!./../../../workers/compute-graphv6.worker";
     import {Component, Prop, Watch} from "vue-property-decorator";
-    import {DirectedGraphManager, DirectedGraph} from "@stellarbeat/js-stellar-domain";
     import GraphEdge from "@/components/quorum-monitor/graph/graph-edge.vue";
 
-    import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from "d3-force";
+    import {
+        haltingAnalysis,
+        HaltingFailure,
+        NetworkGraphNode,
+        QuorumSet as NetworkQuorumSet
+    } from "@stellar/halting-analysis";
 
     type VertexViewData = {
         publicKey: PublicKey,
@@ -149,9 +153,9 @@
         public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
         public edgesViewData: EdgeViewData[] = [];
         public optionShowFailingEdges: boolean = false;
-        public optionHighlightTrustingNodes:boolean = true;
-        public optionHighlightTrustedNodes:boolean = true;
-        public optionShowRegularEdges:boolean = true;
+        public optionHighlightTrustingNodes: boolean = true;
+        public optionHighlightTrustedNodes: boolean = true;
+        public optionShowRegularEdges: boolean = true;
 
         @Watch("centerNode")
         public onCenterNodeChanged() {
@@ -168,10 +172,12 @@
         public onOptionShowFailingEdgesChanged() {
             this.computeGraph();
         }
+
         @Watch("optionHighlightTrustingNodes")
         public onOptionHighlightTrustingNodesChanged() {
             this.computeGraph();
         }
+
         @Watch("optionHighlightTrustedNodes")
         public onOptionHighlightTrustedNodesChanged() {
             this.computeGraph();
@@ -186,18 +192,18 @@
             }
         }
 
-        protected sortEdges (a: EdgeViewData, b: EdgeViewData) {
-            if(a.highlightAsOutgoing)
+        protected sortEdges(a: EdgeViewData, b: EdgeViewData) {
+            if (a.highlightAsOutgoing)
                 return +5;
-            if(b.highlightAsOutgoing)
+            if (b.highlightAsOutgoing)
                 return -5;
-            if(a.highlightAsIncoming)
+            if (a.highlightAsIncoming)
                 return +5;
-            if(b.highlightAsIncoming)
+            if (b.highlightAsIncoming)
                 return -5;
-            if(a.isFailing)
+            if (a.isFailing)
                 return +5;
-            if(b.isFailing)
+            if (b.isFailing)
                 return -5;
             return 0;
         };
@@ -294,7 +300,7 @@
         }
 
         highlightVertexAsTrusting(vertex: Vertex) {
-            if(!this.optionHighlightTrustingNodes)
+            if (!this.optionHighlightTrustingNodes)
                 return false;
             if (!this.selectedNode)
                 return false;
@@ -310,7 +316,7 @@
         }
 
         highLightVertexAsTrusted(vertex: Vertex): boolean {
-            if(!this.optionHighlightTrustedNodes)
+            if (!this.optionHighlightTrustedNodes)
                 return false;
             if (!this.selectedNode)
                 return false;
@@ -343,7 +349,7 @@
                             this.verticesViewData.get(vertex.publicKey)!.x : 0,
                         y: this.verticesViewData.get(vertex.publicKey) ?
                             this.verticesViewData.get(vertex.publicKey)!.y : 0,
-                        isPartOfTransitiveQuorumSet: this.network.graph.isVertexPartOfTransitiveQuorumSet(vertex.publicKey),
+                        isPartOfTransitiveQuorumSet: this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey),
                         selected: this.selectedNode ?
                             this.selectedNode.publicKey === vertex.publicKey : false,
                         highlightAsIncoming:
@@ -360,12 +366,12 @@
                     return {
                         source: edge.parent.publicKey,
                         target: edge.child.publicKey,
-                        isPartOfTransitiveQuorumSet: this.network.graph.isEdgePartOfTransitiveQuorumSet(edge),
+                        isPartOfTransitiveQuorumSet: this.network.graph.isEdgePartOfNetworkTransitiveQuorumSet(edge),
                         isPartOfStronglyConnectedComponent: this.network.graph.isEdgePartOfStronglyConnectedComponent(edge),
                         highlightAsOutgoing:
                             this.selectedNode && this.optionHighlightTrustedNodes ? edge.parent.publicKey === this.selectedNode.publicKey : false,
                         highlightAsIncoming:
-                            this.selectedNode && this.optionHighlightTrustingNodes? edge.child.publicKey === this.selectedNode.publicKey : false,
+                            this.selectedNode && this.optionHighlightTrustingNodes ? edge.child.publicKey === this.selectedNode.publicKey : false,
                         isFailing: !edge.isActive
                     };
                 });

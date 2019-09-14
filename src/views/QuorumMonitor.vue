@@ -27,9 +27,18 @@
                 <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
+            <div class="row row-cards" v-if="showHaltingAnalysis" id="halting-analysis-card">
+                <div class="col-12">
+                    <HaltingAnalysis
+                            :network="network"
+                            :publicKey="haltingAnalysisPublicKey"
+                            v-on:update-validating-states="updateValidatingStates">
+                    </HaltingAnalysis>
+                </div>
+            </div>
             <div class="row row-cards">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card" id="quorum-set-explorer-card">
                         <div class="card-header">
                             <h3 class="card-title">Quorum-set explorer</h3>
 
@@ -67,6 +76,7 @@
                                                          v-on:quorumset-add-inner-quorumset="addInnerQuorumSet"
                                                          v-on:quorumset-add-validators="addValidators"
                                                          v-on:center-node="onNodeCenter"
+                                                         v-on:show-halting-analysis="onShowHaltingAnalysis"
                                                          :network="network"
                                                          :selectedNode="selectedNode"
                                             >
@@ -82,7 +92,8 @@
                                                     title="Simulate a new node"
                                                     v-on:ok="simulateNewNode"
                                             >
-                                                <b-form-input v-model="newNodeName" placeholder="Enter a name"></b-form-input>
+                                                <b-form-input v-model="newNodeName"
+                                                              placeholder="Enter a name"></b-form-input>
                                             </b-modal>
                                         </div>
                                     </div>
@@ -136,8 +147,9 @@
     import Search from "../components/quorum-monitor/search.vue";
     import Statistics from "../components/statistics.vue";
     import Manual from "../components/quorum-monitor/manual.vue";
+    import HaltingAnalysis from "@/components/quorum-monitor/halting-analysis/halting-analysis.vue";
 
-    import {Node, Network, QuorumSet} from "@stellarbeat/js-stellar-domain";
+    import {Node, Network, QuorumSet, PublicKey} from "@stellarbeat/js-stellar-domain";
     import {Component, Prop, Watch} from "vue-property-decorator";
     import {Change, ChangeQueue} from "@/services/change-queue/change-queue";
     import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
@@ -157,7 +169,8 @@
             GraphLegend,
             Search,
             Statistics,
-            Manual
+            Manual,
+            HaltingAnalysis
         },
         metaInfo: {
             title: "Quorum monitor - Stellarbeat.io",
@@ -167,16 +180,18 @@
         },
     })
     export default class QuorumMonitor extends Vue {
-        public searchString: string = "";
-        public centerNode: Node | null = null;
-        public selectedNode: Node | null = null;
-        public changeQueue: ChangeQueue = new ChangeQueue();
-        public newNodeName: string = '';
-
         @Prop()
         public network!: Network;
         @Prop()
         public isLoading!: boolean;
+
+        protected searchString: string = "";
+        protected centerNode: Node | null = null;
+        protected selectedNode: Node | null = null;
+        protected changeQueue: ChangeQueue = new ChangeQueue();
+        protected newNodeName: string = "";
+        protected showHaltingAnalysis: boolean = false;
+        protected haltingAnalysisPublicKey: PublicKey|null = null;
 
         @Watch("$route")
         public on$routeChanged(to: any) {
@@ -200,6 +215,23 @@
             this.processChange(new EntityPropertyUpdate(node, "isValidating", !node.isValidating));
         }
 
+        public updateValidatingStates(updates: Array<{"publicKey": PublicKey, "validating": boolean }>){
+            updates.forEach(update => {
+                let node = this.network.getNodeByPublicKey(update.publicKey);
+                this.changeQueue.execute(new EntityPropertyUpdate(node, "isValidating", update.validating));
+            });
+            this.network.updateNetwork();
+            (this.$refs.graph as any).restartSimulation();
+        }
+
+        onShowHaltingAnalysis(publicKey: PublicKey){
+            this.haltingAnalysisPublicKey = publicKey;
+            this.showHaltingAnalysis = true;
+
+            this.$nextTick(() => {
+                this.$scrollTo('#halting-analysis-card');
+            });
+        }
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
             if (quorumSet.threshold === newThreshold) {
                 return;
@@ -208,23 +240,23 @@
             this.processChange(new EntityPropertyUpdate(quorumSet, "threshold", newThreshold));
         }
 
-        public deleteValidatorFromQuorumSet(quorumSet:QuorumSet, validator:Node) {
+        public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
             this.processChange(new QuorumSetValidatorDelete(quorumSet, validator.publicKey));
         }
 
-        public deleteInnerQuorumSet(quorumSet:QuorumSet, fromQuorumSet:QuorumSet){
+        public deleteInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet: QuorumSet) {
             this.processChange(new InnerQuorumSetDelete(fromQuorumSet, quorumSet));
         }
 
-        public addInnerQuorumSet(toQuorumSet:QuorumSet){
+        public addInnerQuorumSet(toQuorumSet: QuorumSet) {
             this.processChange(new InnerQuorumSetAdd(toQuorumSet));
         }
 
-        public addValidators(toQuorumSet:QuorumSet, validators: string[]) {
+        public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
             this.processChange(new QuorumSetValidatorsAdd(toQuorumSet, validators));
         }
 
-        protected processChange(change:Change) {
+        protected processChange(change: Change) {
             this.changeQueue.execute(change);
             this.network.updateNetwork();
             (this.$refs.graph as any).restartSimulation();
@@ -244,11 +276,11 @@
             }
             this.changeQueue.undo();
             this.network.updateNetwork();
-            if(this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
+            if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
                 this.$router.push(
                     {
-                        name: 'quorum-monitor',
-                        query: {'no-scroll': '1'}
+                        name: "quorum-monitor",
+                        query: {"no-scroll": "1"}
 
                     },
                 );
@@ -271,12 +303,14 @@
             }
             this.changeQueue.reset();
             this.network.updateNetwork();
-            this.$router.push(
-                {
-                    name: 'quorum-monitor',
-                    query: {'no-scroll': '1'}
-                },
-            );
+            if(this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)){
+                this.$router.push(
+                    {
+                        name: "quorum-monitor",
+                        query: {"no-scroll": "1"}
+                    },
+                );
+            }
             (this.$refs.graph as any).restartSimulation();
         }
 
@@ -286,10 +320,10 @@
             if (this.$route.params["publicKey"]) {
                 this.selectedNode = this.network.getNodeByPublicKey(this.$route.params["publicKey"]);
             }
-            if(!this.selectedNode) {
+            if (!this.selectedNode) {
                 this.$router.push(
                     {
-                        name: 'quorum-monitor'
+                        name: "quorum-monitor"
                     },
                 );
             }
@@ -299,32 +333,32 @@
         }
 
         public simulateNewNode() {
-            let node = new Node('localhost');
-            node.name = this.newNodeName === '' ? 'MyNewNode' : this.newNodeName;
+            let node = new Node("localhost");
+            node.name = this.newNodeName === "" ? "MyNewNode" : this.newNodeName;
             node.publicKey = this.makePublicKey();
             node.quorumSet.threshold = 1;
             node.active = true;
             node.isValidating = true;
             node.isValidator = true;
-            this.$set(node, 'x', 0); //doesn't belong here, needs better solution
-            this.$set(node, 'y', 0);
+            this.$set(node, "x", 0); //doesn't belong here, needs better solution
+            this.$set(node, "y", 0);
             this.changeQueue.execute(new NetworkAddNode(this.network, node));
             this.network.updateNetwork(this.network.nodes); //needs better solution
             (this.$refs.graph as any).restartSimulation();
             this.$router.push(
                 {
-                    name: 'quorum-monitor-node',
+                    name: "quorum-monitor-node",
                     params: {publicKey: node.publicKey},
-                    query: {'center': '1', 'no-scroll': '1'},
+                    query: {"center": "1", "no-scroll": "1"},
                 },
             );
         }
 
         protected makePublicKey() {
-            let result           = 'G';
-            let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = "G";
+            let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             let charactersLength = characters.length;
-            for ( let i = 0; i < 56; i++ ) {
+            for (let i = 0; i < 56; i++) {
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             return result;
