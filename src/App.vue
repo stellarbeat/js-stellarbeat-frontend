@@ -3,7 +3,7 @@
         <div class="page-main">
             <div v-if="!isHeadlessRoute">
 
-            <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="md">
+            <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                     <div class="container-fluid">
                         <div class="d-flex">
