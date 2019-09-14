@@ -2,10 +2,8 @@
     <b-card :header="'Halting analysis for ' + vertex.label" header-class="my-card-title">
         <div class="row">
             <div class="col-12">
-                <h3 v-if="!vertex.isValidating && !showAnalysisResult">
-                    Validator already failing!
-                </h3>
-                <div v-else>
+                <b-alert :show="!vertex.isValidating" variant="warning">{{vertex.label}} is failing.</b-alert>
+                <div v-if="vertex.isValidating">
                     <b-form inline>
                         <b-form-group
                                 label-size="sm"
