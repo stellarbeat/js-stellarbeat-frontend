@@ -20,8 +20,8 @@
                                     size="sm"
                                     v-model="numberOfNodeFailures"
                                     type="number"
-                                    min="1"
-                                    max="10"
+                                    min="2"
+                                    max="9"
                             >
                             </b-form-input>
                         </b-form-group>
@@ -45,9 +45,9 @@
                                 <b-form>
                                     <b-form-select :disabled="simulated" :select-size="4" v-model="selectedFailure"
                                                    :options="nodeFailures"></b-form-select>
-                                    <b-button v-if="!simulated" size="sm" variant="primary" @click="simulateFailure" class="mt-2">Simulate
+                                    <b-button v-if="!simulated" size="sm" variant="primary" @click="simulateFailure" class="mt-2">Simulate failure
                                     </b-button>
-                                    <b-button v-else size="sm" variant="secondary" @click="resetFailureSimulation" class="mt-2">Undo failure simulation
+                                    <b-button v-else size="sm" variant="secondary" @click="resetFailureSimulation" class="mt-2">Reactivate nodes
                                     </b-button>
                                 </b-form>
                             </div>
@@ -67,7 +67,7 @@
     import {
         NetworkGraphNode,
         QuorumSet as NetworkQuorumSet
-    } from "@stellar/halting-analysis";
+    } from "@stellar/halting-analysis/src";
     import {GraphQuorumSet, Network, PublicKey, Vertex} from "@stellarbeat/js-stellar-domain";
     import HaltingAnalysisWorker from "worker-loader?name=dist/[name].js!./../../../workers/halting-analysisv1.worker.ts";
 
@@ -205,6 +205,6 @@
     .nr-node-failures-input {
         margin-left: 5px;
         margin-right: 5px;
-        width: 50px !important;
+        width: 45px !important;
     }
 </style>

@@ -40,8 +40,9 @@
                 <div class="col-12">
                     <div class="card" id="quorum-set-explorer-card">
                         <div class="card-header">
-                            <h3 class="card-title">Quorum-set explorer</h3>
-
+                            <h3 class="card-title">Network explorer
+                                <b-badge v-show="changeQueue.hasUndo()" variant="warning">Simulation</b-badge>
+                            </h3>
                             <div class="pull-right">
                                 <UndoRedo v-if="selectedNode && (changeQueue.hasRedo() || changeQueue.hasUndo())"
                                           :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"

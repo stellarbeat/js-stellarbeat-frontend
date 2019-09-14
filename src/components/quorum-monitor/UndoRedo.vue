@@ -6,7 +6,7 @@
         </button>
         <button type="button" class="btn btn-secondary btn-sm"
                 v-on:click="resetUpdates" :disabled="!hasUndo">
-            Reset changes
+            Reset Simulation
         </button>
         <button type="button" class="btn btn-secondary btn-sm" v-on:click="redoUpdate"
                 :disabled="!hasRedo">

@@ -81,7 +81,7 @@
                                              :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">
                                     Details
                                 </router-link>
-                                <router-link class="btn btn-secondary" role="button"
+                                <router-link v-if="row.item.isValidator" class="btn btn-secondary" role="button"
                                              :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
                                     Quorum monitor
                                 </router-link>

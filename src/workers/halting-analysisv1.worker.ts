@@ -1,6 +1,6 @@
 import {
     haltingAnalysis
-} from "@stellar/halting-analysis";
+} from "@stellar/halting-analysis/src";
 
 const ctx: Worker = self as any;
 

@@ -98,13 +98,6 @@
     import {Component, Prop, Watch} from "vue-property-decorator";
     import GraphEdge from "@/components/quorum-monitor/graph/graph-edge.vue";
 
-    import {
-        haltingAnalysis,
-        HaltingFailure,
-        NetworkGraphNode,
-        QuorumSet as NetworkQuorumSet
-    } from "@stellar/halting-analysis";
-
     type VertexViewData = {
         publicKey: PublicKey,
         label: string,
