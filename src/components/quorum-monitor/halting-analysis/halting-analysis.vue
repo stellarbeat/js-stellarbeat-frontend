@@ -176,10 +176,14 @@
                     }
                         break;
                     case "end": {
-                        this.nodeFailures = event.data.failures.map((failure: Array<Array<PublicKey>>) => {
+                        this.nodeFailures = event.data.failures.map((failure: Array<PublicKey>) => {
                             return {
                                 value: failure,
-                                text: failure.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName.substr(0, 10)).join(", ")
+                                text: failure.map(publicKey =>
+                                    this.network.getNodeByPublicKey(publicKey).name ?
+                                        this.network.getNodeByPublicKey(publicKey).displayName :
+                                        publicKey.substr(0, 5)
+                                ).join(", ")
                             };
                         });
                         if (this.nodeFailures.length > 0) {
