@@ -44,7 +44,10 @@
                 .filter(node => node.active)
                 .filter(node => node.geoData.countryName)
                 .map(node => node.geoData.countryName)
-                .reduce((accumulator:any, currentValue:string) => {
+                .reduce((accumulator:any, currentValue:string|undefined) => {
+                    if(currentValue === undefined) {
+                        return accumulator;
+                    }
                     if(accumulator[currentValue] === undefined)
                         accumulator[currentValue] = 1;
                     else
