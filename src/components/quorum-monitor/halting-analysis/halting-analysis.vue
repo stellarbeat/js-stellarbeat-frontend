@@ -38,7 +38,7 @@
                             </h3>
                             <div v-else class="mt-3">
                                 <h3>
-                                    Found {{nodeFailures.length}} combinations of validators that will halt {{vertex.label}}
+                                    Found {{nodeFailures.length}} combinations of validators that can halt {{vertex.label}}
                                 </h3>
                                 <b-form>
                                     <b-form-select :disabled="simulated" :select-size="4" v-model="selectedFailure"
