@@ -181,10 +181,8 @@
         },
     })
     export default class QuorumMonitor extends Vue {
-        @Prop()
-        public network!: Network;
-        @Prop()
-        public isLoading!: boolean;
+        public network: Network = this.$root.$data.store.network;
+        public isLoading: boolean = this.$root.$data.store.isLoading;
 
         protected searchString: string = "";
         protected centerNode: Node | null = null;

@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/browser';
 // Importing the global css file
 import "@/assets/global.css"
 import VueScrollTo from 'vue-scrollto';
+import Store from '@/Store';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -31,13 +32,12 @@ Vue.use(VueScrollTo);
 
 new Vue({
     router,
-    render(createElement) {
-        return createElement(App, /*, {
-                props: {
-                    network: network
-                }
-            }*/);
+    data() {
+        return {
+            'store': new Store()
+        }
     },
+    render: h => h(App),
     mounted() {
         document.dispatchEvent(new Event('x-app-rendered'));
     },

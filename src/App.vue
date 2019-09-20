@@ -88,9 +88,10 @@
                             <div class="col-5"></div>
 
                         </div>
-                        <router-view v-if="!isLoading || isFullPreRenderRoute" :network="network"
-                                     :isLoading="isLoading">
-
+                        <router-view v-if="!isLoading || isFullPreRenderRoute"
+                                     :network="network"
+                                     :isLoading="isLoading"
+                        >
                         </router-view>
                     </div>
 
@@ -130,6 +131,7 @@
     import {Network, Node, Organization} from "@stellarbeat/js-stellar-domain";
     import axios from "axios";
     import {Component} from "vue-property-decorator";
+    import Store from "@/Store";
 
     @Component({
         name: "app",
@@ -145,40 +147,23 @@
     })
 
     export default class App extends Vue {
-        protected network = {};
-        protected isLoading = true;
-        protected showError = false;
-        protected errorMessage = "";
-
-        async fetchData(): Promise<any> {
-            try {
-                let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
-                return result.data;
-            } catch (error) { //todo logging
-                console.log(error);
-                this.showError = true;
-                this.errorMessage = "Could not connect to stellarbeat.io api";
-                return [];
-            }
-        }
+        protected store:Store = this.$root.$data.store;
+        protected errorMessage = "Could not connect to stellarbeat.io api";
 
         async created() {
-            let result = await this.fetchData();
-            if (result.nodes) {
-                let nodes = result["nodes"]
-                    .map((node: any) => Node.fromJSON(node));
+            await this.store.fetchData();
+        }
 
-                let organizations = [];
-                if (result.organizations) {
-                    organizations = result.organizations.map((organization:any) => Organization.fromJSON(organization));
-                }
-                this.network = new Network(nodes, organizations);
-                this.isLoading = false;
-            } else {
-                this.showError = true;
-                this.errorMessage = "Stellarbeat.io API data error, nodes missing";
-            }
+        get network() {
+            return this.store.network;
+        }
 
+        get isLoading() {
+            return this.store.isLoading;
+        }
+
+        get showError() {
+            return this.store.fetchingDataFailed;
         }
 
         get backgroundClass() {
