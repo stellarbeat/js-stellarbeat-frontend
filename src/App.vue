@@ -148,22 +148,20 @@
 
     export default class App extends Vue {
         protected store:Store = this.$root.$data.store;
+        protected isLoading: boolean = true;
         protected errorMessage = "Could not connect to stellarbeat.io api";
 
         async created() {
             await this.store.fetchData();
+            this.isLoading = false;
         }
 
         get network() {
             return this.store.network;
         }
 
-        get isLoading() {
-            return this.store.isLoading;
-        }
-
         get showError() {
-            return this.store.fetchingDataFailed;
+            return this.store.fetchingNodeDataFailed;
         }
 
         get backgroundClass() {

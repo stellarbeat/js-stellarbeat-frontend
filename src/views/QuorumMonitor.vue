@@ -20,7 +20,7 @@
             <div class="page-header  mt-2">
                 <h1 class="page-title">
                     Quorum Monitor
-                    <b-badge v-show="changeQueue.hasUndo()" variant="warning">Simulation</b-badge>
+                    <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
 
                 </h1>
                 <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
@@ -36,8 +36,8 @@
                                 <UndoRedo
                                         :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
                                         :undoUpdate="undoUpdate"
-                                        :hasUndo="changeQueue.hasUndo()"
-                                        :hasRedo="changeQueue.hasRedo()"
+                                        :hasUndo="store.hasUndo"
+                                        :hasRedo="store.hasRedo"
                                         class="undo-redo ml-2"/>
                             </div>
                         </div>
@@ -52,10 +52,10 @@
                                 <full-validator-title :node="selectedNode"/>
                             </h3>
                             <h3 v-else class="card-title">Stellar Public Network
-                                <b-badge v-show="changeQueue.hasUndo()" variant="warning">Simulation</b-badge>
+                                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
                             </h3>
                         </div>
-                        <div class="card-body" style="height: 100%">
+                        <div class="card-body py-2" style="height: 100%">
                             <Graph ref="graph" :network="network"
                                    v-on:center-node="onNodeCenter"
                                    :centerNode="centerNode"
@@ -120,7 +120,7 @@
                         <div class="card-header">
                             <div class="card-title">Network transitive quorumset</div>
                         </div>
-                        <div class="card-body">
+                        <div v-if="false" class="card-body">
                             <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes" :title="nodes"/>
                         </div>
                     </div>
@@ -183,16 +183,10 @@
 
     import {Node, Network, QuorumSet, PublicKey} from "@stellarbeat/js-stellar-domain";
     import {Component, Prop, Watch} from "vue-property-decorator";
-    import {Change, ChangeQueue} from "@/services/change-queue/change-queue";
-    import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
     import UndoRedo from "@/components/quorum-monitor/UndoRedo.vue";
-    import {QuorumSetValidatorDelete} from "@/services/change-queue/changes/quorum-set-validator-delete";
-    import {InnerQuorumSetDelete} from "@/services/change-queue/changes/inner-quorum-set-delete";
-    import {InnerQuorumSetAdd} from "@/services/change-queue/changes/inner-quorum-set-add";
-    import {QuorumSetValidatorsAdd} from "@/services/change-queue/changes/quorum-set-validators-add";
-    import {NetworkAddNode} from "@/services/change-queue/changes/network-add-node";
-    import FullValidatorTitle from '@/components/node/full-validator-title.vue';
-    import NodeList from '@/components/quorum-monitor/quorum-set-explorer/node-list.vue';
+    import FullValidatorTitle from "@/components/node/full-validator-title.vue";
+    import NodeList from "@/components/quorum-monitor/quorum-set-explorer/node-list.vue";
+    import Store from "@/Store";
 
     @Component({
         name: "quorum-monitor",
@@ -216,13 +210,8 @@
         },
     })
     export default class QuorumMonitor extends Vue {
-        public network: Network = this.$root.$data.store.network;
-        public isLoading: boolean = this.$root.$data.store.isLoading;
-
-        protected searchString: string = "";
         protected centerNode: Node | null = null;
         protected selectedNode: Node | null = null;
-        protected changeQueue: ChangeQueue = new ChangeQueue();
         protected newNodeName: string = "";
         protected showHaltingAnalysis: boolean = false;
         protected haltingAnalysisPublicKey: PublicKey | null = null;
@@ -235,6 +224,14 @@
             }
         }
 
+        get store():Store {
+            return this.$root.$data.store;
+        }
+
+        get network() {
+            return this.$root.$data.store.network;
+        }
+
         get networkTransitiveQuorumSetNodes() {
             return Array.from(this.network.graph.networkTransitiveQuorumSet)
                 .map(publicKey => this.network.getNodeByPublicKey(publicKey));
@@ -242,25 +239,6 @@
 
         public onNodeCenter(node: Node) {
             this.centerNode = node;
-        }
-
-        public toggleActive(node: Node) {
-            this.processChange(new EntityPropertyUpdate(node, "active", !node.active));
-        }
-
-        public toggleValidating(node: Node) {
-            if (!node.active)
-                this.changeQueue.execute(new EntityPropertyUpdate(node, "active", !node.active));
-            this.processChange(new EntityPropertyUpdate(node, "isValidating", !node.isValidating));
-        }
-
-        public updateValidatingStates(updates: Array<{ "publicKey": PublicKey, "validating": boolean }>) {
-            updates.forEach(update => {
-                let node = this.network.getNodeByPublicKey(update.publicKey);
-                this.changeQueue.execute(new EntityPropertyUpdate(node, "isValidating", update.validating));
-            });
-            this.network.updateNetwork();
-            (this.$refs.graph as any).restartSimulation();
         }
 
         onShowHaltingAnalysis(publicKey: PublicKey) {
@@ -272,50 +250,48 @@
             });
         }
 
-        public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
-            if (quorumSet.threshold === newThreshold) {
-                return;
-            }
-
-            this.processChange(new EntityPropertyUpdate(quorumSet, "threshold", newThreshold));
-        }
-
-        public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
-            this.processChange(new QuorumSetValidatorDelete(quorumSet, validator.publicKey));
-        }
-
-        public deleteInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet: QuorumSet) {
-            this.processChange(new InnerQuorumSetDelete(fromQuorumSet, quorumSet));
-        }
-
-        public addInnerQuorumSet(toQuorumSet: QuorumSet) {
-            this.processChange(new InnerQuorumSetAdd(toQuorumSet));
-        }
-
-        public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
-            this.processChange(new QuorumSetValidatorsAdd(toQuorumSet, validators));
-        }
-
-        protected processChange(change: Change) {
-            this.changeQueue.execute(change);
-            this.network.updateNetwork();
-            (this.$refs.graph as any).restartSimulation();
-        }
-
         get latestCrawlDateString(): string {
             return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
         }
 
+        public toggleActive(node: Node) {
+            this.store.toggleActive(node);
+        }
+
+        public toggleValidating(node: Node) {
+            this.store.toggleActive(node);
+        }
+
+        public updateValidatingStates(updates: Array<{ "publicKey": PublicKey, "validating": boolean }>) {
+            this.store.updateValidatingStates(updates);
+        }
+
+        public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
+            this.store.editQuorumSetThreshold(quorumSet, newThreshold);
+        }
+
+        public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
+            this.store.deleteValidatorFromQuorumSet(quorumSet, validator);
+        }
+
+        public deleteInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet: QuorumSet) {
+            this.store.deleteInnerQuorumSet(quorumSet, fromQuorumSet);
+        }
+
+        public addInnerQuorumSet(toQuorumSet: QuorumSet) {
+            this.store.addInnerQuorumSet(toQuorumSet);
+        }
+
+        public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
+            this.store.addValidators(toQuorumSet, validators);
+        }
+
         get isSimulation(): boolean {
-            return this.changeQueue.hasUndo();
+            return this.store.isSimulation;
         }
 
         public undoUpdate() {
-            if (!this.changeQueue.hasUndo()) {
-                return;
-            }
-            this.changeQueue.undo();
-            this.network.updateNetwork();
+            this.store.undoUpdate();
             if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
                 this.$router.push(
                     {
@@ -325,24 +301,14 @@
                     },
                 );
             }
-            (this.$refs.graph as any).restartSimulation();
         }
 
         public redoUpdate() {
-            if (!this.changeQueue.hasRedo()) {
-                return;
-            }
-            this.changeQueue.redo();
-            this.network.updateNetwork();
-            (this.$refs.graph as any).restartSimulation();
+            this.store.redoUpdate();
         }
 
         public resetUpdates() {
-            if (!this.changeQueue.hasUndo()) {
-                return;
-            }
-            this.changeQueue.reset();
-            this.network.updateNetwork();
+            this.store.resetUpdates();
             if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
                 this.$router.push(
                     {
@@ -351,7 +317,6 @@
                     },
                 );
             }
-            (this.$refs.graph as any).restartSimulation();
         }
 
         public created() {
@@ -382,9 +347,7 @@
             node.isValidator = true;
             this.$set(node, "x", 0); //doesn't belong here, needs better solution
             this.$set(node, "y", 0);
-            this.changeQueue.execute(new NetworkAddNode(this.network, node));
-            this.network.updateNetwork(this.network.nodes); //needs better solution
-            (this.$refs.graph as any).restartSimulation();
+            this.store.addNodeToNetwork(node);
             this.$router.push(
                 {
                     name: "quorum-monitor-node",
@@ -406,8 +369,7 @@
 
         public beforeDestroy() {
             if (this.isSimulation) { // undo simulation
-                this.changeQueue.reset();
-                this.network.updateNetwork(this.network.nodes);
+                this.store.resetUpdates();
             } // todo: better way to manage network adjustments
         }
     }

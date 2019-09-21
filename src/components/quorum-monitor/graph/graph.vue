@@ -150,6 +150,10 @@
         public optionHighlightTrustedNodes: boolean = true;
         public optionShowRegularEdges: boolean = true;
 
+        @Watch("networkUpdated")
+        public onNetworkUpdated() {
+            this.restartSimulation();
+        }
         @Watch("centerNode")
         public onCenterNodeChanged() {
             if (!this.isLoading) {
@@ -183,6 +187,10 @@
             } else {
                 this.delayedVisualizeCenterNode = true;
             }
+        }
+
+        get networkUpdated() {
+            return this.$root.$data.store.networkUpdated;
         }
 
         protected sortEdges(a: EdgeViewData, b: EdgeViewData) {
