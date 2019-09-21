@@ -12,6 +12,7 @@ import * as Sentry from '@sentry/browser';
 import "@/assets/global.css"
 import VueScrollTo from 'vue-scrollto';
 import Store from '@/Store';
+import VueClipboard from 'vue-clipboard2'
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -24,6 +25,7 @@ if (isProd) {
     });
 }
 
+Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(BootstrapVue);
 Vue.use(Meta);

@@ -19,7 +19,7 @@
                                v-on:node-toggle-validating="toggleValidating(node)"
                                v-on:node-show-modal="showModal"></NodeActionBar>
             </div>
-            <div class="pagination" v-if="nodes.length > 0">
+            <div class="pagination" v-if="nodes.length > 10">
                 <b-pagination size="sm"
                               v-model="currentPage"
                               :total-rows="totalRows"

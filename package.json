@@ -38,6 +38,7 @@
     "tabler-ui": "^0.0.32",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
+    "vue-clipboard2": "^0.3.1",
     "vue-meta": "^1.5.6",
     "vue-property-decorator": "^7.2.0",
     "vue-router": "^3.0.2",

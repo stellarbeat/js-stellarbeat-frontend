@@ -10,7 +10,7 @@
                     <svg class="graph" xmlns="http://www.w3.org/2000/svg"
                          ref="graphSvg"
                          width="100%"
-                         height="600px"
+                         height="340px"
                     >
                         <g class="svg-pan-zoom_viewport">
 
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div v-show="false">
             <label v-if="selectedNode" class="custom-switch mt-2 mr-2">
 
                 <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"

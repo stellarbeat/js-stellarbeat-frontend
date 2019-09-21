@@ -1,12 +1,25 @@
 <template>
     <div class="dropdown search">
-        <b-form-input class="form-control" type="text" v-model="searchString" id="searchInput" placeholder="Search node"
+        <b-form-input class="form-control border-0 search-input" type="text" v-model="searchString" id="searchInput" placeholder="Search validators"
                       autocomplete="off"
                       @keydown.down.native="onArrowDown"
                       @keydown.up.native="onArrowUp"
                       @keydown.enter.native.prevent.stop="onEnter">
         </b-form-input>
-        <div class="dropdown-menu dropdown-menu-right" v-bind:class="{show: showSuggestions}"
+        <!--b-list-group v-show="showSuggestions">
+            <b-list-group-item
+                    href="#" v-for="(node, i) in filteredList"
+                    :key="i"
+                    @click.prevent.stop="nodeSelected(node)"
+                    :class="{ 'active': i === arrowCounter }">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ node.displayName }}</h5>
+                    <small>{{node.key}}</small>
+                </div>
+                <small>{{node.publicKey}}</small>
+            </b-list-group-item>
+        </b-list-group!-->
+        <div class="dropdown-menu" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a
                     class="dropdown-item"
@@ -14,8 +27,11 @@
                     :key="i"
                     @click.prevent.stop="nodeSelected(node)"
                     :class="{ 'active': i === arrowCounter }">
-                {{ node.displayName | truncate(20)}}
-            </a>
+                <div class="d-flex w-100 justify-content-between">
+                    <h5  v-if="node.name !== undefined" class="mb-1 mr-2">{{ node.name }}</h5>
+                    <h5 v-else> {{node.publicKey | truncate(20)}}</h5>
+                </div>
+                <small v-if="node.name !== undefined">{{node.publicKey | truncate(20)}}</small>            </a>
         </div>
     </div>
 </template>
@@ -30,7 +46,7 @@
     @Component({
         name: "search"
     })
-    export default class QuorumSetDisplay extends Vue {
+    export default class Search extends Vue {
         @Prop()
         protected nodes!: Node[];
 
@@ -47,7 +63,8 @@
 
         get filteredList() {
             return this.nodes.filter((node) => {
-                return node.displayName.toLowerCase().includes(this.searchString.toLowerCase());
+                return node.displayName.toLowerCase().includes(this.searchString.toLowerCase()) ||
+                    node.publicKey.toLowerCase().includes(this.searchString.toLowerCase());
             });
         }
 
@@ -85,6 +102,10 @@
 <style scoped>
     .search {
         width: 100%;
+    }
+
+    .search-input {
+        font-size: 20px;
     }
 
     .dropdown-menu {

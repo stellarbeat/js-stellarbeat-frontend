@@ -66,10 +66,10 @@
     import {Network, Node} from "@stellarbeat/js-stellar-domain";
 
     @Component({
-        name: "node-statistics",
+        name: "node-statistics-list-item",
         components: {},
     })
-    export default class NodeStatistics extends Vue {
+    export default class NodeStatisticsListItem extends Vue {
         @Prop()
         public node!: Node[];
         @Prop()

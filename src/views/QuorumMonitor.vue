@@ -17,125 +17,156 @@
 <template>
     <div>
         <div>
-            <div v-show="changeQueue.hasUndo()" class="alert alert-warning" role="alert">
-                You are viewing a simulation!
-            </div>
             <div class="page-header  mt-2">
                 <h1 class="page-title">
                     Quorum Monitor
+                    <b-badge v-show="changeQueue.hasUndo()" variant="warning">Simulation</b-badge>
+
                 </h1>
                 <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
-            <div class="row row-cards" v-if="showHaltingAnalysis" id="halting-analysis-card">
-                <div class="col-12">
-                    <HaltingAnalysis
-                            :network="network"
-                            :publicKey="haltingAnalysisPublicKey"
-                            v-on:update-validating-states="updateValidatingStates">
-                    </HaltingAnalysis>
-                </div>
-            </div>
             <div class="row row-cards">
                 <div class="col-12">
-                    <div class="card" id="quorum-set-explorer-card">
-                        <div class="card-header">
-                            <h3 class="card-title">Network explorer
-                                <b-badge v-show="changeQueue.hasUndo()" variant="warning">Simulation</b-badge>
-                            </h3>
-                            <div class="pull-right">
-                                <UndoRedo v-if="selectedNode && (changeQueue.hasRedo() || changeQueue.hasUndo())"
-                                          :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
-                                          :undoUpdate="undoUpdate"
-                                          :hasUndo="changeQueue.hasUndo()"
-                                          :hasRedo="changeQueue.hasRedo()"
-                                          class="undo-redo"/>
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="search-bar">
                                 <search :nodes="this.network.nodes"
                                         v-on:center-node="onNodeCenter"></search>
+                                <UndoRedo
+                                        :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
+                                        :undoUpdate="undoUpdate"
+                                        :hasUndo="changeQueue.hasUndo()"
+                                        :hasRedo="changeQueue.hasRedo()"
+                                        class="undo-redo ml-2"/>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row card-group">
+                <div class="col-sm-12 col-lg-8">
+                    <div class="card" id="quorum-set-explorer-card">
+                        <div class="card-header d-flex">
+                            <h3 v-if="false" class="card-title">
+                                <full-validator-title :node="selectedNode"/>
+                            </h3>
+                            <h3 v-else class="card-title">Stellar Public Network
+                                <b-badge v-show="changeQueue.hasUndo()" variant="warning">Simulation</b-badge>
+                            </h3>
                         </div>
                         <div class="card-body" style="height: 100%">
-                            <div class="row">
-                                <div class="col-12 col-xl-8 graph-row">
-                                    <Graph ref="graph" :network="network"
-                                           v-on:center-node="onNodeCenter"
-                                           :centerNode="centerNode"
-                                           :selectedNode="selectedNode"
-                                    ></Graph>
-                                    <div class="text-right pt-1">
-                                        <GraphLegend></GraphLegend>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-xl-4">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <router-view v-on:node-toggle-active="toggleActive"
-                                                         v-on:node-toggle-validating="toggleValidating"
-                                                         v-on:quorumset-edit-threshold="editQuorumSetThreshold"
-                                                         v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
-                                                         v-on:quorumset-delete-inner-quorumset="deleteInnerQuorumSet"
-                                                         v-on:quorumset-add-inner-quorumset="addInnerQuorumSet"
-                                                         v-on:quorumset-add-validators="addValidators"
-                                                         v-on:center-node="onNodeCenter"
-                                                         v-on:show-halting-analysis="onShowHaltingAnalysis"
-                                                         :network="network"
-                                                         :selectedNode="selectedNode"
-                                            >
-                                            </router-view>
-                                        </div>
-                                        <div class="col-12">
-                                            <b-button v-b-modal.simulate-node-modal class="mt-2" variant="primary">
-                                                <i class="fe fe-plus-circle"></i>
-                                                Simulate a new node
-                                            </b-button>
-                                            <b-modal
-                                                    ok-title="Simulate Node" size="lg" id="simulate-node-modal"
-                                                    title="Simulate a new node"
-                                                    v-on:ok="simulateNewNode"
-                                            >
-                                                <b-form-input v-model="newNodeName"
-                                                              placeholder="Enter a name"></b-form-input>
-                                            </b-modal>
-                                        </div>
-                                    </div>
-                                </div>
+                            <Graph ref="graph" :network="network"
+                                   v-on:center-node="onNodeCenter"
+                                   :centerNode="centerNode"
+                                   :selectedNode="selectedNode"
+                            ></Graph>
+                            <div v-show="false" class="text-right pt-1">
+                                <GraphLegend></GraphLegend>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row row-cards">
-                <div class="col-12 col-md-6">
-
-                    <div class="card mb-2">
+                <div class="col-lg-4 col-sm-12">
+                    <div class="card" v-if="selectedNode">
                         <div class="card-header">
-                            Quorum-set explorer manual
+                            <h3 class="card-title">
+                                <full-validator-title :node="selectedNode"/>
+                            </h3>
+                        </div>
+                        <div v-if="network.isNodeFailing(selectedNode)" class="card-alert alert alert-danger mb-0">
+                            <i class="fe fe-alert-triangle"></i>
+                            Node not validating {{network.isQuorumSetFailing(selectedNode, selectedNode.quorumSet) ? ": quorumset not reaching threshold" : ""}}
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    <router-view v-on:node-toggle-active="toggleActive"
+                                                 v-on:node-toggle-validating="toggleValidating"
+                                                 v-on:quorumset-edit-threshold="editQuorumSetThreshold"
+                                                 v-on:quorumset-delete-validator="deleteValidatorFromQuorumSet"
+                                                 v-on:quorumset-delete-inner-quorumset="deleteInnerQuorumSet"
+                                                 v-on:quorumset-add-inner-quorumset="addInnerQuorumSet"
+                                                 v-on:quorumset-add-validators="addValidators"
+                                                 v-on:center-node="onNodeCenter"
+                                                 v-on:show-halting-analysis="onShowHaltingAnalysis"
+                                                 :network="network"
+                                                 :selectedNode="selectedNode"
+                                    >
+                                    </router-view>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer p-3">
+                            <div class="col-12 pl-0">
+                                <b-button v-b-modal.simulate-node-modal size="sm" variant="primary">
+                                    <i class="fe fe-plus-circle"></i>
+                                    Simulate a new node
+                                </b-button>
+                                <b-modal
+                                        ok-title="Simulate Node" size="lg" id="simulate-node-modal"
+                                        title="Simulate a new node"
+                                        v-on:ok="simulateNewNode"
+                                >
+                                    <b-form-input v-model="newNodeName"
+                                                  placeholder="Enter a name"></b-form-input>
+                                </b-modal>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card" v-else>
+                        <div class="card-header">
+                            <div class="card-title">Network transitive quorumset</div>
                         </div>
                         <div class="card-body">
-                            <Manual></Manual>
+                            <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes" :title="nodes"/>
                         </div>
                     </div>
                 </div>
-                <!--div class="col-12 col-md-6">
-                    <div class="card mb-2">
-                        <div class="card-header">
-                            Options
-                        </div>
-                        <div class="card-body">
-                            <b-row>
-                                <b-col cols="12">
-                                    <label class="custom-switch">
-                                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                                               v-model="optionNodeActiveBasedOnLatestCrawl">
-                                        <span class="custom-switch-indicator"></span>
-                                        <span class="custom-switch-description">Use latest crawl results for active status of nodes</span>
-                                    </label>
-                                </b-col>
-                            </b-row>
-                        </div>
-                    </div>
-                </div!-->
             </div>
+        </div>
+        <div class="row row-cards" v-if="showHaltingAnalysis" id="halting-analysis-card">
+            <div class="col-12">
+                <HaltingAnalysis
+                        :network="network"
+                        :publicKey="haltingAnalysisPublicKey"
+                        v-on:update-validating-states="updateValidatingStates">
+                </HaltingAnalysis>
+            </div>
+        </div>
+        <div class="row row-cards">
+            <div class="col-12 col-md-6">
+
+                <div class="card mb-2">
+                    <div class="card-header">
+                        Quorum-set explorer manual
+                    </div>
+                    <div class="card-body">
+                        <Manual></Manual>
+                    </div>
+                </div>
+            </div>
+            <!--div class="col-12 col-md-6">
+                <div class="card mb-2">
+                    <div class="card-header">
+                        Options
+                    </div>
+                    <div class="card-body">
+                        <b-row>
+                            <b-col cols="12">
+                                <label class="custom-switch">
+                                    <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
+                                           v-model="optionNodeActiveBasedOnLatestCrawl">
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description">Use latest crawl results for active status of nodes</span>
+                                </label>
+                            </b-col>
+                        </b-row>
+                    </div>
+                </div>
+            </div!-->
         </div>
     </div>
 </template>
@@ -160,10 +191,14 @@
     import {InnerQuorumSetAdd} from "@/services/change-queue/changes/inner-quorum-set-add";
     import {QuorumSetValidatorsAdd} from "@/services/change-queue/changes/quorum-set-validators-add";
     import {NetworkAddNode} from "@/services/change-queue/changes/network-add-node";
+    import FullValidatorTitle from '@/components/node/full-validator-title.vue';
+    import NodeList from '@/components/quorum-monitor/quorum-set-explorer/node-list.vue';
 
     @Component({
         name: "quorum-monitor",
         components: {
+            NodeList,
+            FullValidatorTitle,
             UndoRedo,
             QuorumSetExplorer,
             Graph,
@@ -190,7 +225,7 @@
         protected changeQueue: ChangeQueue = new ChangeQueue();
         protected newNodeName: string = "";
         protected showHaltingAnalysis: boolean = false;
-        protected haltingAnalysisPublicKey: PublicKey|null = null;
+        protected haltingAnalysisPublicKey: PublicKey | null = null;
 
         @Watch("$route")
         public on$routeChanged(to: any) {
@@ -198,6 +233,11 @@
             if (to.query.center === "1") {
                 this.centerNode = this.selectedNode;
             }
+        }
+
+        get networkTransitiveQuorumSetNodes() {
+            return Array.from(this.network.graph.networkTransitiveQuorumSet)
+                .map(publicKey => this.network.getNodeByPublicKey(publicKey));
         }
 
         public onNodeCenter(node: Node) {
@@ -209,12 +249,12 @@
         }
 
         public toggleValidating(node: Node) {
-            if(!node.active)
+            if (!node.active)
                 this.changeQueue.execute(new EntityPropertyUpdate(node, "active", !node.active));
             this.processChange(new EntityPropertyUpdate(node, "isValidating", !node.isValidating));
         }
 
-        public updateValidatingStates(updates: Array<{"publicKey": PublicKey, "validating": boolean }>){
+        public updateValidatingStates(updates: Array<{ "publicKey": PublicKey, "validating": boolean }>) {
             updates.forEach(update => {
                 let node = this.network.getNodeByPublicKey(update.publicKey);
                 this.changeQueue.execute(new EntityPropertyUpdate(node, "isValidating", update.validating));
@@ -223,14 +263,15 @@
             (this.$refs.graph as any).restartSimulation();
         }
 
-        onShowHaltingAnalysis(publicKey: PublicKey){
+        onShowHaltingAnalysis(publicKey: PublicKey) {
             this.haltingAnalysisPublicKey = publicKey;
             this.showHaltingAnalysis = true;
 
             this.$nextTick(() => {
-                this.$scrollTo('#halting-analysis-card');
+                this.$scrollTo("#halting-analysis-card");
             });
         }
+
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
             if (quorumSet.threshold === newThreshold) {
                 return;
@@ -302,7 +343,7 @@
             }
             this.changeQueue.reset();
             this.network.updateNetwork();
-            if(this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)){
+            if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
                 this.$router.push(
                     {
                         name: "quorum-monitor",
@@ -373,8 +414,12 @@
 </script>
 
 <style scoped>
+    .search-bar {
+        display: flex;
+    }
+
     .undo-redo {
-        margin-right: 10px;
+        margin-right: 0px;
     }
 
     .graph-row {
