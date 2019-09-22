@@ -21,27 +21,13 @@
                 <h1 class="page-title">
                     Quorum Monitor
                     <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
-
                 </h1>
                 <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
             </div>
             <Statistics :network="network"></Statistics>
             <div class="row row-cards">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-body p-0">
-                            <div class="search-bar">
-                                <search :nodes="this.network.nodes"
-                                        v-on:center-node="onNodeCenter"></search>
-                                <UndoRedo
-                                        :redoUpdate="redoUpdate" :resetUpdates="resetUpdates"
-                                        :undoUpdate="undoUpdate"
-                                        :hasUndo="store.hasUndo"
-                                        :hasRedo="store.hasRedo"
-                                        class="undo-redo ml-2"/>
-                            </div>
-                        </div>
-                    </div>
+                    <search-card></search-card>
                 </div>
             </div>
             <div class="row card-group">
@@ -187,10 +173,13 @@
     import FullValidatorTitle from "@/components/node/full-validator-title.vue";
     import NodeList from "@/components/quorum-monitor/quorum-set-explorer/node-list.vue";
     import Store from "@/Store";
+    import EventBus from "@/event-bus";
+    import SearchCard from '@/components/quorum-monitor/cards/search-card.vue';
 
     @Component({
         name: "quorum-monitor",
         components: {
+            SearchCard,
             NodeList,
             FullValidatorTitle,
             UndoRedo,
@@ -210,22 +199,28 @@
         },
     })
     export default class QuorumMonitor extends Vue {
-        protected centerNode: Node | null = null;
-        protected selectedNode: Node | null = null;
         protected newNodeName: string = "";
         protected showHaltingAnalysis: boolean = false;
         protected haltingAnalysisPublicKey: PublicKey | null = null;
 
         @Watch("$route")
         public on$routeChanged(to: any) {
-            this.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
+            this.store.quorumMonitorStore.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
             if (to.query.center === "1") {
-                this.centerNode = this.selectedNode;
+                this.store.quorumMonitorStore.centerNode = this.store.quorumMonitorStore.selectedNode;
             }
         }
 
         get store():Store {
             return this.$root.$data.store;
+        }
+
+        get selectedNode() {
+            return this.store.quorumMonitorStore.selectedNode;
+        }
+
+        get centerNode() {
+            return this.store.quorumMonitorStore.centerNode;
         }
 
         get network() {
@@ -238,7 +233,7 @@
         }
 
         public onNodeCenter(node: Node) {
-            this.centerNode = node;
+            this.store.quorumMonitorStore.centerNode = node;
         }
 
         onShowHaltingAnalysis(publicKey: PublicKey) {
@@ -290,6 +285,18 @@
             return this.store.isSimulation;
         }
 
+        protected resetRouteIfNoSelectedNode() {
+            if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
+                this.$router.push(
+                    {
+                        name: "quorum-monitor",
+                        query: {"no-scroll": "1"}
+
+                    },
+                );
+            }
+        }
+
         public undoUpdate() {
             this.store.undoUpdate();
             if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
@@ -320,10 +327,9 @@
         }
 
         public created() {
-
             // fix centering and selection in graph
             if (this.$route.params["publicKey"]) {
-                this.selectedNode = this.network.getNodeByPublicKey(this.$route.params["publicKey"]);
+                this.store.quorumMonitorStore.selectedNode = this.network.getNodeByPublicKey(this.$route.params["publicKey"]);
             }
             if (!this.selectedNode) {
                 this.$router.push(
@@ -333,7 +339,7 @@
                 );
             }
             if (this.$route.query["center"] === "1" || this.$route.query["center"] === undefined) {
-                this.centerNode = this.selectedNode;
+                this.store.quorumMonitorStore.centerNode = this.selectedNode;
             }
         }
 
@@ -376,14 +382,6 @@
 </script>
 
 <style scoped>
-    .search-bar {
-        display: flex;
-    }
-
-    .undo-redo {
-        margin-right: 0px;
-    }
-
     .graph-row {
         margin-bottom: 10px;
     }

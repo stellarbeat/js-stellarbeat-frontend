@@ -8,11 +8,19 @@ import {InnerQuorumSetAdd} from '@/services/change-queue/changes/inner-quorum-se
 import {QuorumSetValidatorsAdd} from '@/services/change-queue/changes/quorum-set-validators-add';
 import {NetworkAddNode} from '@/services/change-queue/changes/network-add-node';
 
+export type QuorumMonitorStore = {
+    centerNode: Node | null,
+    selectedNode: Node | null
+}
 export default class Store {
     public fetchingNodeDataFailed: boolean = false;
     public network!: Network;
     public changeQueue: ChangeQueue = new ChangeQueue();
     public networkUpdated: number = 0;
+    public quorumMonitorStore: QuorumMonitorStore = {
+        centerNode: null,
+        selectedNode: null,
+    };
 
     async fetchData(): Promise<any> {
         try {

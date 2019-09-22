@@ -6,19 +6,6 @@
                       @keydown.up.native="onArrowUp"
                       @keydown.enter.native.prevent.stop="onEnter">
         </b-form-input>
-        <!--b-list-group v-show="showSuggestions">
-            <b-list-group-item
-                    href="#" v-for="(node, i) in filteredList"
-                    :key="i"
-                    @click.prevent.stop="nodeSelected(node)"
-                    :class="{ 'active': i === arrowCounter }">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ node.displayName }}</h5>
-                    <small>{{node.key}}</small>
-                </div>
-                <small>{{node.publicKey}}</small>
-            </b-list-group-item>
-        </b-list-group!-->
         <div class="dropdown-menu" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a
@@ -42,16 +29,22 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Node} from "@stellarbeat/js-stellar-domain";
+    import Store from "@/Store";
 
     @Component({
         name: "search"
     })
     export default class Search extends Vue {
-        @Prop()
-        protected nodes!: Node[];
+        protected nodes: Node[] = this.store.network.nodes.filter(
+            node => node.isValidator
+        );
 
         protected searchString: string = "";
         protected arrowCounter: number = -1;
+
+        get store():Store {
+            return this.$root.$data.store;
+        }
 
         get showSuggestions() {
             if (this.searchString === "") {
