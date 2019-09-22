@@ -9,17 +9,17 @@ import {QuorumSetValidatorsAdd} from '@/services/change-queue/changes/quorum-set
 import {NetworkAddNode} from '@/services/change-queue/changes/network-add-node';
 
 export type QuorumMonitorStore = {
-    centerNode: Node | null,
-    selectedNode: Node | null
+    centerNode: Node | undefined,
+    selectedNode: Node | undefined
 }
-export default class Store {
+export default class Store{
     public fetchingNodeDataFailed: boolean = false;
     public network!: Network;
     public changeQueue: ChangeQueue = new ChangeQueue();
     public networkUpdated: number = 0;
     public quorumMonitorStore: QuorumMonitorStore = {
-        centerNode: null,
-        selectedNode: null,
+        centerNode: undefined,
+        selectedNode: undefined,
     };
 
     async fetchData(): Promise<any> {
@@ -33,7 +33,7 @@ export default class Store {
                 if (result.data.organizations) {
                     organizations = result.data.organizations.map((organization:any) => Organization.fromJSON(organization));
                 }
-                this.network = new Network(nodes, organizations);
+                return new Network(nodes, organizations);
             } else {
                 this.fetchingNodeDataFailed = true;
             }

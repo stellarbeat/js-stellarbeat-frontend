@@ -130,7 +130,7 @@
     import Vue from "vue";
     import {Network, Node, Organization} from "@stellarbeat/js-stellar-domain";
     import axios from "axios";
-    import {Component} from "vue-property-decorator";
+    import {Component, Prop, Watch} from "vue-property-decorator";
     import Store from "@/Store";
 
     @Component({
@@ -147,15 +147,18 @@
     })
 
     export default class App extends Vue {
-        protected store:Store = this.$root.$data.store;
         protected isLoading: boolean = true;
         protected errorMessage = "Could not connect to stellarbeat.io api";
 
         async created() {
-            await this.store.fetchData();
+            let network = await this.store.fetchData();
+            this.$set(this.$root.$data.store, 'network', network); //force reactivity...
             this.isLoading = false;
         }
 
+        get store() {
+            return this.$root.$data.store;
+        }
         get network() {
             return this.store.network;
         }
