@@ -1,6 +1,6 @@
 <template>
     <div class="pt-0">
-        <div class="pt-2 pb-2 nodes-title active" v-on:click="toggleShow">
+        <div v-if="renderTitle" class="pt-2 pb-2 nodes-title active" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i>
             <h5 class="mb-0">{{title}}
             </h5>
@@ -51,11 +51,13 @@
         public network!: Network;
         @Prop()
         public title!: string;
+        @Prop()
+        public renderTitle!: boolean;
 
         protected currentPage: number = 1;
         protected perPage: number = 10;
 
-        protected showing: boolean = false;
+        protected showing: boolean = !this.renderTitle;
 
         get paginatedNodes() {
             return this.nodes

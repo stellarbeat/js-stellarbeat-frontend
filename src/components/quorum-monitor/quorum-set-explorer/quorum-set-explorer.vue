@@ -1,8 +1,23 @@
 <template>
     <div v-if="selectedNode" class="quorum-set-explorer">
-        <div class="row mt-2">
+        <div class="row">
             <div class="col-sm-12">
-                <div class="nodes-title active">
+                <span class="badge sb-badge"
+                      v-bind:class="[selectedNode.isFullValidator || selectedNode.isValidator ? 'badge-success ' : 'badge-default']"
+                >
+                    {{selectedNode.isFullValidator ? 'Full Validator' :
+                    selectedNode.isValidator ? 'Validator' : 'Watcher Node'}}
+                </span>
+                <span v-if="selectedNode.isValidating && !network.isNodeFailing(this.selectedNode)"
+                      class="badge sb-badge badge-success"
+                >Validating
+                </span>
+                <span v-if="selectedNodePartOfTransitiveQuorumSet" class="badge sb-badge badge-primary"
+                >Transitive Quorum Set
+                </span>
+                <span class="badge badge-default sb-badge">{{selectedNode.versionStr}}</span>
+                <pre><code data-lang="html">{{selectedNode.publicKey}}</code></pre>
+                <!--div class="nodes-title active">
                     <div class="d-flex w-100">
                         <i class="fe fe-link mr-1 public-key"
                            v-b-popover.hover.top="'Publickey'"
@@ -19,19 +34,22 @@
                         </button>
                         </div>
                     </div>
-                </div>
-
+                </div!-->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
                 <div v-if="selectedNode.organizationId" class="row">
                     <div class="col-sm-12">
                         <NodeList
                                 :nodes="getFellowOrganizationNodes(selectedNode)"
                                 :network="network"
                                 :title="network.getOrganizationById(selectedNode.organizationId).name"
+                                :render-title="true"
                                 v-on:node-toggle-active="toggleNodeActive"
                                 v-on:node-toggle-validating="toggleNodeValidating"
                                 v-on:node-show-modal="showModal"
                         >
-
                         </NodeList>
                     </div>
 
@@ -66,6 +84,7 @@
                         :nodes="network.getTrustingNodes(selectedNode) ? network.getTrustingNodes(selectedNode) : []"
                         :network="network"
                         :title="'Trusted by ' + numberOfValidatingTrustingNodes + ' validating nodes'"
+                        :render-title="true"
                         v-on:node-toggle-active="toggleNodeActive"
                         v-on:node-toggle-validating="toggleNodeValidating"
                         v-on:node-show-modal="showModal"
@@ -75,7 +94,7 @@
             </div>
 
         </div>
-        <div v-if="false" class="row">
+        <div v-if="" class="row">
             <div class="col-sm-12">
                 <NodeStatisticsListItem :node="selectedNode" :network="network"></NodeStatisticsListItem>
             </div>

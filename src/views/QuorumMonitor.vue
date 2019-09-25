@@ -16,59 +16,82 @@
 
 <template>
     <div>
-        <div>
-            <div class="page-header  mt-2">
-                <h1 class="page-title">
-                    Quorum Monitor
-                    <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
-                </h1>
-                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
-            </div>
-            <Statistics
-                    :network="network"
-            ></Statistics>
-            <div class="row row-cards">
-                <div class="col-12">
-                    <search-card></search-card>
-                </div>
-            </div>
-            <div class="row card-group">
-                <div class="col-sm-12 col-lg-8">
-                    <NetworkGraphCard  id="quorum-set-explorer-card"></NetworkGraphCard>
-                </div>
-                <div class="col-lg-4 col-sm-12">
-                    <quorum-set-explorer-card v-if="selectedNode"
-                                              v-on:show-halting-analysis="onShowHaltingAnalysis"
-                    ></quorum-set-explorer-card>
-                    <div class="card" v-else>
-                        <div class="card-header">
-                            <div class="card-title">Network transitive quorumset</div>
-                        </div>
-                        <div v-if="false" class="card-body">
-                            <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes" :title="nodes"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row row-cards" v-if="showHaltingAnalysis" id="halting-analysis-card">
-            <div class="col-12">
-                <HaltingAnalysis
-                        :network="network"
-                        :publicKey="haltingAnalysisPublicKey"
-                        v-on:update-validating-states="updateValidatingStates">
-                </HaltingAnalysis>
-            </div>
-        </div>
-        <div class="row row-cards">
-            <div class="col-12 col-md-6">
 
-                <div class="card mb-2">
-                    <div class="card-header">
-                        Quorum-set explorer manual
+        <div class="page-header  mt-2">
+            <h1 class="page-title">
+                Quorum Monitor
+                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
+            </h1>
+            <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
+        </div>
+        <Statistics
+                :network="network"
+        ></Statistics>
+        <div class="row">
+            <div class="col-12">
+                <search-card></search-card>
+            </div>
+        </div>
+        <div class="">
+            <div class="row">
+                <div class="col-sm-12 col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <NetworkGraphCard id="quorum-set-explorer-card"></NetworkGraphCard>
+                        </div>
+                        <div class="col-12">
+
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <Manual></Manual>
+
+                </div>
+                <div class="col-lg-4 col-sm-12 order-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <quorum-set-explorer-card v-if="selectedNode"
+                                                      v-on:show-halting-analysis="onShowHaltingAnalysis"
+                            ></quorum-set-explorer-card>
+                            <div class="card" v-else>
+                                <div class="card-header">
+                                    <div class="card-title">Network transitive quorumset</div>
+                                </div>
+                                <div class="card-body py-2 px-0">
+                                    <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes"
+                                               :render-title="false"/>
+                                </div>
+                                <div class="card-footer p-3">
+                                    <simulate-new-node class="col-12 pl-0"></simulate-new-node>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--div class="row" v-if="selectedNode">
+                        <div class="col-12">
+                            <statistics-card></statistics-card>
+                        </div>
+                    </div!-->
+                </div>
+            </div>
+
+            <div class="row" v-if="showHaltingAnalysis" id="halting-analysis-card">
+                <div class="col-12">
+                    <HaltingAnalysis
+                            :network="network"
+                            :publicKey="haltingAnalysisPublicKey"
+                            v-on:update-validating-states="updateValidatingStates">
+                    </HaltingAnalysis>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6">
+
+                    <div class="card mb-2">
+                        <div class="card-header">
+                            Quorum-set explorer manual
+                        </div>
+                        <div class="card-body">
+                            <Manual></Manual>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,13 +116,17 @@
     import NodeList from "@/components/quorum-monitor/quorum-set-explorer/node-list.vue";
     import Store from "@/Store";
     import EventBus from "@/event-bus";
-    import SearchCard from '@/components/quorum-monitor/cards/search-card.vue';
-    import NetworkGraphCard from '@/components/quorum-monitor/cards/network-graph-card.vue';
-    import QuorumSetExplorerCard from '@/components/quorum-monitor/cards/quorum-set-explorer-card.vue';
+    import SearchCard from "@/components/quorum-monitor/cards/search-card.vue";
+    import NetworkGraphCard from "@/components/quorum-monitor/cards/network-graph-card.vue";
+    import QuorumSetExplorerCard from "@/components/quorum-monitor/cards/quorum-set-explorer-card.vue";
+    import StatisticsCard from "@/components/quorum-monitor/cards/statistics-card.vue";
+    import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
 
     @Component({
         name: "quorum-monitor",
         components: {
+            SimulateNewNode,
+            StatisticsCard,
             QuorumSetExplorerCard,
             NetworkGraphCard,
             SearchCard,
@@ -134,7 +161,7 @@
             }
         }
 
-        get store():Store {
+        get store(): Store {
             return this.$root.$data.store;
         }
 
@@ -178,47 +205,6 @@
 
         get isSimulation(): boolean {
             return this.store.isSimulation;
-        }
-
-        protected resetRouteIfNoSelectedNode() {
-            if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
-                this.$router.push(
-                    {
-                        name: "quorum-monitor",
-                        query: {"no-scroll": "1"}
-
-                    },
-                );
-            }
-        }
-
-        public undoUpdate() {
-            this.store.undoUpdate();
-            if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
-                this.$router.push(
-                    {
-                        name: "quorum-monitor",
-                        query: {"no-scroll": "1"}
-
-                    },
-                );
-            }
-        }
-
-        public redoUpdate() {
-            this.store.redoUpdate();
-        }
-
-        public resetUpdates() {
-            this.store.resetUpdates();
-            if (this.selectedNode && !this.network.getNodeByPublicKey(this.selectedNode.publicKey)) {
-                this.$router.push(
-                    {
-                        name: "quorum-monitor",
-                        query: {"no-scroll": "1"}
-                    },
-                );
-            }
         }
 
         public created() {
@@ -291,4 +277,5 @@
         -ms-flex-item-align: center;
         align-self: center;
     }
+
 </style>

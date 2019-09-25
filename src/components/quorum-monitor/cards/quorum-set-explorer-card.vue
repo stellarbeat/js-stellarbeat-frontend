@@ -29,21 +29,7 @@
 
         </div>
         <div class="card-footer p-3">
-            <div class="col-12 pl-0">
-                <b-button v-b-modal.simulate-node-modal size="sm" variant="primary">
-                    <i class="fe fe-plus-circle"></i>
-                    Simulate a new node
-                </b-button>
-                <b-modal
-                        ok-title="Simulate Node" size="lg" id="simulate-node-modal"
-                        title="Simulate a new node"
-                        v-on:ok="simulateNewNode"
-                >
-                    <b-form-input v-model="newNodeName"
-                                  placeholder="Enter a name"></b-form-input>
-                </b-modal>
-            </div>
-
+            <simulate-new-node class="col-12 pl-0"></simulate-new-node>
         </div>
     </div>
 </template>
@@ -54,10 +40,11 @@
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from "@/Store";
     import {Node, PublicKey, QuorumSet} from "@stellarbeat/js-stellar-domain";
+    import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
 
     @Component({
         name: "quorum-set-explorer-card",
-        components: {FullValidatorTitle}
+        components: {SimulateNewNode, FullValidatorTitle}
     })
     export default class QuorumSetExplorerCard extends Vue
     {
@@ -109,36 +96,6 @@
 
         public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
             this.store.addValidators(toQuorumSet, validators);
-        }
-
-        public simulateNewNode() {
-            let node = new Node("localhost");
-            node.name = this.newNodeName === "" ? "MyNewNode" : this.newNodeName;
-            node.publicKey = this.makePublicKey();
-            node.quorumSet.threshold = 1;
-            node.active = true;
-            node.isValidating = true;
-            node.isValidator = true;
-            this.$set(node, "x", 0); //doesn't belong here, needs better solution
-            this.$set(node, "y", 0);
-            this.store.addNodeToNetwork(node);
-            this.$router.push(
-                {
-                    name: "quorum-monitor-node",
-                    params: {publicKey: node.publicKey},
-                    query: {"center": "1", "no-scroll": "1"},
-                },
-            );
-        }
-
-        protected makePublicKey() {
-            let result = "G";
-            let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let charactersLength = characters.length;
-            for (let i = 0; i < 56; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
         }
     }
 </script>
