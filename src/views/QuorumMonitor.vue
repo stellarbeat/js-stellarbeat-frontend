@@ -65,11 +65,11 @@
                             </div>
                         </div>
                     </div>
-                    <!--div class="row" v-if="selectedNode">
+                    <div class="row" v-if="selectedNode">
                         <div class="col-12">
                             <statistics-card></statistics-card>
                         </div>
-                    </div!-->
+                    </div>
                 </div>
             </div>
 

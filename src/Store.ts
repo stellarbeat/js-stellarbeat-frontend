@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import {Network, Node, Organization, PublicKey, QuorumSet} from '@stellarbeat/js-stellar-domain';
 import {Change, ChangeQueue} from '@/services/change-queue/change-queue';
 import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
@@ -12,7 +12,13 @@ export type QuorumMonitorStore = {
     centerNode: Node | undefined,
     selectedNode: Node | undefined
 }
-export default class Store{
+export type ValidatingStatistic = {
+    publicKey: PublicKey,
+    crawlCount: number,
+    isValidatingCount: number,
+    day: Date
+}
+export default class Store {
     public fetchingNodeDataFailed: boolean = false;
     public network!: Network;
     public changeQueue: ChangeQueue = new ChangeQueue();
@@ -24,14 +30,15 @@ export default class Store{
 
     async fetchData(): Promise<any> {
         try {
-            let result = await axios.get(process.env.VUE_APP_NODES_API_URL);
+            console.log(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_ALL_SUFFIX);
+            let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_ALL_SUFFIX);
             if (result.data.nodes) {
                 let nodes = result.data.nodes
                     .map((node: any) => Node.fromJSON(node));
 
                 let organizations = [];
                 if (result.data.organizations) {
-                    organizations = result.data.organizations.map((organization:any) => Organization.fromJSON(organization));
+                    organizations = result.data.organizations.map((organization: any) => Organization.fromJSON(organization));
                 }
                 return new Network(nodes, organizations);
             } else {
@@ -43,22 +50,45 @@ export default class Store{
     }
 
     public toggleActive(node: Node) {
-        this.processChange(new EntityPropertyUpdate(node, "active", !node.active));
+        this.processChange(new EntityPropertyUpdate(node, 'active', !node.active));
     }
 
     public toggleValidating(node: Node) {
         if (!node.active)
-            this.changeQueue.execute(new EntityPropertyUpdate(node, "active", !node.active));
-        this.processChange(new EntityPropertyUpdate(node, "isValidating", !node.isValidating));
+            this.changeQueue.execute(new EntityPropertyUpdate(node, 'active', !node.active));
+        this.processChange(new EntityPropertyUpdate(node, 'isValidating', !node.isValidating));
     }
 
-    public updateValidatingStates(updates: Array<{ "publicKey": PublicKey, "validating": boolean }>) {
+    async fetchValidatingStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<ValidatingStatistic[]> {
+        let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_VALIDATING_STATS_SUFFIX + '/' + publicKey, {
+            params: {
+                from: from,
+                to: to
+            }
+        });
+
+        return result.data.map((stat:{
+            publicKey: PublicKey,
+            crawlCount: number,
+            isValidatingCount: number,
+            day: string
+        }) => {
+            return {
+                publicKey: stat.publicKey,
+                isValidatingCount: stat.isValidatingCount,
+                crawlCount: stat.crawlCount,
+                day: new Date(stat.day)
+            };
+        });
+    }
+
+    public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {
         updates.forEach(update => {
             let node = this.network.getNodeByPublicKey(update.publicKey);
-            this.changeQueue.execute(new EntityPropertyUpdate(node, "isValidating", update.validating));
+            this.changeQueue.execute(new EntityPropertyUpdate(node, 'isValidating', update.validating));
         });
         this.network.updateNetwork();
-        this.networkUpdated ++;
+        this.networkUpdated++;
     }
 
     public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
@@ -66,7 +96,7 @@ export default class Store{
             return;
         }
 
-        this.processChange(new EntityPropertyUpdate(quorumSet, "threshold", newThreshold));
+        this.processChange(new EntityPropertyUpdate(quorumSet, 'threshold', newThreshold));
     }
 
     public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
@@ -88,7 +118,7 @@ export default class Store{
     protected processChange(change: Change) {
         this.changeQueue.execute(change);
         this.network.updateNetwork();
-        this.networkUpdated ++;
+        this.networkUpdated++;
     }
 
     get isSimulation(): boolean {
@@ -109,7 +139,7 @@ export default class Store{
         }
         this.changeQueue.undo();
         this.network.updateNetwork();
-        this.networkUpdated ++;
+        this.networkUpdated++;
     }
 
     public redoUpdate() {
@@ -118,13 +148,13 @@ export default class Store{
         }
         this.changeQueue.redo();
         this.network.updateNetwork();
-        this.networkUpdated ++;
+        this.networkUpdated++;
     }
 
-    public addNodeToNetwork(node:Node) {
+    public addNodeToNetwork(node: Node) {
         this.changeQueue.execute(new NetworkAddNode(this.network, node));
         this.network.updateNetwork(this.network.nodes); //needs better solution
-        this.networkUpdated ++;
+        this.networkUpdated++;
     }
 
     public resetUpdates() {
@@ -133,6 +163,6 @@ export default class Store{
         }
         this.changeQueue.reset();
         this.network.updateNetwork();
-        this.networkUpdated ++;
+        this.networkUpdated++;
     }
 }

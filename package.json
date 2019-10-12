@@ -43,7 +43,8 @@
     "vue-property-decorator": "^7.2.0",
     "vue-router": "^3.0.2",
     "vue-scrollto": "^2.16.3",
-    "vue-truncate-filter": "^1.1.7"
+    "vue-truncate-filter": "^1.1.7",
+    "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
     "@babel/core": "7.5.4",

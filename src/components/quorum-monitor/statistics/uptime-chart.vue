@@ -1,96 +1,173 @@
 <template>
     <div>
-        <h5 v-if="false">{{title}}</h5>
-        <svg ref="uptimeSvg" width="100%" :height="measurementHeight">
-            <rect v-if="isMounted" v-for="(statistic, index) in statistics"
-                  :class="getMeasurePointClass(statistic)"
-                  :width="measurementWidth"
-                  :height="measurementHeight"
-                  :x="index * measurementStep"
-                  y="0"
-                  v-b-tooltip.hover :title="statistic[0] + ': ' + statistic[1] * 100 + '%'"
-            >
-            </rect>
+        <svg width="100%" :height="maxHeight">
+            <g class="y-axis">
+                <text style="text-anchor: end;" x="30" y="8">100%</text>
+                <text style="text-anchor: end;" x="30" :y="(maxMeasurementHeight+8)/2">50%</text>
+                <text style="text-anchor: end;" x="30" :y="maxMeasurementHeight">0%</text>
+            </g>
+            <g v-for="(statistic, index) in stats" class="measurement" v-b-tooltip.hover
+               :title="measurementTitle(statistic)"
+               :transform="measurementsTranslation">
+                <g class="layer layer-failing">
+                    <rect
+                            :width="measurementWidth"
+                            :height="failingHeight(statistic)"
+                            :x="index * measurementStep"
+                            y="0"
+
+                    >
+                    </rect>
+                </g>
+                <g class="layer layer-validating">
+                    <rect
+                            :width="measurementWidth"
+                            :height="validatingHeight(statistic)"
+                            :x="index * measurementStep"
+                            :y="failingHeight(statistic)"
+                    >
+                    </rect>
+                </g>
+                <g v-if="statistic.crawlCount === 0" class="layer layer-not-crawled">
+                    <rect
+                            :width="measurementWidth"
+                            :height="maxMeasurementHeight"
+                            :x="index * measurementStep"
+                            y="0"
+                    >
+                    </rect>
+                </g>
+                <g v-if="index%2 === 0" class="layer layer-day">
+                    <text style="text-anchor: end;" :x="(index * measurementStep) + (measurementWidth/2) "
+                          :y="maxHeight - xAxisHeight + 10" :transform="getXAxisTextTransform(index)">
+                        {{statistic.day.toLocaleDateString()}}
+                    </text>
+                </g>
+            </g>
+            <g class="x-axis">
+                <rect :width="measurementsWidth"
+                      height="1"
+                      :x="yAxisWidth"
+                      :y="maxHeight - xAxisHeight">
+                </rect>
+            </g>
         </svg>
-        <div class="total-percentage d-flex justify-content-center">
-            <div class="spacer"></div>
-            <span class="total-percentage-span mute">100</span> % {{ title }}
-            <div class="spacer"></div>
-        </div>
     </div>
 </template>
 
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
+    import {ValidatingStatistic} from "@/Store";
 
     @Component({
-        name: "uptime-chart"
+        name: "uptime-chart",
     })
-    export default class UptimeChart extends Vue
-    {
+    export default class UptimeChart extends Vue {
+        isMounted:boolean = false;
         @Prop()
-        protected title!:string;
-        //todo: prop
-        protected statistics: [string, number][] = [["2019-08-24", 1.0], ["2019-08-25", 1.0], ["2019-08-26", 1.0], ["2019-08-27", 0.998046875], ["2019-08-28", 1.0], ["2019-08-29", 1.0], ["2019-08-30", 0.9980732177263969], ["2019-08-31", 0.5290697674418605], ["2019-09-01", 0.0], ["2019-09-02", 0.0], ["2019-09-03", 0.0], ["2019-09-04", 0.0], ["2019-09-05", 0.9881656804733728], ["2019-09-06", 1.0], ["2019-09-07", 1.0], ["2019-09-08", 1.0], ["2019-09-09", 1.0], ["2019-09-10", 1.0], ["2019-09-11", 1.0], ["2019-09-12", 1.0], ["2019-09-13", 1.0], ["2019-09-14", 1.0], ["2019-09-15", 1.0], ["2019-09-16", 1.0], ["2019-09-17", 1.0], ["2019-09-18", 1.0], ["2019-09-19", 1.0], ["2019-09-20", 1.0], ["2019-09-21", 1.0], ["2019-09-22", 1.0], ["2019-09-23", 1.0]]
-            .map((stat) => {
-                return [
-                    new Date(stat[0]).toDateString(),
-                    stat[1] as number
-                ];
-            });
+        protected title!: string;
+        @Prop()
+        protected stats!: ValidatingStatistic[];
+        @Prop()
+        protected chartWidth!: number;
 
-        protected measurementHeight: number = 25;
-        protected isMounted: boolean = false;
+        protected minHeight:number = 120;
+
+        get maxHeight() {
+            return this.chartWidth/5 < this.minHeight ? this.minHeight :  this.chartWidth/5;
+        }
+
+        get yAxisWidth() {
+            return 40;
+        }
+
+        get xAxisHeight() {
+            return 50;
+        }
+
+        get maxMeasurementHeight() {
+            return this.maxHeight - this.xAxisHeight;
+        }
+
+        get measurementsWidth() {
+            return this.width - this.yAxisWidth;
+        }
 
         get measurementStep() {
-            return this.width / 31;
+            return this.measurementsWidth / 31;
         }
 
         get measurementWidth() {
-            return this.measurementStep * 0.5;
+            return this.measurementStep * 0.7;
+        }
+
+        get measurementsTranslation() {
+            return "translate(" + this.yAxisWidth + ", 0)";
+        }
+
+        getXAxisTextTransform(index: number) {
+            return "rotate(-45," + Math.round((index * this.measurementStep) + this.measurementWidth / 2) + "," + Math.round(this.maxHeight - this.xAxisHeight + 10) + ")";
+        }
+
+        measurementTitle(stat: ValidatingStatistic) {
+            if (stat.crawlCount === 0)
+                return stat.day.toLocaleDateString() + ": no crawl data";
+
+            return stat.day.toLocaleDateString() + ": " + (this.validatingPercentage(stat) * 100).toFixed(2) + "% (" + stat.crawlCount + " crawls)";
+        }
+
+        failingPercentage(stat: ValidatingStatistic) {
+            if (stat.crawlCount === 0) {
+                return 0;
+            }
+            return (stat.crawlCount - stat.isValidatingCount) / stat.crawlCount;
+        }
+
+        failingHeight(stat: ValidatingStatistic) {
+            return Math.round(this.failingPercentage(stat) * this.maxMeasurementHeight);
+        }
+
+        validatingPercentage(stat: ValidatingStatistic) {
+            if (stat.crawlCount === 0) {
+                return 0;
+            }
+            return stat.isValidatingCount / stat.crawlCount;
+        }
+
+        validatingHeight(stat: ValidatingStatistic) {
+            return Math.round(this.validatingPercentage(stat) * this.maxMeasurementHeight);
         }
 
         get width() {
-            return (this.$refs.uptimeSvg as SVGElement).clientWidth;
-        }
-
-        get height() {
-            return (this.$refs.uptimeSvg as SVGElement).clientHeight;
-        }
-
-        getMeasurePointClass(statistic: [string, number]) {
-            return {
-                "measure-point-green": statistic[1] > 0.99,
-                "measure-point-warning": statistic[1] > 0 && statistic[1] <= 0.99,
-                "measure-point-danger": statistic[1] === 0
-            };
+            return this.chartWidth;//(this.$refs.uptimeSvg as SVGElement).clientWidth;
         }
 
         mounted() {
-            this.renderStats();
-        }
-
-        renderStats() {
             this.isMounted = true;
         }
     }
 </script>
 <style scoped>
-    .measure-point-green {
+    .measurement {
+        cursor: pointer;
+    }
+
+    .layer-validating {
         fill: #5eba00;
     }
 
-    .measure-point-warning {
-        fill: #f1c40f;
+    .layer-failing {
+        fill: #cd201f;
     }
 
-    .measure-point-danger {
+    .layer-not-crawled {
         fill: #e9ecef;
     }
 
-    .measure-point:hover {
-        fill: darkgreen;
+    .layer-day {
+        font-size: 10px;
+        fill: #aaa;
     }
 
     .total-percentage {
@@ -104,5 +181,14 @@
         height: 1px;
         background: #aaa;
         opacity: 0.3
+    }
+
+    .y-axis {
+        font-size: 10px;
+        fill: #aaa;
+    }
+
+    .x-axis {
+        fill: #e9ecef;
     }
 </style>

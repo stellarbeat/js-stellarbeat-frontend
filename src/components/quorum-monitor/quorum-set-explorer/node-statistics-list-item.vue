@@ -5,7 +5,7 @@
             <h5 class="mb-0">Validating Statistics
             </h5>
         </div>
-        <div v-if="showing" class="list-group list-group-flush nested-tree">
+        <div v-if="false" class="list-group list-group-flush nested-tree">
             <div class="list-group-item p-1 pr-0 node-list">
             <uptime-chart :title="'24H validating'"></uptime-chart>
             </div>
