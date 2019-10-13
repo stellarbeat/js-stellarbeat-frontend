@@ -1,6 +1,6 @@
 <template>
     <div class="dropdown search">
-        <b-form-input class="form-control border-0 search-input" type="text" v-model="searchString" id="searchInput" placeholder="Search validators"
+        <b-form-input class="form-control border-0 search-input" type="text" v-model.lazy="searchString" id="searchInput" placeholder="Search validators"
                       autocomplete="off"
                       @keydown.down.native="onArrowDown"
                       @keydown.up.native="onArrowUp"
