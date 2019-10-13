@@ -57,7 +57,8 @@
                                 </div>
                                 <div class="card-body py-2 px-0">
                                     <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes"
-                                               :render-title="false"/>
+                                               :render-title="false"
+                                    />
                                 </div>
                                 <div class="card-footer p-3">
                                     <simulate-new-node class="col-12 pl-0"></simulate-new-node>

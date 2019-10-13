@@ -15,8 +15,8 @@
                     </div>
                 </a>
                 <NodeActionBar :node="node" :network="network"
-                               v-on:node-toggle-active="toggleActive(node)"
-                               v-on:node-toggle-validating="toggleValidating(node)"
+                               v-on:node-toggle-active="store.toggleActive(node)"
+                               v-on:node-toggle-validating="store.toggleValidating(node)"
                                v-on:node-show-modal="showModal"></NodeActionBar>
             </div>
             <div class="pagination" v-if="nodes.length > 10">
@@ -26,6 +26,12 @@
                               :per-page="perPage"
                 ></b-pagination>
             </div>
+            <b-modal v-if="modalNode"
+                     ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal"
+                     v-bind:title="modalNode.displayName">
+                <b-table stacked striped hover responsive :items="modalItems">
+                </b-table>
+            </b-modal>
         </div>
     </div>
 </template>
@@ -37,6 +43,8 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Network, Node} from "@stellarbeat/js-stellar-domain";
+    import Store from "@/Store";
+    import {Modal} from 'bootstrap-vue';
 
     @Component({
         name: "node-list",
@@ -53,11 +61,31 @@
         public title!: string;
         @Prop()
         public renderTitle!: boolean;
+        public modalNode: Node | null = null;
 
         protected currentPage: number = 1;
         protected perPage: number = 10;
 
         protected showing: boolean = !this.renderTitle;
+
+        get store():Store {
+            return this.$root.$data.store;
+        }
+
+        get modalItems() {
+            if (!this.modalNode) {
+                return [];
+            }
+
+            let item = JSON.parse(JSON.stringify(this.modalNode)); // clone it
+            delete item.quorumSet;
+            delete item.geoData;
+            delete item.statistics;
+            item = Object.assign(item, this.modalNode.geoData);
+            item = Object.assign(item, this.modalNode.statistics);
+            item.quorumSet = "";
+            return [item];
+        }
 
         get paginatedNodes() {
             return this.nodes
@@ -68,14 +96,6 @@
 
         get totalRows() {
             return this.nodes.filter(node => node.active).length;
-        }
-
-        public toggleActive(node: Node) {
-            this.$emit("node-toggle-active", node);
-        }
-
-        public toggleValidating(node: Node) {
-            this.$emit("node-toggle-validating", node);
         }
 
         public selectNode(node: Node) {
@@ -99,7 +119,10 @@
         }
 
         public showModal(node: Node) {
-            this.$emit("node-show-modal", node);
+            this.modalNode = node;
+            this.$nextTick(function () {
+                (this.$refs.modal as Modal).show();
+            });
         }
 
         toggleShow(): void {
