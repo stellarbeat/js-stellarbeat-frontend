@@ -60,11 +60,14 @@ export default class Store {
     }
 
     async fetchValidatingStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<ValidatingStatistic[]> {
+        console.log(to);
+        let params:any = {};
+        if(from)
+            params.from = from.toDateString();
+        if(to)
+            params.to = to.toDateString();
         let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_VALIDATING_STATS_SUFFIX + '/' + publicKey, {
-            params: {
-                from: from,
-                to: to
-            }
+            params
         });
 
         return result.data.map((stat:{

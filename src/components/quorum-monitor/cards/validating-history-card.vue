@@ -30,14 +30,14 @@
     import Datepicker from "vuejs-datepicker";
 
     @Component({
-        name: "statistics-card",
+        name: "validating-history-card",
         components: {FullValidatorTitle, UptimeChart, datepicker: Datepicker}
     })
-    export default class StatisticsCard extends Vue {
+    export default class ValidatingHistoryCard extends Vue {
         statistics: ValidatingStatistic[] = [];
         isLoading: boolean = true;
         selectedDate: Date = new Date();
-        datePickerDate: string|null = null;
+        datePickerDate: string|Date|null = null;
         minSelectedDate: Date = new Date('2019-06-18');
         disabledDates:any = {
             to: this.minSelectedDate,
@@ -50,9 +50,9 @@
             this.updateStatistics();
         }
 
-        @Watch("datePickerDate")
-        public onDatePickerDateChanged(){
-            if(this.datePickerDate) {
+        @Watch("datePickerDate", {})
+        public onDatePickerDateChanged(to: string, from:string){
+            if(this.datePickerDate && from !==null) { //don't trigger on first change
                 this.selectedDate = new Date(this.datePickerDate);
                 this.updateStatistics();
             }
@@ -75,11 +75,6 @@
                 dimmer: true,
                 active: this.isLoading,
             };
-        }
-
-        onDateSelected(date: Date) {
-            this.selectedDate = date;
-            this.updateStatistics();
         }
 
         canGoBack() {

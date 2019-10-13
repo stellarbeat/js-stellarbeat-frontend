@@ -119,14 +119,14 @@
     import SearchCard from "@/components/quorum-monitor/cards/search-card.vue";
     import NetworkGraphCard from "@/components/quorum-monitor/cards/network-graph-card.vue";
     import QuorumSetExplorerCard from "@/components/quorum-monitor/cards/quorum-set-explorer-card.vue";
-    import StatisticsCard from "@/components/quorum-monitor/cards/statistics-card.vue";
+    import ValidatingHistoryCard from "@/components/quorum-monitor/cards/validating-history-card.vue";
     import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
 
     @Component({
         name: "quorum-monitor",
         components: {
             SimulateNewNode,
-            StatisticsCard,
+            StatisticsCard: ValidatingHistoryCard,
             QuorumSetExplorerCard,
             NetworkGraphCard,
             SearchCard,
