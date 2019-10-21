@@ -9,10 +9,13 @@
     "start": "node server.js",
     "test": "vue-cli-service test:unit"
   },
+  "engines": {
+    "node": "10.16.3"
+  },
   "dependencies": {
     "@sentry/browser": "^4.4.1",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellar-domain": "^0.11.3",
+    "@stellarbeat/js-stellar-domain": "^0.13.2",
     "@types/chart.js": "^2.7.41",
     "@types/d3-force": "^1.1.1",
     "@types/d3-hierarchy": "^1.1.6",
@@ -58,7 +61,7 @@
     "jest": "^24.8.0",
     "prerender-spa-plugin": "^3.2.1",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.0.0",
+    "typescript": "^3.6.2",
     "vue-cli-plugin-prerender-spa": "^1.0.3",
     "vue-cli-plugin-webpack-bundle-analyzer": "^1.2.0",
     "vue-template-compiler": "^2.5.17",
