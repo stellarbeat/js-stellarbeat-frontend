@@ -5,7 +5,7 @@
 
             <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
-                    <div class="container-fluid">
+                    <div polyfillclass="container-fluid">
                         <div class="d-flex">
                             <router-link class="header-brand mt-2" :to="{ name: 'home'}" exact>
                                 <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">

@@ -13,6 +13,8 @@ import "@/assets/global.css"
 import VueScrollTo from 'vue-scrollto';
 import Store from '@/Store';
 import VueClipboard from 'vue-clipboard2'
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 
 const isProd = process.env.NODE_ENV === 'production';
 
