@@ -11,7 +11,7 @@
                 <h1 class="page-title">
                     Node info
                 </h1>
-                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
+                <crawl-time></crawl-time>
             </div>
             <div class="card mb-2 p-1">
                 <div class="card-body">

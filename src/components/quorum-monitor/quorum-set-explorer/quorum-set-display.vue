@@ -175,6 +175,9 @@
                 return '';
             }
 
+            if(!this.validators[0].organizationId)
+                return '';
+
             return this.network.getOrganizationById(this.validators[0].organizationId).name;
         }
 

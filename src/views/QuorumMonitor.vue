@@ -22,7 +22,7 @@
                 Quorum Monitor
                 <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
             </h1>
-            <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
+            <crawl-time></crawl-time>
         </div>
         <Statistics
                 :network="network"
@@ -116,12 +116,12 @@
     import FullValidatorTitle from "@/components/node/full-validator-title.vue";
     import NodeList from "@/components/quorum-monitor/quorum-set-explorer/node-list.vue";
     import Store from "@/Store";
-    import EventBus from "@/event-bus";
     import SearchCard from "@/components/quorum-monitor/cards/search-card.vue";
     import NetworkGraphCard from "@/components/quorum-monitor/cards/network-graph-card.vue";
     import QuorumSetExplorerCard from "@/components/quorum-monitor/cards/quorum-set-explorer-card.vue";
     import ValidatingHistoryCard from "@/components/quorum-monitor/cards/validating-history-card.vue";
     import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
+    import CrawlTime from '@/components/crawl-time.vue';
 
     @Component({
         name: "quorum-monitor",
@@ -140,7 +140,8 @@
             Search,
             Statistics,
             Manual,
-            HaltingAnalysis
+            HaltingAnalysis,
+            CrawlTime
         },
         metaInfo: {
             title: "Quorum monitor - Stellarbeat.io",

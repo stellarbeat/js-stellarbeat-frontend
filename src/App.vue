@@ -82,15 +82,15 @@
                 <div class="container-fluid">
                     <div class="my-3 my-md-5">
                         <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
-                        <div v-if="isLoading && !isFullPreRenderRoute" class="row">
+                        <div v-if="store.isLoading && !isFullPreRenderRoute" class="row">
                             <div class="col-5"></div>
                             <div class="col-2 loader"></div>
                             <div class="col-5"></div>
 
                         </div>
-                        <router-view v-if="!isLoading || isFullPreRenderRoute"
+                        <router-view v-if="!store.isLoading || isFullPreRenderRoute"
                                      :network="network"
-                                     :isLoading="isLoading"
+                                     :isLoading="store.isLoading"
                         >
                         </router-view>
                     </div>
@@ -98,7 +98,7 @@
                 </div>
             </div>
             <div v-else>
-                <router-view :network="network" :isLoading="isLoading">
+                <router-view :network="network" :isLoading="store.isLoading">
                 </router-view>
             </div>
 
@@ -147,13 +147,12 @@
     })
 
     export default class App extends Vue {
-        protected isLoading: boolean = true;
         protected errorMessage = "Could not connect to stellarbeat.io api";
 
         async created() {
-            let network = await this.store.fetchData();
-            this.$set(this.$root.$data.store, 'network', network); //force reactivity...
-            this.isLoading = false;
+            await this.store.fetchData();
+            //this.$set(this.$root.$data.store, 'network', this.store.network); //force reactivity...
+            this.store.isLoading = false;
         }
 
         get store() {

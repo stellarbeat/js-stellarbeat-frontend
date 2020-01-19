@@ -11,7 +11,7 @@
                 <h1 class="page-title">
                     Stellar Network
                 </h1>
-                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
+                <crawl-time></crawl-time>
             </div>
             <Statistics :network="network"></Statistics>
 
@@ -51,10 +51,12 @@ import NodesVersions from './../components/home/nodes-versions.vue';
 import QuorumSetConnections from './../components/home/quorum-set-connections/quorum-set-connections.vue';
 
 import {Network} from '@stellarbeat/js-stellar-domain';
+import CrawlTime from '@/components/crawl-time.vue';
 
 @Component({
     name: 'home',
     components: {
+        CrawlTime,
         Statistics,
         NodesMap,
         NodesCountryDistribution,

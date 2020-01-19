@@ -10,7 +10,7 @@
     "test": "vue-cli-service test:unit"
   },
   "engines": {
-    "node": "10.16.3"
+    "node": "10.17"
   },
   "dependencies": {
     "@sentry/browser": "^4.4.1",

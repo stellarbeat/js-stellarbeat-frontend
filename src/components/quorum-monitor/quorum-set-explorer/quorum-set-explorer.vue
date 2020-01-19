@@ -126,7 +126,7 @@
             </b-dropdown-item>
             <b-dropdown-item v-on:click="$emit('show-halting-analysis', selectedNode.publicKey)">
                 <i class="dropdown-icon fe fe-settings"></i>
-                Perform halting analysis (beta)
+                Perform halting analysis
             </b-dropdown-item>
         </b-dropdown>
 
@@ -251,7 +251,7 @@
         public navigateToOrg() {
             this.$router.push({
                 name: "organization-details",
-                params: {organizationId: this.selectedNode.organizationId}
+                params: {organizationId: this.selectedNode.organizationId!}
             });
         }
     }

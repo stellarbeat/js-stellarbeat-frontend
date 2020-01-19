@@ -5,7 +5,7 @@
                 <h1 class="page-title">
                     Available nodes
                 </h1>
-                <div class="page-subtitle">Latest crawl on {{latestCrawlDateString}}</div>
+                <crawl-time/>
             </div>
             <div class="card mb-2 p-1">
                 <div class="card-header">
@@ -122,9 +122,11 @@ Age = Time since discovery
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
     import {Network, Node} from "@stellarbeat/js-stellar-domain";
+    import CrawlTime from '@/components/crawl-time.vue';
 
     @Component({
         name: "nodes-table",
+        components: {CrawlTime},
         metaInfo: {
             title: "Nodes overview - Stellarbeat.io",
             meta: [
