@@ -57,7 +57,7 @@
         get filteredList() {
             return this.nodes.filter((node) => {
                 return node.displayName.toLowerCase().includes(this.searchString.toLowerCase()) ||
-                    node.publicKey.toLowerCase().includes(this.searchString.toLowerCase());
+                    node.publicKey!.toLowerCase().includes(this.searchString.toLowerCase());
             });
         }
 
@@ -65,7 +65,7 @@
             this.searchString = "";
             this.$router.push({
                 name: "quorum-monitor-node",
-                params: {publicKey: node.publicKey},
+                params: {publicKey: node.publicKey!},
                 query: {"center": "1", 'no-scroll': '1'}
             });
         }

@@ -44,7 +44,7 @@
             let versions = this.network.nodes
                 .filter(node => node.active)
                 .filter(node => node.versionStr)
-                .map(node => node.versionStr.replace("stellar-core ", "").replace("v","").replace(/ \(.*$/, "").replace(/\-.*$/,""))
+                .map(node => node.versionStr!.replace("stellar-core ", "").replace("v","").replace(/ \(.*$/, "").replace(/\-.*$/,""))
                 .reduce((accumulator:any, currentValue:string) => {
                     if(accumulator[currentValue] === undefined)
                         accumulator[currentValue] = 1;

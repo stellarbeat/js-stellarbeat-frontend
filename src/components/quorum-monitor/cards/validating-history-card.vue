@@ -100,7 +100,7 @@
                 this.isLoading = true;
                 let thirtyDaysAgo = new Date(this.selectedDate.getTime());
                 thirtyDaysAgo.setDate(thirtyDaysAgo.getDate()-30);
-                this.statistics = await this.store.fetchValidatingStatistics(this.selectedNode.publicKey, thirtyDaysAgo, this.selectedDate);
+                this.statistics = await this.store.fetchValidatingStatistics(this.selectedNode.publicKey!, thirtyDaysAgo, this.selectedDate);
                 this.isLoading = false;
             }
         }

@@ -305,7 +305,7 @@
                 return false;
             if (!this.selectedNode)
                 return false;
-            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey);
+            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey!);
             if (selectedVertex === undefined) {
                 return false;
             }
@@ -321,7 +321,7 @@
                 return false;
             if (!this.selectedNode)
                 return false;
-            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey);
+            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey!);
             if (selectedVertex === undefined) {
                 return false;
             }
@@ -333,7 +333,7 @@
 
         centerVertex(): Vertex | undefined {
             if (this.centerNode)
-                return this.network.graph.getVertex(this.centerNode.publicKey);
+                return this.network.graph.getVertex(this.centerNode.publicKey!);
 
             return undefined;
         }

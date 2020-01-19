@@ -307,7 +307,7 @@
         }
 
         onValidatorsSelected(validators: Node[]) {
-            this.validatorsToAdd = validators.map((validator: Node) => validator.publicKey);
+            this.validatorsToAdd = validators.map((validator: Node) => validator.publicKey!);
         }
 
         validatorsToAddModalOk(bvEvent: any, modalId: string) {

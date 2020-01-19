@@ -10,7 +10,7 @@
                 <b-progress height="1rem">
                     <b-progress-bar :value="node.statistics.active24HoursPercentage"
                                     v-bind:variant="node.statistics.active24HoursPercentage === 100 ? 'success ' : 'warning'">
-                        24H active: {{node.statistics.active24HoursPercentage}}%
+                        24H active: {{node.statistics.has24HourStats ? node.statistics.active24HoursPercentage + '%': ' not available'}}
                     </b-progress-bar>
                 </b-progress>
             </div>
@@ -18,7 +18,7 @@
                 <b-progress height="1rem">
                     <b-progress-bar :value="node.statistics.active30DaysPercentage"
                                     v-bind:variant="node.statistics.active30DaysPercentage === 100 ? 'success ' : 'warning'">
-                        30D active: {{node.statistics.active30DaysPercentage}}%
+                        30D active: {{node.statistics.has30DayStats ? node.statistics.active30DaysPercentage + '%': ' not available'}}
                     </b-progress-bar>
                 </b-progress>
             </div>
@@ -26,7 +26,7 @@
                 <b-progress height="1rem">
                     <b-progress-bar :value="node.statistics.validating24HoursPercentage"
                                     v-bind:variant="node.statistics.validating24HoursPercentage === 100 ? 'success ' : 'warning'">
-                        24H validating: {{node.statistics.validating24HoursPercentage}}%
+                        24H validating: {{node.statistics.has24HourStats ? node.statistics.validating24HoursPercentage + '%': ' not available'}}
                     </b-progress-bar>
                 </b-progress>
             </div>
@@ -34,7 +34,7 @@
                 <b-progress height="1rem">
                     <b-progress-bar :value="node.statistics.validating30DaysPercentage"
                                     v-bind:variant="node.statistics.validating30DaysPercentage === 100 ? 'success ' : 'warning'">
-                        30D validating: {{node.statistics.validating30DaysPercentage}}%
+                        30D validating: {{node.statistics.has30DayStats ? node.statistics.validating30DaysPercentage + '%': ' not available'}}
                     </b-progress-bar>
                 </b-progress>
             </div>
@@ -42,18 +42,19 @@
                 <b-progress height="1rem">
                     <b-progress-bar :value="node.statistics.overLoaded24HoursPercentage"
                                     v-bind:variant="node.statistics.overLoaded24HoursPercentage === 100 ? 'danger ' : 'warning'">
-                        24H overloaded: {{node.statistics.overLoaded24HoursPercentage}}%
+                        24H overloaded: {{node.statistics.has24HourStats ? node.statistics.overLoaded24HoursPercentage + '%': ' not available'}}
                     </b-progress-bar>
                 </b-progress>
             </div>
-            <div class="list-group-item p-1 pr-0 node-list">
+            <div  class="list-group-item p-1 pr-0 node-list">
                 <b-progress height="1rem">
                     <b-progress-bar :value="node.statistics.overLoaded30DaysPercentage"
                                     v-bind:variant="node.statistics.overLoaded30DaysPercentage === 100 ? 'danger ' : 'warning'">
-                        30D overloaded: {{node.statistics.overLoaded30DaysPercentage}}%
+                        30D overloaded: {{node.statistics.has30DayStats ? node.statistics.overLoaded30DaysPercentage + '%': ' not available'}}
                     </b-progress-bar>
                 </b-progress>
             </div>
+
 
         </div>
     </div>
@@ -71,7 +72,7 @@
     })
     export default class NodeStatisticsListItem extends Vue {
         @Prop()
-        public node!: Node[];
+        public node!: Node;
         @Prop()
         public network!: Network;
 

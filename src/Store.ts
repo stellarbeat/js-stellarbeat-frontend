@@ -7,6 +7,7 @@ import {InnerQuorumSetDelete} from '@/services/change-queue/changes/inner-quorum
 import {InnerQuorumSetAdd} from '@/services/change-queue/changes/inner-quorum-set-add';
 import {QuorumSetValidatorsAdd} from '@/services/change-queue/changes/quorum-set-validators-add';
 import {NetworkAddNode} from '@/services/change-queue/changes/network-add-node';
+import Vue from "vue";
 
 export type QuorumMonitorStore = {
     centerNode: Node | undefined,
@@ -41,7 +42,7 @@ export default class Store {
                 if (result.data.organizations) {
                     organizations = result.data.organizations.map((organization: any) => Organization.fromJSON(organization));
                 }
-                this.network = new Network(nodes, organizations);
+                Vue.set(this, 'network', new Network(nodes, organizations));
                 this.crawlDate = this.network.latestCrawlDate;
 
                 return;
@@ -91,7 +92,6 @@ export default class Store {
     }
 
     async fetchValidatingStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<ValidatingStatistic[]> {
-        console.log(to);
         let params:any = {};
         if(from)
             params.from = from.toDateString();
@@ -134,7 +134,7 @@ export default class Store {
     }
 
     public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
-        this.processChange(new QuorumSetValidatorDelete(quorumSet, validator.publicKey));
+        this.processChange(new QuorumSetValidatorDelete(quorumSet, validator.publicKey!));
     }
 
     public deleteInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet: QuorumSet) {

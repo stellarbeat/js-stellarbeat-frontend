@@ -172,7 +172,7 @@
         public modalNode: Node | null = null;
 
         get numberOfValidatingTrustingNodes() {
-            let vertex = this.network.graph.getVertex(this.selectedNode.publicKey);
+            let vertex = this.network.graph.getVertex(this.selectedNode.publicKey!);
             if (!vertex)
                 return 0;
             return Array.from(this.network.graph.getParents(vertex)).filter(vertex => vertex.isValidating).length;
@@ -202,13 +202,13 @@
         }
 
         public get selectedNodePartOfTransitiveQuorumSet() {
-            return this.network.graph.networkTransitiveQuorumSet ? this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(this.selectedNode.publicKey) : false;
+            return this.network.graph.networkTransitiveQuorumSet ? this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(this.selectedNode.publicKey!) : false;
         }
 
         public get possibleValidatorsToAdd() {
             return this.network.nodes.filter((node: Node) =>
                 node.isValidator
-                && QuorumSet.getAllValidators(this.selectedNode.quorumSet).indexOf(node.publicKey) < 0);
+                && QuorumSet.getAllValidators(this.selectedNode.quorumSet).indexOf(node.publicKey!) < 0);
         }
 
         public deleteValidatorFromQuorumSet(node: Node, quorumSet: QuorumSet) {
