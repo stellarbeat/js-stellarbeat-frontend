@@ -15,17 +15,13 @@
                 <span v-if="selectedNodePartOfTransitiveQuorumSet" class="badge sb-badge badge-primary"
                 >Transitive Quorum Set
                 </span>
-                <span class="badge badge-default sb-badge">{{selectedNode.versionStr}}</span>
-                <pre><code data-lang="html">{{selectedNode.publicKey}}</code></pre>
-                <!--div class="nodes-title active">
+                <span class="badge badge-default sb-badge" v-b-popover.hover.top="selectedNode.versionStr">{{selectedNode.versionStr | truncate(35)}}</span>
+                <div class="nodes-title mt-2">
                     <div class="d-flex w-100">
-                        <i class="fe fe-link mr-1 public-key"
-                           v-b-popover.hover.top="'Publickey'"
-                        ></i>
                         <div class="d-flex justify-content-between w-100">
                         <h5 class="mb-0 public-key"
                             v-b-popover.hover.top="selectedNode.publicKey">
-                            {{selectedNode.publicKey.substr(0, 12)}}...{{selectedNode.publicKey.substr(50, 100)}}
+                            {{selectedNode.publicKey.substr(0, 15)}}...{{selectedNode.publicKey.substr(50, 100)}}
                         </h5>
                         <button class="btn btn-secondary btn-sm ml-1 border-0" type="button"
                                 v-clipboard:copy="selectedNode.publicKey"
@@ -34,7 +30,7 @@
                         </button>
                         </div>
                     </div>
-                </div!-->
+                </div>
             </div>
         </div>
         <div class="row">
@@ -295,7 +291,7 @@
         padding: 5px 0px 5px 0px;
     }
     .public-key {
-        color: #1997c6;
+        color: #8f969d;
     }
 
 

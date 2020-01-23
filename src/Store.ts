@@ -19,7 +19,24 @@ export type ValidatingStatistic = {
     isValidatingCount: number,
     day: Date
 }
+export interface NodeDayStatistics{
+    day: Date
+    isActiveCount: number;
+    isValidatingCount: number;
+    isFullValidatorCount: number;
+    isOverloadedCount: number;
+    indexSum: number;
+    crawlCount: number;
+}
+
+export type DayStatistic = {
+    crawlCount: number,
+    propertyCount: number,
+    day: Date
+}
+
 export default class Store {
+    public measurementsStartDate: Date = new Date('2019-05-31');
     public isLoading: boolean = true;
     public fetchingNodeDataFailed: boolean = false;
     public network!: Network;
@@ -30,6 +47,11 @@ export default class Store {
         centerNode: undefined,
         selectedNode: undefined,
     };
+    protected _uniqueId = 0;
+
+    get uniqueId(){
+        return this._uniqueId ++;
+    }
 
     async fetchData(time?:Date): Promise<void> {
         try {
@@ -114,6 +136,43 @@ export default class Store {
                 day: new Date(stat.day)
             };
         });
+    }
+
+    async fetchNodeStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<NodeDayStatistics[]> {
+        let params:any = {};
+        if(from)
+            params.from = from.toDateString();
+        if(to)
+            params.to = to.toDateString();
+        let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_NODE_STATS_SUFFIX + '/' + publicKey, {
+            params
+        });
+
+        result.data.forEach((stat:any) => stat.day = new Date(stat.day));
+        return result.data;
+    }
+
+    async fetchNodeValidatingDayStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<DayStatistic[]> {
+        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
+
+        return nodeStatistics.map(nodeStat => {
+            return {
+                day: nodeStat.day,
+                propertyCount: nodeStat.isValidatingCount,
+                crawlCount: nodeStat.crawlCount
+            }
+        })
+    }
+    async fetchNodeFullValidatorDayStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<DayStatistic[]> {
+        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
+
+        return nodeStatistics.map(nodeStat => {
+            return {
+                day: nodeStat.day,
+                propertyCount: nodeStat.isFullValidatorCount,
+                crawlCount: nodeStat.crawlCount
+            }
+        })
     }
 
     public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {

@@ -10,7 +10,7 @@
                     <svg class="graph" xmlns="http://www.w3.org/2000/svg"
                          ref="graphSvg"
                          width="100%"
-                         height="582px"
+                         height="450px"
                     >
                         <g class="svg-pan-zoom_viewport">
 

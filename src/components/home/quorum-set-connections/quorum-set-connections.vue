@@ -132,7 +132,7 @@
                         'isTarget': false
                     };
                 });
-
+            this.shuffleArray(children);
             let root = hierarchy({publicKey: '', children: children, name: ''});
             let myCluster = cluster()
                 .size([360, this.innerRadius]);
@@ -190,6 +190,12 @@
                 return line(link);
             },
 
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            },
 
             showTrustLinks: function (node) {
                 this.selectedNode = node;
@@ -262,6 +268,7 @@
     .outgoing-connection {
         background: #e4d836;
     }
+
     .headless {
         background: #FBFAF7;
     }

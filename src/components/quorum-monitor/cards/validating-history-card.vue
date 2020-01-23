@@ -38,12 +38,18 @@
         isLoading: boolean = true;
         selectedDate: Date = new Date();
         datePickerDate: string|Date|null = null;
-        minSelectedDate: Date = new Date('2019-06-18');
         disabledDates:any = {
             to: this.minSelectedDate,
             from: new Date()
         };
         renderChart:boolean = false;
+
+        get minSelectedDate() {
+            let minDate = new Date(this.store.measurementsStartDate.getTime());
+            minDate.setDate(minDate.getDate() + 30);
+
+            return minDate;
+        }
 
         @Watch("selectedNode")
         public onSelectedNodeChanged() {

@@ -31,6 +31,7 @@
     import {Component} from 'vue-property-decorator';
     import Store from '@/Store';
     import Datepicker from 'vuejs-datepicker';
+    import moment from 'moment';
 
     @Component({
         name: 'crawl-time',
@@ -41,7 +42,7 @@
     export default class CrawlTime extends Vue {
         protected crawlDate:Date;
         protected crawlTime:string;
-        protected minSelectedDate: Date = new Date('2019-06-18');
+        protected minSelectedDate: Date = this.store.measurementsStartDate;
         protected disabledDates: any = {
             to: this.minSelectedDate,
             from: new Date()
