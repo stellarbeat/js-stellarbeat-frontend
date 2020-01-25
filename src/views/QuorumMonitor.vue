@@ -16,14 +16,6 @@
 
 <template>
     <div>
-
-        <div class="page-header  mt-2">
-            <h1 class="page-title">
-                Quorum Monitor
-                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
-            </h1>
-            <crawl-time></crawl-time>
-        </div>
         <Statistics
                 :network="network"
         ></Statistics>
@@ -40,6 +32,14 @@
                         v-on:update-validating-states="updateValidatingStates">
                 </HaltingAnalysis>
             </div>
+        </div>
+
+        <div class="page-header  mt-2">
+            <h1 class="page-title">
+                {{selectedNode ? selectedNode.displayName : 'Stellar public network'}}
+                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
+            </h1>
+            <crawl-time></crawl-time>
         </div>
         <div class="">
             <div class="row">

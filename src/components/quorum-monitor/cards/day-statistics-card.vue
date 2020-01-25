@@ -9,7 +9,8 @@
             <div v-bind:class="dimmerClass">
                 <div class="loader"></div>
                 <div class="dimmer-content" ref="chartContainer">
-                    <canvas v-if="renderChart" height="140px" :width="chartWidth" :id="'lineChart' + id" :ref="'lineChart' + id"></canvas>
+                    <canvas v-if="renderChart" height="140px" :width="chartWidth" :id="'lineChart' + id"
+                            :ref="'lineChart' + id"></canvas>
                     <div class="date-selector d-flex">
                         <b-button :disabled="!canGoBack()" size="sm" v-on:click="goBack30Days()"><i
                                 class="fe fe-chevron-left"></i></b-button>
@@ -72,17 +73,16 @@
         }
 
         @Watch('entityId')
-        public onEntityIdChanged() {
-            this.updateStatistics();
+        async onEntityIdChanged() {
+            console.log(this.entityId);
+            await this.updateChartStatistics();
         }
 
         @Watch('datePickerDate', {})
         async onDatePickerDateChanged(to: string, from: string) {
             if (this.datePickerDate && from !== null) { //don't trigger on first change
                 this.selectedDate = new Date(this.datePickerDate);
-                await this.updateStatistics();
-                this.lineChart.data.datasets![0].data = this.positivePropertyPercentageData;
-                this.lineChart.data.datasets![1].data = this.negativePropertyPercentageData;
+                await this.updateChartStatistics();
             }
         }
 
@@ -111,22 +111,23 @@
                 this.selectedDate.setTime(this.minSelectedDate.getTime());
             }
             this.datePickerDate = this.selectedDate.toDateString();
-            await this.updateStatistics();
-            this.lineChart.data.datasets![0].data = this.positivePropertyPercentageData;
-            this.lineChart.data.datasets![1].data = this.negativePropertyPercentageData;
-            this.lineChart.update();
+            await this.updateChartStatistics();
         }
 
         async goForward30Days() {
             this.selectedDate.setDate(this.selectedDate.getDate() + 30);
             this.datePickerDate = this.selectedDate.toDateString();
-            await this.updateStatistics();
+            await this.updateChartStatistics();
+        }
+
+        async updateChartStatistics() {
+            await this.fetchStatistics();
             this.lineChart.data.datasets![0].data = this.positivePropertyPercentageData;
             this.lineChart.data.datasets![1].data = this.negativePropertyPercentageData;
             this.lineChart.update();
         }
 
-        async updateStatistics() {
+        async fetchStatistics() {
             this.isLoading = true;
             let thirtyDaysAgo = new Date(this.selectedDate.getTime());
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -155,7 +156,7 @@
         async mounted() {
             this.selectedDate = this.getInitialSelectedDate();
             this.datePickerDate = this.selectedDate.toDateString();
-            await this.updateStatistics();
+            await this.fetchStatistics();
             this.renderChart = true;
             Vue.nextTick(() => {
                 let chartId = 'lineChart' + this.id;
@@ -166,9 +167,8 @@
                         datasets: [{
                             label: 'Validating',
                             backgroundColor: '#5eba00',
-                            borderColor: '#1997c6',
-                            data: this.positivePropertyPercentageData,
-                            fill: 'origin'
+                            borderWidth: 0,
+                            data: this.positivePropertyPercentageData
                         },
                             {
                                 label: 'Not Validating',
@@ -193,17 +193,28 @@
                             display: false
                         },
                         animation: {
-                            animateScale: true, // animate from small to large
-                            animateRotate: false // animate clockwise
+                            animateScale: false,
+                            animateRotate: false,
                         },
                         scales: {
-
+                            gridLines: {
+                                display: false,
+                                drawTicks: false,
+                            },
+                            ticks: {
+                                display: false,
+                            },
                             scaleLabel: {
                                 fontColor: '#f5f7fb',
                                 fontSize: 3
                             },
                             xAxes: [{
-
+                                gridLines: {
+                                    display: true,
+                                    drawTicks: false,
+                                    drawBorder: true,
+                                    drawOnChartArea: false
+                                },
                                 stacked: true,
                                 display: true,
                                 type: 'time',
@@ -212,22 +223,31 @@
                                     displayFormats: {
                                         day: 'D-M-YYYY'
                                     },
-                                    tooltipFormat: 'D-M-YYYY'
+                                    tooltipFormat: 'D-M-YYYY',
+                                    stepSize: 2,
+
                                 },
-                                distribution: 'series',
+                                distribution: 'linear',
                                 ticks: {
                                     fontColor: '#aaa',
                                     fontSize: 10,
-                                }
+                                    padding: 8,
+                                    beginAtZero: true
+                                },
+
                             }],
                             yAxes: [{
                                 gridLines: {
-                                    display: false
+                                    display: true,
+                                    drawTicks: false,
+                                    drawBorder: true,
+                                    drawOnChartArea: false
                                 },
                                 stacked: true,
                                 display: true,
                                 bounds: 'data',
                                 ticks: {
+                                    padding: 8,
                                     min: 0,
                                     max: 100,
                                     fontColor: '#aaa',
