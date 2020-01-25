@@ -16,14 +16,16 @@
 
 <template>
     <div>
+        <div class="page-header  mt-2">
+            <h1 class="page-title">
+                Quorum Monitor
+                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
+            </h1>
+            <crawl-time></crawl-time>
+        </div>
         <Statistics
                 :network="network"
         ></Statistics>
-        <div class="row">
-            <div class="col-12">
-                <search-card></search-card>
-            </div>
-        </div>
         <div class="row" v-if="showHaltingAnalysis" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
@@ -33,17 +35,14 @@
                 </HaltingAnalysis>
             </div>
         </div>
-
-        <div class="page-header  mt-2">
-            <h1 class="page-title">
-                {{selectedNode ? selectedNode.displayName : 'Stellar public network'}}
-                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
-            </h1>
-            <crawl-time></crawl-time>
-        </div>
         <div class="">
             <div class="row">
                 <div class="col-lg-4 col-sm-12 order-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <search-card></search-card>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12">
                             <quorum-set-explorer-card v-if="selectedNode"
@@ -62,16 +61,6 @@
                                     <simulate-new-node class="col-12 pl-0"></simulate-new-node>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <day-statistics-card
-                                    :subject="'Index history'"
-                                    :entityId="selectedNode.publicKey"
-                                    :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
-                            >
-                            </day-statistics-card>
                         </div>
                     </div>
                 </div>

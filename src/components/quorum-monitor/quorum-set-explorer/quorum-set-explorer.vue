@@ -19,15 +19,38 @@
                 <div class="nodes-title mt-2">
                     <div class="d-flex w-100">
                         <div class="d-flex justify-content-between w-100">
-                        <h5 class="mb-0 public-key"
-                            v-b-popover.hover.top="selectedNode.publicKey">
-                            {{selectedNode.publicKey.substr(0, 15)}}...{{selectedNode.publicKey.substr(50, 100)}}
-                        </h5>
-                        <button class="btn btn-secondary btn-sm ml-1 border-0" type="button"
-                                v-clipboard:copy="selectedNode.publicKey"
-                                v-b-popover.hover.top="'Copy publickey to clipboard'">
-                            <i class="fe fe-save"></i>
-                        </button>
+                            <h6 class="mb-0 public-key"
+                                v-b-popover.hover.top="selectedNode.publicKey">
+                                <i class="fe fe-target"/>
+                                {{selectedNode.publicKey.substr(0, 10)}}...{{selectedNode.publicKey.substr(50, 100)}}
+                            </h6>
+                            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
+                                <b-dropdown-header id="dropdown-header-label">
+                                    Simulation options
+                                </b-dropdown-header>
+                                <template slot="button-content">
+                                    <i class="fe fe-more-vertical"></i>
+                                </template>
+                                <b-dropdown-item v-if="selectedNode.isValidating"
+                                                 v-on:click="$emit('node-toggle-validating', selectedNode)">
+                                    <i class="dropdown-icon fe fe-activity"></i>
+                                    Stop validating
+                                </b-dropdown-item>
+                                <b-dropdown-item v-else v-on:click="$emit('node-toggle-validating', selectedNode)"
+                                                 v-b-popover.hover.top="'A Node can still fail if it\'s quorumset doesn\'t meet its treshold'">
+                                    <i class="dropdown-icon fe fe-activity"></i>
+                                    Try validating
+                                </b-dropdown-item>
+                                <b-dropdown-item v-on:click="$emit('show-halting-analysis', selectedNode.publicKey)">
+                                    <i class="dropdown-icon fe fe-settings"></i>
+                                    Perform halting analysis
+                                </b-dropdown-item>
+                                <b-dropdown-divider></b-dropdown-divider>
+                                <b-dropdown-item v-clipboard:copy="selectedNode.publicKey">
+                                    <i class="fe fe-clipboard"></i>
+                                    Copy publickey to clipboard
+                                </b-dropdown-item>
+                            </b-dropdown>
                         </div>
                     </div>
                 </div>
@@ -95,37 +118,10 @@
                 <NodeStatisticsListItem :node="selectedNode" :network="network"></NodeStatisticsListItem>
             </div>
         </div>
-        <b-button-group size="sm" class="mt-1">
-            <b-button title="Node info"
-                      v-on:click="showModal(selectedNode)">
-                Node <i class="fe fe-info"/>
-            </b-button>
-            <b-button v-if="selectedNode.organizationId" title="Organization info"
-                      v-on:click="navigateToOrg">
-                Organization <i class="fe fe-info"/>
-            </b-button>
-        </b-button-group>
-        <b-dropdown size="sm" variant="secondary" right id="more" no-caret class="pt-2"
-        >
-            <template slot="button-content">
-                Simulation options
-                <i class="fe fe-more-vertical"></i>
-            </template>
-            <b-dropdown-item v-if="selectedNode.isValidating" v-on:click="$emit('node-toggle-validating', selectedNode)">
-                <i class="dropdown-icon fe fe-activity"></i>
-                Stop validating
-            </b-dropdown-item>
-            <b-dropdown-item v-else v-on:click="$emit('node-toggle-validating', selectedNode)"
-                             v-b-popover.hover.top="'A Node can still fail if it\'s quorumset doesn\'t meet its treshold'">
-                <i class="dropdown-icon fe fe-activity"></i>
-                Try validating
-            </b-dropdown-item>
-            <b-dropdown-item v-on:click="$emit('show-halting-analysis', selectedNode.publicKey)">
-                <i class="dropdown-icon fe fe-settings"></i>
-                Perform halting analysis
-            </b-dropdown-item>
-        </b-dropdown>
-
+        <b-list-group class="link-list">
+            <b-list-group-item button class="link-list-item" v-on:click="showModal(selectedNode)"><i class="fe fe-external-link"/> Node info</b-list-group-item>
+            <b-list-group-item button class="link-list-item"  v-on:click="navigateToOrg"><i class="fe fe-external-link"/> Organization info</b-list-group-item>
+        </b-list-group>
         <b-modal v-if="modalNode"
                  ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal"
                  v-bind:title="modalNode.displayName">
@@ -136,21 +132,21 @@
 </template>
 
 <script lang="ts">
-    import QuorumSetDisplay from "./quorum-set-display.vue";
-    import NodeList from "./node-list.vue";
-    import NodeStatisticsListItem from "./node-statistics-list-item.vue";
-    import Search from "./../search.vue";
+    import QuorumSetDisplay from './quorum-set-display.vue';
+    import NodeList from './node-list.vue';
+    import NodeStatisticsListItem from './node-statistics-list-item.vue';
+    import Search from './../search.vue';
 
-    import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
+    import Vue from 'vue';
+    import {Component, Prop} from 'vue-property-decorator';
 
-    import {Network, Node, QuorumSet} from "@stellarbeat/js-stellar-domain";
+    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
 
-    import TomlConfigViewer from "./toml-config-viewer.vue";
-    import {Modal} from "bootstrap-vue";
+    import TomlConfigViewer from './toml-config-viewer.vue';
+    import {Modal} from 'bootstrap-vue';
 
     @Component({
-        name: "quorum-set-explorer",
+        name: 'quorum-set-explorer',
         components: {
             Search,
             QuorumSetDisplay,
@@ -185,16 +181,16 @@
             delete item.statistics;
             item = Object.assign(item, this.modalNode.geoData);
             item = Object.assign(item, this.modalNode.statistics);
-            item.quorumSet = "";
+            item.quorumSet = '';
             return [item];
         }
 
         public toggleNodeActive(node: Node) {
-            this.$emit("node-toggle-active", node);
+            this.$emit('node-toggle-active', node);
         }
 
         public toggleNodeValidating(node: Node) {
-            this.$emit("node-toggle-validating", node);
+            this.$emit('node-toggle-validating', node);
         }
 
         public get selectedNodePartOfTransitiveQuorumSet() {
@@ -208,7 +204,7 @@
         }
 
         public deleteValidatorFromQuorumSet(node: Node, quorumSet: QuorumSet) {
-            this.$emit("quorumset-delete-validator", quorumSet, node);
+            this.$emit('quorumset-delete-validator', quorumSet, node);
         }
 
         public deleteInnerQuorumSet(innerQuorumSet: QuorumSet, fromQuorumSet?: QuorumSet) {
@@ -216,19 +212,19 @@
                 fromQuorumSet = this.selectedNode.quorumSet;
             }
 
-            this.$emit("quorumset-delete-inner-quorumset", innerQuorumSet, fromQuorumSet);
+            this.$emit('quorumset-delete-inner-quorumset', innerQuorumSet, fromQuorumSet);
         }
 
         public addInnerQuorumSet(toQuorumSet: QuorumSet) {
-            this.$emit("quorumset-add-inner-quorumset", toQuorumSet);
+            this.$emit('quorumset-add-inner-quorumset', toQuorumSet);
         }
 
         public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
-            this.$emit("quorumset-add-validators", toQuorumSet, validators);
+            this.$emit('quorumset-add-validators', toQuorumSet, validators);
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
-            this.$emit("quorumset-edit-threshold", quorumSet, newThreshold);
+            this.$emit('quorumset-edit-threshold', quorumSet, newThreshold);
         }
 
         public getFellowOrganizationNodes(node: Node) {
@@ -246,7 +242,7 @@
 
         public navigateToOrg() {
             this.$router.push({
-                name: "organization-details",
+                name: 'organization-details',
                 params: {organizationId: this.selectedNode.organizationId!}
             });
         }
@@ -254,14 +250,6 @@
 </script>
 
 <style scoped>
-    .full-validator-badge {
-        margin-right: 5px !important;
-    }
-
-    .selected-node-title {
-        margin-bottom: 5px;
-    }
-
     .quorum-set-explorer {
         margin-top: 0px;
     }
@@ -270,19 +258,26 @@
         padding-left: 0px;
         margin-top: 8px;
     }
-
-    .close:before {
-        content: none !important;
+    .link-list {
+        color: #1997c6;
+        border: none
     }
-
-
+    .link-list-item {
+        color: #1997c6;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.1;
+        padding-left: 0px;
+        padding-top: 5px;
+        padding-bottom: 8px;
+    }
+    .link-list-item:hover{
+        color: #1997c6;
+        cursor: pointer;
+    }
     .sb-badge {
         margin-right: 2px;
-    }
-
-
-    .dropdown {
-        display: flex;
     }
 
     pre {
@@ -290,8 +285,9 @@
         margin-bottom: 5px;
         padding: 5px 0px 5px 0px;
     }
+
     .public-key {
-        color: #8f969d;
+        color: #1997c6;
     }
 
 

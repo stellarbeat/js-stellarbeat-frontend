@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex">
         <div class="page-subtitle ml-4 mr-2">{{crawlDate.toLocaleString()}}</div>
-        <button class="btn btn-sm btn-secondary" v-b-modal.modal-time-travel>
+        <button v-b-tooltip.hover title="TimeTravel (beta)" class="btn btn-sm btn-secondary" v-b-modal.modal-time-travel>
             <i class="fe fe-clock"></i>
         </button>
         <b-modal v-on:ok="timeTravel" id="modal-time-travel" title="Time Travel (Beta)">
