@@ -16,14 +16,14 @@
                 >Transitive Quorum Set
                 </span>
                 <span class="badge badge-default sb-badge" v-b-popover.hover.top="selectedNode.versionStr">{{selectedNode.versionStr | truncate(35)}}</span>
-                <div class="nodes-title mt-2">
+                <div class="nodes-title mt-4 mb-1">
                     <div class="d-flex w-100">
                         <div class="d-flex justify-content-between w-100">
-                            <h6 class="mb-0 public-key"
+                            <h5 class="mb-0 public-key"
                                 v-b-popover.hover.top="selectedNode.publicKey">
                                 <i class="fe fe-target"/>
                                 {{selectedNode.publicKey.substr(0, 10)}}...{{selectedNode.publicKey.substr(50, 100)}}
-                            </h6>
+                            </h5>
                             <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
                                 <b-dropdown-header id="dropdown-header-label">
                                     Simulation options
@@ -269,8 +269,8 @@
         font-weight: 600;
         line-height: 1.1;
         padding-left: 0px;
-        padding-top: 5px;
-        padding-bottom: 8px;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
     .link-list-item:hover{
         color: #1997c6;

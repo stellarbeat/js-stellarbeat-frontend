@@ -79,7 +79,7 @@ export default class Store {
     async timeTravelTo(time:Date): Promise<void> {
         try {
             let params = {
-                at: time.toDateString()
+                at: time.toISOString()
             };
 
             let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_ALL_V2_SUFFIX, {params});

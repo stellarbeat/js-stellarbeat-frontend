@@ -9,7 +9,7 @@
             <i class="fe fe-alert-triangle"></i>
             Node not validating {{network.isQuorumSetFailing(selectedNode, selectedNode.quorumSet) ? ": quorumset not reaching threshold" : ""}}
         </div>
-        <div class="card-body p-3">
+        <div class="card-body p-3 quorum-set-explorer-card-body">
             <div class="row">
                 <div class="col-12">
                     <router-view v-on:node-toggle-active="toggleActive"
@@ -100,5 +100,9 @@
     }
 </script>
 <style scoped>
-
+.quorum-set-explorer-card-body{
+    min-height: 350px;
+    max-height: 350px;
+    overflow-y: auto;
+}
 </style>

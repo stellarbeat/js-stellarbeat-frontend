@@ -1,20 +1,21 @@
 <template>
     <li class="list-group-item p-0">
-        <div  class="titleContainer pt-1 pb-1 d-flex">
+        <div class="titleContainer pt-1 pb-1 d-flex">
             <div @click="toggle" class="quorum-set d-flex pt-1 pb-1" v-bind:class="quorumSetState">
-                    <i class="caret fe mr-1" v-bind:class="chevron"></i>
+                <i class="caret fe mr-1" v-bind:class="chevron"></i>
                 <div class="quorum-set-title">
-                    <h5 v-if="quorumSet.hasValidators()" class="quorumSetTitle m-0">
-                        Quorumset with threshold {{quorumSet.threshold}}
+                    <h5 v-if="root" class="quorumSetTitle m-0">
+                        {{quorumSet.hasValidators() ? 'Quorumset with threshold' + quorumSet.threshold : 'Empty QuorumSet'}}
                     </h5>
-                <h5 v-else class="quorumSetTitle m-0">
-                    Empty QuorumSet
-                </h5>
+                    <h6 v-else class="quorumSetTitle m-0">
+                        {{quorumSet.hasValidators() ? 'Quorumset with threshold' + quorumSet.threshold : 'Empty QuorumSet'}}
+                    </h6>
                     <span v-if="isOrganizationSubQuorum" class="organizationTitle"><i
                             class="fe fe-globe"></i> {{subQuorumOrganizationName}}</span>
                 </div>
             </div>
-            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
+            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown"
+                        toggle-class="more-button" no-caret>
                 <template slot="button-content">
                     <i class="fe fe-more-vertical"></i>
                 </template>
@@ -47,7 +48,8 @@
                         >
                         </b-form-input>
                     </b-form-group>
-                    <b-button variant="primary" size="sm" @click="saveThresholdFromInput" class="mt-2">Save Threshold</b-button>
+                    <b-button variant="primary" size="sm" @click="saveThresholdFromInput" class="mt-2">Save Threshold
+                    </b-button>
                 </b-dropdown-form>
                 <b-dropdown-divider v-if="root"></b-dropdown-divider>
                 <b-dropdown-item v-if="root" v-b-modal.tomlConfigModal>
@@ -99,7 +101,7 @@
                                     v-on:validators-selected="onValidatorsSelected"/>
             </template>
         </b-modal>
-        <b-modal v-if="root"lazy size="lg" id="tomlConfigModal"
+        <b-modal v-if="root" lazy size="lg" id="tomlConfigModal"
                  title="Toml Configuration" ok-only ok-title="Close"
         >
             <TomlConfigViewer :quorumSet="quorumSet" :network="network"></TomlConfigViewer>
@@ -108,17 +110,17 @@
 </template>
 
 <script lang="ts">
-    import NodeActionBar from "./node-action-bar.vue";
-    import AddValidatorsTable from "./add-validators-table.vue";
-    import TomlConfigViewer from "./toml-config-viewer.vue";
+    import NodeActionBar from './node-action-bar.vue';
+    import AddValidatorsTable from './add-validators-table.vue';
+    import TomlConfigViewer from './toml-config-viewer.vue';
 
-    import Vue from "vue";
-    import {Component, Prop, Watch} from "vue-property-decorator";
+    import Vue from 'vue';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
 
-    import {Network, Node, QuorumSet} from "@stellarbeat/js-stellar-domain";
+    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
 
     @Component({
-        name: "quorum-set-display",
+        name: 'quorum-set-display',
         components: {
             NodeActionBar,
             AddValidatorsTable,
@@ -137,7 +139,7 @@
         @Prop({default: 0})
         public index!: number;
         @Prop()
-        public selectedNode!:Node;
+        public selectedNode!: Node;
         @Prop()
         public possibleValidatorsToAdd!: Node[];
 
@@ -148,22 +150,22 @@
         public inputState: boolean | null = null;
         public validatorsToAdd: string[] = [];
 
-        @Watch("quorumSet")
+        @Watch('quorumSet')
         public onQuorumSetChanged(quorumSet: QuorumSet) {//todo should this be handled by routing (component destroy?)
             this.editingThreshold = false;
             this.newThreshold = quorumSet.threshold;
         }
 
-        public get isOrganizationSubQuorum():boolean {
-            if(this.root) {
+        public get isOrganizationSubQuorum(): boolean {
+            if (this.root) {
                 return false;
             }
 
-            if(this.validators.length === 0 ) {
+            if (this.validators.length === 0) {
                 return false;
             }
 
-            if(this.validators[0].organizationId === undefined) {
+            if (this.validators[0].organizationId === undefined) {
                 return false;
             }
 
@@ -171,22 +173,22 @@
         }
 
         public get subQuorumOrganizationName(): string {
-            if(!this.isOrganizationSubQuorum) {
+            if (!this.isOrganizationSubQuorum) {
                 return '';
             }
 
-            if(!this.validators[0].organizationId)
+            if (!this.validators[0].organizationId)
                 return '';
 
             return this.network.getOrganizationById(this.validators[0].organizationId).name;
         }
 
-        public get validators():Node[] {
-            return this.quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator))
+        public get validators(): Node[] {
+            return this.quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator));
         }
 
         public get validatorsToAddModalId() {
-            return this.level + "." + this.index;
+            return this.level + '.' + this.index;
         }
 
         public validatorDisplayName(validator: string) {
@@ -215,19 +217,19 @@
         }
 
         public toggleNodeValidating(node: Node) {
-            this.$emit("node-toggle-validating", node);
+            this.$emit('node-toggle-validating', node);
         }
 
         public toggleNodeActive(node: Node) {
-            this.$emit("node-toggle-active", node);
+            this.$emit('node-toggle-active', node);
         }
 
         public deleteNodeFromQuorumSet(node: Node) {
-            this.$emit("delete-validator-from-quorum-set", node, this.quorumSet);
+            this.$emit('delete-validator-from-quorum-set', node, this.quorumSet);
         }
 
         public deleteNodeFromInnerQuorumSet(node: Node, quorumSet: QuorumSet) {
-            this.$emit("delete-validator-from-quorum-set", node, quorumSet);
+            this.$emit('delete-validator-from-quorum-set', node, quorumSet);
         }
 
         public deleteQuorumSetFromInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet?: QuorumSet) {
@@ -235,11 +237,11 @@
                 fromQuorumSet = this.quorumSet;
             }
 
-            this.$emit("delete-quorum-set", quorumSet, fromQuorumSet);
+            this.$emit('delete-quorum-set', quorumSet, fromQuorumSet);
         }
 
         public deleteQuorumSet() {
-            this.$emit("delete-quorum-set", this.quorumSet);
+            this.$emit('delete-quorum-set', this.quorumSet);
         }
 
         public addQuorumSetToInnerQuorumSet(toQuorumSet: QuorumSet) {
@@ -247,27 +249,27 @@
                 toQuorumSet = this.quorumSet;
             }
 
-            this.$emit("add-quorum-set", toQuorumSet);
+            this.$emit('add-quorum-set', toQuorumSet);
         }
 
         public addValidatorsToQuorumSet(toQuorumSet: QuorumSet, validators: string[]) {
-            this.$emit("add-validators", toQuorumSet, validators);
+            this.$emit('add-validators', toQuorumSet, validators);
         }
 
         public addQuorumSet() {
             this.open = true;
-            this.$emit("add-quorum-set", this.quorumSet);
+            this.$emit('add-quorum-set', this.quorumSet);
         }
 
         public enableThresholdEditMode() {
             this.editingThreshold = true;
             this.$nextTick(() => {
-                (this.$refs["editThresholdInput" + this.id] as HTMLInputElement).focus();
+                (this.$refs['editThresholdInput' + this.id] as HTMLInputElement).focus();
             });
         }
 
         public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
-            this.$emit("quorumset-edit-threshold", quorumSet, newThreshold);
+            this.$emit('quorumset-edit-threshold', quorumSet, newThreshold);
         }
 
         public saveThresholdFromInput() {
@@ -279,23 +281,23 @@
             this.inputState = null;
             this.editingThreshold = false;
             (this.$refs.dropdown as any).hide(true);
-            this.$emit("quorumset-edit-threshold", this.quorumSet, this.newThreshold);
+            this.$emit('quorumset-edit-threshold', this.quorumSet, this.newThreshold);
         }
 
         public showModal(node: Node) {
-            this.$emit("node-show-modal", node);
+            this.$emit('node-show-modal', node);
         }
 
         public selectNode(validator: string) {
             this.$router.push({
-                name: "quorum-monitor-node",
+                name: 'quorum-monitor-node',
                 params: {publicKey: validator},
-                query: {"center": "1", "no-scroll": "1"},
+                query: {'center': '1', 'no-scroll': '1'},
             });
         }
 
         get chevron() {
-            return this.open ? "fe-chevron-down" : "fe-chevron-right";
+            return this.open ? 'fe-chevron-down' : 'fe-chevron-right';
         }
 
         get quorumSetState() {
@@ -382,6 +384,7 @@
         cursor: pointer;
         width: 100%;
     }
+
     .quorum-set-title {
         display: flex;
         flex-direction: column;

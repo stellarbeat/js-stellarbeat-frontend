@@ -21,7 +21,3 @@
 .dropdown-item.active, .dropdown-item:active {
     background-color: #1a85ad;
 }
-
-.more-button {
-    border: none !important;
-}

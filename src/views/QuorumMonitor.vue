@@ -26,6 +26,11 @@
         <Statistics
                 :network="network"
         ></Statistics>
+        <div class="row">
+            <div class="col-12">
+                <search-card></search-card>
+            </div>
+        </div>
         <div class="row" v-if="showHaltingAnalysis" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
@@ -35,17 +40,22 @@
                 </HaltingAnalysis>
             </div>
         </div>
+
         <div class="">
             <div class="row">
+                <div class="col-sm-12 col-lg-8">
+                    <div class="row">
+                        <div class="col-12">
+                            <NetworkGraphCard id="quorum-set-explorer-card"></NetworkGraphCard>
+                        </div>
+                        <div class="col-12">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-4 col-sm-12 order-0">
                     <div class="row">
                         <div class="col-12">
-                            <search-card></search-card>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <quorum-set-explorer-card v-if="selectedNode"
+                            <quorum-set-explorer-card v-if="selectedNode" class="quorum-set-explorer-card"
                                                       v-on:show-halting-analysis="onShowHaltingAnalysis"
                             ></quorum-set-explorer-card>
                             <div class="card" v-else>
@@ -64,44 +74,34 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-lg-8">
-                    <div class="row">
-                        <div class="col-12">
-                            <NetworkGraphCard id="quorum-set-explorer-card"></NetworkGraphCard>
-                        </div>
-                        <div class="col-12">
-                            <div class="row" v-if="selectedNode">
-                                <div class="col-md-6">
-                                    <day-statistics-card
-                                            :subject="'Validating history'"
-                                            :entityId="selectedNode.publicKey"
-                                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeValidatingDayStatistics(publicKey, from, to)"
-                                    >
-                                    </day-statistics-card>
-                                </div>
-                                <div class="col-md-6">
-                                    <day-statistics-card
-                                            :subject="'Full validator history'"
-                                            :entityId="selectedNode.publicKey"
-                                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
-                                    >
-                                    </day-statistics-card>
-                                </div>
-                                <div class="col-md-6">
-                                    <day-statistics-card
-                                            :subject="'Overloaded history'"
-                                            :entityId="selectedNode.publicKey"
-                                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
-                                    >
-                                    </day-statistics-card>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
-
+            <div class="row" v-if="selectedNode">
+                <div class="col-md-6 col-lg-4">
+                    <day-statistics-card
+                            :subject="'Validating history'"
+                            :entityId="selectedNode.publicKey"
+                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeValidatingDayStatistics(publicKey, from, to)"
+                    >
+                    </day-statistics-card>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <day-statistics-card
+                            :subject="'Full validator history'"
+                            :entityId="selectedNode.publicKey"
+                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
+                    >
+                    </day-statistics-card>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <day-statistics-card
+                            :subject="'Overloaded history'"
+                            :entityId="selectedNode.publicKey"
+                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
+                    >
+                    </day-statistics-card>
+                </div>
+            </div>
         </div>
 
 
@@ -288,6 +288,9 @@
         margin-right: -.5rem;
         -ms-flex-item-align: center;
         align-self: center;
+    }
+    .quorum-set-explorer-card {
+
     }
 
 </style>
