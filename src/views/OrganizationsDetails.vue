@@ -157,8 +157,14 @@
             </div>
         </div>
         <div class="row row-cards">
-            <div class="col-md-6">
-
+            <div class="col-md-6 col-lg-4">
+                    <day-statistics-card
+                            :subject="'SubQuorum availability history'"
+                            :entityId="organization.id"
+                            :fetchDayStatistics="(organizationId, from, to) => store.fetchNodeFullValidatorDayStatistics(organization.id, from, to)"
+                    >
+                    </day-statistics-card>
+                </div>
             </div>
         </div>
     </div>
@@ -169,9 +175,12 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Node, Organization, Network} from "@stellarbeat/js-stellar-domain";
+    import DayStatisticsCard from '@/components/quorum-monitor/cards/day-statistics-card.vue';
+    import Store from '@/Store';
 
     @Component({
         name: "organization-details",
+        components: {DayStatisticsCard},
         metaInfo: {
             title: "Organization info - Stellarbeat.io",
             meta: [
@@ -197,8 +206,8 @@
                 .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
         }
 
-        get latestCrawlDateString() {
-            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
+        get store(): Store {
+            return this.$root.$data.store;
         }
 
         get failAt() {
