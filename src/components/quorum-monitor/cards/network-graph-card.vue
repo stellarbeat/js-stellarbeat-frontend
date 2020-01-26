@@ -1,20 +1,12 @@
 <template>
     <div class="card">
-        <!--div class="card-header d-flex">
-            <h3 v-if="false" class="card-title">
-                <full-validator-title :node="selectedNode"/>
-            </h3>
-            <h3 v-else class="card-title">Stellar Public Network
-                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
-            </h3>
-        </div!-->
         <div class="card-body py-2" style="height: 100%">
             <Graph ref="graph" :network="network"
                    :centerNode="centerNode"
                    :selectedNode="selectedNode"
-            ></Graph>
+            />
             <div v-show="false" class="text-right pt-1">
-                <GraphLegend></GraphLegend>
+                <GraphLegend/>
             </div>
         </div>
     </div>

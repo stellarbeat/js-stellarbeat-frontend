@@ -2,23 +2,27 @@
     <div class="card" style="">
         <div class="card-header">
             <h5 class="card-title">
-                <h5 class="card-title">{{subject}}</h5>
+                {{subject}}
             </h5>
         </div>
         <div class="card-body p-2">
             <div v-bind:class="dimmerClass">
                 <div class="loader"></div>
                 <div class="dimmer-content" ref="chartContainer">
-                    <canvas v-if="renderChart" height="140px" :width="chartWidth" :id="'lineChart' + id"
-                            :ref="'lineChart' + id"></canvas>
-                    <div class="date-selector d-flex">
-                        <b-button :disabled="!canGoBack()" size="sm" v-on:click="goBack30Days()"><i
-                                class="fe fe-chevron-left"></i></b-button>
-                        <datepicker v-if="!isLoading" v-model="datePickerDate" :disabledDates="disabledDates"
-                                    :bootstrap-styling="true"></datepicker>
-                        <b-button size="sm" v-on:click="goForward30Days()"><i class="fe fe-chevron-right"></i>
-                        </b-button>
-                    </div>
+                    <bar-chart-day
+                            v-if="!isLoading"
+                            :width="chartWidth"
+                            :data="barChartData"
+                    />
+                    <date-navigator
+                            v-if="!isLoading"
+                            :minSelectedDate="minSelectedDate"
+                            :selectedDate="selectedDate"
+                            v-on:dateChanged="updateSelectedDate"
+                            v-on:goBack="goBack30Days"
+                            v-on:goForward="goForward30Days"
+                    >
+                    </date-navigator>
                 </div>
             </div>
         </div>
@@ -28,15 +32,20 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
-    import Store, {DayStatistic, NodeDayStatistics} from '@/Store';
-    import Datepicker from 'vuejs-datepicker';
+    import Store, {DayStatistic} from '@/Store';
     import moment from 'moment';
     import DayStatisticsChart from '@/components/quorum-monitor/statistics/day-statistics-chart.vue';
-    import Chart from 'chart.js';
+    import DateNavigator from '@/components/date-navigator.vue';
+    import BarChartDay from '@/components/quorum-monitor/bar-chart-day.vue';
+
+    interface BarChartDayData {
+        positivePropertyPercentageData: any;
+        negativePropertyPercentageData: any;
+    }
 
     @Component({
         name: 'day-statistics-card',
-        components: {DayStatisticsChart, datepicker: Datepicker}
+        components: {DayStatisticsChart, DateNavigator, BarChartDay}
     })
     export default class DayStatisticsCard extends Vue {
         @Prop()
@@ -46,23 +55,18 @@
         @Prop()
         entityId!: string;
 
-        id: number = this.store.uniqueId;
-        lineChart!: Chart;
         dayStatistics: DayStatistic[] = [];
         isLoading: boolean = true;
         selectedDate!: Date;
-        datePickerDate: string | Date | null = null;
-        disabledDates: any = {
-            to: this.minSelectedDate,
-            from: new Date()
-        };
-        renderChart: boolean = false;
 
-        get minSelectedDate() {
-            let minDate = new Date(this.store.measurementsStartDate.getTime());
-            minDate.setDate(minDate.getDate() + 30);
+        async updateSelectedDate(newDate: string) {
+            this.selectedDate = new Date(newDate);
+            await this.updateChartStatistics();
+        }
 
-            return minDate;
+        @Watch('entityId')
+        async onEntityIdChanged() {
+            await this.updateChartStatistics();
         }
 
         getInitialSelectedDate() {
@@ -72,17 +76,10 @@
                 return moment(this.store.crawlDate).toDate();
         }
 
-        @Watch('entityId')
-        async onEntityIdChanged() {
-            console.log(this.entityId);
-            await this.updateChartStatistics();
-        }
-
-        @Watch('datePickerDate', {})
-        async onDatePickerDateChanged(to: string, from: string) {
-            if (this.datePickerDate && from !== null) { //don't trigger on first change
-                this.selectedDate = new Date(this.datePickerDate);
-                await this.updateChartStatistics();
+        get barChartData():BarChartDayData {
+            return {
+                negativePropertyPercentageData: this.negativePropertyPercentageData,
+                positivePropertyPercentageData: this.positivePropertyPercentageData
             }
         }
 
@@ -101,8 +98,11 @@
             };
         }
 
-        canGoBack() {
-            return this.selectedDate > this.minSelectedDate;
+        get minSelectedDate() {
+            let minDate = new Date(this.store.measurementsStartDate.getTime());
+            minDate.setDate(minDate.getDate() + 30);
+
+            return minDate;
         }
 
         async goBack30Days() {
@@ -110,21 +110,16 @@
             if (this.selectedDate < this.minSelectedDate) {
                 this.selectedDate.setTime(this.minSelectedDate.getTime());
             }
-            this.datePickerDate = this.selectedDate.toDateString();
             await this.updateChartStatistics();
         }
 
         async goForward30Days() {
             this.selectedDate.setDate(this.selectedDate.getDate() + 30);
-            this.datePickerDate = this.selectedDate.toDateString();
             await this.updateChartStatistics();
         }
 
         async updateChartStatistics() {
             await this.fetchStatistics();
-            this.lineChart.data.datasets![0].data = this.positivePropertyPercentageData;
-            this.lineChart.data.datasets![1].data = this.negativePropertyPercentageData;
-            this.lineChart.update();
         }
 
         async fetchStatistics() {
@@ -155,115 +150,7 @@
 
         async mounted() {
             this.selectedDate = this.getInitialSelectedDate();
-            this.datePickerDate = this.selectedDate.toDateString();
             await this.fetchStatistics();
-            this.renderChart = true;
-            Vue.nextTick(() => {
-                let chartId = 'lineChart' + this.id;
-                let context = (this.$refs[chartId] as HTMLCanvasElement).getContext('2d');
-                this.lineChart = new Chart(context as CanvasRenderingContext2D, {
-                    type: 'bar',
-                    data: {
-                        datasets: [{
-                            label: 'Validating',
-                            backgroundColor: '#5eba00',
-                            borderWidth: 0,
-                            data: this.positivePropertyPercentageData
-                        },
-                            {
-                                label: 'Not Validating',
-                                backgroundColor: 'red',
-                                borderColor: '#1997c6',
-                                data: this.negativePropertyPercentageData,
-                                fill: 'origin'
-                            }]
-                    },
-
-                    // Configuration options go here
-                    options: {
-                        tooltips: {
-                            callbacks: {
-                                label(tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData): string | string[] {
-                                    return ' ' + tooltipItem.value + '%';
-                                }
-                            },
-                        },
-                        responsive: false,
-                        legend: {
-                            display: false
-                        },
-                        animation: {
-                            animateScale: false,
-                            animateRotate: false,
-                        },
-                        scales: {
-                            gridLines: {
-                                display: false,
-                                drawTicks: false,
-                            },
-                            ticks: {
-                                display: false,
-                            },
-                            scaleLabel: {
-                                fontColor: '#f5f7fb',
-                                fontSize: 3
-                            },
-                            xAxes: [{
-                                gridLines: {
-                                    display: true,
-                                    drawTicks: false,
-                                    drawBorder: true,
-                                    drawOnChartArea: false
-                                },
-                                stacked: true,
-                                display: true,
-                                type: 'time',
-                                time: {
-                                    unit: 'day',
-                                    displayFormats: {
-                                        day: 'D-M-YYYY'
-                                    },
-                                    tooltipFormat: 'D-M-YYYY',
-                                    stepSize: 2,
-
-                                },
-                                distribution: 'linear',
-                                ticks: {
-                                    fontColor: '#aaa',
-                                    fontSize: 10,
-                                    padding: 8,
-                                    beginAtZero: true
-                                },
-
-                            }],
-                            yAxes: [{
-                                gridLines: {
-                                    display: true,
-                                    drawTicks: false,
-                                    drawBorder: true,
-                                    drawOnChartArea: false
-                                },
-                                stacked: true,
-                                display: true,
-                                bounds: 'data',
-                                ticks: {
-                                    padding: 8,
-                                    min: 0,
-                                    max: 100,
-                                    fontColor: '#aaa',
-                                    fontSize: 10,
-                                    beginAtZero: true,
-                                    stepSize: 50,
-                                    callback: function (value, index, values) {
-                                        return value + '%';
-                                    }
-                                }
-                            }]
-                        }
-                    }
-                });
-            });
-
         }
     }
 </script>
