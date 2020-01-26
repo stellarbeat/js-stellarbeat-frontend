@@ -5,10 +5,10 @@
                 <i class="caret fe mr-1" v-bind:class="chevron"></i>
                 <div class="quorum-set-title">
                     <h5 v-if="root" class="quorumSetTitle m-0">
-                        {{quorumSet.hasValidators() ? 'Quorumset with threshold' + quorumSet.threshold : 'Empty QuorumSet'}}
+                        {{quorumSet.hasValidators() ? 'Quorumset with threshold ' + quorumSet.threshold : 'Empty QuorumSet'}}
                     </h5>
                     <h6 v-else class="quorumSetTitle m-0">
-                        {{quorumSet.hasValidators() ? 'Quorumset with threshold' + quorumSet.threshold : 'Empty QuorumSet'}}
+                        {{quorumSet.hasValidators() ? 'Quorumset with threshold ' + quorumSet.threshold : 'Empty QuorumSet'}}
                     </h6>
                     <span v-if="isOrganizationSubQuorum" class="organizationTitle"><i
                             class="fe fe-globe"></i> {{subQuorumOrganizationName}}</span>

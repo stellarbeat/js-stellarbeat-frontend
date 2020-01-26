@@ -1,19 +1,3 @@
-<style>
-    .red {
-        color: #f00;
-    }
-
-    .graph-toolbar {
-        justify-content: flex-end;
-        float: right;
-    }
-
-    .progress-bar-striped {
-        background-color: #1997c6;
-        opacity: 0.6;
-    }
-</style>
-
 <template>
     <div>
         <div class="page-header  mt-2">
@@ -161,7 +145,6 @@
         },
     })
     export default class QuorumMonitor extends Vue {
-        protected newNodeName: string = '';
         protected showHaltingAnalysis: boolean = false;
         protected haltingAnalysisPublicKey: PublicKey | null = null;
 
@@ -181,10 +164,6 @@
             return this.store.quorumMonitorStore.selectedNode;
         }
 
-        get centerNode() {
-            return this.store.quorumMonitorStore.centerNode;
-        }
-
         get network() {
             return this.$root.$data.store.network;
         }
@@ -194,10 +173,6 @@
                 .map(publicKey => this.network.getNodeByPublicKey(publicKey));
         }
 
-        public onNodeCenter(node: Node) {
-            this.store.quorumMonitorStore.centerNode = node;
-        }
-
         onShowHaltingAnalysis(publicKey: PublicKey) {
             this.haltingAnalysisPublicKey = publicKey;
             this.showHaltingAnalysis = true;
@@ -205,10 +180,6 @@
             this.$nextTick(() => {
                 this.$scrollTo('#halting-analysis-card');
             });
-        }
-
-        get latestCrawlDateString(): string {
-            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
         }
 
         public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {
@@ -236,36 +207,6 @@
             }
         }
 
-        public simulateNewNode() {
-            let node = new Node('localhost');
-            node.name = this.newNodeName === '' ? 'MyNewNode' : this.newNodeName;
-            node.publicKey = this.makePublicKey();
-            node.quorumSet.threshold = 1;
-            node.active = true;
-            node.isValidating = true;
-            node.isValidator = true;
-            this.$set(node, 'x', 0); //doesn't belong here, needs better solution
-            this.$set(node, 'y', 0);
-            this.store.addNodeToNetwork(node);
-            this.$router.push(
-                {
-                    name: 'quorum-monitor-node',
-                    params: {publicKey: node.publicKey},
-                    query: {'center': '1', 'no-scroll': '1'},
-                },
-            );
-        }
-
-        protected makePublicKey() {
-            let result = 'G';
-            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let charactersLength = characters.length;
-            for (let i = 0; i < 56; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
-        }
-
         public beforeDestroy() {
             if (this.isSimulation) { // undo simulation
                 this.store.resetUpdates();
@@ -275,22 +216,5 @@
 </script>
 
 <style scoped>
-    .graph-row {
-        margin-bottom: 10px;
-    }
-
-    .pull-right {
-        margin-left: auto;
-        display: -ms-flexbox;
-        display: flex;
-        -ms-flex-order: 100;
-        order: 100;
-        margin-right: -.5rem;
-        -ms-flex-item-align: center;
-        align-self: center;
-    }
-    .quorum-set-explorer-card {
-
-    }
 
 </style>

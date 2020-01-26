@@ -15,7 +15,7 @@
                 <span v-if="selectedNodePartOfTransitiveQuorumSet" class="badge sb-badge badge-primary"
                 >Transitive Quorum Set
                 </span>
-                <span class="badge badge-default sb-badge" v-b-popover.hover.top="selectedNode.versionStr">{{selectedNode.versionStr | truncate(35)}}</span>
+                <span v-if="selectedNode.versionStr" class="badge badge-default sb-badge" v-b-popover.hover.top="selectedNode.versionStr">{{selectedNode.versionStr | truncate(35)}}</span>
                 <div class="nodes-title mt-4 mb-1">
                     <div class="d-flex w-100">
                         <div class="d-flex justify-content-between w-100">
