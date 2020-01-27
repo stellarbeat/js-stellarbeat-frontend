@@ -48,6 +48,8 @@ export default class Store {
         selectedNode: undefined,
     };
     protected _uniqueId = 0;
+    protected isFetchingNodeStatistics:Map<string, boolean> = new Map();
+    protected fetchingNodeStatisticsPromises?: Promise<any>;
 
     get uniqueId(){
         return this._uniqueId ++;
@@ -138,21 +140,29 @@ export default class Store {
         });
     }
 
-    async fetchNodeStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<NodeDayStatistics[]> {
-        let params:any = {};
-        if(from)
-            params.from = from.toDateString();
-        if(to)
-            params.to = to.toDateString();
-        let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_NODE_STATS_SUFFIX + '/' + publicKey, {
-            params
-        });
+    async fetchNodeStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<NodeDayStatistics[]> {
+        let params: any = {};
+        params.from = from.toDateString();
+        params.to = to.toDateString();
+        let result;
+        if (this.isFetchingNodeStatistics.get(publicKey + params.from + params.to))
+            result = await this.fetchingNodeStatisticsPromises!;
+        else {
+            this.isFetchingNodeStatistics.set(publicKey + params.from + params.to, true);
+            this.fetchingNodeStatisticsPromises = axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_NODE_STATS_SUFFIX + '/' + publicKey, {
+                params
+            });
+            console.log(publicKey + params.from + params.to);
 
-        result.data.forEach((stat:any) => stat.day = new Date(stat.day));
+            result = await this.fetchingNodeStatisticsPromises;
+            this.isFetchingNodeStatistics.set(publicKey + params.from + params.to, false);
+        }
+
+        result.data.forEach((stat: any) => stat.day = new Date(stat.day));
         return result.data;
     }
 
-    async fetchNodeValidatingDayStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<DayStatistic[]> {
+    async fetchNodeValidatingDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
         let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
 
         return nodeStatistics.map(nodeStat => {
@@ -163,7 +173,20 @@ export default class Store {
             }
         })
     }
-    async fetchNodeFullValidatorDayStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<DayStatistic[]> {
+
+    async fetchNodeOverLoadedDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
+        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
+
+        return nodeStatistics.map(nodeStat => {
+            return {
+                day: nodeStat.day,
+                propertyCount: nodeStat.crawlCount - nodeStat.isOverloadedCount, //we want green stats when it's not overloaded
+                crawlCount: nodeStat.crawlCount
+            }
+        })
+    }
+
+    async fetchNodeFullValidatorDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
         let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
 
         return nodeStatistics.map(nodeStat => {

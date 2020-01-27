@@ -81,7 +81,7 @@
                     <day-statistics-card
                             :subject="'Overloaded history'"
                             :entityId="selectedNode.publicKey"
-                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
+                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeOverLoadedDayStatistics(publicKey, from, to)"
                     >
                     </day-statistics-card>
                 </div>

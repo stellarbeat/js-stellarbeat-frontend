@@ -10,12 +10,12 @@
                 <div class="loader"></div>
                 <div class="dimmer-content" ref="chartContainer">
                     <bar-chart-day
-                            v-if="!isLoading"
+                            v-if="rendered"
                             :width="chartWidth"
                             :data="barChartData"
                     />
                     <date-navigator
-                            v-if="!isLoading"
+                            v-if="rendered"
                             :minSelectedDate="minSelectedDate"
                             :selectedDate="selectedDate"
                             v-on:dateChanged="updateSelectedDate"
@@ -57,6 +57,7 @@
 
         dayStatistics: DayStatistic[] = [];
         isLoading: boolean = true;
+        rendered: boolean = false;
         selectedDate!: Date;
 
         async updateSelectedDate(newDate: string) {
@@ -151,6 +152,7 @@
         async mounted() {
             this.selectedDate = this.getInitialSelectedDate();
             await this.fetchStatistics();
+            this.rendered = true;
         }
     }
 </script>
