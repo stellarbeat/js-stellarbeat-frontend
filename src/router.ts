@@ -29,11 +29,8 @@ export default new Router({
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
         {name: 'terms-and-conditions', path: '/terms-and-conditions', component: TermsAndConditions, meta: {fullPreRender: true}},
         {
-            path: '/quorum-monitor', component: QuorumMonitor,
+            path: '/quorum-monitor', name: 'quorum-monitor', component: QuorumMonitor,
             children: [
-                {
-                    name: 'quorum-monitor', path: '', component: SelectOrSimulateNodeAlert,
-                },
                 {
                     name: 'quorum-monitor-node',
                     path: ':publicKey',

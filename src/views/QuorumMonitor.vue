@@ -194,14 +194,17 @@
             // fix centering and selection in graph
             if (this.$route.params['publicKey']) {
                 this.store.quorumMonitorStore.selectedNode = this.network.getNodeByPublicKey(this.$route.params['publicKey']);
+                if (!this.selectedNode) {
+                    this.$router.push(
+                        {
+                            name: 'quorum-monitor'
+                        },
+                    );
+                }
+            } else {
+                this.store.quorumMonitorStore.selectedNode = undefined;
             }
-            if (!this.selectedNode) {
-                this.$router.push(
-                    {
-                        name: 'quorum-monitor'
-                    },
-                );
-            }
+
             if (this.$route.query['center'] === '1' || this.$route.query['center'] === undefined) {
                 this.store.quorumMonitorStore.centerNode = this.selectedNode;
             }

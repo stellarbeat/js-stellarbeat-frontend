@@ -52,7 +52,6 @@
             super();
             this.crawlDate = new Date(this.store.crawlDate.getTime());
             this.crawlTime = this.crawlDate.getHours() + ':' + this.crawlDate.getMinutes();
-            console.log(this.crawlTime);
         }
         get store(): Store {
             return this.$root.$data.store;

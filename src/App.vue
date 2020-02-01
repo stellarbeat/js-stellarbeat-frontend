@@ -151,7 +151,6 @@
 
         async created() {
             await this.store.fetchData();
-            //this.$set(this.$root.$data.store, 'network', this.store.network); //force reactivity...
             this.store.isLoading = false;
         }
 
