@@ -33,6 +33,11 @@
             from: new Date()
         };
 
+        @Watch('selectedDate')
+        onSelectedDateChanged(){
+            this.datePickerDate = this.selectedDate.toDateString();
+        }
+
         @Watch('datePickerDate', {})
         async onDatePickerDateChanged(to: string, from: string) {
             if (this.datePickerDate && from !== null) {

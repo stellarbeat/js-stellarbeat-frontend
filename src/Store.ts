@@ -152,7 +152,6 @@ export default class Store {
             this.fetchingNodeStatisticsPromises = axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_NODE_STATS_SUFFIX + '/' + publicKey, {
                 params
             });
-            console.log(publicKey + params.from + params.to);
 
             result = await this.fetchingNodeStatisticsPromises;
             this.isFetchingNodeStatistics.set(publicKey + params.from + params.to, false);

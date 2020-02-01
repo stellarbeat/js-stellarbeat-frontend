@@ -100,14 +100,11 @@
         }
 
         get minSelectedDate() {
-            let minDate = new Date(this.store.measurementsStartDate.getTime());
-            minDate.setDate(minDate.getDate() + 30);
-
-            return minDate;
+            return moment(this.store.measurementsStartDate).add(30, 'd').toDate();
         }
 
         async goBack30Days() {
-            this.selectedDate.setDate(this.selectedDate.getDate() - 30);
+            this.selectedDate = moment(this.selectedDate).subtract(30, 'd').toDate();
             if (this.selectedDate < this.minSelectedDate) {
                 this.selectedDate.setTime(this.minSelectedDate.getTime());
             }
@@ -115,7 +112,7 @@
         }
 
         async goForward30Days() {
-            this.selectedDate.setDate(this.selectedDate.getDate() + 30);
+            this.selectedDate = moment(this.selectedDate).add(30, 'd').toDate();
             await this.updateChartStatistics();
         }
 
@@ -125,8 +122,7 @@
 
         async fetchStatistics() {
             this.isLoading = true;
-            let thirtyDaysAgo = new Date(this.selectedDate.getTime());
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            let thirtyDaysAgo = moment(this.selectedDate).subtract(30,'d').toDate();
             this.dayStatistics = await this.fetchDayStatistics(this.entityId, thirtyDaysAgo, this.selectedDate);
             this.isLoading = false;
         }
