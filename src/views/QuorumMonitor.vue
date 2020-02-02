@@ -66,6 +66,7 @@
                             :subject="'Validating history'"
                             :entityId="selectedNode.publicKey"
                             :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeValidatingDayStatistics(publicKey, from, to)"
+                            :chartType="'bar'"
                     >
                     </day-statistics-card>
                 </div>
@@ -74,6 +75,7 @@
                             :subject="'Full validator history'"
                             :entityId="selectedNode.publicKey"
                             :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
+                            :chartType="'bar'"
                     >
                     </day-statistics-card>
                 </div>
@@ -82,6 +84,7 @@
                             :subject="'Overloaded history'"
                             :entityId="selectedNode.publicKey"
                             :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeOverLoadedDayStatistics(publicKey, from, to)"
+                            :chartType="'bar'"
                     >
                     </day-statistics-card>
                 </div>

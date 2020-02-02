@@ -5,12 +5,21 @@
                 {{subject}}
             </h5>
         </div>
+        <div v-if="failed" class="card-alert alert alert-danger mb-0">
+            <i class="fe fe-alert-triangle"></i>
+            Error fetching data
+        </div>
         <div class="card-body p-2">
             <div v-bind:class="dimmerClass">
                 <div class="loader"></div>
                 <div class="dimmer-content" ref="chartContainer">
                     <bar-chart-day
-                            v-if="rendered"
+                            v-if="rendered && chartType === 'bar'"
+                            :width="chartWidth"
+                            :data="barChartData"
+                    />
+                    <line-chart-day
+                            v-if="rendered && chartType === 'line'"
                             :width="chartWidth"
                             :data="barChartData"
                     />
@@ -37,6 +46,8 @@
     import DayStatisticsChart from '@/components/quorum-monitor/statistics/day-statistics-chart.vue';
     import DateNavigator from '@/components/date-navigator.vue';
     import BarChartDay from '@/components/quorum-monitor/bar-chart-day.vue';
+    import LineChartDay from '@/components/quorum-monitor/line-chart-day.vue';
+
 
     interface BarChartDayData {
         positivePropertyPercentageData: any;
@@ -45,7 +56,7 @@
 
     @Component({
         name: 'day-statistics-card',
-        components: {DayStatisticsChart, DateNavigator, BarChartDay}
+        components: {DayStatisticsChart, DateNavigator, BarChartDay, LineChartDay}
     })
     export default class DayStatisticsCard extends Vue {
         @Prop()
@@ -54,11 +65,14 @@
         fetchDayStatistics!: Function;
         @Prop()
         entityId!: string;
+        @Prop()
+        chartType!: string;
 
         dayStatistics: DayStatistic[] = [];
         isLoading: boolean = true;
         rendered: boolean = false;
         selectedDate!: Date;
+        failed:boolean = false;
 
         async updateSelectedDate(newDate: string) {
             this.selectedDate = new Date(newDate);
@@ -123,7 +137,12 @@
         async fetchStatistics() {
             this.isLoading = true;
             let thirtyDaysAgo = moment(this.selectedDate).subtract(30,'d').toDate();
-            this.dayStatistics = await this.fetchDayStatistics(this.entityId, thirtyDaysAgo, this.selectedDate);
+            try{
+                this.failed = false;
+                this.dayStatistics = await this.fetchDayStatistics(this.entityId, thirtyDaysAgo, this.selectedDate);
+            } catch (e) {
+                this.failed = true;
+            }
             this.isLoading = false;
         }
 

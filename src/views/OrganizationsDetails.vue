@@ -1,16 +1,21 @@
 <template>
     <div>
+        <div class="page-header  mt-2">
+            <h1 class="page-title">
+                Organization info
+            </h1>
+            <crawl-time></crawl-time>
+        </div>
         <div v-if="isLoading" class="row">
             <div class="col-5"></div>
             <div class="col-2 loader"></div>
             <div class="col-5"></div>
-
         </div>
         <div v-else>
             <div class="row row-cards">
                 <div class="col-sm-12">
                     <div class="card card-profile">
-                        <div class="card-body text-center mt-5">
+                        <div class="card-body text-center mt-5 align-content-center">
                             <h3 class="mb-3">{{organization.name}}</h3>
                             <p class="m-4">
                                 {{organization.description}}
@@ -76,7 +81,38 @@
                 </div>
             </div>
             <div class="row row-cards">
-                <div class="col-sm-6 col-md-3">
+                <div class="col-sm-6 col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Validators</h3>
+                        </div>
+                        <div class="card-body p-O">
+                            <b-list-group flush>
+                                <b-list-group-item v-for="validator in validators">
+                                    <span v-if="validator.isFullValidator"
+                                          class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
+                                          v-b-tooltip.hover title="Full validator">
+                                            <i class="fe fe-shield"></i>
+                                        </span>
+                                    <router-link
+                                            :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
+                                        {{ validator.displayName}}
+
+                                    </router-link>
+                                    <span v-if="!validator.active"
+                                          class="badge sb-badge badge-danger ml-1"
+                                    >Not active
+                </span>
+                                    <span v-if="!validator.isValidating"
+                                          class="badge sb-badge badge-danger ml-1"
+                                    >Not validating
+                </span>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Subquorum Availability</h3>
@@ -123,50 +159,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-9">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Validators</h3>
-                        </div>
-                        <div class="card-body p-O">
-                            <b-list-group flush>
-                                <b-list-group-item v-for="validator in validators">
-                                    <span v-if="validator.isFullValidator"
-                                          class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
-                                          v-b-tooltip.hover title="Full validator">
-                                            <i class="fe fe-shield"></i>
-                                        </span>
-                                    <router-link
-                                            :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
-                                        {{ validator.displayName}}
-
-                                    </router-link>
-                                    <span v-if="!validator.active"
-                                          class="badge sb-badge badge-danger ml-1"
-                                    >Not active
-                </span>
-                                    <span v-if="!validator.isValidating"
-                                          class="badge sb-badge badge-danger ml-1"
-                                    >Not validating
-                </span>
-                                </b-list-group-item>
-                            </b-list-group>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row row-cards">
-            <div class="col-md-6 col-lg-4">
+                <div class="col-sm-12 col-md-4">
                     <day-statistics-card
-                            :subject="'SubQuorum availability history'"
+                            :subject="'Subquorum Availability history'"
                             :entityId="organization.id"
-                            :fetchDayStatistics="(organizationId, from, to) => store.fetchNodeFullValidatorDayStatistics(organization.id, from, to)"
+                            :fetchDayStatistics="(organizationId, from, to) => store.fetchOrganizationSubQuorumDayStatistics(organization.id, from, to)" :chartType="'bar'"
                     >
                     </day-statistics-card>
                 </div>
             </div>
+            </div>
+
         </div>
+
 </template>
 
 <script lang="ts">
@@ -176,10 +181,11 @@
     import {Node, Organization, Network} from "@stellarbeat/js-stellar-domain";
     import DayStatisticsCard from '@/components/quorum-monitor/cards/day-statistics-card.vue';
     import Store from '@/Store';
+    import CrawlTime from '@/components/crawl-time.vue';
 
     @Component({
         name: "organization-details",
-        components: {DayStatisticsCard},
+        components: {CrawlTime, DayStatisticsCard},
         metaInfo: {
             title: "Organization info - Stellarbeat.io",
             meta: [
@@ -223,6 +229,9 @@
 </script>
 
 <style scoped>
+    .no-margin {
+        margin-left: 0px!important;
+    }
     .social-link {
         text-decoration: none;
     }
