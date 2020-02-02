@@ -42,7 +42,7 @@ export type DayStatistic = {
 }
 
 export default class Store {
-    public measurementsStartDate: Date = new Date('2019-05-31');
+    public measurementsStartDate: Date = new Date('2019-06-01');
     public isLoading: boolean = true;
     public fetchingNodeDataFailed: boolean = false;
     public network!: Network;
