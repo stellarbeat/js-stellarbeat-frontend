@@ -55,7 +55,7 @@ Version = How far away from the latest stable Stellar core version
 Trust = How many active validators trust this node
 Age = Time since discovery
                         </code></pre>
-                <h3>Why is my validator 'overloaded'</h3>
+                <h3>Why is my validator 'overloaded'?</h3>
                 <p> When your validator disconnects from the crawler with an <a
                         target="_blank"
                         href="https://github.com/stellar/stellar-core/blob/cc6208b268d3102381c4e2502fcbb6e3afd4249a/src/xdr/Stellar-overlay.x#L16">err_load</a> message, it is marked as overloaded. It indicates how easily new nodes can connect to your validator. A possible solution is to increase MAX_ADDITIONAL_PEER_CONNECTIONS (inbound connections)</p>
