@@ -87,7 +87,6 @@
                     },
                     onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
                         if (activeElements && activeElements[0] && Number((activeElements[0] as any)._index) >=0) {
-                            console.log('hier');
                             that.$emit('click-date', that.data[Number((activeElements[0] as any)._index)].t);
                         }
                     },

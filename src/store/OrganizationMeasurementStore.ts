@@ -25,6 +25,6 @@ export default class OrganizationMeasurementStore {
     }
 
     async getMeasurements(organizationId: string, from: Date, to: Date): Promise<OrganizationMeasurement[]> {
-        return await this.measurementStore.fetchIndividualMeasurements<OrganizationMeasurement>(organizationId, from, to, '/v2/organization-measurement');
+        return await this.measurementStore.fetchIndividualMeasurements<OrganizationMeasurement>(organizationId, from, to, '/v2/organization-measurements');
     }
 }
