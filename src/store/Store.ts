@@ -7,32 +7,21 @@ import {InnerQuorumSetDelete} from '@/services/change-queue/changes/inner-quorum
 import {InnerQuorumSetAdd} from '@/services/change-queue/changes/inner-quorum-set-add';
 import {QuorumSetValidatorsAdd} from '@/services/change-queue/changes/quorum-set-validators-add';
 import {NetworkAddNode} from '@/services/change-queue/changes/network-add-node';
-import Vue from "vue";
+import Vue from 'vue';
+import MeasurementStore from '@/store/MeasurementStore';
+import NodeMeasurementStore from '@/store/NodeMeasurementStore';
+import OrganizationMeasurementStore from '@/store/OrganizationMeasurementStore';
 
 export type QuorumMonitorStore = {
     centerNode: Node | undefined,
     selectedNode: Node | undefined
 }
+
 export type ValidatingStatistic = {
     publicKey: PublicKey,
     crawlCount: number,
     isValidatingCount: number,
     day: Date
-}
-export interface NodeDayStatistics{
-    day: Date
-    isActiveCount: number;
-    isValidatingCount: number;
-    isFullValidatorCount: number;
-    isOverloadedCount: number;
-    indexSum: number;
-    crawlCount: number;
-}
-
-export interface OrganizationDayStatistics{
-    day: Date
-    isSubQuorumAvailableCount: number;
-    crawlCount: number;
 }
 
 export type DayStatistic = {
@@ -53,17 +42,19 @@ export default class Store {
         centerNode: undefined,
         selectedNode: undefined,
     };
-    protected _uniqueId = 0;
-    protected isFetchingNodeStatistics:Map<string, Promise<any>> = new Map();
-    protected isFetchingOrganizationStatistics:Map<string, Promise<any>> = new Map();
+    protected measurementStore: MeasurementStore = new MeasurementStore();
+    public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
+    public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);
 
-    get uniqueId(){
+    protected _uniqueId = 0;
+
+    getUniqueId(){
         return this._uniqueId ++;
     }
 
     async fetchData(time?:Date): Promise<void> {
         try {
-            let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_ALL_SUFFIX);
+            let result = await axios.get(process.env.VUE_APP_API_URL + '/v2/all');
             if (result.data.nodes) {
                 let nodes = result.data.nodes
                     .map((node: any) => Node.fromJSON(node));
@@ -90,7 +81,7 @@ export default class Store {
                 at: time.toISOString()
             };
 
-            let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_ALL_V2_SUFFIX, {params});
+            let result = await axios.get(process.env.VUE_APP_API_URL + '/v2/all', {params});
             if (result.data.nodes) {
                 let nodes = result.data.nodes
                     .map((node: any) => Node.fromJSON(node));
@@ -119,131 +110,6 @@ export default class Store {
         if (!node.active)
             this.changeQueue.execute(new EntityPropertyUpdate(node, 'active', !node.active));
         this.processChange(new EntityPropertyUpdate(node, 'isValidating', !node.isValidating));
-    }
-
-    async fetchValidatingStatistics(publicKey: PublicKey, from?: Date, to?: Date): Promise<ValidatingStatistic[]> {
-        let params:any = {};
-        if(from)
-            params.from = from.toDateString();
-        if(to)
-            params.to = to.toDateString();
-        let result = await axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_VALIDATING_STATS_SUFFIX + '/' + publicKey, {
-            params
-        });
-
-        return result.data.map((stat:{
-            publicKey: PublicKey,
-            crawlCount: number,
-            isValidatingCount: number,
-            day: string
-        }) => {
-            return {
-                publicKey: stat.publicKey,
-                isValidatingCount: stat.isValidatingCount,
-                crawlCount: stat.crawlCount,
-                day: new Date(stat.day)
-            };
-        });
-    }
-
-    async fetchNodeStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<NodeDayStatistics[]> {
-        let params: any = {};
-        params.from = from.toDateString();
-        params.to = to.toDateString();
-        let result;
-        if (this.isFetchingNodeStatistics.get(publicKey + params.from + params.to))
-            result = await this.isFetchingNodeStatistics.get(publicKey + params.from + params.to);
-        else {
-            let promise = axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_NODE_STATS_SUFFIX + '/' + publicKey, {
-                params
-            });
-            this.isFetchingNodeStatistics.set(publicKey + params.from + params.to, promise);
-            result = await promise;
-        }
-
-        this.isFetchingNodeStatistics.delete(publicKey + params.from + params.to);
-        result.data.forEach((stat: any) => stat.day = new Date(stat.day));
-        return result.data;
-    }
-
-    async fetchOrganizationStatistics(organizationId: OrganizationId, from: Date, to: Date): Promise<OrganizationDayStatistics[]> {
-        let params: any = {};
-        params.from = from.toDateString();
-        params.to = to.toDateString();
-        let result;
-        if (this.isFetchingOrganizationStatistics.get(organizationId + params.from + params.to))
-            result = await this.isFetchingOrganizationStatistics.get(organizationId + params.from + params.to);
-        else {
-            let promise = axios.get(process.env.VUE_APP_API_URL + process.env.VUE_APP_API_ORG_STATS_SUFFIX + '/' + organizationId, {
-                params
-            });
-            this.isFetchingOrganizationStatistics.set(organizationId + params.from + params.to, promise);
-            result = await promise;
-        }
-
-        this.isFetchingOrganizationStatistics.delete(organizationId + params.from + params.to);
-        result.data.forEach((stat: any) => stat.day = new Date(stat.day));
-        return result.data;
-    }
-
-    async fetchNodeValidatingDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
-        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
-
-        return nodeStatistics.map(nodeStat => {
-            return {
-                day: nodeStat.day,
-                propertyCount: nodeStat.isValidatingCount,
-                crawlCount: nodeStat.crawlCount
-            }
-        })
-    }
-
-    async fetchNodeOverLoadedDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
-        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
-
-        return nodeStatistics.map(nodeStat => {
-            return {
-                day: nodeStat.day,
-                propertyCount: nodeStat.crawlCount - nodeStat.isOverloadedCount, //we want green stats when it's not overloaded
-                crawlCount: nodeStat.crawlCount
-            }
-        })
-    }
-
-    async fetchNodeIndexDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
-        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
-
-        return nodeStatistics.map(nodeStat => {
-            return {
-                day: nodeStat.day,
-                propertyCount: nodeStat.indexSum,
-                crawlCount: nodeStat.crawlCount
-            }
-        })
-    }
-
-    async fetchOrganizationSubQuorumDayStatistics(organizationId: OrganizationId, from: Date, to: Date): Promise<DayStatistic[]> {
-        let organizationStatistics = await this.fetchOrganizationStatistics(organizationId, from, to);
-
-        return organizationStatistics.map(organizationStat => {
-            return {
-                day: organizationStat.day,
-                propertyCount: organizationStat.isSubQuorumAvailableCount,
-                crawlCount: organizationStat.crawlCount
-            }
-        })
-    }
-
-    async fetchNodeFullValidatorDayStatistics(publicKey: PublicKey, from: Date, to: Date): Promise<DayStatistic[]> {
-        let nodeStatistics = await this.fetchNodeStatistics(publicKey, from, to);
-
-        return nodeStatistics.map(nodeStat => {
-            return {
-                day: nodeStat.day,
-                propertyCount: nodeStat.isFullValidatorCount,
-                crawlCount: nodeStat.crawlCount
-            }
-        })
     }
 
     public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {

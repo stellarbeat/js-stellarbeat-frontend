@@ -29,7 +29,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component} from 'vue-property-decorator';
-    import Store from '@/Store';
+    import Store from '@/store/Store';
     import Datepicker from 'vuejs-datepicker';
     import moment from 'moment';
 

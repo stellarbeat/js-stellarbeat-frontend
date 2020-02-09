@@ -18,7 +18,7 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import Store from "@/Store";
+    import Store from "@/store/Store";
     import {Node} from "@stellarbeat/js-stellar-domain";
 
     @Component({

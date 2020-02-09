@@ -58,7 +58,7 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import {DayStatistic} from '@/Store';
+    import {DayStatistic} from '@/store/Store';
 
     @Component({
         name: "day-statistics-chart",

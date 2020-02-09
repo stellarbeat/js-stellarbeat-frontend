@@ -38,7 +38,7 @@
     import Vue from "vue";
     import {Component, Prop, Watch} from "vue-property-decorator";
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
-    import Store from "@/Store";
+    import Store from "@/store/Store";
     import {Node, PublicKey, QuorumSet} from "@stellarbeat/js-stellar-domain";
     import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
 

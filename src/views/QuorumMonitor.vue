@@ -62,37 +62,44 @@
             </div>
             <div class="row" v-if="selectedNode">
                 <div class="col-md-6 col-lg-4">
-                    <day-statistics-card
+                    <history-card
                             :subject="'Validating history'"
                             :entityId="selectedNode.publicKey"
-                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeValidatingDayStatistics(publicKey, from, to)"
+                            :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                            :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                            :dayMeasurementProperty="'isValidatingCount'"
+                            :measurementProperty="'isValidating'"
                             :chartType="'bar'"
                     >
-                    </day-statistics-card>
+                    </history-card>
                 </div>
                 <div class="col-md-6 col-lg-4">
-                    <day-statistics-card
+                    <history-card
                             :subject="'Full validator history'"
                             :entityId="selectedNode.publicKey"
-                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeFullValidatorDayStatistics(publicKey, from, to)"
-                            :chartType="'bar'"
+                            :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                            :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                            :dayMeasurementProperty="'isFullValidatorCount'"
+                            :measurementProperty="'isFullValidator'"
                     >
-                    </day-statistics-card>
+                    </history-card>
                 </div>
                 <div class="col-md-6 col-lg-4">
-                    <day-statistics-card
+                    <history-card
                             :subject="'Overloaded history'"
                             :entityId="selectedNode.publicKey"
-                            :fetchDayStatistics="(publicKey, from, to) => store.fetchNodeOverLoadedDayStatistics(publicKey, from, to)"
-                            :chartType="'bar'"
+                            :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                            :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                            :dayMeasurementProperty="'isOverloadedCount'"
+                            :measurementProperty="'isOverLoaded'"
+                            :inverted="true"
                     >
-                    </day-statistics-card>
+                    </history-card>
                 </div>
             </div>
         </div>
-
-
     </div>
+
 </template>
 
 <script lang="ts">
@@ -110,21 +117,19 @@
     import UndoRedo from '@/components/quorum-monitor/UndoRedo.vue';
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import NodeList from '@/components/quorum-monitor/quorum-set-explorer/node-list.vue';
-    import Store from '@/Store';
+    import Store from '@/store/Store';
     import SearchCard from '@/components/quorum-monitor/cards/search-card.vue';
     import NetworkGraphCard from '@/components/quorum-monitor/cards/network-graph-card.vue';
     import QuorumSetExplorerCard from '@/components/quorum-monitor/cards/quorum-set-explorer-card.vue';
-    import ValidatingHistoryCard from '@/components/quorum-monitor/cards/validating-history-card.vue';
-    import DayStatisticsCard from '@/components/quorum-monitor/cards/day-statistics-card.vue';
+    import HistoryCard from '@/components/quorum-monitor/cards/history-card.vue';
     import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
     import CrawlTime from '@/components/crawl-time.vue';
 
     @Component({
         name: 'quorum-monitor',
         components: {
+            HistoryCard,
             SimulateNewNode,
-            ValidatingHistoryCard,
-            DayStatisticsCard: DayStatisticsCard,
             QuorumSetExplorerCard,
             NetworkGraphCard,
             SearchCard,

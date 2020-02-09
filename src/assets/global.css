@@ -2,7 +2,18 @@
     background: #1997c6;
     border-color: #1997c6;
 }
-
+.btn-outline-primary {
+    border-color: #1997c6;
+}
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #1a85ad;
+    border-color: #1997c6;
+}
+.btn-outline-primary:not(:disabled):not(.disabled):active {
+    background-color: #166e8f;
+    border-color: #166e8f;
+}
 .btn-primary:hover {
     color: #fff;
     background-color: #1a85ad;

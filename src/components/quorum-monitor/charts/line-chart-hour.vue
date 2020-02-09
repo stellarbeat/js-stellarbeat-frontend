@@ -1,6 +1,6 @@
 <template>
     <canvas height="140px" :width="width" :id="'lineChart' + id"
-            :ref="'lineChart' + id"/>
+            :ref="'lineChart' + id" />
 </template>
 
 <script lang="ts">
@@ -9,18 +9,16 @@
     import Store from '@/store/Store';
     import Chart from 'chart.js';
 
-    interface LineChartDayData {
-        positivePropertyPercentageData: any;
-    }
-
     @Component({
-        name: 'line-chart-day'
+        name: 'line-chart-hour'
     })
-    export default class LineChartDay extends Vue {
+    export default class LineChartHour extends Vue {
         @Prop()
-        width!:string;
+        width!: string;
         @Prop()
-        data!:LineChartDayData;
+        data!: { t: Date, y: number }[];
+        @Prop({default: false})
+        inverted!:boolean;
 
         lineChart!: Chart;
         id: number = this.store.getUniqueId();
@@ -30,26 +28,62 @@
         }
 
         @Watch('data')
-        onDataChanged(){
-            this.lineChart.data.datasets![0].data = this.data.positivePropertyPercentageData;
+        onDataChanged() {
+            this.lineChart.data.datasets![0].data = this.data;
+            if(!this.inverted) {
+                this.lineChart.data.datasets![0].pointBackgroundColor= this.pointColors;
+                this.lineChart.data.datasets![0].pointBorderColor= this.pointColors;
+            } else {
+                this.lineChart.data.datasets![0].pointBackgroundColor= this.pointColors;
+                this.lineChart.data.datasets![0].pointBorderColor= this.pointColors;
+            }
+
             this.lineChart.update();
         }
 
-        mounted(){
+        get pointColors() {
+            if(!this.inverted) {
+                return this.data.map(point => point.y ? 'rgba(94,186,0,1)' : 'red');
+            } else {
+                return this.data.map(point => point.y ? 'red': 'rgba(94,186,0,1)');
+            }
+        }
+
+        mounted() {
             let chartId = 'lineChart' + this.id;
             let context = (this.$refs[chartId] as HTMLCanvasElement).getContext('2d');
+            let that = this;
             this.lineChart = new Chart(context as CanvasRenderingContext2D, {
                 type: 'line',
                 data: {
                     datasets: [{
-                        backgroundColor: '#1997c6',
-                        borderWidth: 0,
-                        data: this.data.positivePropertyPercentageData
+                        label: 'Validating',
+                        backgroundColor: this.inverted ? 'rgba(255,0,0,0.4)': 'rgba(94,186,0,0.4)',
+                        pointBackgroundColor: this.pointColors,
+                        pointBorderColor: this.pointColors,
+                        pointBorderWidth: 2,
+                        borderColor: this.inverted ? 'red': 'rgba(25,186,0,1)',
+                        borderWidth: 3,
+                        data: this.data
                     }]
                 },
 
                 // Configuration options go here
                 options: {
+                    onHover(event: MouseEvent, activeElements: Array<{}>): any {
+                        (event.target! as any).style.cursor = activeElements[0] ? 'pointer' : 'default';
+                    },
+                    onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
+                        if(activeElements && activeElements[0] && (activeElements[0] as any)._index >=0)
+                            that.$emit('click-date', that.data[(activeElements[0] as any)._index].t);
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label(tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData): string | string[] {
+                                return tooltipItem.value === '1' ? 'Yes' : 'No';
+                            }
+                        },
+                    },
                     responsive: false,
                     legend: {
                         display: false
@@ -81,15 +115,12 @@
                             display: true,
                             type: 'time',
                             time: {
-                                unit: 'day',
+                                unit: 'minute',
                                 displayFormats: {
-                                    day: 'D-M-YYYY'
-                                },
-                                tooltipFormat: 'D-M-YYYY',
-                                stepSize: 2,
-
+                                    'minute': 'HH:mm'
+                                }
                             },
-                            distribution: 'linear',
+                            distribution: 'series',
                             ticks: {
                                 fontColor: '#aaa',
                                 fontSize: 10,
@@ -109,13 +140,24 @@
                             display: true,
                             bounds: 'data',
                             ticks: {
+                                padding: 8,
                                 fontColor: '#aaa',
-                                fontSize: 10
+                                fontSize: 10,
+                                beginAtZero: true,
+                                stepSize: 10,
+                                callback: function (value, index, values) {
+                                    return value ? 'Yes' : 'No';
+                                }
                             }
                         }]
                     }
                 }
             });
+        }
+        public beforeDestroy() {
+            if (this.lineChart) {
+                this.lineChart.destroy();
+            }
         }
     }
 </script>

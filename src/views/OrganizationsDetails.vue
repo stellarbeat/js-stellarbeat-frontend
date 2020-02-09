@@ -160,13 +160,16 @@
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-4">
-                    <day-statistics-card
+                    <history-card
                             :subject="'Subquorum Availability history'"
                             :entityId="organization.id"
-                            :fetchDayStatistics="(organizationId, from, to) => store.fetchOrganizationSubQuorumDayStatistics(organization.id, from, to)" :chartType="'bar'"
+                            :fetchDayMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getDayMeasurements(organizationId, from, to)"
+                            :fetchMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getMeasurements(organizationId, from, to)"
+                            :dayMeasurementProperty="'isSubQuorumAvailableCount'"
+                            :measurementProperty="'isSubQuorumAvailable'"
                     >
-                    </day-statistics-card>
-                </div>
+                    </history-card>
+                    </div>
             </div>
             </div>
 
@@ -179,13 +182,13 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Node, Organization, Network} from "@stellarbeat/js-stellar-domain";
-    import DayStatisticsCard from '@/components/quorum-monitor/cards/day-statistics-card.vue';
-    import Store from '@/Store';
+    import Store from '@/store/Store';
     import CrawlTime from '@/components/crawl-time.vue';
+    import HistoryCard from '@/components/quorum-monitor/cards/history-card.vue';
 
     @Component({
         name: "organization-details",
-        components: {CrawlTime, DayStatisticsCard},
+        components: {HistoryCard, CrawlTime},
         metaInfo: {
             title: "Organization info - Stellarbeat.io",
             meta: [

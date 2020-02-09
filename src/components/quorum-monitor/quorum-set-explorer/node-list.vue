@@ -43,7 +43,7 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Network, Node} from "@stellarbeat/js-stellar-domain";
-    import Store from "@/Store";
+    import Store from "@/store/Store";
     import {Modal} from 'bootstrap-vue';
 
     @Component({

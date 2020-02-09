@@ -58,7 +58,7 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import {ValidatingStatistic} from "@/Store";
+    import {ValidatingStatistic} from "@/store/Store";
 
     @Component({
         name: "uptime-chart",

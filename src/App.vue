@@ -131,7 +131,7 @@
     import {Network, Node, Organization} from "@stellarbeat/js-stellar-domain";
     import axios from "axios";
     import {Component, Prop, Watch} from "vue-property-decorator";
-    import Store from "@/Store";
+    import Store from "@/store/Store";
 
     @Component({
         name: "app",

@@ -29,7 +29,7 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Node} from "@stellarbeat/js-stellar-domain";
-    import Store from "@/Store";
+    import Store from "@/store/Store";
 
     @Component({
         name: "search"

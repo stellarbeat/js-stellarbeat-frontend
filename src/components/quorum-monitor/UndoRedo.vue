@@ -21,7 +21,7 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import Store from "@/Store";
+    import Store from "@/store/Store";
 
     @Component({
         name: "UndoRedo"

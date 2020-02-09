@@ -9675,7 +9675,7 @@ vue-class-component@^6.2.0:
   resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-6.3.2.tgz#e6037e84d1df2af3bde4f455e50ca1b9eec02be6"
   integrity sha512-cH208IoM+jgZyEf/g7mnFyofwPDJTM/QvBNhYMjqGB8fCsRyTf68rH2ISw/G20tJv+5mIThQ3upKwoL4jLTr1A==
 
-vue-class-component@^7.0.2:
+vue-class-component@^7.2.2:
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.2.tgz#aecc6d28801f64c61eb04407cf3a5476da26b0c0"
   integrity sha512-QjVfjRffux0rUBNtxr1hvUxDrfifDvk9q/OSdB/sKIlfxAudDF2E1YTeiEC+qOYIOOBGWkgSKQSnast6H+S38w==
@@ -9793,7 +9793,12 @@ vue-truncate-filter@^1.1.7:
   resolved "https://registry.yarnpkg.com/vue-truncate-filter/-/vue-truncate-filter-1.1.7.tgz#e365fd2d4520c017293308e0ecbb1dd6176c3af2"
   integrity sha512-kFmUDsDFIj5vArdK6hX84v80fTWJIMrsYF5keCluy9hMiaKGL8NyApnMbWavZeDod24YeYMVQ9jjd7MkRn3AAg==
 
-vue@^2.6.10:
+vue2-timepicker@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/vue2-timepicker/-/vue2-timepicker-1.0.8.tgz#352b450f5d4b20ad5da5cef729f08b3b3ac89b9d"
+  integrity sha512-3wtodBBbW2comZYIpqUSvwKkNqAOkJn5TZaC+SypTE/vn001a/f+f1kj1FZdHPT43R4uiD3DLzkP2Y1VDKlNgg==
+
+vue@^2.6.10, vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==

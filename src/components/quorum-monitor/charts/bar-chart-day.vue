@@ -6,13 +6,13 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
-    import Store from '@/Store';
+    import Store from '@/store/Store';
     import Chart from 'chart.js';
 
     interface BarChartDayData {
-        positivePropertyPercentageData: any;
-        negativePropertyPercentageData: any;
+        t: Date, y: number;
     }
+    export type timeUnit = 'day'|'hour'
 
     @Component({
         name: 'bar-chart-day'
@@ -21,45 +21,76 @@
         @Prop()
         width!:string;
         @Prop()
-        data!:BarChartDayData;
+        data!:BarChartDayData[];
+        @Prop()
+        unit!: timeUnit;
 
-        lineChart!: Chart;
-        id: number = this.store.uniqueId;
+        barChart!: Chart;
+        id: number = this.store.getUniqueId();
 
         get store(): Store {
             return this.$root.$data.store;
         }
 
+        get timeFormat(){
+            if(this.unit === 'day')
+                return 'D-M-YYYY';
+            else
+                return 'HH:mm';
+        }
+
+        get displayFormat() {
+            if(this.unit === 'day')
+                return {day: this.timeFormat};
+            else return {hour: this.timeFormat};
+        }
+
         @Watch('data')
         onDataChanged(){
-            this.lineChart.data.datasets![0].data = this.data.positivePropertyPercentageData;
-            this.lineChart.data.datasets![1].data = this.data.negativePropertyPercentageData;
-            this.lineChart.update();
+            this.barChart.data.datasets![0].data = this.data;
+            this.barChart.data.datasets![1].data = this.data.map(data => {return {
+                t: data.t,
+                y: 100 - data.y
+            }});
+            this.barChart.update();
         }
 
         mounted(){
             let chartId = 'lineChart' + this.id;
             let context = (this.$refs[chartId] as HTMLCanvasElement).getContext('2d');
-            this.lineChart = new Chart(context as CanvasRenderingContext2D, {
+            let that = this;
+            this.barChart = new Chart(context as CanvasRenderingContext2D, {
                 type: 'bar',
                 data: {
                     datasets: [{
                         label: 'Validating',
                         backgroundColor: '#5eba00',
                         borderWidth: 0,
-                        data: this.data.positivePropertyPercentageData
+                        data: this.data
                     },
                         {
                             label: 'Not Validating',
                             backgroundColor: 'red',
                             borderColor: '#1997c6',
-                            data: this.data.negativePropertyPercentageData,
+                            data: this.data.map(data => {return {
+                                t: data.t,
+                                y: 100 - data.y
+                            }}),
                             fill: 'origin'
                         }]
                 },
 
                 // Configuration options go here
                 options: {
+                    onHover(event: MouseEvent, activeElements: Array<{}>): any {
+                        (event.target! as any).style.cursor = activeElements[0] ? 'pointer' : 'default';
+                    },
+                    onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
+                        if (activeElements && activeElements[0] && Number((activeElements[0] as any)._index) >=0) {
+                            console.log('hier');
+                            that.$emit('click-date', that.data[Number((activeElements[0] as any)._index)].t);
+                        }
+                    },
                     tooltips: {
                         callbacks: {
                             label(tooltipItem: Chart.ChartTooltipItem, data: Chart.ChartData): string | string[] {
@@ -98,11 +129,9 @@
                             display: true,
                             type: 'time',
                             time: {
-                                unit: 'day',
-                                displayFormats: {
-                                    day: 'D-M-YYYY'
-                                },
-                                tooltipFormat: 'D-M-YYYY',
+                                unit: this.unit,
+                                displayFormats: this.displayFormat,
+                                tooltipFormat: this.timeFormat,
                                 stepSize: 2,
 
                             },
@@ -141,6 +170,11 @@
                     }
                 }
             });
+        }
+        public beforeDestroy() {
+            if (this.barChart) {
+                this.barChart.destroy();
+            }
         }
     }
 </script>

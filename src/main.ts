@@ -11,7 +11,7 @@ import * as Sentry from '@sentry/browser';
 // Importing the global css file
 import "@/assets/global.css"
 import VueScrollTo from 'vue-scrollto';
-import Store from '@/Store';
+import Store from '@/store/Store';
 import VueClipboard from 'vue-clipboard2'
 import "core-js/stable";
 import "regenerator-runtime/runtime";
