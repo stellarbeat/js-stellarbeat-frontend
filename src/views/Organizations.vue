@@ -151,7 +151,8 @@
                         id: organization.id,
                         failAt: this.getFailAt(organization),
                         subQuorum24HAvailability: organization.subQuorum24HoursAvailability + '%',
-                        subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%'
+                        subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%',
+                        isTierOneOrganization: organization.isTierOneOrganization
                     };
                 });
         }
