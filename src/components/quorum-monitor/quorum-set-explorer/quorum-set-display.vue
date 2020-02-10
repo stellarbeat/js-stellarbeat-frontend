@@ -62,6 +62,9 @@
                 <a href="#" class="validator-link"
                    v-on:click.prevent.stop="selectNode(validator)">
                     <div v-bind:class="nodeState(validator)">
+                        <span v-b-tooltip.hover title="Full validator" v-if="isFullValidator(validator)" class="badge sb-badge badge-success">
+                            <i class="fe fe-shield"/>
+                        </span>
                         {{validatorDisplayName(validator) | truncate(30)}}
                     </div>
                 </a>
@@ -320,6 +323,13 @@
                     this.validatorsToAdd
                 );
             }
+        }
+
+        isFullValidator(publicKey: string) {
+            if(this.getNode(publicKey))
+                return this.getNode(publicKey).isFullValidator && !this.network.isNodeFailing(this.getNode(publicKey));
+
+            return false;
         }
     }
 </script>
