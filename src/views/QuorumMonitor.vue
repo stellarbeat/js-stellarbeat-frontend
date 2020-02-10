@@ -35,6 +35,14 @@
                         <div class="col-12">
                         </div>
                     </div>
+                    <div class="card" v-if="!selectedNode">
+                        <div class="card-header">
+                            <div class="card-title">Organizations in Transitive Quorumset</div>
+                        </div>
+                        <div class="card-body py-2 px-0">
+                            <organization-list :organizations="networkTransitiveQuorumSetOrganizations"/>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-4 col-sm-12 order-0">
                     <div class="row">
@@ -42,62 +50,65 @@
                             <quorum-set-explorer-card v-if="selectedNode" class="quorum-set-explorer-card"
                                                       v-on:show-halting-analysis="onShowHaltingAnalysis"
                             ></quorum-set-explorer-card>
-                            <div class="card" v-else>
-                                <div class="card-header">
-                                    <div class="card-title">Network transitive quorumset</div>
-                                </div>
-                                <div class="card-body py-2 px-0">
-                                    <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes"
-                                               :render-title="false"
-                                    />
-                                </div>
-                                <div class="card-footer p-3">
-                                    <simulate-new-node class="col-12 pl-0"></simulate-new-node>
+                            <div v-else>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="card-title">Validators in Transitive Quorumset</div>
+                                    </div>
+                                    <div class="card-body py-2 px-0">
+                                        <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes"
+                                                   :render-title="false"
+                                        />
+                                    </div>
+                                    <div class="card-footer p-3">
+                                        <simulate-new-node class="col-12 pl-0"></simulate-new-node>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="row" v-if="selectedNode">
-                <div class="col-md-6 col-lg-4">
-                    <history-card
-                            :subject="'Validating history'"
-                            :entityId="selectedNode.publicKey"
-                            :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                            :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
-                            :dayMeasurementProperty="'isValidatingCount'"
-                            :measurementProperty="'isValidating'"
-                            :chartType="'bar'"
-                    >
-                    </history-card>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <history-card
-                            :subject="'Full validator history'"
-                            :entityId="selectedNode.publicKey"
-                            :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                            :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
-                            :dayMeasurementProperty="'isFullValidatorCount'"
-                            :measurementProperty="'isFullValidator'"
-                    >
-                    </history-card>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <history-card
-                            :subject="'Overloaded history'"
-                            :entityId="selectedNode.publicKey"
-                            :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                            :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
-                            :dayMeasurementProperty="'isOverloadedCount'"
-                            :measurementProperty="'isOverLoaded'"
-                            :inverted="true"
-                    >
-                    </history-card>
-                </div>
+
+        </div>
+        <div class="row" v-if="selectedNode">
+            <div class="col-md-6 col-lg-4">
+                <history-card
+                        :subject="'Validating history'"
+                        :entityId="selectedNode.publicKey"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :dayMeasurementProperty="'isValidatingCount'"
+                        :measurementProperty="'isValidating'"
+                        :chartType="'bar'"
+                >
+                </history-card>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <history-card
+                        :subject="'Full validator history'"
+                        :entityId="selectedNode.publicKey"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :dayMeasurementProperty="'isFullValidatorCount'"
+                        :measurementProperty="'isFullValidator'"
+                >
+                </history-card>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <history-card
+                        :subject="'Overloaded history'"
+                        :entityId="selectedNode.publicKey"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :dayMeasurementProperty="'isOverloadedCount'"
+                        :measurementProperty="'isOverLoaded'"
+                        :inverted="true"
+                >
+                </history-card>
             </div>
         </div>
+    </div>
     </div>
 
 </template>
@@ -124,10 +135,12 @@
     import HistoryCard from '@/components/quorum-monitor/cards/history-card.vue';
     import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
     import CrawlTime from '@/components/crawl-time.vue';
+    import OrganizationList from '@/components/quorum-monitor/quorum-set-explorer/organization-list.vue';
 
     @Component({
         name: 'quorum-monitor',
         components: {
+            OrganizationList,
             HistoryCard,
             SimulateNewNode,
             QuorumSetExplorerCard,
@@ -172,13 +185,20 @@
             return this.store.quorumMonitorStore.selectedNode;
         }
 
-        get network() {
+        get network(): Network {
             return this.$root.$data.store.network;
         }
 
         get networkTransitiveQuorumSetNodes() {
             return Array.from(this.network.graph.networkTransitiveQuorumSet)
                 .map(publicKey => this.network.getNodeByPublicKey(publicKey));
+        }
+
+        get networkTransitiveQuorumSetOrganizations() {
+            return [...new Set(this.networkTransitiveQuorumSetNodes
+                .filter(node => node.organizationId)
+                .map(node => this.network.getOrganizationById(node.organizationId!))
+            )];
         }
 
         onShowHaltingAnalysis(publicKey: PublicKey) {
