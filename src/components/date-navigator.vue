@@ -2,7 +2,7 @@
     <div class="date-selector d-flex">
         <b-button :disabled="!canGoBack()" size="sm" v-on:click="$emit('goBack')"><i
                 class="fe fe-chevron-left"/></b-button>
-        <datepicker v-model="datePickerDate" :disabledDates="disabledDates"
+        <datepicker v-model="datePickerDate" :disabledDates="disabledDates" :input-class="'date-picker-input-white'" :wrapper-class="'date-picker-wrapper'"
                     :bootstrap-styling="true"/>
         <vue-timepicker v-if="showTime" hide-clear-button input-width="5em" class="" v-model="timePickerTime" @input="timeInputHandler"/>
         <b-button size="sm" v-on:click="$emit('goForward')"><i class="fe fe-chevron-right"/>
@@ -81,14 +81,5 @@
 
 </style>
 <style>
-    .vue__time-picker input.display-time{
-        background: #f8f9fa;
-        border: 1px solid rgba(0, 40, 100, 0.12);
-        padding: 0.375rem 0.75rem;
-        padding-top: 8px;
-        font-size: 0.9375rem;
-        line-height: 1.6;
-        color: #495057;
-        height: 38px;
-    }
+
 </style>

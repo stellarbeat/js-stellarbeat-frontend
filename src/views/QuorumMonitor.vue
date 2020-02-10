@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="page-header  mt-2">
+        <div class="page-header mt-2">
             <h1 class="page-title">
                 Quorum Monitor
                 <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>

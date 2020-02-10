@@ -56,8 +56,8 @@
                                 :showTime="chartView === '1H'"
                         >
                         </date-navigator>
-                        <b-button @click="timeTravel" variant="secondary" size="sm" class="ml-4" v-b-tooltip.hover title="TimeTravel (beta)"><i class="fe fe-clock"></i>
-                            Go!
+                        <b-button @click="timeTravel" variant="secondary" size="sm" class="ml-4" v-b-tooltip.hover title="Travel to selected time (beta)"><i class="fe fe-clock"></i>
+                            Travel
                         </b-button>
                     </div>
                 </div>

@@ -32,3 +32,35 @@
 .dropdown-item.active, .dropdown-item:active {
     background-color: #1a85ad;
 }
+
+.vue__time-picker input.display-time{
+    background: white;
+    border: 1px solid #d7dee9;
+    padding: 0.375rem 0.75rem;
+    padding-top: 8px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #495057;
+    height: 38px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.date-picker-wrapper {
+    width: 115px;
+}
+.date-picker-input-white {
+    background-color: white!important;
+}
+.date-picker-input-white-no-border {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+timepicker-no-border-right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.page-title {
+    margin-right: 10px;
+}

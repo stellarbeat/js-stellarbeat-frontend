@@ -1,28 +1,11 @@
 <template>
-    <div class="d-flex">
-        <div class="page-subtitle ml-4 mr-2">{{crawlDate.toLocaleString()}}</div>
-        <button v-b-tooltip.hover title="TimeTravel (beta)" class="btn btn-sm btn-secondary" v-b-modal.modal-time-travel>
-            <i class="fe fe-clock"></i>
+    <div class="d-flex crawl-time-component mt-1">
+        <datepicker id="datePickerCrawlTime" input-class="date-picker-input-white date-picker-input-white-no-border" :wrapper-class="'date-picker-wrapper'" v-model="crawlDate" :disabledDates="disabledDates"
+                    :bootstrap-styling="true"/>
+        <vue-timepicker hide-clear-button input-width="7em" class="" v-model="crawlTime" input-class="timepicker-no-border-right" format="HH:mm:ss"/>
+        <button v-b-tooltip.hover title="Travel to selected time (beta)" class="btn btn-sm btn-secondary time-travel-btn" @click="timeTravel">
+            <i class="fe fe-clock"></i> Travel
         </button>
-        <b-modal v-on:ok="timeTravel" id="modal-time-travel" title="Time Travel (Beta)">
-            <b-form @submit="timeTravel">
-                <b-form-group
-                        id="input-group-1"
-                        label="Select date:"
-                        label-for="datePicker"
-                >
-                    <datepicker id="datePicker" class="mb-2" v-model="crawlDate" :disabledDates="disabledDates"
-                                :bootstrap-styling="true"/>
-                </b-form-group>
-                <b-form-group
-                        id="input-group-2"
-                        label="Select time:"
-                        label-for="timeInput"
-                >
-                    <b-form-input id="timeInput" type="time" v-model="crawlTime"/>
-                </b-form-group>
-            </b-form>
-        </b-modal>
     </div>
 </template>
 
@@ -32,17 +15,21 @@
     import Store from '@/store/Store';
     import Datepicker from 'vuejs-datepicker';
     import moment from 'moment';
+    import 'vue2-timepicker/dist/VueTimepicker.css';
+    import VueTimePicker from 'vue2-timepicker';
 
     @Component({
         name: 'crawl-time',
         components: {
-            Datepicker
+            Datepicker,
+            'vue-timepicker': VueTimePicker
         }
     })
     export default class CrawlTime extends Vue {
         protected crawlDate:Date;
-        protected crawlTime:string;
+        protected crawlTime:{ HH: string, mm: string, ss:string };
         protected minSelectedDate: Date = this.store.measurementsStartDate;
+
         protected disabledDates: any = {
             to: this.minSelectedDate,
             from: new Date()
@@ -51,30 +38,42 @@
         constructor() {
             super();
             this.crawlDate = new Date(this.store.crawlDate.getTime());
-            this.crawlTime = this.crawlDate.getHours() + ':' + this.crawlDate.getMinutes();
+            this.crawlTime = {
+                HH: moment(this.crawlDate).format('HH'),
+                mm: moment(this.crawlDate).format('mm'),
+                ss: moment(this.crawlDate).format('ss')
+            };
+            console.log(this.crawlDate);
         }
         get store(): Store {
             return this.$root.$data.store;
         }
 
         public async timeTravel() {
-            let isTimeValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(this.crawlTime);
-            let hours = 0;
-            let minutes = 0;
-            if (isTimeValid) {
-                let parsedTime = this.crawlTime.split(':');
-                hours = Number(parsedTime[0]);
-                minutes = Number(parsedTime[1]);
-            }
-
+            console.log(this.crawlTime);
+            console.log(moment(this.crawlDate).hours(Number(this.crawlTime.HH)).minutes(Number(this.crawlTime.mm)).toDate());
             this.store.isLoading = true;
-            this.crawlDate.setHours(hours);
-            this.crawlDate.setMinutes(minutes);
-            await this.store.timeTravelTo(this.crawlDate);
+            await this.store.timeTravelTo(
+                moment(this.crawlDate).hours(Number(this.crawlTime.HH)).minutes(Number(this.crawlTime.mm)).seconds(Number(this.crawlTime.ss)).toDate()
+            );
             this.store.isLoading = false;
         }
+
     }
 </script>
 
 <style scoped>
+    .crawl-time-component {
+    }
+    .time-travel-btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: none;
+    }
+    #datePickerCrawlTime {
+        background-color: white;
+    }
+</style>
+<style>
+
 </style>
