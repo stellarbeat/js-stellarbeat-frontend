@@ -41,6 +41,12 @@
                                              href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                     file to include your history archive url's and make sure the archive(s) are up-to-date.
                 </p>
+                <h3>What is organization subquorum availability?</h3>
+                <p>
+                    Validators can add the validators of an organization to their quorumset. If 50% or more of the validators of an organization are validating correctly, this subquorum is marked as available.
+                </p>
+                <h3>What is a tier one organization</h3>
+                <p>A tier one organization has at least three validators and subquorum availability of at least 99 percent over 30 days.</p>
                 <h3>What is the node index?</h3>
                 <p>
                     The node index gives nodes a basic ranking through the following formula:
