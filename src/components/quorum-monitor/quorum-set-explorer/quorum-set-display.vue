@@ -10,8 +10,12 @@
                     <h6 v-else class="quorumSetTitle m-0">
                         {{quorumSet.hasValidators() ? 'Quorumset with threshold ' + quorumSet.threshold : 'Empty QuorumSet'}}
                     </h6>
-                    <span v-if="isOrganizationSubQuorum" class="organizationTitle"><i
-                            class="fe fe-globe"></i> {{subQuorumOrganizationName}}</span>
+                    <span v-if="isOrganizationSubQuorum" class="organizationTitle">
+                        <span v-b-tooltip.hover title="Tier one organization" v-if="subQuorumOrganizationIsTierOne" class="badge sb-badge badge-primary">
+                            <i class="fe fe-shield"/>
+                        </span>
+                        {{subQuorumOrganizationName}}
+                    </span>
                 </div>
             </div>
             <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown"
@@ -173,6 +177,14 @@
             }
 
             return this.validators.every((validator, index, validators) => validator.organizationId === validators[0].organizationId);
+        }
+
+        get subQuorumOrganizationIsTierOne(): boolean {
+            if(this.isOrganizationSubQuorum && this.validators[0].organizationId){
+                return this.network.getOrganizationById(this.validators[0].organizationId).isTierOneOrganization;
+            }
+
+            return false;
         }
 
         public get subQuorumOrganizationName(): string {

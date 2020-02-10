@@ -5,6 +5,9 @@
                  v-for="org in paginatedOrganizations">
                 <a href="#" class="node-link active"
                    v-on:click.prevent.stop="selectOrganization(org)">
+                    <span v-b-tooltip.hover title="Tier one organization" v-if="org.isTierOneOrganization" class="badge sb-badge badge-primary">
+                            <i class="fe fe-shield"/>
+                        </span>
                         {{org.name}}
                 </a>
             </div>

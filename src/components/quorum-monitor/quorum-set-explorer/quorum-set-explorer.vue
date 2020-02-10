@@ -65,6 +65,7 @@
                                 :network="network"
                                 :title="network.getOrganizationById(selectedNode.organizationId).name"
                                 :render-title="true"
+                                :renderOrganizationBadge="network.getOrganizationById(selectedNode.organizationId).isTierOneOrganization"
                                 v-on:node-toggle-active="toggleNodeActive"
                                 v-on:node-toggle-validating="toggleNodeValidating"
                                 v-on:node-show-modal="showModal"

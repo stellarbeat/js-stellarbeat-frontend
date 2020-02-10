@@ -32,7 +32,9 @@
                                           class="badge sb-badge badge-success pt-1 mr-1"
                                           v-b-tooltip.hover title="Full validator"><i class="fe fe-shield"></i></span>
                                         <router-link
-                                                :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">{{ validator.name | truncate(30)}}</router-link>
+                                                :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
+                                            {{ validator.name | truncate(30)}}
+                                        </router-link>
                                         <span v-if="!validator.active"
                                               class="badge sb-badge badge-danger ml-1"
                                         >Not active</span>
@@ -64,7 +66,10 @@
                         <template slot="name" slot-scope="row">
                             <router-link
                                     :to="{ name: 'organization-details', params: { 'organizationId': row.item.id }}">
-                                {{ row.item.name}}
+                                <span v-b-tooltip.hover title="Tier one organization" v-if="row.item.isTierOneOrganization"
+                                      class="badge sb-badge badge-primary mr-1">
+                            <i class="fe fe-shield"/>
+                        </span>{{ row.item.name}}
                             </router-link>
                         </template>
                         <template slot="url" slot-scope="row">
@@ -82,7 +87,8 @@
                     </b-table>
                     <b-row>
                         <b-col md="6" class="my-1">
-                            <b-pagination ref="paginator" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"
+                            <b-pagination ref="paginator" :totalRows="totalRows" :per-page="perPage"
+                                          v-model="currentPage"
                                           class="my-1"/>
                         </b-col>
                     </b-row>
@@ -94,37 +100,37 @@
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
-    import {Network, Node, Organization} from "@stellarbeat/js-stellar-domain";
+    import Vue from 'vue';
+    import {Component, Prop} from 'vue-property-decorator';
+    import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
 
     @Component({
-        name: "organizations-table",
+        name: 'organizations-table',
         components: {CrawlTime},
         metaInfo: {
-            title: "Organizations - Stellarbeat.io",
+            title: 'Organizations - Stellarbeat.io',
             meta: [
-                {name: "description", content: "Search through all detected organizations"},
+                {name: 'description', content: 'Search through all detected organizations'},
             ],
         },
     })
     export default class Organizations extends Vue {
-        public sortBy: string = "subQuorum30DAvailability";
+        public sortBy: string = 'subQuorum30DAvailability';
         public sortDesc: boolean = true;
         public perPage: number = 200;
         public totalRows: number = 1;
         public currentPage: number = 1;
-        public filter: string = "";
+        public filter: string = '';
         public fields = [
-            {key: "name", sortable: true},
-            {key: "validators", sortable: false},
-            {key: "failAt", label: "Subquorum availability", sortable: true},
-            {key: "subQuorum24HAvailability", label: "24H subquorum availability", sortable: true},
-            {key: "subQuorum30DAvailability", label: "30D subquorum availability", sortable: true},
-            {key: "url", sortable: true},
-            {key: "keybase", sortable: true},
-            {key: "email", sortable: true}
+            {key: 'name', sortable: true},
+            {key: 'validators', sortable: false},
+            {key: 'failAt', label: 'Subquorum availability', sortable: true},
+            {key: 'subQuorum24HAvailability', label: '24H subquorum availability', sortable: true},
+            {key: 'subQuorum30DAvailability', label: '30D subquorum availability', sortable: true},
+            {key: 'url', sortable: true},
+            {key: 'keybase', sortable: true},
+            {key: 'email', sortable: true}
         ];
 
         @Prop()
@@ -144,8 +150,8 @@
                         email: organization.officialEmail,
                         id: organization.id,
                         failAt: this.getFailAt(organization),
-                        subQuorum24HAvailability: organization.subQuorum24HoursAvailability + "%",
-                        subQuorum30DAvailability: organization.subQuorum30DaysAvailability + "%"
+                        subQuorum24HAvailability: organization.subQuorum24HoursAvailability + '%',
+                        subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%'
                     };
                 });
         }
@@ -155,14 +161,14 @@
                 let node = this.network.getNodeByPublicKey(publicKey);
                 if (node) {
                     return {
-                        "name": node.displayName,
-                        "publicKey": node.publicKey,
-                        "isFullValidator": node.isFullValidator,
-                        "isValidating": node.isValidating,
-                        "active": node.active
+                        'name': node.displayName,
+                        'publicKey': node.publicKey,
+                        'isFullValidator': node.isFullValidator,
+                        'isValidating': node.isValidating,
+                        'active': node.active
                     };
                 } else {
-                    return {"publicKey": publicKey, "name": publicKey};
+                    return {'publicKey': publicKey, 'name': publicKey};
                 }
             }).sort((a: any, b: any) => a.name.localeCompare(b.name));
         }
@@ -177,7 +183,7 @@
         }
 
         get latestCrawlDateString(): string {
-            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
+            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
         }
 
         public onFiltered = (filteredItems: any[]) => {

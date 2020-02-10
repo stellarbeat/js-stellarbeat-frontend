@@ -15,7 +15,7 @@
   "dependencies": {
     "@sentry/browser": "^4.4.1",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellar-domain": "^0.14.9",
+    "@stellarbeat/js-stellar-domain": "^0.15.0",
     "@types/chart.js": "^2.7.41",
     "@types/d3-force": "^1.1.1",
     "@types/d3-hierarchy": "^1.1.6",

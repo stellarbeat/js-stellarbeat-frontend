@@ -16,7 +16,12 @@
                 <div class="col-sm-12">
                     <div class="card card-profile">
                         <div class="card-body text-center mt-5 align-content-center">
-                            <h3 class="mb-3">{{organization.name}}</h3>
+                            <h3 class="mb-3">
+                                <span v-b-tooltip.hover v-if="organization.isTierOneOrganization" title="Tier one organization" class="badge sb-badge badge-primary">
+                            <i class="fe fe-shield"/>
+                        </span>
+                                {{organization.name}}
+                            </h3>
                             <p class="m-4">
                                 {{organization.description}}
                             </p>

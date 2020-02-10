@@ -2,7 +2,11 @@
     <div class="pt-0">
         <div v-if="renderTitle" class="pt-2 pb-2 nodes-title active" v-on:click="toggleShow">
             <i class="chevron fe mr-1" v-bind:class="chevron"></i>
-            <h5 class="mb-0">{{title}}
+            <h5 class="mb-0">
+                <span v-b-tooltip.hover v-if="renderOrganizationBadge" title="Tier one organization" class="badge sb-badge badge-primary">
+                            <i class="fe fe-shield"/>
+                        </span>
+                {{title}}
             </h5>
         </div>
         <div v-if="showing" class="list-group list-group-flush nested-tree">
@@ -64,6 +68,9 @@
         public title!: string;
         @Prop()
         public renderTitle!: boolean;
+        @Prop({default: false})
+        public renderOrganizationBadge!: boolean;
+
         public modalNode: Node | null = null;
 
         protected currentPage: number = 1;
