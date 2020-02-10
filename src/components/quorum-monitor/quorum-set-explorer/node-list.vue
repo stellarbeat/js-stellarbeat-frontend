@@ -11,6 +11,9 @@
                 <a href="#" class="node-link"
                    v-on:click.prevent.stop="selectNode(node)">
                     <div v-bind:class="nodeState(node)">
+                        <span v-b-tooltip.hover title="Full validator" v-if="node.isFullValidator" class="badge sb-badge badge-success">
+                            <i class="fe fe-shield"/>
+                        </span>
                         {{node.displayName | truncate(30)}}
                     </div>
                 </a>
@@ -37,17 +40,17 @@
 </template>
 
 <script lang="ts">
-    import NodeActionBar from "./node-action-bar.vue";
+    import NodeActionBar from './node-action-bar.vue';
 
-    import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
+    import Vue from 'vue';
+    import {Component, Prop} from 'vue-property-decorator';
 
-    import {Network, Node} from "@stellarbeat/js-stellar-domain";
-    import Store from "@/store/Store";
+    import {Network, Node} from '@stellarbeat/js-stellar-domain';
+    import Store from '@/store/Store';
     import {Modal} from 'bootstrap-vue';
 
     @Component({
-        name: "node-list",
+        name: 'node-list',
         components: {
             NodeActionBar,
         },
@@ -68,7 +71,7 @@
 
         protected showing: boolean = !this.renderTitle;
 
-        get store():Store {
+        get store(): Store {
             return this.$root.$data.store;
         }
 
@@ -83,7 +86,7 @@
             delete item.statistics;
             item = Object.assign(item, this.modalNode.geoData);
             item = Object.assign(item, this.modalNode.statistics);
-            item.quorumSet = "";
+            item.quorumSet = '';
             return [item];
         }
 
@@ -100,9 +103,9 @@
 
         public selectNode(node: Node) {
             this.$router.push({
-                name: "quorum-monitor-node",
+                name: 'quorum-monitor-node',
                 params: {publicKey: node.publicKey!},
-                query: {"center": "1", "no-scroll": "1"},
+                query: {'center': '1', 'no-scroll': '1'},
             });
         }
 
@@ -115,7 +118,7 @@
         }
 
         get chevron(): string { //todo should be moved to higher up component & code reuse
-            return this.showing ? "fe-chevron-down" : "fe-chevron-right";
+            return this.showing ? 'fe-chevron-down' : 'fe-chevron-right';
         }
 
         public showModal(node: Node) {
@@ -169,6 +172,7 @@
     .nodes-title {
         cursor: pointer;
     }
+
     .nodes-title:hover {
         background-color: #f8f9fa;
     }
