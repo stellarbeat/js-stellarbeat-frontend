@@ -49,7 +49,7 @@
                     <div class="d-flex flex-wrap" :class="{'animated': animated}" @animationend="animated = false">
                         <date-navigator
                                 v-if="rendered"
-                                :minSelectedDate="minSeslectedDate"
+                                :minSelectedDate="minSelectedDate"
                                 :selectedDate="selectedDate"
                                 v-on:dateChanged="updateSelectedDate"
                                 v-on:goBack="goBack30Days"

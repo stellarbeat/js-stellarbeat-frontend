@@ -74,6 +74,7 @@
         }
 
         canGoBack() {
+            console.log(this.selectedDate > this.minSelectedDate);
             return this.selectedDate > this.minSelectedDate;
         }
     }
@@ -90,10 +91,5 @@
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
         height: 38px;
-
     }
-
-</style>
-<style>
-
 </style>
