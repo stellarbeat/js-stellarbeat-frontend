@@ -197,10 +197,6 @@ Age = Time since discovery
             return this.nodes.length;
         }
 
-        get latestCrawlDateString(): string {
-            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : "NA";
-        }
-
         getOrganization(node: Node): string {
             if (!node.organizationId) {
                 return "-";

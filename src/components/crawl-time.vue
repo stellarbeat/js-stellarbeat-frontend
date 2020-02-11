@@ -37,13 +37,12 @@
 
         constructor() {
             super();
-            this.crawlDate = new Date(this.store.crawlDate.getTime());
+            this.crawlDate = new Date(this.store.network.crawlDate.getTime());
             this.crawlTime = {
                 HH: moment(this.crawlDate).format('HH'),
                 mm: moment(this.crawlDate).format('mm'),
                 ss: moment(this.crawlDate).format('ss')
             };
-            console.log(this.crawlDate);
         }
         get store(): Store {
             return this.$root.$data.store;
@@ -53,7 +52,7 @@
             console.log(this.crawlTime);
             console.log(moment(this.crawlDate).hours(Number(this.crawlTime.HH)).minutes(Number(this.crawlTime.mm)).toDate());
             this.store.isLoading = true;
-            await this.store.timeTravelTo(
+            await this.store.fetchData(
                 moment(this.crawlDate).hours(Number(this.crawlTime.HH)).minutes(Number(this.crawlTime.mm)).seconds(Number(this.crawlTime.ss)).toDate()
             );
             this.store.isLoading = false;

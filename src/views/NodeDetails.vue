@@ -70,10 +70,6 @@ export default class NodeDetails extends Vue {
 
         return [item];
     }
-
-    get latestCrawlDateString() {
-        return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-    }
 }
 </script>
 

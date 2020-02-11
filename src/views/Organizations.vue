@@ -183,10 +183,6 @@
             return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
         }
 
-        get latestCrawlDateString(): string {
-            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-        }
-
         public onFiltered = (filteredItems: any[]) => {
             this.totalRows = 1;
             (this.$refs.paginator as any)._data.currentPage = 1;

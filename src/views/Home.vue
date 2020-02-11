@@ -71,9 +71,6 @@ export default class Home extends Vue {
     @Prop()
     protected isLoading!: boolean;
 
-    get latestCrawlDateString() { // computed
-            return this.network.latestCrawlDate ? this.network.latestCrawlDate.toLocaleString() : 'NA';
-    }
 }
 </script>
 

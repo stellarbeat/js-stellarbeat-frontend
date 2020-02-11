@@ -35,7 +35,6 @@ export default class Store {
     public isLoading: boolean = true;
     public fetchingNodeDataFailed: boolean = false;
     public network!: Network;
-    public crawlDate!: Date;
     public changeQueue: ChangeQueue = new ChangeQueue();
     public networkUpdated: number = 0;
     public quorumMonitorStore: QuorumMonitorStore = {
@@ -54,32 +53,9 @@ export default class Store {
 
     async fetchData(time?:Date): Promise<void> {
         try {
-            let result = await axios.get(process.env.VUE_APP_API_URL + '/v2/all');
-            if (result.data.nodes) {
-                let nodes = result.data.nodes
-                    .map((node: any) => Node.fromJSON(node));
-
-                let organizations = [];
-                if (result.data.organizations) {
-                    organizations = result.data.organizations.map((organization: any) => Organization.fromJSON(organization));
-                }
-                Vue.set(this, 'network', new Network(nodes, organizations));
-                this.crawlDate = this.network.latestCrawlDate;
-
-                return;
-            } else {
-                this.fetchingNodeDataFailed = true;
-            }
-        } catch (error) {
-            this.fetchingNodeDataFailed = true;
-        }
-    }
-
-    async timeTravelTo(time:Date): Promise<void> {
-        try {
-            let params = {
-                at: time.toISOString()
-            };
+            let params:any = {};
+            if(time)
+                params['at'] = time.toISOString();
 
             let result = await axios.get(process.env.VUE_APP_API_URL + '/v2/all', {params});
             if (result.data.nodes) {
@@ -90,8 +66,8 @@ export default class Store {
                 if (result.data.organizations) {
                     organizations = result.data.organizations.map((organization: any) => Organization.fromJSON(organization));
                 }
-                this.network = new Network(nodes, organizations);
-                this.crawlDate = new Date(result.data.time);
+
+                Vue.set(this, 'network', new Network(nodes, organizations, new Date(result.data.time)));
 
                 return;
             } else {

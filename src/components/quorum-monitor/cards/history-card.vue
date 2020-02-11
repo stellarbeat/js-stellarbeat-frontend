@@ -122,7 +122,7 @@
 
         async timeTravel(){
             this.store.isLoading = true;
-            await this.store.timeTravelTo(this.selectedDate);
+            await this.store.fetchData(this.selectedDate);
             this.store.isLoading = false;
         }
 
@@ -164,10 +164,10 @@
         }
 
         getInitialSelectedDate() {
-            if (moment(this.store.crawlDate).subtract(30, 'd') < moment(this.store.measurementsStartDate)) {
+            if (moment(this.store.network.crawlDate).subtract(30, 'd') < moment(this.store.measurementsStartDate)) {
                 return moment(this.store.measurementsStartDate).add(30, 'd').startOf('day').toDate();
             } else
-                return moment(this.store.crawlDate).startOf('day').toDate();
+                return moment(this.store.network.crawlDate).startOf('day').toDate();
         }
 
         get chartWidth() {
