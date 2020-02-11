@@ -46,7 +46,7 @@
                         />
                     </div>
 
-                    <div class="d-flex flex-wrap" :class="{'animated': animated}" @animationend="animated = false">
+                    <div class="d-flex flex-wrap mt-1" :class="{'animated': animated}" @animationend="animated = false">
                         <date-navigator
                                 v-if="rendered"
                                 :minSelectedDate="minSelectedDate"
