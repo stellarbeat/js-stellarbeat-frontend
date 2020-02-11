@@ -1,11 +1,14 @@
 <template>
-    <div class="date-selector d-flex">
-        <b-button :disabled="!canGoBack()" size="sm" v-on:click="$emit('goBack')"><i
+    <div class="d-flex">
+        <b-button :disabled="!canGoBack()" size="sm" class="left" v-on:click="$emit('goBack')"><i
                 class="fe fe-chevron-left"/></b-button>
-        <datepicker v-model="datePickerDate" :disabledDates="disabledDates" :input-class="'date-picker-input-white'" :wrapper-class="'date-picker-wrapper'"
+        <datepicker v-model="datePickerDate" :disabledDates="disabledDates"
+                    :input-class="'date-picker-input-white date-picker-input-white-no-border'"
+                    :wrapper-class="'date-picker-wrapper'"
                     :bootstrap-styling="true"/>
-        <vue-timepicker v-if="showTime" hide-clear-button input-width="5em" class="" v-model="timePickerTime" @input="timeInputHandler"/>
-        <b-button size="sm" v-on:click="$emit('goForward')"><i class="fe fe-chevron-right"/>
+        <vue-timepicker v-if="showTime" hide-clear-button input-width="6em" input-class="timepicker-no-border-right"
+                        v-model="timePickerTime" @input="timeInputHandler"/>
+        <b-button size="sm" v-on:click="$emit('goForward')" class="right"><i class="fe fe-chevron-right"/>
         </b-button>
     </div>
 </template>
@@ -77,7 +80,18 @@
 </script>
 
 <style scoped>
+    .right {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        height: 38px;
+    }
 
+    .left {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        height: 38px;
+
+    }
 
 </style>
 <style>

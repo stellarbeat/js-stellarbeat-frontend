@@ -45,28 +45,27 @@
                                 :inverted="inverted"
                         />
                     </div>
-                    <transition name="bounce">
 
-                        <div class="d-flex" :class="{'animated': animated}" @animationend="animated = false">
-                            <date-navigator
-                                    v-if="rendered"
-                                    :minSelectedDate="minSelectedDate"
-                                    :selectedDate="selectedDate"
-                                    v-on:dateChanged="updateSelectedDate"
-                                    v-on:goBack="goBack30Days"
-                                    v-on:goForward="goForward30Days"
-                                    :showTime="chartView === '1H'"
-                            >
-                            </date-navigator>
-                            <b-button @click="timeTravel" variant="secondary" size="sm" class="ml-4" v-b-tooltip.hover
-                                      title="Travel to selected time (beta)"><i class="fe fe-clock"></i>
-                                Travel
-                            </b-button>
-                        </div>
-                    </transition>
+                    <div class="d-flex flex-wrap" :class="{'animated': animated}" @animationend="animated = false">
+                        <date-navigator
+                                v-if="rendered"
+                                :minSelectedDate="minSeslectedDate"
+                                :selectedDate="selectedDate"
+                                v-on:dateChanged="updateSelectedDate"
+                                v-on:goBack="goBack30Days"
+                                v-on:goForward="goForward30Days"
+                                :showTime="chartView === '1H'"
+                                class="mr-1 mb-1"
+                        >
+                        </date-navigator>
+                        <b-button @click="timeTravel" variant="secondary" size="md" class="time-travel-btn" v-b-tooltip.hover
+                                  title="Travel to selected time (beta)"><i class="fe fe-clock"></i>
+                            Travel
+                        </b-button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 </template>
 
@@ -329,5 +328,8 @@
 <style scoped>
     .dimmer.active .dimmer-content {
         opacity: 0.4;
+    }
+    .time-travel-btn {
+        margin-bottom: 0.3rem !important;
     }
 </style>
