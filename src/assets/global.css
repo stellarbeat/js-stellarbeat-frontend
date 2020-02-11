@@ -46,6 +46,20 @@
     border-bottom-left-radius: 0;
 }
 
+.animated .vue__time-picker input.display-time {
+    animation: highlight 1s;
+}
+
+@keyframes highlight {
+    0% {
+        background: #cacacd;
+        border: 1px solid #cacacd;
+    }
+    100% {
+        background: white;
+    }
+}
+
 .date-picker-wrapper {
     width: 115px;
     z-index: 500;

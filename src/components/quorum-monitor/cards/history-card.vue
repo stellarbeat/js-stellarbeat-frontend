@@ -37,7 +37,7 @@
                                 :key="'2'"
                         />
                         <line-chart-hour
-                                v-on:click-date="updateSelectedDate"
+                                v-on:click-date="updateSelectedDateAndHighlight"
                                 v-if="chartView === '1H'"
                                 v-on:update-view="updateView"
                                 :width="chartWidth"
@@ -45,24 +45,28 @@
                                 :inverted="inverted"
                         />
                     </div>
-                    <div class="d-flex">
-                        <date-navigator
-                                v-if="rendered"
-                                :minSelectedDate="minSelectedDate"
-                                :selectedDate="selectedDate"
-                                v-on:dateChanged="updateSelectedDate"
-                                v-on:goBack="goBack30Days"
-                                v-on:goForward="goForward30Days"
-                                :showTime="chartView === '1H'"
-                        >
-                        </date-navigator>
-                        <b-button @click="timeTravel" variant="secondary" size="sm" class="ml-4" v-b-tooltip.hover title="Travel to selected time (beta)"><i class="fe fe-clock"></i>
-                            Travel
-                        </b-button>
-                    </div>
-                </div>
+                    <transition name="bounce">
+
+                        <div class="d-flex" :class="{'animated': animated}" @animationend="animated = false">
+                            <date-navigator
+                                    v-if="rendered"
+                                    :minSelectedDate="minSelectedDate"
+                                    :selectedDate="selectedDate"
+                                    v-on:dateChanged="updateSelectedDate"
+                                    v-on:goBack="goBack30Days"
+                                    v-on:goForward="goForward30Days"
+                                    :showTime="chartView === '1H'"
+                            >
+                            </date-navigator>
+                            <b-button @click="timeTravel" variant="secondary" size="sm" class="ml-4" v-b-tooltip.hover
+                                      title="Travel to selected time (beta)"><i class="fe fe-clock"></i>
+                                Travel
+                            </b-button>
+                        </div>
+                    </transition>
             </div>
         </div>
+    </div>
     </div>
 </template>
 
@@ -111,6 +115,7 @@
         selectedDate!: Date;
         failed: boolean = false;
         chartView: string = '30D';
+        animated: boolean = false;
 
         async select30DayView(time?: Date) {
             if (time instanceof Date)
@@ -120,7 +125,7 @@
             this.chartView = '30D';
         }
 
-        async timeTravel(){
+        async timeTravel() {
             this.store.isLoading = true;
             await this.store.fetchData(this.selectedDate);
             this.store.isLoading = false;
@@ -153,6 +158,11 @@
                 await this.updateDayHistoryChart();
             else
                 await this.update24HourHistoryChart();
+        }
+
+        async updateSelectedDateAndHighlight(newDate: string) {
+            this.updateSelectedDate(newDate);
+            this.animated = true;
         }
 
         @Watch('entityId')
