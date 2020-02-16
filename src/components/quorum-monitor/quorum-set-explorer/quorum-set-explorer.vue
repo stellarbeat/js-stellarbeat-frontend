@@ -231,7 +231,7 @@
         public getFellowOrganizationNodes(node: Node) {
             return this.network.nodes
                 .filter(fellowNode => fellowNode.organizationId === node.organizationId)
-                .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
+                .sort((a: Node, b: Node) => a.displayName!.localeCompare(b.displayName!));
         }
 
         public showModal(node: Node) {

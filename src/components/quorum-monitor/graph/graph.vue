@@ -211,7 +211,7 @@
 
         protected visualizeSelectedNode() {
             this.verticesViewData.forEach(vertex => {
-                let dataVertex = this.network.graph.getVertex(vertex.publicKey);
+                let dataVertex = this.network.graph.getVertex(vertex.publicKey)!;
                 vertex.selected = this.selectedNode ? this.selectedNode.publicKey === vertex.publicKey : false;
                 vertex.highlightAsOutgoing = this.highlightVertexAsTrusting(dataVertex);
                 vertex.highlightAsIncoming = this.highLightVertexAsTrusted(dataVertex);

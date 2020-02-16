@@ -181,7 +181,7 @@
 
         get subQuorumOrganizationIsTierOne(): boolean {
             if(this.isOrganizationSubQuorum && this.validators[0].organizationId){
-                return this.network.getOrganizationById(this.validators[0].organizationId).isTierOneOrganization;
+                return this.network.getOrganizationById(this.validators[0].organizationId)!.isTierOneOrganization;
             }
 
             return false;
@@ -195,11 +195,11 @@
             if (!this.validators[0].organizationId)
                 return '';
 
-            return this.network.getOrganizationById(this.validators[0].organizationId).name;
+            return this.network.getOrganizationById(this.validators[0].organizationId)!.name;
         }
 
         public get validators(): Node[] {
-            return this.quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator));
+            return this.quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator)!);
         }
 
         public get validatorsToAddModalId() {
@@ -208,7 +208,7 @@
 
         public validatorDisplayName(validator: string) {
             if (this.network.getNodeByPublicKey(validator)) {
-                return this.network.getNodeByPublicKey(validator).displayName;
+                return this.network.getNodeByPublicKey(validator)!.displayName;
             } else {
                 return validator;
             }
@@ -223,7 +223,7 @@
         }
 
         public nodeState(validator: string) {
-            const node = this.network.getNodeByPublicKey(validator);
+            const node = this.network.getNodeByPublicKey(validator)!;
             return {
                 inactive: !node.active,
                 active: node.active,
@@ -339,7 +339,7 @@
 
         isFullValidator(publicKey: string) {
             if(this.getNode(publicKey))
-                return this.getNode(publicKey).isFullValidator && !this.network.isNodeFailing(this.getNode(publicKey));
+                return this.getNode(publicKey)!.isFullValidator && !this.network.isNodeFailing(this.getNode(publicKey)!);
 
             return false;
         }

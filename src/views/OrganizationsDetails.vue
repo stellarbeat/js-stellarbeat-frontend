@@ -215,7 +215,7 @@
             if(!this.organization)
                 return [];
             return this.organization.validators
-                .map(publicKey => this.network.getNodeByPublicKey(publicKey))
+                .map(publicKey => this.network.getNodeByPublicKey(publicKey)!)
                 .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
         }
 
@@ -228,7 +228,7 @@
                 return 0;
             }
             let nrOfValidatingNodes = this.organization.validators
-                .map(validator => this.network.getNodeByPublicKey(validator))
+                .map(validator => this.network.getNodeByPublicKey(validator)!)
                 .filter(node => node.isValidating).length;
 
             return nrOfValidatingNodes - this.organization.subQuorumThreshold + 1;

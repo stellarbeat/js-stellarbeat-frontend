@@ -52,7 +52,7 @@ export default class NodeDetails extends Vue {
     public isLoading!: boolean;
 
     get node(): Node {
-        return this.network.getNodeByPublicKey(this.$route.params.publicKey);
+        return this.network.getNodeByPublicKey(this.$route.params.publicKey)!;
     }
 
     get items() {

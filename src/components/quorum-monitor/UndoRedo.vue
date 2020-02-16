@@ -49,7 +49,7 @@
         protected resetRouteIfNoSelectedNode() {
             if (this.store.quorumMonitorStore.selectedNode
                 && !this.store.network.getNodeByPublicKey(
-                    this.store.quorumMonitorStore.selectedNode.publicKey
+                    this.store.quorumMonitorStore.selectedNode.publicKey!
                 )) {
                 this.$router.push(
                     {

@@ -178,8 +178,8 @@
                             return {
                                 value: failure,
                                 text: failure.map(publicKey =>
-                                    this.network.getNodeByPublicKey(publicKey).name ?
-                                        this.network.getNodeByPublicKey(publicKey).displayName :
+                                    this.network.getNodeByPublicKey(publicKey)!.name ?
+                                        this.network.getNodeByPublicKey(publicKey)!.displayName :
                                         publicKey.substr(0, 5)
                                 ).join(", ")
                             };

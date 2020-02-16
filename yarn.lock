@@ -808,6 +808,11 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@iarna/toml@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.3.tgz#f060bf6eaafae4d56a7dac618980838b0696e2ab"
+  integrity sha512-FmuxfCuolpLl0AnQ2NHSzoUKWEJDFl63qXjzdoWBVyFCXzMGm1spBzk7LeHNoVCiWCF7mRVms9e6jEV9+MoPbg==
+
 "@intervolga/optimize-cssnano-plugin@^1.0.5":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@intervolga/optimize-cssnano-plugin/-/optimize-cssnano-plugin-1.0.6.tgz#be7c7846128b88f6a9b1d1261a0ad06eb5c0fdf8"
@@ -1069,11 +1074,12 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellar-domain@^0.15.2":
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-0.15.2.tgz#25845bee7ff597dcfcbc4cc729a6ac793dfcaee7"
-  integrity sha512-HsxQmQTehjhbbYOg8hr+W2koWu0cutnAqdV58GiTISlNmAiewoDPddehrTYAsNeLQrI1rad0+wqZWgawwEYQEQ==
+"@stellarbeat/js-stellar-domain@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-1.0.2.tgz#2a81a1e7b21100d7ce58920ec064a382300c7802"
+  integrity sha512-B7gCdG7QwxcKgTKOnkEJ9IsCYYevNj2/7iIVSNGu7ICkvyUBQNx0Zzsi0gt82dImrHVi0w2U6fd6FR9f8n5+Ww==
   dependencies:
+    "@iarna/toml" "^2.2.3"
     find-versions "^3.1.0"
     latest-semver "^2.0.0"
     lodash "^4.17.13"
