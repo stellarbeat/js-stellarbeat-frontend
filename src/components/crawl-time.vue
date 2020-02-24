@@ -3,7 +3,7 @@
         <datepicker id="datePickerCrawlTime" input-class="date-picker-input-white" :wrapper-class="'date-picker-wrapper'" v-model="crawlDate" :disabledDates="disabledDates"
                     :bootstrap-styling="true"/>
         <vue-timepicker hide-clear-button input-width="7em" class="" v-model="crawlTime" input-class="timepicker-no-border-right" format="HH:mm:ss"/>
-        <button v-b-tooltip.hover title="Travel to selected time (beta)" class="btn btn-sm btn-secondary time-travel-btn" @click="timeTravel">
+        <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-secondary time-travel-btn" @click="timeTravel">
             <i class="fe fe-clock"></i> Travel
         </button>
     </div>

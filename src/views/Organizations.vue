@@ -24,7 +24,7 @@
                     <b-table striped hover responsive :items="organizations" :fields="fields" :sort-by.sync="sortBy"
                              :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                              :filter="filter" @filtered="onFiltered">
-                        <template slot="validators" slot-scope="row">
+                        <template v-slot:cell(validators)="row">
                             <ul class="validator-list">
                                 <li v-for="validator in row.item.validators">
                                     <div class="">
@@ -45,7 +45,7 @@
                                 </li>
                             </ul>
                         </template>
-                        <template slot="failAt" slot-scope="row">
+                        <template v-slot:cell(failAt)="row">
                             <span v-if="row.item.failAt > 1"
                                   class="badge sb-badge badge-success"
                                   v-b-tooltip.hover
@@ -63,7 +63,7 @@
                             >Failing
                             </span>
                         </template>
-                        <template slot="name" slot-scope="row">
+                        <template v-slot:cell(name)="row">
                             <router-link
                                     :to="{ name: 'organization-details', params: { 'organizationId': row.item.id }}">
                                 <span v-b-tooltip.hover title="Tier one organization" v-if="row.item.isTierOneOrganization"
@@ -72,14 +72,14 @@
                         </span>{{ row.item.name}}
                             </router-link>
                         </template>
-                        <template slot="url" slot-scope="row">
+                        <template v-slot:cell(url)="row">
                             <a :href="row.item.url" target="_blank">{{row.item.url}}</a>
                         </template>
                         https://keybase.io/
-                        <template slot="keybase" slot-scope="row">
+                        <template v-slot:cell(keybase)="row">
                             <a :href="'https://keybase.io/' + row.item.keybase" target="_blank">{{row.item.keybase}}</a>
                         </template>
-                        <template slot="email" slot-scope="row">
+                        <template v-slot:cell(email)="row">
                             <a v-if="row.item.email" :href="'mailto:' + row.item.email"
                                class="" target="_blank">{{row.item.email}}</a>
                         </template>

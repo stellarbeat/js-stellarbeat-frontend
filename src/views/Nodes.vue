@@ -14,7 +14,6 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label class="custom-switch mt-2">
-
                                         <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
                                                v-model="optionShowInactive">
                                         <span class="custom-switch-indicator"></span>
@@ -48,34 +47,34 @@
                     <b-table striped hover responsive :items="nodes" :fields="fields" :sort-by.sync="sortBy"
                              :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                              :filter="filter" @filtered="onFiltered">
-                        <template slot="name" slot-scope="row">
-                            <span v-if="row.item.isFullValidator"
+                        <template v-slot:cell(name)="data">
+                            <span v-if="data.item.isFullValidator"
                                   class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
                                   v-b-tooltip.hover title="Full validator">
                                 <i class="fe fe-shield"></i>
                             </span>
-                            <router-link v-if="row.item.isValidator"
-                                         :to="{ name: 'quorum-monitor-node', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
-                                {{ row.item.name || " " | truncate(20)}}
+                            <router-link v-if="data.item.isValidator"
+                                         :to="{ name: 'quorum-monitor-node', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' }}">
+                                {{ data.item.name || " " | truncate(20)}}
                             </router-link>
                             <router-link v-else
-                                         :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">{{
-                                row.item.name || " " | truncate(20)}}
+                                         :to="{ name: 'node-details', params: { publicKey: data.item.publicKey }}">{{
+                                data.item.name || " " | truncate(20)}}
                             </router-link>
                         </template>
-                        <template slot="organization" slot-scope="row">
-                            <router-link v-if="row.item.organizationId"
-                                    :to="{ name: 'organization-details', params: { 'organizationId': row.item.organizationId }}">
-                                {{ row.item.organization}}
+                        <template v-slot:cell(organization)="data">
+                            <router-link v-if="data.item.organizationId"
+                                    :to="{ name: 'organization-details', params: { 'organizationId': data.item.organizationId }}">
+                                {{ data.item.organization}}
                             </router-link>
                         </template>
-                        <template slot="type" slot-scope="row">
+                        <template v-slot:cell(type)="row">
                             {{row.item.type}}
                         </template>
-                        <template slot="version" slot-scope="data">
+                        <template v-slot:cell(version)="data">
                             {{data.value || " " | truncate(28)}}
                         </template>
-                        <template slot="actions" slot-scope="row">
+                        <template v-slot:cell(actions)="row">
                             <b-button-group class="btn-group-sm">
                                 <router-link class="btn btn-secondary " role="button"
                                              :to="{ name: 'node-details', params: { publicKey: row.item.publicKey }}">
@@ -100,7 +99,7 @@
             <div class="card mb-2">
                 <div class="card-body">
                     <div class="text-wrap">
-                        <h2 class="mt-0 mb-4">Index formula (experimental)</h2>
+                        <h2 class="mt-0 mb-4">Index formula</h2>
                         <pre><code>
 Index = (TypeIndex + ActiveIndex + ValidationIndex + VersionIndex + TrustIndex + AgeIndex)/6
 
@@ -152,7 +151,7 @@ Age = Time since discovery
             {key: "validating24Hour", label: "24H validating", sortable: true},
             {key: "validating30Days", label: "30D validating", sortable: true},
             {key: "overLoaded24Hour", label: "24H overloaded", sortable: true},
-            {key: "index", label: "index (experimental)", sortable: true},
+            {key: "index", label: "index", sortable: true},
             {key: "validating", sortable: true},
             {key: "version", sortable: true},
             {key: "country", sortable: true},

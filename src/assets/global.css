@@ -82,3 +82,11 @@
 .page-title {
     margin-right: 10px;
 }
+
+.table.b-table > thead > tr > [aria-sort]:not(.b-table-sort-icon-left), .table.b-table > tfoot > tr > [aria-sort]:not(.b-table-sort-icon-left) {
+    background-position: right calc(0.75rem / 2) bottom;
+    /* padding-right: calc(0.75rem + 0.65em); */
+    /* padding-bottom: 0px; */
+    /* margin-bottom: 6px; */
+    background-position-y: bottom 12px;
+}

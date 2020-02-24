@@ -9,7 +9,7 @@
                  :select-mode="mode"
                  :current-page="currentPage"
                  selectedVariant="success">
-            <template slot="name" slot-scope="row">
+            <template v-slot:cell(name)="row">
                             <span v-if="row.item.isFullValidator"
                                   class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
                                   v-b-tooltip.hover title="Full validator">
@@ -18,7 +18,7 @@
                 {{ row.item.name || " " | truncate(20)}}
             </template>
 
-            <template slot="version" slot-scope="data">
+            <template v-slot:cell(version)="data">
                 {{data.value || " " | truncate(28)}}
             </template>
         </b-table>

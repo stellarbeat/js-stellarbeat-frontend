@@ -144,7 +144,7 @@
     import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
 
     import TomlConfigViewer from './toml-config-viewer.vue';
-    import {Modal} from 'bootstrap-vue';
+    import {BModal} from 'bootstrap-vue';
 
     @Component({
         name: 'quorum-set-explorer',
@@ -237,7 +237,7 @@
         public showModal(node: Node) {
             this.modalNode = node;
             this.$nextTick(function () {
-                (this.$refs.modal as Modal).show();
+                (this.$refs.modal as BModal).show();
             });
         }
 

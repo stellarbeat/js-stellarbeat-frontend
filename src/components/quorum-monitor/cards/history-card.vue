@@ -59,7 +59,7 @@
                         >
                         </date-navigator>
                         <b-button @click="timeTravel" variant="secondary" size="md" class="time-travel-btn" v-b-tooltip.hover
-                                  title="Travel to selected time (beta)"><i class="fe fe-clock"></i>
+                                  title="Travel to selected time"><i class="fe fe-clock"></i>
                             Travel
                         </b-button>
                     </div>

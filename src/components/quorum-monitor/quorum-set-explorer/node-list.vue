@@ -52,7 +52,7 @@
 
     import {Network, Node} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import {Modal} from 'bootstrap-vue';
+    import {BModal} from 'bootstrap-vue';
 
     @Component({
         name: 'node-list',
@@ -132,7 +132,7 @@
         public showModal(node: Node) {
             this.modalNode = node;
             this.$nextTick(function () {
-                (this.$refs.modal as Modal).show();
+                (this.$refs.modal as BModal).show();
             });
         }
 
