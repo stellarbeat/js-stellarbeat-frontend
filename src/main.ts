@@ -15,6 +15,7 @@ import Store from '@/store/Store';
 import VueClipboard from 'vue-clipboard2'
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import {makeServer} from '@/server';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -25,6 +26,8 @@ if (isProd) {
         dsn: process.env.VUE_APP_SENTRY_DSN,
         integrations: [new Sentry.Integrations.Vue({Vue})],
     });
+} else {
+    makeServer();
 }
 
 Vue.use(VueClipboard);
