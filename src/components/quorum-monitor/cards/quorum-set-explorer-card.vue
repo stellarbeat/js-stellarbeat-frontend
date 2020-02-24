@@ -101,8 +101,8 @@
 </script>
 <style scoped>
 .quorum-set-explorer-card-body{
-    min-height: 364px;
-    max-height: 364px;
+    min-height: 400px;
+    max-height: 400px;
     overflow-y: auto;
 }
 </style>

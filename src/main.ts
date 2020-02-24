@@ -16,6 +16,9 @@ import VueClipboard from 'vue-clipboard2'
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import {makeServer} from '@/server';
+import 'leaflet/dist/leaflet.css';
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -27,7 +30,7 @@ if (isProd) {
         integrations: [new Sentry.Integrations.Vue({Vue})],
     });
 } else {
-    makeServer();
+    //makeServer();
 }
 
 Vue.use(VueClipboard);

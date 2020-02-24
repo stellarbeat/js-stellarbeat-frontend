@@ -1,34 +1,26 @@
 <template>
-    <div class="card">
-        <div class="card-body py-2" style="height: 100%">
-            <Graph ref="graph" :network="network"
-                   :centerNode="centerNode"
-                   :selectedNode="selectedNode"
-            />
-            <div v-show="false" class="text-right pt-1">
-                <GraphLegend/>
-            </div>
-        </div>
-    </div>
+    <Graph ref="graph" :network="network"
+           :centerNode="centerNode"
+           :selectedNode="selectedNode"
+    />
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
-    import {Component, Prop, Watch} from "vue-property-decorator";
+    import Vue from 'vue';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
-    import Store from "@/store/Store";
+    import Store from '@/store/Store';
     import Graph from '@/components/quorum-monitor/graph/graph.vue';
     import GraphLegend from '@/components/quorum-monitor/graph/graph-legend.vue';
 
     @Component({
-        name: "network-graph-card",
+        name: 'network-graph-card',
         components: {GraphLegend, Graph, FullValidatorTitle}
     })
-    export default class NetworkGraphCard extends Vue
-    {
-        @Watch("$root.$data.store.network", {deep:true})
+    export default class NetworkGraphCard extends Vue {
+        @Watch('$root.$data.store.network', {deep: true})
 
-        get store():Store {
+        get store(): Store {
             return this.$root.$data.store;
         }
 

@@ -74,7 +74,6 @@
         }
 
         canGoBack() {
-            console.log(this.selectedDate > this.minSelectedDate);
             return this.selectedDate > this.minSelectedDate;
         }
     }

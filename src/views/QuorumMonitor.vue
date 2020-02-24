@@ -30,9 +30,7 @@
                 <div class="col-sm-12 col-lg-8">
                     <div class="row">
                         <div class="col-12">
-                            <NetworkGraphCard id="quorum-set-explorer-card"></NetworkGraphCard>
-                        </div>
-                        <div class="col-12">
+                            <network-visual-navigator></network-visual-navigator>
                         </div>
                     </div>
                     <div class="card" v-if="!selectedNode">
@@ -154,10 +152,12 @@
     import OrganizationList from '@/components/quorum-monitor/quorum-set-explorer/organization-list.vue';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
+    import NetworkVisualNavigator from '@/components/quorum-monitor/cards/network-visual-navigator.vue';
 
     @Component({
         name: 'quorum-monitor',
         components: {
+            NetworkVisualNavigator,
             OrganizationList,
             HistoryCard,
             SimulateNewNode,

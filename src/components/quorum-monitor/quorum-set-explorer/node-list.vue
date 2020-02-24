@@ -31,6 +31,7 @@
                               v-model="currentPage"
                               :total-rows="totalRows"
                               :per-page="perPage"
+                              class="node-list-pagination"
                 ></b-pagination>
             </div>
             <b-modal v-if="modalNode"
@@ -187,6 +188,10 @@
     .pagination {
         margin-left: 10px;
         margin-top: 5px;
+    }
+
+    .node-list-pagination {
+        margin-bottom: 5px;
     }
 
 </style>
