@@ -11,7 +11,7 @@
         </div>
         <div class="card-body p-0" style="height: 450px">
             <world-map v-if="view==='map'"></world-map>
-            <network-graph-card v-if="view === 'graph'"></network-graph-card>
+            <network-graph-card v-if="view === 'graph'"v-on:show-halting-analysis="$emit('show-halting-analysis', selectedNode.publicKey)"></network-graph-card>
         </div>
     </div>
 </template>
@@ -29,7 +29,7 @@
     })
     export default class NetworkVisualNavigator extends Vue
     {
-        protected view:string = 'map';
+        protected view:string = 'graph';
         get store():Store {
             return this.$root.$data.store;
         }
