@@ -1,7 +1,7 @@
 import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepicker";
 <template>
     <l-map ref="myMap" style="height: 450px"
-           :center="center" :zoom="zoom" v-on:update:center="zoomIt" :options="mapOptions"
+           :center="center" :zoom="zoom" :options="mapOptions"
     >
         <l-tile-layer
                 :url="url"
@@ -74,10 +74,6 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
             this.$nextTick(() => {
                 (this.$refs.clusterRef as any).mapObject.refreshClusters();
             });
-        }
-
-        zoomIt() {
-            this.zoom = 10;
         }
 
         get selectedNode() {
@@ -154,11 +150,6 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
                 wakeMessage: false,
                 sleepOpacity: 1
             };
-        }
-
-        mounted() {
-            if (this.selectedNode)
-                this.zoomIt();
         }
 
         beforeDestroy() {
