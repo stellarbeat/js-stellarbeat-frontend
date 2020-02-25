@@ -90,3 +90,8 @@
     /* margin-bottom: 6px; */
     background-position-y: bottom 12px;
 }
+
+.card-deck .card {
+    margin-bottom: 20px;
+}
+

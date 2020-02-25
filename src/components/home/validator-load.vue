@@ -81,6 +81,9 @@ export default class ValidatorsServerLoad extends Vue {
 
             // Configuration options go here
             options: {
+                responsive: true,
+                aspectRatio: 1.45,
+                cutoutPercentage: 60,
                 legend: {
                     display: true,
                 },

@@ -9,28 +9,32 @@
                 Stellar Public Network Navigator
             </h5>
         </div>
+        <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
+             class="card-alert alert alert-danger mb-0" show>No Transitive Quorum Set Detected in network!
+        </div>
         <div class="card-body p-0" style="height: 450px">
             <world-map v-if="view==='map'"></world-map>
-            <network-graph-card v-if="view === 'graph'"v-on:show-halting-analysis="$emit('show-halting-analysis', selectedNode.publicKey)"></network-graph-card>
+            <network-graph-card v-if="view === 'graph'"
+                                v-on:show-halting-analysis="$emit('show-halting-analysis', selectedNode.publicKey)"></network-graph-card>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
-    import {Component, Prop, Watch} from "vue-property-decorator";
-    import Store from "@/store/Store";
+    import Vue from 'vue';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import Store from '@/store/Store';
     import WorldMap from '@/components/home/network-visual-navigator/world-map.vue';
     import NetworkGraphCard from '@/components/quorum-monitor/cards/network-graph-card.vue';
 
     @Component({
-        name: "network-visual-navigator",
+        name: 'network-visual-navigator',
         components: {NetworkGraphCard, WorldMap}
     })
-    export default class NetworkVisualNavigator extends Vue
-    {
-        protected view:string = 'graph';
-        get store():Store {
+    export default class NetworkVisualNavigator extends Vue {
+        protected view: string = 'graph';
+
+        get store(): Store {
             return this.$root.$data.store;
         }
 

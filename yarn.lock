@@ -2292,6 +2292,11 @@ bootstrap-vue@2.5.0:
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"
 
+bootstrap-xxl@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/bootstrap-xxl/-/bootstrap-xxl-4.1.1.tgz#17a4089110edd8105db0d68a6f258b2d217a4972"
+  integrity sha512-N2Byr9A7cGQsQNKTCU9Dlq7tmpdOYvg4xDWnqtMOnzjf01DpgUBjrh9hLIkZwwM/CIxhBXL+Xr9yKzvh6SOkAA==
+
 "bootstrap@>=4.4.1 <5.0.0":
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.4.1.tgz#8582960eea0c5cd2bede84d8b0baf3789c3e8b01"

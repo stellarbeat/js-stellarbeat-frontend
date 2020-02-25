@@ -31,14 +31,6 @@
 
         public chart: Chart|null = null;
 
-        get otherCountriesCount() {
-            return this.sortedCountries.slice(4).reduce((accumulator, currentValue) => {
-                return accumulator + currentValue[1];
-            },0)
-        }
-        get activeNodesWithCountryCount() {
-            return this.network.nodes.filter(node => node.active && node.geoData.countryName).length;
-        }
         get sortedCountries() {
             let countries = this.network.nodes
                 .filter(node => node.active)
@@ -78,7 +70,6 @@
                         this.sortedCountries[0][0],
                         this.sortedCountries[1][0],
                         this.sortedCountries[2][0],
-                        this.sortedCountries[3][0],
                         "Other countries"
                     ],
                     datasets: [{
@@ -86,15 +77,13 @@
                         backgroundColor: [
                             '#1997c6', // primary blue
                             '#1bc98e', // success green
-                            '#9f86ff', // info purple
                             '#e4d836' // warning yellow
                         ],
                         data: [
                             this.sortedCountries[0][1],
                             this.sortedCountries[1][1],
                             this.sortedCountries[2][1],
-                            this.sortedCountries[3][1],
-                            this.sortedCountries.slice(4).reduce((accumulator, currentValue) => {
+                            this.sortedCountries.slice(3).reduce((accumulator, currentValue) => {
                                 return accumulator + currentValue[1];
                             },0)
                         ],
@@ -103,6 +92,9 @@
 
                 // Configuration options go here
                 options: {
+                    responsive: true,
+                    aspectRatio: 1.45,
+                    cutoutPercentage: 70,
                     legend: {
                         display: true
                     },

@@ -9,9 +9,10 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         />
         <v-marker-cluster :options="clusterOptions" ref="clusterRef">
             <l-circle-marker v-for="marker in markers" :lat-lng="marker.latLng" @click="nodeSelected(marker.node)"
-                             :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7">
+                             :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7" :options="{isNodeFailing: isNodeFailing(marker.node)}">
+                <slot>lol</slot>
                 <l-tooltip :options="{ permanent: false, interactive: true }">
-                    <div>
+                    <div :id="marker.node.publicKey">
                         <full-validator-title :node="marker.node"/>
                     </div>
                 </l-tooltip>
@@ -88,6 +89,10 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
             return this.store.network;
         }
 
+        isNodeFailing(node:Node){
+            return this.network.isNodeFailing(node);
+        }
+
         get markers(): Marker[] {
             return this.store.network.nodes
                 .filter(node => node.geoData.latitude)
@@ -95,7 +100,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
                     return {
                         'latLng': latLng(geoNode.geoData.latitude!, geoNode.geoData.longitude!),
                         'node': geoNode,
-                        'color': geoNode.isValidating ? '#1997c6' : '#cd201f'
+                        'color': !this.network.isNodeFailing(geoNode) ? '#1997c6' : '#cd201f'
                     };
                 });
         }
@@ -128,19 +133,31 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
                 maxClusterRadius: 30,
                 iconCreateFunction: (cluster: any) => {
                     let markers: any[] = cluster.getAllChildMarkers();
-                    let isSelected = this.selectedNode && markers.filter(marker => {
-                        return marker._latlng.lat === this.selectedNode!.geoData.latitude
-                            && marker._latlng.lng === this.selectedNode!.geoData.longitude;
-                    }).length !== 0;
-
                     return L.divIcon({
                         html: '<div><span>' + markers.length + '</span></div>',
-                        className: isSelected ? 'marker-cluster marker-cluster-selected' : 'marker-cluster',
+                        className: this.getMarkerClusterClasses(markers),
                         iconSize: L.point(40, 40),
                     });
                 }
             };
         }
+
+        getMarkerClusterClasses(markers:any[]){
+            let classes:string[] = ['marker-cluster'];
+            if(markers.filter((marker:any) => !marker.options.isNodeFailing).length === 0)
+                classes.push('marker-cluster-failing');
+
+            let isSelected = this.selectedNode && markers.filter((marker:any) => {
+                return marker._latlng.lat === this.selectedNode!.geoData.latitude
+                    && marker._latlng.lng === this.selectedNode!.geoData.longitude;
+            }).length !== 0;
+
+            if(isSelected)
+                classes.push('marker-cluster-selected');
+
+            return classes.join(' ');
+        }
+
 
         get mapOptions(): any {
             return {
@@ -178,5 +195,9 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
 
     .marker-cluster-selected {
         background-color: yellow;
+    }
+
+    .marker-cluster-failing div {
+        background-color: #cd201f;
     }
 </style>

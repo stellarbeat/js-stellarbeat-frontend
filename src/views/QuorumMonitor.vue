@@ -2,7 +2,7 @@
     <div>
         <div class="page-header mt-2">
             <h1 class="page-title">
-                Quorum Monitor
+                Stellar Public Network
                 <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
             </h1>
             <crawl-time></crawl-time>
@@ -10,12 +10,12 @@
         <Statistics
                 :network="network"
         ></Statistics>
-        <div class="row">
+        <div class="row row-cards row-deck">
             <div class="col-12">
                 <search-card></search-card>
             </div>
         </div>
-        <div class="row" v-if="showHaltingAnalysis" id="halting-analysis-card">
+        <div class="row row-cards row-deck" v-if="showHaltingAnalysis" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
                         :network="network"
@@ -26,67 +26,19 @@
         </div>
 
         <div class="">
-            <div class="row">
+            <div class="row row-cards row-deck">
                 <div class="col-sm-12 col-lg-8">
-                    <div class="row">
-                        <div class="col-12">
-                            <network-visual-navigator></network-visual-navigator>
-                        </div>
-                    </div>
-                    <div class="card" v-if="!selectedNode">
-                        <div class="card-header">
-                            <div class="card-title">Organizations in Transitive Quorumset</div>
-                        </div>
-                        <div class="card-body py-2 px-0">
-                            <organization-list :organizations="networkTransitiveQuorumSetOrganizations"/>
-                        </div>
-                        <div class="card-footer p-3 d-flex">
-                            <b-button v-b-tooltip.hover title="Export Stellar Core QuorumSet configuration"
-                                      v-b-modal.tomlExportModal size="sm" variant="primary">
-                                <i class="fe fe-save"></i>
-                                Configuration
-                            </b-button>
-                        </div>
-                    </div>
+                    <network-visual-navigator></network-visual-navigator>
                 </div>
-                <div class="col-lg-4 col-sm-12 order-0">
-                    <div class="row">
-                        <div class="col-12">
-                            <quorum-set-explorer-card v-if="selectedNode" class="quorum-set-explorer-card"
-                                                      v-on:show-halting-analysis="onShowHaltingAnalysis"
-                            ></quorum-set-explorer-card>
-                            <div v-else>
-                                <div class="card">
-                                    <div class="card-header">
-                                        <div class="card-title">Validators in Transitive Quorumset</div>
-                                    </div>
-                                    <div class="card-body py-2 px-0">
-                                        <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes"
-                                                   :render-title="false"
-                                        />
-                                        <b-modal lazy size="lg" id="tomlExportModal"
-                                                 title="Stellar Core Configuration" ok-only ok-title="Close"
-                                        >
-                                            <pre><code>{{tomlNodesExport}}</code></pre>
-                                        </b-modal>
-                                    </div>
-                                    <div class="card-footer p-3 d-flex">
-                                        <simulate-new-node class="mr-2"></simulate-new-node>
-                                        <b-button v-b-tooltip.hover title="Export Stellar Core QuorumSet configuration"
-                                                  v-b-modal.tomlExportModal size="sm" variant="primary">
-                                            <i class="fe fe-save"></i>
-                                            Configuration
-                                        </b-button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-sm-12 col-lg-4">
+                    <transitive-quorum-set-validators-card v-if="!selectedNode"/>
+                    <quorum-set-explorer-card v-else class="quorum-set-explorer-card"
+                                              v-on:show-halting-analysis="onShowHaltingAnalysis"
+                    ></quorum-set-explorer-card>
                 </div>
             </div>
-
         </div>
-        <div class="row" v-if="selectedNode">
+        <div class="row row-cards row-deck" v-if="selectedNode">
             <div class="col-md-6 col-lg-4">
                 <history-card
                         :subject="'Validating history'"
@@ -123,6 +75,25 @@
                 </history-card>
             </div>
         </div>
+        <div v-else class="row row-cards">
+            <div class="col-md-12 col-lg-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <transitive-quorum-set-organizations-card/>
+                    </div>
+                    <div class="col-md-12">
+                        <NodesCountryDistribution :network="network"></NodesCountryDistribution>
+                    </div>
+                    <div class="col-md-12">
+                        <ValidatorsServerLoad :network="network"></ValidatorsServerLoad>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8 col-lg-8 col-md-12">
+                <QuorumSetConnections :network="network"></QuorumSetConnections>
+                <NodesVersions :network="network"></NodesVersions>
+            </div>
+        </div>
     </div>
 
 </template>
@@ -153,10 +124,24 @@
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
     import NetworkVisualNavigator from '@/components/quorum-monitor/cards/network-visual-navigator.vue';
+    import QuorumSetConnections from '@/components/home/quorum-set-connections/quorum-set-connections.vue';
+    import ValidatorsServerLoad from '@/components/home/validator-load.vue';
+    import NodesCountryDistribution from '@/components/home/nodes-country-distribution.vue';
+    import NodesVersions from '@/components/home/nodes-versions.vue';
+    import TransitiveQuorumSetValidatorsCard
+        from '@/components/quorum-monitor/cards/transitive-quorum-set-validators-card.vue';
+    import TransitiveQuorumSetOrganizationsCard
+        from '@/components/quorum-monitor/cards/transitive-quorum-set-organizations-card.vue';
 
     @Component({
         name: 'quorum-monitor',
         components: {
+            TransitiveQuorumSetOrganizationsCard,
+            TransitiveQuorumSetValidatorsCard,
+            NodesVersions,
+            NodesCountryDistribution,
+            ValidatorsServerLoad,
+            QuorumSetConnections,
             NetworkVisualNavigator,
             OrganizationList,
             HistoryCard,
@@ -205,23 +190,6 @@
 
         get network(): Network {
             return this.$root.$data.store.network;
-        }
-
-        get networkTransitiveQuorumSetNodes() {
-            return Array.from(this.network.graph.networkTransitiveQuorumSet)
-                .map(publicKey => this.network.getNodeByPublicKey(publicKey)!);
-        }
-
-        get networkTransitiveQuorumSetOrganizations() {
-            return [...new Set(this.networkTransitiveQuorumSetNodes
-                .filter(node => node && node.organizationId)
-                .map(node => this.network.getOrganizationById(node!.organizationId!))
-            )];
-        }
-
-        get tomlNodesExport() {
-            let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
-            return stellarCoreConfigurationGenerator.nodesToToml(this.networkTransitiveQuorumSetNodes);
         }
 
         onShowHaltingAnalysis(publicKey: PublicKey) {

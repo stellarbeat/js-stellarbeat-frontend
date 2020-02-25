@@ -30,16 +30,6 @@
 
         public chart: Chart|null = null;
 
-        get otherVersionsCount(): number {
-            return this.sortedVersions.slice(4).reduce((accumulator, currentValue) => {
-                return accumulator + currentValue[1];
-            },0)
-        }
-
-        get activeNodesWithVersionCount(): number {
-            return this.network.nodes.filter(node => node.active && node.versionStr).length;
-        }
-
         get sortedVersions() {
             let versions = this.network.nodes
                 .filter(node => node.active)
@@ -68,21 +58,35 @@
             this.chart = new Chart(context as CanvasRenderingContext2D, {
                 type: 'doughnut',
                 data: {
-                    labels: this.sortedVersions.map(versionArray => versionArray[0]),
+                    labels: [
+                        this.sortedVersions[0][0],
+                        this.sortedVersions[1][0],
+                        this.sortedVersions[2][0],
+                        "Other versions"
+                    ],
                     datasets: [{
                         label: "Node versions",
                         backgroundColor: [
                             '#1997c6', // primary blue
                             '#1bc98e', // success green
-                            '#9f86ff', // info purple
                             '#e4d836' // warning yellow
                         ],
-                        data: this.sortedVersions.map(versionArray => versionArray[1]),
+                        data: [
+                            this.sortedVersions[0][1],
+                            this.sortedVersions[1][1],
+                            this.sortedVersions[2][1],
+                            this.sortedVersions.slice(3).reduce((accumulator, currentValue) => {
+                                return accumulator + currentValue[1];
+                            },0)
+                        ]
                     }]
                 },
 
                 // Configuration options go here
                 options: {
+                    responsive: true,
+                    aspectRatio: 1.45,
+                    cutoutPercentage: 60,
                     legend: {
                         display: true
                     },
