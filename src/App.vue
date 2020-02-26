@@ -128,10 +128,7 @@
 
 <script lang="ts">
     import Vue from "vue";
-    import {Network, Node, Organization} from "@stellarbeat/js-stellar-domain";
-    import axios from "axios";
-    import {Component, Prop, Watch} from "vue-property-decorator";
-    import Store from "@/store/Store";
+    import {Component} from "vue-property-decorator";
 
     @Component({
         name: "app",

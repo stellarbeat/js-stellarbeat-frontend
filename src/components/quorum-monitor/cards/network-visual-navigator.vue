@@ -6,7 +6,7 @@
                 <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
             </b-button-group>
             <h5 class="card-title">
-                Stellar Public Network Navigator
+                Stellar Public Network
             </h5>
         </div>
         <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
