@@ -1,6 +1,6 @@
 <template>
     <div id="app" class="page" :class="backgroundClass">
-        <div class="page-main">
+        <div class="flex-fill">
             <div v-if="!isHeadlessRoute">
 
             <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">

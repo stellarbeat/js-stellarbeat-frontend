@@ -2,8 +2,8 @@
     <div class="card">
         <div class="card-header pl-3">
             <b-button-group size="sm" class="mr-3">
-                <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
                 <b-button :pressed="view === 'map'" @click="view = 'map'">Map</b-button>
+                <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
             </b-button-group>
             <h5 class="card-title">
                 Stellar Public Network Navigator
@@ -32,7 +32,7 @@
         components: {NetworkGraphCard, WorldMap}
     })
     export default class NetworkVisualNavigator extends Vue {
-        protected view: string = 'graph';
+        protected view: string = 'map';
 
         get store(): Store {
             return this.$root.$data.store;
