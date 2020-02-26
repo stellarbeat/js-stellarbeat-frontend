@@ -75,23 +75,29 @@
                 </history-card>
             </div>
         </div>
-        <div v-else class="row row-cards">
-            <div class="col-md-12 col-lg-4">
-                <div class="row">
-                    <div class="col-md-12">
+        <div v-else class="row">
+            <div class="col-md-12 col-lg-4 col-xl-3">
+                <div class="row row-cards row-deck">
+                    <div class="col-lg-12 col-md-6">
                         <transitive-quorum-set-organizations-card/>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-lg-12 col-md-6">
                         <NodesCountryDistribution :network="network"></NodesCountryDistribution>
-                    </div>
-                    <div class="col-md-12">
-                        <ValidatorsServerLoad :network="network"></ValidatorsServerLoad>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-8 col-lg-8 col-md-12">
+            <div class="col-xl-5 col-lg-8 col-md-12">
                 <QuorumSetConnections :network="network"></QuorumSetConnections>
-                <NodesVersions :network="network"></NodesVersions>
+            </div>
+            <div class="col-xl-4 col-lg-12 col-md-12">
+                <div class="row row-cards row-deck">
+                    <div class="col-xl-12 col-lg-6 col-md-6">
+                        <NodesVersions :network="network"></NodesVersions>
+                    </div>
+                    <div class="col-xl-12 col-lg-6 col-md-6">
+                        <ValidatorsServerLoad :network="network"></ValidatorsServerLoad>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
