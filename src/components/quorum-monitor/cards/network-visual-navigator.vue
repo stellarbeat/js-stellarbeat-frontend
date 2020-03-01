@@ -1,21 +1,16 @@
 <template>
     <div class="card">
-        <div class="card-header pl-3">
-            <b-button-group size="sm" class="mr-3">
-                <b-button :pressed="view === 'map'" @click="view = 'map'">Map</b-button>
-                <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
-            </b-button-group>
-            <h5 class="card-title">
-                Stellar Public Network
-            </h5>
-        </div>
         <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
              class="card-alert alert alert-danger mb-0" show>No Transitive Quorum Set Detected in network!
         </div>
-        <div class="card-body p-0" style="height: 450px">
+        <div class="card-body p-0" style="height: 350px">
             <world-map v-if="view==='map'"></world-map>
-            <network-graph-card v-if="view === 'graph'"
+            <network-graph-card v-else
                                 v-on:show-halting-analysis="$emit('show-halting-analysis', selectedNode.publicKey)"></network-graph-card>
+            <b-button-group size="sm" class="selector">
+                <b-button :pressed="view === 'map'" @click="view = 'map'">Map</b-button>
+                <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
+            </b-button-group>
         </div>
     </div>
 </template>
@@ -52,5 +47,19 @@
     }
 </script>
 <style scoped>
+    .card-title {
+        display: block;
+        margin: 0 0 1rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.3333333;
+    }
 
+    .selector {
+        position: absolute;
+        bottom: 0;
+        padding-left: 15px;
+        padding-bottom: 13px;
+        z-index: 1000000;
+    }
 </style>

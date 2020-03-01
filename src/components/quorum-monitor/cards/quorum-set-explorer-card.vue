@@ -1,15 +1,14 @@
 <template>
     <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
-                <full-validator-title :node="selectedNode"/>
-            </h3>
-        </div>
+
         <div v-if="$root.$data.store.network.isNodeFailing($root.$data.store.quorumMonitorStore.selectedNode)" class="card-alert alert alert-danger mb-0">
             <i class="fe fe-alert-triangle"></i>
             Node not validating {{network.isQuorumSetFailing(selectedNode, selectedNode.quorumSet) ? ": quorumset not reaching threshold" : ""}}
         </div>
         <div class="card-body p-3 quorum-set-explorer-card-body">
+            <h3 class="card-title">
+                <full-validator-title :node="selectedNode"/>
+            </h3>
             <div class="row">
                 <div class="col-12">
                     <router-view v-on:node-toggle-active="toggleActive"
@@ -27,9 +26,6 @@
                 </div>
             </div>
 
-        </div>
-        <div class="card-footer p-3">
-            <simulate-new-node class="col-12 pl-0"></simulate-new-node>
         </div>
     </div>
 </template>

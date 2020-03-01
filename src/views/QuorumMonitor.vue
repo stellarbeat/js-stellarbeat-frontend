@@ -1,18 +1,44 @@
 <template>
     <div>
-        <div class="page-header mt-2">
-            <h1 class="page-title">
-                Stellar Public Network
-                <b-badge v-show="store.isSimulation" variant="warning">Simulation</b-badge>
-            </h1>
-            <crawl-time></crawl-time>
+        <div v-show="false" class="page-header">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <h2 class="page-title">
+                        Dashboard
+                    </h2>
+                </div>
+                <!-- Page title actions -->
+                <div class="col-auto ml-auto d-print-none">
+                    <crawl-time></crawl-time>
+                </div>
+            </div>
         </div>
-        <Statistics
+        <!--Statistics Show only for network, and show simulation results in separate window when 'simulating'
                 :network="network"
-        ></Statistics>
-        <div class="row row-cards row-deck">
-            <div class="col-12">
-                <search-card></search-card>
+        ></Statistics!-->
+
+        <div class="d-flex">
+            <ol class="breadcrumb mr-2" aria-label="breadcrumbs">
+                <li class="breadcrumb-item"><a href="#">Network</a></li>
+                <li class="breadcrumb-item"><a href="#">Nodes</a></li>
+                <li class="breadcrumb-item active"><a href="#"> {{selectedNode.displayName}} </a></li>
+            </ol>
+            <div class="">
+        <span class="badge sb-badge mr-1"
+              v-bind:class="[selectedNode.isFullValidator || selectedNode.isValidator ? 'badge-success ' : 'badge-default']"
+        >
+                    {{selectedNode.isFullValidator ? 'Full Validator' :
+                    selectedNode.isValidator ? 'Validator' : 'Watcher Node'}}
+                </span>
+                <span v-if="selectedNode.isValidating && !network.isNodeFailing(this.selectedNode)"
+                      class="badge sb-badge badge-success mr-1"
+                >Validating
+                </span>
+                <span v-if="selectedNodePartOfTransitiveQuorumSet" class="badge sb-badge badge-primary"
+                >Transitive Quorum Set
+                </span>
+                <span v-if="selectedNode.versionStr" class="badge badge-default sb-badge mr-1"
+                      v-b-popover.hover.top="selectedNode.versionStr">{{selectedNode.versionStr | truncate(35)}}</span>
             </div>
         </div>
         <div class="row row-cards row-deck" v-if="showHaltingAnalysis" id="halting-analysis-card">
@@ -27,14 +53,8 @@
 
         <div class="">
             <div class="row row-cards row-deck">
-                <div class="col-sm-12 col-lg-8">
+                <div class="col-sm-12 col-lg-12">
                     <network-visual-navigator></network-visual-navigator>
-                </div>
-                <div class="col-sm-12 col-lg-4">
-                    <transitive-quorum-set-validators-card v-if="!selectedNode"/>
-                    <quorum-set-explorer-card v-else class="quorum-set-explorer-card"
-                                              v-on:show-halting-analysis="onShowHaltingAnalysis"
-                    ></quorum-set-explorer-card>
                 </div>
             </div>
         </div>

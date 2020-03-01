@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import SimpleAnalytics from "simple-analytics-vue";
 import VueTruncate from 'vue-truncate-filter';
-import 'tabler-ui/dist/assets/css/dashboard.css';
+import 'tabler/dist/css/tabler.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import BootstrapVue from 'bootstrap-vue';
 import Meta from 'vue-meta';

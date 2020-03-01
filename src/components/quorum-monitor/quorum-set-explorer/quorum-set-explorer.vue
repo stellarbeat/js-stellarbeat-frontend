@@ -2,21 +2,7 @@
     <div v-if="selectedNode" class="quorum-set-explorer">
         <div class="row">
             <div class="col-sm-12">
-                <span class="badge sb-badge"
-                      v-bind:class="[selectedNode.isFullValidator || selectedNode.isValidator ? 'badge-success ' : 'badge-default']"
-                >
-                    {{selectedNode.isFullValidator ? 'Full Validator' :
-                    selectedNode.isValidator ? 'Validator' : 'Watcher Node'}}
-                </span>
-                <span v-if="selectedNode.isValidating && !network.isNodeFailing(this.selectedNode)"
-                      class="badge sb-badge badge-success"
-                >Validating
-                </span>
-                <span v-if="selectedNodePartOfTransitiveQuorumSet" class="badge sb-badge badge-primary"
-                >Transitive Quorum Set
-                </span>
-                <span v-if="selectedNode.versionStr" class="badge badge-default sb-badge" v-b-popover.hover.top="selectedNode.versionStr">{{selectedNode.versionStr | truncate(35)}}</span>
-                <div class="nodes-title mt-4 mb-1">
+                <div class="nodes-title mb-1">
                     <div class="d-flex w-100">
                         <div class="d-flex justify-content-between w-100">
                             <h5 class="mb-0 public-key"
@@ -24,7 +10,8 @@
                                 <i class="fe fe-target"/>
                                 {{selectedNode.publicKey.substr(0, 10)}}...{{selectedNode.publicKey.substr(50, 100)}}
                             </h5>
-                            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit" class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
+                            <b-dropdown ref="dropdown" right id="editDropdown" size="sm" text="Edit"
+                                        class="p-0 mr-1 edit-dropdown" toggle-class="more-button" no-caret>
                                 <b-dropdown-header id="dropdown-header-label">
                                     Simulation options
                                 </b-dropdown-header>
@@ -98,31 +85,6 @@
 
             </div>
         </div>
-        <div v-show="selectedNode.isValidator" class="row">
-            <div class="col-sm-12">
-                <NodeList
-                        :nodes="network.getTrustingNodes(selectedNode) ? network.getTrustingNodes(selectedNode) : []"
-                        :network="network"
-                        :title="'Trusted by ' + numberOfValidatingTrustingNodes + ' validating nodes'"
-                        :render-title="true"
-                        v-on:node-toggle-active="toggleNodeActive"
-                        v-on:node-toggle-validating="toggleNodeValidating"
-                        v-on:node-show-modal="showModal"
-                >
-
-                </NodeList>
-            </div>
-
-        </div>
-        <div v-if="" class="row">
-            <div class="col-sm-12">
-                <NodeStatisticsListItem :node="selectedNode" :network="network"></NodeStatisticsListItem>
-            </div>
-        </div>
-        <b-list-group class="link-list">
-            <b-list-group-item button class="link-list-item" v-on:click="showModal(selectedNode)"><i class="fe fe-external-link"/> Node info</b-list-group-item>
-            <b-list-group-item button class="link-list-item"  v-on:click="navigateToOrg"><i class="fe fe-external-link"/> Organization info</b-list-group-item>
-        </b-list-group>
         <b-modal v-if="modalNode"
                  ok-title="Close" size="lg" ok-only id="node-details-modal" ref="modal"
                  v-bind:title="modalNode.displayName">
@@ -259,10 +221,12 @@
         padding-left: 0px;
         margin-top: 8px;
     }
+
     .link-list {
         color: #1997c6;
         border: none
     }
+
     .link-list-item {
         color: #1997c6;
         border: none;
@@ -273,10 +237,12 @@
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
     }
-    .link-list-item:hover{
+
+    .link-list-item:hover {
         color: #1997c6;
         cursor: pointer;
     }
+
     .sb-badge {
         margin-right: 2px;
     }

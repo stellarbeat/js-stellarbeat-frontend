@@ -1,9 +1,5 @@
 <template>
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">Validators in Transitive Quorumset</div>
-        </div>
-        <div class="card-body py-2 px-0">
+<div>
             <node-list :network="network" :nodes="networkTransitiveQuorumSetNodes"
                        :render-title="false"
             />
@@ -12,15 +8,6 @@
             >
                 <pre><code>{{tomlNodesExport}}</code></pre>
             </b-modal>
-        </div>
-        <div class="card-footer p-3 d-flex">
-            <simulate-new-node class="mr-2"></simulate-new-node>
-            <b-button v-b-tooltip.hover title="Export Stellar Core QuorumSet configuration"
-                      v-b-modal.tomlExportModal size="sm" variant="primary">
-                <i class="fe fe-save"></i>
-                Configuration
-            </b-button>
-        </div>
     </div>
 </template>
 
