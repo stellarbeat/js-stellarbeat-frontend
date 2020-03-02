@@ -40,7 +40,7 @@
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from "@/store/Store";
     import {Node, PublicKey, QuorumSet} from "@stellarbeat/js-stellar-domain";
-    import SimulateNewNode from '@/components/quorum-monitor/quorum-set-explorer/simulate-new-node.vue';
+    import SimulateNewNode from '@/components/quorum-monitor-deprecated/quorum-set-explorer/simulate-new-node.vue';
 
     @Component({
         name: "quorum-set-explorer-card",

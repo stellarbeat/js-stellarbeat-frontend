@@ -75,9 +75,8 @@
     import Store from '@/store/Store';
     import moment from 'moment';
     import DateNavigator from '@/components/date-navigator.vue';
-    import BarChartDay from '@/components/quorum-monitor/charts/bar-chart-day.vue';
-    import LineChartDay from '@/components/quorum-monitor/line-chart-day.vue';
-    import LineChartHour from '@/components/quorum-monitor/charts/line-chart-hour.vue';
+    import BarChartDay from '@/components/charts/bar-chart-day.vue';
+    import LineChartHour from '@/components/charts/line-chart-hour.vue';
     import {DayMeasurement, Measurement} from '@/store/MeasurementStore';
 
     @Component({
@@ -87,7 +86,6 @@
             DateNavigator,
             ThirtyDayBarChart: BarChartDay,
             TwentyFourHourBarChart: BarChartDay,
-            LineChartDay
         }
     })
     export default class HistoryCard extends Vue {

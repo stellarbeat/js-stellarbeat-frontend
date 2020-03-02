@@ -93,7 +93,7 @@
 
     import ComputeGraphWorker from "worker-loader?name=dist/[name].js!./../../../workers/compute-graphv6.worker";
     import {Component, Prop, Watch} from "vue-property-decorator";
-    import GraphEdge from "@/components/quorum-monitor/graph/graph-edge.vue";
+    import GraphEdge from "@/components/visual-navigator/graph/graph-edge.vue";
 
     type VertexViewData = {
         publicKey: PublicKey,

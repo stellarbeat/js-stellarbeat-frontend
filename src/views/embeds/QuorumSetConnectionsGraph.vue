@@ -12,7 +12,7 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import QuorumSetConnections from "./../../components/home/quorum-set-connections/quorum-set-connections.vue";
+    import QuorumSetConnections from "../../components/network/cards/quorum-set-connections/quorum-set-connections.vue";
     import {Network} from "@stellarbeat/js-stellar-domain";
 
     @Component({

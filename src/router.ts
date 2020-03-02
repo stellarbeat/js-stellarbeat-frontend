@@ -1,9 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import QuorumSetExplorer from './components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
-import SelectOrSimulateNodeAlert from './components/quorum-monitor/select-or-simulate-node-alert.vue';
-import Home from './views/Home.vue';
-import QuorumMonitor from './views/QuorumMonitor.vue';
+
+import Network from './views/Network.vue';
 import Nodes from './views/Nodes.vue';
 import Organizations from './views/Organizations.vue';
 import OrganizationDetails from './views/OrganizationsDetails.vue';
@@ -19,22 +18,30 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        {name: 'home', path: '/', component: Home},
+        {name: 'network', path: '/', component: Network,
+            children: [
+                {
+                    name: 'network-node',
+                    path: '/networks/public/nodes/:publicKey',
+                    component: Network,
+                },
+            ],
+        },
         {name: 'nodes', path: '/nodes', component: Nodes},
         {name: 'organizations', path: '/organizations', component: Organizations},
-        {name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
+        //{name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
         {name: 'organization-details', path: '/organizations/:organizationId', component: OrganizationDetails},
 
         {name: 'faq', path: '/faq', component: FAQ, meta: {fullPreRender: true}},
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
         {name: 'terms-and-conditions', path: '/terms-and-conditions', component: TermsAndConditions, meta: {fullPreRender: true}},
-        {
-            path: '/quorum-monitor', name: 'quorum-monitor', component: QuorumMonitor,
+        {//backwards compatibility
+            path: '/quorum-monitor', name: 'quorum-monitor', component: Network,
             children: [
                 {
                     name: 'quorum-monitor-node',
                     path: ':publicKey',
-                    component: QuorumSetExplorer,
+                    component: Network,
                 },
             ],
         },

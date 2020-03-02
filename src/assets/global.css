@@ -90,3 +90,14 @@
     /* margin-bottom: 6px; */
     background-position-y: bottom 12px;
 }
+
+.page-link {
+    border: none!important;
+}
+.page-item.active .page-link {
+    font-weight: bolder;
+    background-color: inherit;
+    color: inherit;
+    opacity: 1;
+
+}

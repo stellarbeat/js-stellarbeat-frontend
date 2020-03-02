@@ -6,10 +6,6 @@
             <b-tooltip target="overLoadedTooltip" placement="top">
                 A validator has a high load when it disconnects due to 'high load' most of the time during the last 30 days.
             </b-tooltip>
-            <div class="card-options">
-                <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'nodes'}">View all nodes
-                </router-link>
-            </div>
         </div>
         <div class="card-body p-3 pb-6">
             <canvas id="overLoadedBarChart" ref="overLoadedBarChart"></canvas>

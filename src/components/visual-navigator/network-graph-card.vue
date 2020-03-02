@@ -10,8 +10,8 @@
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from '@/store/Store';
-    import Graph from '@/components/quorum-monitor/graph/graph.vue';
-    import GraphLegend from '@/components/quorum-monitor/graph/graph-legend.vue';
+    import Graph from '@/components/visual-navigator/graph/graph.vue';
+    import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
     @Component({
         name: 'network-graph-card',

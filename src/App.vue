@@ -7,7 +7,7 @@
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                     <div polyfillclass="container-fluid">
                         <div class="d-flex">
-                            <router-link class="header-brand mt-2" :to="{ name: 'home'}" exact>
+                            <router-link class="header-brand mt-2" :to="{ name: 'network'}" exact>
                                 <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
                             </router-link>
                             <div class="d-flex flex-column ml-auto">
@@ -41,8 +41,8 @@
                         <div class="col-lg order-lg-first">
                             <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'home'}" exact><i
-                                            class="fe fe-home"></i>Home
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'network'}" exact><i
+                                            class="fe fe-activity"></i>Network
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
@@ -56,11 +56,6 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'quorum-monitor'}">
-                                        <i class="fe fe-target"></i>Quorum Monitor
-                                    </router-link>
-                                </li>
-                                <li class="nav-item">
                                     <router-link active-class="active" class="nav-link" :to="{ name: 'api'}">
                                         <i class="fe fe-share-2"></i>API
                                     </router-link>
@@ -71,6 +66,8 @@
                                     </router-link>
                                 </li>
                             </ul>
+                            <!--crawl-time></crawl-time!-->
+
                         </div>
                     </div>
                 </div>
@@ -129,9 +126,11 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component} from "vue-property-decorator";
+    import CrawlTime from '@/components/crawl-time.vue';
 
     @Component({
         name: "app",
+        components: {CrawlTime},
         metaInfo: {
             title: "Stellarbeat.io - Stellar network visibility",
             meta: [

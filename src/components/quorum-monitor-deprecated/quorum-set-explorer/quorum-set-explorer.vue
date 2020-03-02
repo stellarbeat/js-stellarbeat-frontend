@@ -136,7 +136,7 @@
     import QuorumSetDisplay from './quorum-set-display.vue';
     import NodeList from './node-list.vue';
     import NodeStatisticsListItem from './node-statistics-list-item.vue';
-    import Search from './../search.vue';
+    import Search from '../../node/search.vue';
 
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';

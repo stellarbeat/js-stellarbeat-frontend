@@ -1,9 +1,5 @@
 <template>
     <div class="">
-        <b-button v-b-modal.simulate-node-modal size="sm" variant="primary">
-            <i class="fe fe-plus-circle"></i>
-            Simulate a new node
-        </b-button>
         <b-modal
                 ok-title="Simulate Node" size="lg" id="simulate-node-modal"
                 title="Simulate a new node"
@@ -65,5 +61,4 @@
     }
 </script>
 <style scoped>
-
 </style>

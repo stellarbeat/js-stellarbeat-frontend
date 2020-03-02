@@ -24,8 +24,8 @@
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
-    import WorldMap from '@/components/home/network-visual-navigator/world-map.vue';
-    import NetworkGraphCard from '@/components/quorum-monitor/cards/network-graph-card.vue';
+    import WorldMap from '@/components/visual-navigator/world-map.vue';
+    import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
 
     @Component({
         name: 'network-visual-navigator',

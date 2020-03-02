@@ -3,11 +3,6 @@
         <div v-if="!isHeadlessRoute" class="card ">
             <div class="card-header">
                 <h3 class="card-title">Quorumset connections</h3>
-                <div class="card-options">
-                    <router-link class="btn btn-sm btn-outline-primary" :to="{ name: 'quorum-monitor'}">Go to Quorum
-                        Monitor
-                    </router-link>
-                </div>
             </div>
             <div class="card-body p-3 pb-6">
                 <div class="row">

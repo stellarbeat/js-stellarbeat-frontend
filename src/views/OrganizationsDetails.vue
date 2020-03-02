@@ -189,7 +189,7 @@
     import {Node, Organization, Network} from "@stellarbeat/js-stellar-domain";
     import Store from '@/store/Store';
     import CrawlTime from '@/components/crawl-time.vue';
-    import HistoryCard from '@/components/quorum-monitor/cards/history-card.vue';
+    import HistoryCard from '@/components/node/node-cards/history-card.vue';
 
     @Component({
         name: "organization-details",

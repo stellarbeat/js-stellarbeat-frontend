@@ -12,8 +12,8 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component} from "vue-property-decorator";
-    import UndoRedo from '@/components/quorum-monitor/UndoRedo.vue';
-    import Search from '@/components/quorum-monitor/search.vue';
+    import UndoRedo from '@/components/node/UndoRedo.vue';
+    import Search from '@/components/node/search.vue';
 
     @Component({
         name: "search-card",
