@@ -1,14 +1,5 @@
 <template>
     <div class="card">
-        <div class="card-header pl-3">
-            <b-button-group size="sm" class="mr-3">
-                <b-button :pressed="view === 'map'" @click="view = 'map'">Map</b-button>
-                <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
-            </b-button-group>
-            <h5 class="card-title">
-                Stellar Public Network
-            </h5>
-        </div>
         <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
              class="card-alert alert alert-danger mb-0" show>No Transitive Quorum Set Detected in network!
         </div>
@@ -16,6 +7,12 @@
             <world-map v-if="view==='map'"></world-map>
             <network-graph-card v-if="view === 'graph'"
                                 v-on:show-halting-analysis="$emit('show-halting-analysis', selectedNode.publicKey)"></network-graph-card>
+        </div>
+        <div class="card-footer pl-3">
+            <b-button-group size="sm" class="mr-3">
+                <b-button :pressed="view === 'map'" @click="view = 'map'">Map</b-button>
+                <b-button :pressed="view === 'graph'" @click="view = 'graph'">Graph</b-button>
+            </b-button-group>
         </div>
     </div>
 </template>

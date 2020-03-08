@@ -1,6 +1,5 @@
 <template>
-    <div class="action-bar ">
-        <b-dropdown right id="more" size="sm" text="More" class="p-0 m-0" toggle-class="more-button" no-caret>
+        <b-dropdown right id="more" size="sm" text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
             <template slot="button-content">
                 <i class="fe fe-more-vertical"></i>
             </template>
@@ -21,8 +20,6 @@
                 Info
             </b-dropdown-item>
         </b-dropdown>
-    </div>
-
 </template>
 
 <script lang="ts">
@@ -63,5 +60,11 @@
     }
     .dropdown-header {
         padding: 0.5rem 1rem;
+    }
+    .hover-btn {
+        position: absolute;
+        right: 45px;
+        border: none;
+        outline: 0;
     }
 </style>

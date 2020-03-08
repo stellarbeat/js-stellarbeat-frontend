@@ -1,36 +1,33 @@
 <template>
     <div class="sb-nav-item">
-        <nav-link title="Organizations" v-on:click="toggleShow" :dropdownToggle="true"/>
+        <nav-link class="sb-nav-dropdown-title" title="Organizations" v-on:click="toggleShow" :showDropdownToggle="true"/>
         <div v-if="showing" class="sb-nav-dropdown">
-            <nav-dropdown-link
+            <nav-link
                     v-for="organization in paginatedOrganizations"
                     v-on:click="selectOrganization(organization)"
-                    :title="organization.name | truncate(30)"/>
-            <div class="sb-nav-pagination" v-if="organizations.length > 10">
-                <b-pagination size="sm"
-                              v-model="currentPage"
-                              :total-rows="organizations.length"
-                              :per-page="perPage"
-                              first-number
-                              last-number
-                              align="left"
-                />
-            </div>
+                    :title="organization.name | truncate(30)"
+                    :is-link-in-dropdown="true"
+            />
+            <nav-pagination
+                    v-model="currentPage"
+                    v-on:input="currentPage = $event"
+                    :total-rows="organizations.length"
+            />
         </div>
     </div>
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
     import {Component, Prop, Mixins} from 'vue-property-decorator';
-    import {Node, Organization} from '@stellarbeat/js-stellar-domain';
+    import {Organization} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
     import NavDropdownLink from '@/components/side-bar/nav-dropdown-link.vue';
+    import NavPagination from '@/components/side-bar/nav-pagination.vue';
 
     @Component({
         components: {
-            NavDropdownLink,
+            NavPagination,
             NavLink
             //NodeActionBar,
         },

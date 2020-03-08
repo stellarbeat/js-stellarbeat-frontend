@@ -12,7 +12,21 @@
                 </HaltingAnalysis>
             </div>
         </div>
-
+        <!--div class="page-header">
+                    <h1 class="page-title">
+                        Stellar Public Network
+                    </h1>
+                    <div class="page-subtitle"></div>
+                    <div class="page-options d-flex">
+                        <crawl-time/>
+                        <div class="input-icon ml-2">
+                          <span class="input-icon-addon">
+                            <i class="fe fe-search"></i>
+                          </span>
+                            <search></search>
+                        </div>
+                    </div>
+                </div!-->
         <div class="">
             <div class="row row-cards row-deck">
                 <div class="col-sm-5 col-md-4 col-lg-3 col-xl-2">

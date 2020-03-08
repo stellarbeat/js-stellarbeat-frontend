@@ -442,7 +442,7 @@
     svg.graph {
         height: inherit;
         width: 100%;
-        cursor: move;
+        cursor: grab;
     }
 
     .transitive-path {

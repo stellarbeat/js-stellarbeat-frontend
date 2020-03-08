@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex crawl-time-component mt-1">
+    <div class="d-flex crawl-time-component">
         <datepicker id="datePickerCrawlTime" input-class="date-picker-input-white" :wrapper-class="'date-picker-wrapper'" v-model="crawlDate" :disabledDates="disabledDates"
                     :bootstrap-styling="true"/>
         <vue-timepicker hide-clear-button input-width="7em" class="" v-model="crawlTime" input-class="timepicker-no-border-right" format="HH:mm:ss"/>

@@ -1,6 +1,6 @@
 <template>
     <div class="sb-nav-title">
-        {{title}}
+        <slot>{{title | truncate(20)}}</slot>
     </div>
 </template>
 <script lang="ts">
@@ -14,6 +14,6 @@
 
 <style scoped>
     .sb-nav-title {
-
+        word-wrap: break-word;
     }
 </style>

@@ -1,16 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import QuorumSetExplorer from './components/quorum-monitor/quorum-set-explorer/quorum-set-explorer.vue';
-
 import Network from './views/Network.vue';
 import Nodes from './views/Nodes.vue';
 import Organizations from './views/Organizations.vue';
 import OrganizationDetails from './views/OrganizationsDetails.vue';
-import NodeDetails from './views/NodeDetails.vue';
 import FAQ from './views/FAQ.vue';
 import Api from './views/Api.vue';
 import TermsAndConditions from './views/TermsAndConditions.vue';
-import QuorumSetConnectionsGraph from './views/embeds/QuorumSetConnectionsGraph.vue';
 
 Vue.use(Router);
 
@@ -44,13 +40,7 @@ export default new Router({
                     component: Network,
                 },
             ],
-        },
-        {
-            name: 'quorum-set-connections-graph',
-            path: '/quorum-set-connections-graph',
-            component: QuorumSetConnectionsGraph,
-            meta: {isHeadlessRoute: true}
-        },
+        }
     ],
 
     scrollBehavior(to, from, savedPosition) {

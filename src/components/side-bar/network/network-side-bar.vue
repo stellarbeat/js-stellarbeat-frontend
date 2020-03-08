@@ -1,11 +1,15 @@
 <template>
-    <div class="card">
-        <div class="card-body pl-4">
+    <div class="card pt-0">
+        <div class="card-header sb-card-header">
+            <h3 class="card-title sb-card-title"><i class="fe fe-share-2 sb-card-title-icon mr-1"/>Stellar Public Network</h3>
+        </div>
+        <div class="card-body pt-1">
             <div class="sb-nav-bar">
                 <h6 class="sb-navbar-heading">Network transitive quorumset</h6>
-                <ul class="sb-nav-list">
+                <ul v-if="!store.isLoading" class="sb-nav-list">
                     <li class="sb-nav-item">
-                        <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations" :expand="true"/>
+                        <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
+                                                :expand="true"/>
                     </li>
                     <li class="sb-nav-item">
                         <validators-dropdown :nodes="networkTransitiveQuorumSetNodes" :expand="true"/>
@@ -14,7 +18,7 @@
                 <h6 class="sb-navbar-heading mt-4">Tools</h6>
                 <ul class="sb-nav-list">
                     <li class="sb-nav-item">
-                        <nav-link :title="'Export transitive quorumset'" v-b-modal.tomlExportModal/>
+                        <nav-link :title="'Export configuration'" v-b-modal.tomlExportModal/>
                     </li>
                     <li class="sb-nav-item">
                         <nav-link v-b-modal.simulate-node-modal :title="'Simulate new node'"/>
@@ -25,7 +29,8 @@
                 <h6 class="sb-navbar-heading mt-3">Options</h6>
                 <ul class="sb-nav-list">
                     <li class="sb-nav-item">
-                        <b-form-checkbox v-model="includeWatcherNodes" name="include-watcher-nodes-button" class="sb-nav-item sb-nav-toggle"
+                        <b-form-checkbox v-model="includeWatcherNodes" name="include-watcher-nodes-button"
+                                         class="sb-nav-item sb-nav-toggle"
                                          switch>
                             Include watcher nodes
                         </b-form-checkbox>
@@ -55,11 +60,13 @@
     import ValidatorsDropdown from '@/components/side-bar/network/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
+    import Logo from '@/components/side-bar/network/logo.vue';
 
     @Component({
         components: {
             OrganizationsDropdown,
-            NavLink, NodeList, SimulateNewNode, GraphLegend, Graph, FullValidatorTitle, ValidatorsDropdown}
+            NavLink, NodeList, SimulateNewNode, GraphLegend, Graph, FullValidatorTitle, ValidatorsDropdown
+        }
     })
     export default class NetworkSideBar extends Vue {
         includeWatcherNodes: boolean = false;
@@ -101,6 +108,21 @@
     }
 </script>
 <style scoped>
+    .sb-card-title-icon {
+        opacity: 0.6;
+        width: 30px;
+        color: #1997c6;
+    }
+    .sb-card-header{
+        border: none;
+        margin-top: 10px;
+        margin-bottom: 0px;
+        margin-left: 4px;
+    }
+    .sb-card-title {
+        text-transform: capitalize;
+    }
+
     .sb-navbar-heading {
         font-size: .6875rem;
         font-weight: 600;
@@ -109,17 +131,19 @@
         letter-spacing: .04em;
         color: #868c97;
         display: block;
-        margin-bottom: 15px;
+        margin-bottom: 5px;
         padding-left: 5px;
     }
 
     .sb-nav-bar {
         list-style: none;
+        flex: 0 0 220px;
     }
 
-    .sb-nav-list{
+    .sb-nav-list {
         padding-left: 0px;
     }
+
     .sb-nav-item {
         width: 100%;
         color: rgba(0, 0, 0, .55);
@@ -127,10 +151,8 @@
         font-size: 100%;
         text-decoration: none;
         list-style: none;
-        margin-bottom: 3px;
-    }
-    .sb-nav-pagination {
-        margin-top: 1px;
+        margin-bottom: 0px;
+        margin-top: 8px;
     }
 
     .sb-nav-dropdown {
