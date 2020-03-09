@@ -14,11 +14,6 @@
                 <i class="dropdown-icon fe fe-minus-circle"></i>
                 Remove
             </b-dropdown-item>
-            <b-dropdown-divider class="ml-0"></b-dropdown-divider>
-            <b-dropdown-item v-on:click="$emit('node-show-modal', node)">
-                <i class="dropdown-icon fe fe-info"></i>
-                Info
-            </b-dropdown-item>
         </b-dropdown>
 </template>
 
