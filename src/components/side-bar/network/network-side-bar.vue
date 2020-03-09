@@ -1,9 +1,9 @@
 <template>
     <div class="card pt-0">
-        <div class="card-header sb-card-header">
+        <div class="card-header px-2 pb-4 sb-card-header">
             <h3 class="card-title sb-card-title"><i class="fe fe-share-2 sb-card-title-icon mr-1"/>Stellar Public Network</h3>
         </div>
-        <div class="card-body pt-1">
+        <div class="card-body px-2 pt-1">
             <div class="sb-nav-bar">
                 <h6 class="sb-navbar-heading">Network transitive quorumset</h6>
                 <ul v-if="!store.isLoading" class="sb-nav-list">
@@ -12,16 +12,26 @@
                                                 :expand="true"/>
                     </li>
                     <li class="sb-nav-item">
-                        <validators-dropdown :nodes="networkTransitiveQuorumSetNodes" :expand="true"/>
+                        <validators-dropdown :nodes="networkTransitiveQuorumSetNodes" :expand="false"/>
                     </li>
                 </ul>
                 <h6 class="sb-navbar-heading mt-4">Tools</h6>
                 <ul class="sb-nav-list">
                     <li class="sb-nav-item">
-                        <nav-link :title="'Export configuration'" v-b-modal.tomlExportModal/>
+                        <nav-link
+                                :title="'Export configuration'"
+                                v-b-modal.tomlExportModal
+                                :show-icon="true"
+                                icon="fe-save"
+                        />
                     </li>
                     <li class="sb-nav-item">
-                        <nav-link v-b-modal.simulate-node-modal :title="'Simulate new node'"/>
+                        <nav-link
+                                v-b-modal.simulate-node-modal
+                                :title="'Simulate new node'"
+                                :show-icon="true"
+                                icon="fe-plus-circle"
+                        />
                         <simulate-new-node/>
                     </li>
                 </ul>

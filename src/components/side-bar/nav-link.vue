@@ -5,12 +5,13 @@
          v-on:mouseleave="hover=false"
     >
         <div class="sb-nav-link-icon">
-            <i title="Warning!" v-show="hasWarnings" v-b-popover.hover.top class="fe fe-alert-triangle sb-alert"/>
+            <i :title="warnings" v-if="showWarnings" v-b-popover.hover.top class="fe fe-alert-triangle sb-alert"/>
+            <i :title="warnings" v-else-if="showIcon" class="fe" :class="icon"></i>
         </div>
 
         <nav-title :title="title" class="w-100"/>
         <transition name="fade" >
-            <div v-show="hover" class="right">
+            <div v-if="hover" :class="dropdownClass">
                 <slot name="action-dropdown"/>
             </div>
         </transition>
@@ -34,8 +35,19 @@
         @Prop({default: false})
         isLinkInDropdown!: boolean;
 
+        @Prop({default: false})
+        showWarnings!:boolean;
+
+        @Prop()
+        warnings!:string;
+
+        @Prop({default: false})
+        showIcon!:boolean;
+
+        @Prop({default: 'fe-globe'})
+        icon!: string;
+
         hover: boolean = false;
-        hasWarnings: boolean = false;
 
         get classObject(): any {
             return {
@@ -44,12 +56,18 @@
                 'sb-nav-dropdown-link': this.isLinkInDropdown
             };
         }
+
+        get dropdownClass(): any {
+            return {
+                'right-end': !this.showDropdownToggle,
+                'right': this.showDropdownToggle
+            }
+        }
     }
 </script>
 <style scoped>
     .sb-alert {
         color: orange;
-        opacity: 0.6;
         position: relative;
         left: 0px;
         top: 0px;
@@ -75,8 +93,10 @@
         width: 1rem;
         height: 1rem;
         display: block;
-        margin-right: .5rem;
         line-height: .99;
+        margin-right: 5px;
+        min-width: 10px;
+        opacity: 0.6;
     }
 
     .sb-nav-dropdown-toggle {
@@ -103,7 +123,7 @@
     }
 
     .fade-enter-active, .fade-leave-active {
-        transition: opacity 1s ease;
+        transition: opacity 0.7s ease;
     }
 
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
@@ -127,18 +147,14 @@
         background-color: #f8f9fa;
     }
 
-    .sb-nav-link-icon {
-        font-size: 1rem;
-        width: 1rem;
-        height: 1rem;
-        display: block;
-        margin-right: .5rem;
-        line-height: .99;
-        min-width: 15px;
-    }
 
     .right {
         position: absolute;
         right: 25px;
+    }
+
+    .right-end {
+        position: absolute;
+        right: 12px;
     }
 </style>

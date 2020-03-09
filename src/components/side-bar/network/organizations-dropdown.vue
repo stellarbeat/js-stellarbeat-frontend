@@ -1,6 +1,13 @@
 <template>
     <div class="sb-nav-item">
-        <nav-link class="sb-nav-dropdown-title" title="Organizations" v-on:click="toggleShow" :showDropdownToggle="true"/>
+        <nav-link
+                class="sb-nav-dropdown-title"
+                title="Organizations"
+                v-on:click="toggleShow"
+                :showDropdownToggle="true"
+                :showIcon="true"
+                :icon="'fe-grid'"
+        />
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="organization in paginatedOrganizations"
@@ -37,7 +44,12 @@
         public organizations!: Organization[];
 
         get paginatedOrganizations() {
-            return this.paginate(this.organizations);
+            return this.paginate(this.organizations)
+                .sort((orgA:Organization, orgB:Organization) => {
+                    if(orgA.name > orgB.name)
+                        return 1;
+                    else return -1;
+                });
         }
 
         public selectOrganization(organization: Organization) {
