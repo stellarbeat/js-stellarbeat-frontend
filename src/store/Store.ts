@@ -37,10 +37,8 @@ export default class Store {
     public network!: Network;
     public changeQueue: ChangeQueue = new ChangeQueue();
     public networkUpdated: number = 0;
-    public quorumMonitorStore: QuorumMonitorStore = {
-        centerNode: undefined,
-        selectedNode: undefined,
-    };
+    public centerNode?:Node = undefined;
+    public selectedNode?:Node = undefined;
     protected measurementStore: MeasurementStore = new MeasurementStore();
     public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);

@@ -54,7 +54,7 @@
 
         public selectOrganization(organization: Organization) {
             this.$router.push({
-                name: "organization-details",
+                name: "organization-dashboard",
                 params: {organizationId: organization.id}
             });
         }

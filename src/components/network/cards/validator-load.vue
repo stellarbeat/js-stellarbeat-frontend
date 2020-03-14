@@ -25,10 +25,11 @@ import {Network} from '@stellarbeat/js-stellar-domain';
     name: 'validators-server-load',
 })
 export default class ValidatorsServerLoad extends Vue {
-    @Prop()
-    public network!: Network;
-
     public chart: Chart|null = null;
+
+    get network(): Network {
+        return this.$root.$data.store.network;
+    }
 
     get overloadedBuckets() {
         const buckets: number[] = Array(3).fill(0);

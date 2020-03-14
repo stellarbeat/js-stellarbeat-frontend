@@ -55,7 +55,7 @@
 
         public selectNode(node: Node) {
             this.$router.push({
-                name: 'network-node',
+                name: 'node-dashboard',
                 params: {publicKey: node.publicKey!},
                 query: {'center': '1', 'no-scroll': '1'},
             });

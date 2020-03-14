@@ -78,11 +78,11 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         }
 
         get selectedNode() {
-            return this.store.quorumMonitorStore.selectedNode;
+            return this.store.selectedNode;
         }
 
         get centerNode() {
-            return this.store.quorumMonitorStore.centerNode;
+            return this.store.centerNode;
         }
 
         get network() {
@@ -121,7 +121,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         public nodeSelected(node: Node) {
             this.$router.push(
                 {
-                    name: 'quorum-monitor-node',
+                    name: 'node-dashboard',
                     params: {publicKey: node.publicKey!},
                     query: {'center': '1', 'no-scroll': '1'},
                 },

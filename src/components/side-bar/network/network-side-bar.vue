@@ -1,24 +1,24 @@
 <template>
-    <div class="card pt-0">
+    <div>
         <transition
                 name="fade"
                 mode="out-in"
         >
-            <div v-if="selectedNode" class="card pt-0" :key="selectedNode.publicKey">
-                <div class="card-header px-2 pb-4 sb-card-header">
-                    <h3 class="card-title sb-card-title"><i class="fe fe-share-2 sb-card-title-icon mr-1"/>Stellar
-                        Public Network</h3>
+            <div class="card pt-0">
+                <div class="card-header px-4 pb-4 sb-card-header">
+                    <h3 class="card-title sb-card-title"><i class="fe fe-share-2 sb-card-title-icon mr-1"/>
+                        Stellar Public Network</h3>
                 </div>
-                <div class="card-body px-2 pt-1">
+                <div class="card-body px-4 pt-1">
                     <div class="sb-nav-bar">
                         <h6 class="sb-navbar-heading">Network transitive quorumset</h6>
                         <ul v-if="!store.isLoading" class="sb-nav-list">
                             <li class="sb-nav-item">
                                 <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
-                                                        :expand="true"/>
+                                                        :expand="organizationsExpanded"/>
                             </li>
                             <li class="sb-nav-item">
-                                <validators-dropdown :nodes="networkTransitiveQuorumSetNodes" :expand="false"/>
+                                <validators-dropdown :nodes="networkTransitiveQuorumSetNodes" :expand="validatorsExpanded"/>
                             </li>
                         </ul>
                         <h6 class="sb-navbar-heading mt-4">Tools</h6>
@@ -78,7 +78,6 @@
     import ValidatorsDropdown from '@/components/side-bar/network/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
-    import Logo from '@/components/side-bar/network/logo.vue';
 
     @Component({
         components: {
@@ -87,18 +86,20 @@
         }
     })
     export default class NetworkSideBar extends Vue {
-        includeWatcherNodes: boolean = false;
+        protected includeWatcherNodes: boolean = false;
+        protected validatorsExpanded: boolean = false;
+        protected organizationsExpanded: boolean = true;
 
         get store(): Store {
             return this.$root.$data.store;
         }
 
         get selectedNode() {
-            return this.store.quorumMonitorStore.selectedNode;
+            return this.store.selectedNode;
         }
 
         get centerNode() {
-            return this.store.quorumMonitorStore.centerNode;
+            return this.store.centerNode;
         }
 
         get network() {

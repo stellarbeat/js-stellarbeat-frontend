@@ -55,11 +55,11 @@
         }
 
         get selectedNode() {
-            return this.store.quorumMonitorStore.selectedNode;
+            return this.store.selectedNode;
         }
 
         get centerNode() {
-            return this.store.quorumMonitorStore.centerNode;
+            return this.store.centerNode;
         }
 
         get network() {

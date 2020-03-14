@@ -4,7 +4,7 @@
             <h3 class="card-title">Node Versions</h3>
         </div>
         <div class="card-body p-3 pb-6">
-            <canvas id="versionGraph" ref="versionGraph"></canvas>
+            <canvas id="versionGraph" ref="versionGraph"/>
         </div>
     </div>
 </template>
@@ -21,10 +21,11 @@
         name: 'nodes-versions',
     })
     export default class NodesVersions extends Vue {
-        @Prop()
-        public network!:Network;
-
         public chart: Chart|null = null;
+
+        get network(): Network {
+            return this.$root.$data.store.network;
+        }
 
         get sortedVersions() {
             let versions = this.network.nodes

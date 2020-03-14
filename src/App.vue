@@ -1,5 +1,5 @@
 <template>
-    <div id="app" class="page" :class="backgroundClass">
+    <div id="app" class="page full">
         <div class="flex-fill">
             <div v-if="!isHeadlessRoute">
 
@@ -7,7 +7,7 @@
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                     <div polyfillclass="container-fluid">
                         <div class="d-flex">
-                            <router-link class="header-brand mt-2" :to="{ name: 'network'}" exact>
+                            <router-link class="header-brand mt-2" :to="{ name: 'network-dashboard'}" exact>
                                 <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
                             </router-link>
                             <div class="d-flex flex-column ml-auto">
@@ -41,8 +41,8 @@
                         <div class="col-lg order-lg-first">
                             <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'network'}" exact><i
-                                            class="fe fe-activity"></i>Network
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'network-dashboard'}" exact><i
+                                            class="fe fe-home"></i>Home
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
@@ -75,7 +75,7 @@
             </b-collapse>
             </div>
 
-            <div v-if="!isHeadlessRoute" class="my-0 my-md-5 pl-4 pr-4">
+            <div class="my-0 my-md-5 pl-4 pr-4">
                 <div class="container-fluid">
                     <div class="my-3 my-md-5">
                         <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
@@ -94,13 +94,8 @@
 
                 </div>
             </div>
-            <div v-else>
-                <router-view :network="network" :isLoading="store.isLoading">
-                </router-view>
-            </div>
-
         </div>
-        <footer v-if="!isHeadlessRoute" class="footer">
+        <footer class="footer">
             <div class="pl-4 pr-6 container-fluid">
                 <div class="row align-items-center flex-row-reverse">
                     <div class="col-auto ml-lg-auto">
@@ -153,19 +148,13 @@
         get store() {
             return this.$root.$data.store;
         }
+
         get network() {
             return this.store.network;
         }
 
         get showError() {
             return this.store.fetchingNodeDataFailed;
-        }
-
-        get backgroundClass() {
-            return {
-                'headless': this.isHeadlessRoute,
-                'full': !this.isHeadlessRoute
-            }
         }
 
         get isFullPreRenderRoute() {
@@ -179,9 +168,6 @@
 </script>
 
 <style scoped>
-    .headless {
-        background: #FBFAF7;
-    }
     .full {
         background: #f5f7fb;
     }

@@ -1,12 +1,18 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Network from './views/Network.vue';
+import Dashboard from './views/Dashboard.vue';
 import Nodes from './views/Nodes.vue';
 import Organizations from './views/Organizations.vue';
 import OrganizationDetails from './views/OrganizationsDetails.vue';
 import FAQ from './views/FAQ.vue';
 import Api from './views/Api.vue';
 import TermsAndConditions from './views/TermsAndConditions.vue';
+import NetworkDashboard from '@/components/network/network-dashboard.vue';
+import NodeDashboard from '@/components/node/node-dashboard.vue';
+import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
+import NodeSideBar from '@/components/side-bar/node/node-side-bar.vue';
+import OrganizationDashboard from '@/components/organization/organization-dashboard.vue';
+import OrganizationSideBar from '@/components/side-bar/organization/organization-side-bar.vue';
 
 Vue.use(Router);
 
@@ -14,12 +20,33 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        {name: 'network', path: '/', component: Network,
+        {path: '/', component: Dashboard,
             children: [
                 {
-                    name: 'network-node',
-                    path: '/networks/public/nodes/:publicKey',
-                    component: Network,
+                    name: 'network-dashboard',
+                    path: '',
+                    alias: ['network', 'quorum-monitor'],
+                    components: {
+                        dashboard: NetworkDashboard,
+                        sideBar: NetworkSideBar
+                    },
+                },
+                {
+                    name: 'node-dashboard',
+                    path: 'nodes/:publicKey',
+                    alias: 'quorum-monitor/:publicKey',
+                    components: {
+                        dashboard: NodeDashboard,
+                        sideBar: NodeSideBar
+                    },
+                },
+                {
+                    name: 'organization-dashboard',
+                    path: 'organizations/:organizationId',
+                    components: {
+                        dashboard: OrganizationDashboard,
+                        sideBar: OrganizationSideBar
+                    },
                 },
             ],
         },
@@ -32,12 +59,12 @@ export default new Router({
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
         {name: 'terms-and-conditions', path: '/terms-and-conditions', component: TermsAndConditions, meta: {fullPreRender: true}},
         {//backwards compatibility
-            path: '/quorum-monitor', name: 'quorum-monitor', component: Network,
+            path: '/quorum-monitor', name: 'quorum-monitor', component: Dashboard,
             children: [
                 {
                     name: 'quorum-monitor-node',
                     path: ':publicKey',
-                    component: Network,
+                    component: Dashboard,
                 },
             ],
         }

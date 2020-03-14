@@ -90,9 +90,7 @@
     import {hierarchy, cluster} from "d3-hierarchy";
     import {radialLine, curveBundle} from "d3-shape";
     import QuorumSetNode from './quorum-set-node.vue';
-
-    const QuorumSet = require("@stellarbeat/js-stellar-domain").QuorumSet;
-
+    import {QuorumSet} from '@stellarbeat/js-stellar-domain';
 
     export default {
         name: "quorum-set-connections",
@@ -109,9 +107,6 @@
             QuorumSetNode
         },
         props: {
-            network: {
-                type: Object
-            }
         },
         created() {
 
@@ -146,8 +141,9 @@
             svgTransform: function () {
                 return "translate(" + this.radius + "," + this.radius + ")";
             },
-
-
+            network: function () {
+                return this.$root.$data.store.network;
+            },
             links: function () {
                 let nodesMap = this.treeNodes.reduce(function (map, treeNode) {
                     map[treeNode.data.publicKey] = treeNode;

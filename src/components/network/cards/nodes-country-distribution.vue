@@ -22,10 +22,11 @@
     })
     
     export default class NodesCountryDistribution extends Vue {
-        @Prop()
-        public network!: Network;
-
         public chart: Chart|null = null;
+
+        get network(): Network {
+            return this.$root.$data.store.network;
+        }
 
         get sortedCountries() {
             let countries = this.network.nodes

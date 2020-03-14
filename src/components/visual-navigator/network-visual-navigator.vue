@@ -12,12 +12,7 @@
                     name="fade"
                     mode="out-in"
             >
-            <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs" :key="breadCrumbKey">
-                <b-breadcrumb-item href="#home">
-                    <b-icon icon="house-fill" scale="1.25" shift-v="1.25" aria-hidden="true"></b-icon>
-                    Home
-                </b-breadcrumb-item>
-            </b-breadcrumb>
+            <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs" :key="breadCrumbKey"/>
             </transition>
         </div>
         <div class="card-body p-0" style="height: 450px">
@@ -48,14 +43,13 @@
             let crumbs = [];
             crumbs.push({
                 text: 'Stellar Public Network',
-                href: '#'
+                to: {name: 'network-dashboard'}
             });
             if(this.selectedNode)
                 crumbs.push({
                     text: this.selectedNode.displayName,
-                    href: '#'
+                    active: true
                 });
-
             return crumbs;
         }
 
@@ -72,11 +66,11 @@
         }
 
         get selectedNode() {
-            return this.store.quorumMonitorStore.selectedNode;
+            return this.store.selectedNode;
         }
 
         get centerNode() {
-            return this.store.quorumMonitorStore.centerNode;
+            return this.store.centerNode;
         }
 
         get network() {
