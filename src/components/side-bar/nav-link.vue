@@ -3,18 +3,29 @@
          :class="classObject"
          v-on:mouseenter="hover=true"
          v-on:mouseleave="hover=false"
+         class="d-flex justify-content-between"
     >
-        <div class="sb-nav-link-icon">
-            <i :title="warnings" v-if="showWarnings" v-b-popover.hover.top class="fe fe-alert-triangle sb-alert"/>
-            <i :title="warnings" v-else-if="showIcon" class="fe" :class="icon"></i>
-        </div>
-
-        <nav-title :title="title" class="w-100"/>
-        <transition name="fade" >
-            <div v-if="hover" :class="dropdownClass">
-                <slot name="action-dropdown"/>
+        <div class="w-100 d-flex flex-column align-items-stretch">
+            <div class="w-100 d-flex align-items-center">
+                <div class="sb-nav-link-icon">
+                    <!--i :title="warnings" v-if="showWarnings" v-b-popover.hover.top
+                       class="fe fe-alert-triangle sb-alert"/!-->
+                    <i v-if="showDropdownToggle" class="fe fe-chevron-down" :class="chevronClass"></i>
+                    <i :title="warnings" v-else-if="showIcon" class="fe" :class="icon"></i>
+                </div>
+                <div class="w-100 d-flex justify-content-between align-content-center">
+                    <nav-title :title="title" class="w-100 pt-0 pb-0 m-height"/>
+                    <transition name="fade">
+                        <div v-show="hover" :class="dropdownClass">
+                            <slot name="action-dropdown"/>
+                        </div>
+                    </transition>
+                </div>
             </div>
-        </transition>
+            <div v-if="showSubTitle" class="text-muted sub-title">
+                {{subTitle}}
+            </div>
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -30,28 +41,44 @@
         title!: string;
 
         @Prop({default: false})
+        showSubTitle!: boolean;
+
+        @Prop()
+        subTitle!: string;
+
+        @Prop({default: false})
         showDropdownToggle!: boolean;
+
+        @Prop({default: false})
+        dropDownShowing!: boolean;
 
         @Prop({default: false})
         isLinkInDropdown!: boolean;
 
         @Prop({default: false})
-        showWarnings!:boolean;
+        showWarnings!: boolean;
 
         @Prop()
-        warnings!:string;
+        warnings!: string;
 
         @Prop({default: false})
-        showIcon!:boolean;
+        showIcon!: boolean;
 
         @Prop({default: 'fe-globe'})
         icon!: string;
 
         hover: boolean = false;
 
+        get chevronClass(): any {
+            return {
+                'fe-chevron-right': !this.dropDownShowing,
+                'fe-chevron-down': this.dropDownShowing,
+            };
+        }
+
         get classObject(): any {
             return {
-                'sb-nav-dropdown-toggle': this.showDropdownToggle,
+                'sb-nav-dropdown-toggle': false,
                 'sb-nav-link': !this.isLinkInDropdown,
                 'sb-nav-dropdown-link': this.isLinkInDropdown
             };
@@ -61,11 +88,19 @@
             return {
                 'right-end': !this.showDropdownToggle,
                 'right': this.showDropdownToggle
-            }
+            };
         }
     }
 </script>
 <style scoped>
+    .m-height {
+        min-height: 24.4px;
+    }
+    .sub-title {
+        margin-left: 20px;
+        font-size: 12px;
+    }
+
     .sb-alert {
         color: orange;
         position: relative;
@@ -74,7 +109,7 @@
     }
 
     .sb-nav-link {
-        padding: 4px;
+        padding: 1px 4px 1px 4px;
         display: flex;
         align-items: center;
         cursor: pointer;
@@ -139,22 +174,10 @@
         width: 100%;
         font-weight: 400;
         font-size: 90%;
-        padding: 4px;
-        min-height: 32.4px;
+        padding: 1px 4px 1px 4px;
     }
 
     .sb-nav-dropdown-link:hover {
         background-color: #f8f9fa;
-    }
-
-
-    .right {
-        position: absolute;
-        right: 25px;
-    }
-
-    .right-end {
-        position: absolute;
-        right: 12px;
     }
 </style>

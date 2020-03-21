@@ -2,24 +2,21 @@
     <div class="sb-nav-item">
         <nav-link
                 class="sb-nav-dropdown-title"
-                title="Organizations"
+                :title="organization.name"
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
                 :showIcon="true"
                 :icon="'fe-grid'"
                 :drop-down-showing="showing"
+                :sub-title="'organization'"
+                :show-sub-title="true"
         />
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link
-                    v-for="organization in paginatedOrganizations"
-                    v-on:click="selectOrganization(organization)"
-                    :title="organization.name | truncate(30)"
+                    v-for="validator in organization.validators"
+                    v-on:click=""
+                    :title="validator"
                     :is-link-in-dropdown="true"
-            />
-            <nav-pagination
-                    v-model="currentPage"
-                    v-on:input="currentPage = $event"
-                    :total-rows="organizations.length"
             />
         </div>
     </div>
@@ -40,25 +37,9 @@
             //NodeActionBar,
         },
     })
-    export default class OrganizationsDropdown extends Mixins(DropdownMixin) {
+    export default class OrganizationValidatorsDropdown extends Mixins(DropdownMixin) {
         @Prop()
-        public organizations!: Organization[];
-
-        get paginatedOrganizations() {
-            return this.paginate(this.organizations)
-                .sort((orgA:Organization, orgB:Organization) => {
-                    if(orgA.name > orgB.name)
-                        return 1;
-                    else return -1;
-                });
-        }
-
-        public selectOrganization(organization: Organization) {
-            this.$router.push({
-                name: "organization-dashboard",
-                params: {organizationId: organization.id}
-            });
-        }
+        public organization!: Organization;
     }
 </script>
 

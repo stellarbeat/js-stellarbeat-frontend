@@ -1,10 +1,10 @@
 <template>
     <div class="sb-nav-item">
         <nav-link
-                class="sb-nav-dropdown-title"
                 title="Validators"
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
+                :dropDownShowing="showing"
                 :showIcon="true"
                 :icon="'fe-disc'"
         />

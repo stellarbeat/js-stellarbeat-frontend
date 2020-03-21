@@ -5,8 +5,6 @@ import Store from '../../../store/Store';
 
 @Component({})
 export class DropdownMixin extends Vue {
-    @Prop()
-    public network!: Network;
     @Prop({default: false})
     expand!: boolean;
 
@@ -16,6 +14,10 @@ export class DropdownMixin extends Vue {
 
     get store(): Store {
         return this.$root.$data.store;
+    }
+
+    get network(): Network {
+        return this.store.network;
     }
 
     paginate(items:any[]) {

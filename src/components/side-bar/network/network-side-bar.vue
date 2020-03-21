@@ -4,14 +4,14 @@
                 name="fade"
                 mode="out-in"
         >
-            <div class="card pt-0">
+            <div class="card pt-0" >
                 <div class="card-header px-4 pb-4 sb-card-header">
                     <h3 class="card-title sb-card-title"><i class="fe fe-share-2 sb-card-title-icon mr-1"/>
                         Stellar Public Network</h3>
                 </div>
                 <div class="card-body px-4 pt-1">
                     <div class="sb-nav-bar">
-                        <h6 class="sb-navbar-heading">Network transitive quorumset</h6>
+                        <h6 class="sb-navbar-heading">Explore transitive quorumset</h6>
                         <ul v-if="!store.isLoading" class="sb-nav-list">
                             <li class="sb-nav-item">
                                 <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
@@ -152,7 +152,7 @@
         letter-spacing: .04em;
         color: #868c97;
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         padding-left: 5px;
     }
 
@@ -173,7 +173,6 @@
         text-decoration: none;
         list-style: none;
         margin-bottom: 0px;
-        margin-top: 8px;
     }
 
     .sb-nav-dropdown {
