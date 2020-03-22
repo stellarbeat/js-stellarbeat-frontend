@@ -10,8 +10,11 @@
                 :icon="'fe-share-2'"
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
-
-        />
+        >
+            <template v-slot:action-dropdown>
+                <quorum-set-actions :level="level" :quorum-set="quorumSet"/>
+            </template>
+        </nav-link>
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="validator in validators"
@@ -20,7 +23,7 @@
                     :isLinkInDropdown="true"
             >
                 <template v-slot:action-dropdown>
-                    <node-action-bar :node="validator"/>
+                    <node-actions :node="validator" :supports-delete="true"/>
                 </template>
             </nav-link>
             <quorum-set-dropdown v-for="(innerQuorumSet, index) in innerQuorumSets" :quorumSet="innerQuorumSet" :level="level+1" :key="index"/>
@@ -30,16 +33,17 @@
 
 <script lang="ts">
     import {Component, Prop, Mixins} from 'vue-property-decorator';
-    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
-    import NodeActionBar from '@/components/quorum-monitor-deprecated/quorum-set-explorer/node-action-bar.vue';
-    import Store from '@/store/Store';
+    import NodeActions from '@/components/side-bar/node/node-actions.vue';
+    import QuorumSetActions from '@/components/side-bar/node/quorum-set-actions.vue';
 
     @Component({
         components: {
-            NodeActionBar,
+            QuorumSetActions,
+            NodeActions,
             NavPagination,
             NavLink
         },

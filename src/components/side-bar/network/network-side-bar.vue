@@ -172,7 +172,8 @@
         font-size: 100%;
         text-decoration: none;
         list-style: none;
-        margin-bottom: 0px;
+        margin-bottom: 1px;
+        margin-top: 1px;
     }
 
     .sb-nav-dropdown {

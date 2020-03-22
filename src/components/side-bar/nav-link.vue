@@ -6,7 +6,7 @@
          class="d-flex justify-content-between"
     >
         <div class="w-100 d-flex flex-column align-items-stretch">
-            <div class="w-100 d-flex align-items-center">
+            <div class="w-100 d-flex align-items-center align-content-center">
                 <div class="sb-nav-link-icon">
                     <!--i :title="warnings" v-if="showWarnings" v-b-popover.hover.top
                        class="fe fe-alert-triangle sb-alert"/!-->

@@ -15,7 +15,7 @@
                         <ul v-if="!store.isLoading" class="sb-nav-list">
                             <li class="sb-nav-item" v-if="selectedNode.organizationId">
                                 <organization-validators-dropdown :organization="organization"
-                                                        :expand="false"/>
+                                                                  :expand="false"/>
                             </li>
                             <li class="sb-nav-item">
                                 <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
@@ -40,6 +40,22 @@
                                         icon="fe-plus-circle"
                                 />
                                 <simulate-new-node/>
+                            </li>
+                            <li class="sb-nav-item">
+                                <nav-link
+                                        title="Halting analysis"
+                                        :show-icon="true"
+                                        icon="fe-cloud-lightning"
+                                        v-on:click=""
+                                />
+                            </li>
+                            <li class="sb-nav-item">
+                                <nav-link
+                                        title="Copy publickey to clipboard"
+                                        :show-icon="true"
+                                        icon="fe-clipboard"
+                                        v-clipboard:copy="selectedNode.publicKey"
+                                />
                             </li>
                         </ul>
 
@@ -75,7 +91,7 @@
     import QuorumSetDropdown from '@/components/side-bar/node/quorum-set-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import SimulateNewNode from '@/components/quorum-monitor-deprecated/quorum-set-explorer/simulate-new-node.vue';
-    import {Node} from '@stellarbeat/js-stellar-domain';
+    import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
     import OrganizationValidatorsDropdown from '@/components/side-bar/node/organization-validators-dropdown.vue';
 
@@ -102,7 +118,7 @@
         }
 
         get organization() {
-            if(this.selectedNode!.organizationId)
+            if (this.selectedNode!.organizationId)
                 return this.network.getOrganizationById(this.selectedNode!.organizationId);
             else return null;
         }
@@ -134,11 +150,11 @@
             return stellarCoreConfigurationGenerator.nodesToToml(this.networkTransitiveQuorumSetNodes);
         }
 
-        getDisplayName(node:Node) {
-            if(node.name)
+        getDisplayName(node: Node) {
+            if (node.name)
                 return node.name;
 
-            return node.publicKey!.substr(0, 7) + '...' + node.publicKey!.substr(50, 100)
+            return node.publicKey!.substr(0, 7) + '...' + node.publicKey!.substr(50, 100);
         }
     }
 </script>
@@ -188,7 +204,8 @@
         font-size: 100%;
         text-decoration: none;
         list-style: none;
-        margin-bottom: 0px;
+        margin-bottom: 1px;
+        margin-top: 1px;
     }
 
     .sb-nav-dropdown {
