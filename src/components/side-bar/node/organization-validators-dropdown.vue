@@ -14,8 +14,8 @@
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="validator in organization.validators"
-                    v-on:click=""
-                    :title="validator"
+                    v-on:click="selectValidator(validator)"
+                    :title="getValidatorName(validator)"
                     :is-link-in-dropdown="true"
             />
         </div>
@@ -24,7 +24,7 @@
 
 <script lang="ts">
     import {Component, Prop, Mixins} from 'vue-property-decorator';
-    import {Organization} from '@stellarbeat/js-stellar-domain';
+    import {Node, Organization} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
     import NavDropdownLink from '@/components/side-bar/nav-dropdown-link.vue';
@@ -40,6 +40,18 @@
     export default class OrganizationValidatorsDropdown extends Mixins(DropdownMixin) {
         @Prop()
         public organization!: Organization;
+
+        getValidatorName(validator: string) {
+            return this.network.getNodeByPublicKey(validator)!.displayName;
+        }
+
+        public selectValidator(validator: string) {
+            this.$router.push({
+                name: 'node-dashboard',
+                params: {publicKey: validator},
+                query: {'center': '1', 'no-scroll': '1'},
+            });
+        }
     }
 </script>
 

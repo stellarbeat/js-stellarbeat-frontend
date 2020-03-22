@@ -9,12 +9,13 @@
                 :sub-title="'with treshold ' + quorumSet.threshold"
                 :icon="'fe-share-2'"
                 :drop-down-showing="showing"
+                :secondary="!isRoot"
 
         />
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="validator in validators"
-                    v-on:click.stop="selectNode(validator)"
+                    v-on:click="selectNode(validator)"
                     :title="getDisplayName(validator)"
                     :isLinkInDropdown="true"
             >
@@ -98,6 +99,8 @@
         }
 
         public isOrganizationSubQuorum(quorumSet: QuorumSet): boolean {
+            if(this.isRoot)
+                return false;
             if (quorumSet.validators.length === 0) {
                 return false;
             }

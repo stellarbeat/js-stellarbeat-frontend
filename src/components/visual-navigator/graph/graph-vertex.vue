@@ -67,7 +67,7 @@ export default class GraphNode extends Vue {
     public nodeSelected() {
         this.$router.push(
             {
-                name: 'quorum-monitor-node',
+                name: 'node-dashboard',
                 params: {publicKey: this.publicKey},
                 query: {'center': '0', 'no-scroll': '1'},
             },

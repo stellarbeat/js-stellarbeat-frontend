@@ -14,7 +14,7 @@
                     <i :title="warnings" v-else-if="showIcon" class="fe" :class="icon"></i>
                 </div>
                 <div class="w-100 d-flex justify-content-between align-content-center">
-                    <nav-title :title="title" class="w-100 pt-0 pb-0 m-height"/>
+                    <nav-title :title="title" class="w-100 pt-0 pb-0 m-height" :class="titleClass"/>
                     <transition name="fade">
                         <div v-show="hover" :class="dropdownClass">
                             <slot name="action-dropdown"/>
@@ -67,8 +67,16 @@
         @Prop({default: 'fe-globe'})
         icon!: string;
 
+        @Prop({default: false})
+        secondary!:boolean;
+
         hover: boolean = false;
 
+        get titleClass(): any {
+            return {
+                'secondary': this.secondary
+            }
+        }
         get chevronClass(): any {
             return {
                 'fe-chevron-right': !this.dropDownShowing,
@@ -93,12 +101,17 @@
     }
 </script>
 <style scoped>
+    .secondary {
+        font-size: 14px;
+    }
+
     .m-height {
         min-height: 24.4px;
     }
     .sub-title {
         margin-left: 20px;
         font-size: 12px;
+        margin-top: -5px;
     }
 
     .sb-alert {
