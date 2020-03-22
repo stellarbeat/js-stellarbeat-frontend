@@ -127,57 +127,5 @@
     }
 </script>
 <style scoped>
-    .sb-card-title-icon {
-        opacity: 0.6;
-        width: 30px;
-        color: #1997c6;
-    }
-
-    .sb-card-header {
-        border: none;
-        margin-top: 10px;
-        margin-bottom: 0px;
-        margin-left: 4px;
-    }
-
-    .sb-card-title {
-        text-transform: capitalize;
-    }
-
-    .sb-navbar-heading {
-        font-size: .6875rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        text-align: left;
-        letter-spacing: .04em;
-        color: #868c97;
-        display: block;
-        margin-bottom: 8px;
-        padding-left: 5px;
-    }
-
-    .sb-nav-bar {
-        list-style: none;
-        flex: 0 0 220px;
-    }
-
-    .sb-nav-list {
-        padding-left: 0px;
-    }
-
-    .sb-nav-item {
-        width: 100%;
-        color: rgba(0, 0, 0, .55);
-        font-weight: 400;
-        font-size: 100%;
-        text-decoration: none;
-        list-style: none;
-        margin-bottom: 1px;
-        margin-top: 1px;
-    }
-
-    .sb-nav-dropdown {
-        margin-left: 0em;
-    }
 
 </style>

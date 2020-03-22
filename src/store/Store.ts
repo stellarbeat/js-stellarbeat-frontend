@@ -39,6 +39,7 @@ export default class Store {
     public networkUpdated: number = 0;
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
+    public selectedOrganization?:Organization = undefined;
     protected measurementStore: MeasurementStore = new MeasurementStore();
     public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);

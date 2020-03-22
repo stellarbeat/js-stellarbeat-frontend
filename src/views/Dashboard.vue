@@ -79,6 +79,7 @@
         @Watch('$route')
         public on$routeChanged(to: any) {
             this.store.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
+            this.store.selectedOrganization = this.network.getOrganizationById(to.params.organizationId);
             if (to.query.center === '1') {
                 this.store.centerNode = this.store.selectedNode;
             }
@@ -108,17 +109,25 @@
             // fix centering and selection in graph
             if (this.$route.params['publicKey']) {
                 this.store.selectedNode = this.network.getNodeByPublicKey(this.$route.params['publicKey']);
-                if (!this.selectedNode) {
+                if (!this.store.selectedNode) {
                     this.$router.push(
                         {
-                            name: 'quorum-monitor'
+                            name: 'network-dashboard'
                         },
                     );
                 }
-            } else {
-                this.store.selectedNode = undefined;
             }
 
+            if (this.$route.params['organizationId']) {
+                this.store.selectedOrganization = this.network.getOrganizationById(this.$route.params['organizationId']);
+                if (!this.store.selectedOrganization) {
+                    this.$router.push(
+                        {
+                            name: 'network-dashboard'
+                        },
+                    );
+                }
+            }
             if (this.$route.query['center'] === '1' || this.$route.query['center'] === undefined) {
                 this.store.centerNode = this.selectedNode;
             }
@@ -132,6 +141,57 @@
     }
 </script>
 
-<style scoped>
+<style>
+    .sb-card-title-icon {
+        opacity: 0.6;
+        width: 30px;
+        color: #1997c6;
+    }
 
+    .sb-card-header {
+        border: none!important;
+        margin-top: 10px;
+        margin-bottom: 0px;
+        margin-left: 4px;
+    }
+
+    .sb-card-title {
+        text-transform: capitalize;
+    }
+
+    .sb-navbar-heading {
+        font-size: .6875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        text-align: left;
+        letter-spacing: .04em;
+        color: #868c97;
+        display: block;
+        margin-bottom: 8px;
+        padding-left: 5px;
+    }
+
+    .sb-nav-bar {
+        list-style: none;
+        flex: 0 0 220px;
+    }
+
+    .sb-nav-list {
+        padding-left: 0px;
+    }
+
+    .sb-nav-item {
+        width: 100%;
+        color: rgba(0, 0, 0, .55);
+        font-weight: 400;
+        font-size: 100%;
+        text-decoration: none;
+        list-style: none;
+        margin-bottom: 1px;
+        margin-top: 1px;
+    }
+
+    .sb-nav-dropdown {
+        margin-left: 0em;
+    }
 </style>
