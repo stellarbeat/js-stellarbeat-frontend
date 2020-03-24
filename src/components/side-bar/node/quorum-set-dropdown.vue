@@ -10,6 +10,7 @@
                 :icon="'fe-share-2'"
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
+                :has-warnings="true"
         >
             <template v-slot:action-dropdown>
                 <quorum-set-actions :level="level" :quorum-set="quorumSet"/>
@@ -21,6 +22,7 @@
                     v-on:click="selectNode(validator)"
                     :title="getDisplayName(validator)"
                     :isLinkInDropdown="true"
+                    :has-warnings="true"
             >
                 <template v-slot:action-dropdown>
                     <node-actions :node="validator" :supports-delete="true"/>

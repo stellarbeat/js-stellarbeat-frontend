@@ -5,25 +5,28 @@
          v-on:mouseleave="hover=false"
          class="d-flex justify-content-between"
     >
-        <div class="w-100 d-flex flex-column align-items-stretch">
-            <div class="w-100 d-flex align-items-center align-content-center">
-                <div class="sb-nav-link-icon">
-                    <!--i :title="warnings" v-if="showWarnings" v-b-popover.hover.top
-                       class="fe fe-alert-triangle sb-alert"/!-->
-                    <i v-if="showDropdownToggle" class="fe fe-chevron-down" :class="chevronClass"></i>
-                    <i :title="warnings" v-else-if="showIcon" class="fe" :class="icon"></i>
+        <div class="w-100 d-flex flex-row justify-content-between align-items-center">
+            <div class="w-100 d-flex flex-column align-items-stretch">
+                <div class="w-100 d-flex align-items-center align-content-center">
+                    <div class="sb-nav-link-icon align-content-center">
+                        <i v-if="showDropdownToggle" class="fe fe-chevron-down" :class="chevronClass"></i>
+                        <i v-else-if="showIcon" class="fe" :class="icon"></i>
+                    </div>
+
+                    <div class="w-100 d-flex justify-content-between align-content-center">
+                        <nav-title :title="title" class="w-100 pt-0 pb-0 m-height" :class="titleClass" :has-warnings="hasWarnings"/>
+                    </div>
                 </div>
-                <div class="w-100 d-flex justify-content-between align-content-center">
-                    <nav-title :title="title" class="w-100 pt-0 pb-0 m-height" :class="titleClass"/>
-                    <transition name="fade">
-                        <div v-show="hover" :class="dropdownClass">
-                            <slot name="action-dropdown"/>
-                        </div>
-                    </transition>
+                <div v-if="showSubTitle" class="text-muted sub-title">
+                    {{subTitle}}
                 </div>
             </div>
-            <div v-if="showSubTitle" class="text-muted sub-title">
-                {{subTitle}}
+            <div class="action mr-1">
+                <transition name="fade">
+                    <div :class="dropdownClass" v-show="hover">
+                        <slot name="action-dropdown"/>
+                    </div>
+                </transition>
             </div>
         </div>
     </div>
@@ -56,7 +59,7 @@
         isLinkInDropdown!: boolean;
 
         @Prop({default: false})
-        showWarnings!: boolean;
+        hasWarnings!: boolean;
 
         @Prop()
         warnings!: string;
@@ -68,15 +71,16 @@
         icon!: string;
 
         @Prop({default: false})
-        secondary!:boolean;
+        secondary!: boolean;
 
         hover: boolean = false;
 
         get titleClass(): any {
             return {
                 'secondary': this.secondary
-            }
+            };
         }
+
         get chevronClass(): any {
             return {
                 'fe-chevron-right': !this.dropDownShowing,
@@ -101,6 +105,9 @@
     }
 </script>
 <style scoped>
+    .action {
+        min-width: 20px;
+    }
     .secondary {
         font-size: 14px;
     }
@@ -108,6 +115,7 @@
     .m-height {
         min-height: 24.4px;
     }
+
     .sub-title {
         margin-left: 20px;
         font-size: 12px;
