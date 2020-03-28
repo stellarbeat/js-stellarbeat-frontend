@@ -9,7 +9,8 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         />
         <v-marker-cluster :options="clusterOptions" ref="clusterRef">
             <l-circle-marker v-for="marker in markers" :lat-lng="marker.latLng" @click="nodeSelected(marker.node)"
-                             :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7" :options="{isNodeFailing: isNodeFailing(marker.node)}">
+                             :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7"
+                             :options="{publicKey: marker.node.publicKey, isNodeFailing: isNodeFailing(marker.node), organizationId: marker.node.organizationId}">
                 <slot>lol</slot>
                 <l-tooltip :options="{ permanent: false, interactive: true }">
                     <div :id="marker.node.publicKey">
@@ -77,8 +78,20 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
             });
         }
 
+        @Watch('selectedOrganization')
+        public onSelectedOrganizationChanged() { //not on initial load
+            this.$nextTick(() => {
+                (this.$refs.clusterRef as any).mapObject.refreshClusters();
+            });
+        }
+
+
         get selectedNode() {
             return this.store.selectedNode;
+        }
+
+        get selectedOrganization() {
+            return this.store.selectedOrganization;
         }
 
         get centerNode() {
@@ -115,6 +128,10 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         getColor(marker: Marker) {
             if (this.selectedNode && this.selectedNode === marker.node)
                 return 'yellow';
+
+            if (this.selectedOrganization && this.selectedOrganization.validators.includes(marker.node.publicKey!))
+                return 'yellow';
+
             return 'white';
         }
 
@@ -147,10 +164,13 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
             if(markers.filter((marker:any) => !marker.options.isNodeFailing).length === 0)
                 classes.push('marker-cluster-failing');
 
-            let isSelected = this.selectedNode && markers.filter((marker:any) => {
-                return marker._latlng.lat === this.selectedNode!.geoData.latitude
-                    && marker._latlng.lng === this.selectedNode!.geoData.longitude;
-            }).length !== 0;
+            let isSelected = false;
+
+            if(this.selectedNode)
+                isSelected = markers.some((marker:any) => marker.options.publicKey === this.selectedNode!.publicKey);
+
+            if(this.selectedOrganization)
+                isSelected = markers.some((marker:any) => marker.options.organizationId === this.selectedOrganization!.id);
 
             if(isSelected)
                 classes.push('marker-cluster-selected');
