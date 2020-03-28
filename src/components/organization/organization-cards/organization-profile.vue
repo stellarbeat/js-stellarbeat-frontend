@@ -77,3 +77,9 @@
         }
     };
 </script>
+
+<style scoped>
+    .social-link {
+        text-decoration: none;
+    }
+</style>

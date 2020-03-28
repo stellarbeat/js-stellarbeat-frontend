@@ -43,6 +43,7 @@
     import QuorumSetActions from '@/components/side-bar/node/quorum-set-actions.vue';
 
     @Component({
+        name: 'quorum-set-dropdown',
         components: {
             QuorumSetActions,
             NodeActions,
