@@ -1,5 +1,5 @@
 <template xmlns="http://www.w3.org/1999/html">
-    <div class="graph row mr-1">
+    <div class="graph mr-1">
         <div class="col-xs-12" style="width: 100%">
             <div v-bind:class="dimmerClass">
                 <div class="loader"></div>
@@ -151,6 +151,7 @@
         public onNetworkUpdated() {
             this.restartSimulation();
         }
+
         @Watch("centerNode")
         public onCenterNodeChanged() {
             if (!this.isLoading) {
@@ -180,14 +181,31 @@
         @Watch("selectedNode")
         public onSelectedNodeChanged() {
             if (!this.isLoading) {
-                this.visualizeSelectedNode();
+                this.visualizeSelectedNodes();
             } else {
                 this.delayedVisualizeCenterNode = true;
             }
         }
 
+        @Watch("selectedOrganization")
+        public onSelectedOrganizationChanged() {
+            if (!this.isLoading) {
+                this.visualizeSelectedNodes();
+            } else {
+                this.delayedVisualizeCenterNode = true;
+            }
+        }
+
+        get store() {
+            return this.$root.$data.store;
+        }
+
+        get selectedOrganization() {
+            return this.store.selectedOrganization;
+        }
+
         get networkUpdated() {
-            return this.$root.$data.store.networkUpdated;
+            return this.store.networkUpdated;
         }
 
         protected sortEdges(a: EdgeViewData, b: EdgeViewData) {
@@ -206,10 +224,16 @@
             return 0;
         };
 
-        protected visualizeSelectedNode() {
+        protected visualizeSelectedNodes() {
+            console.log("vis");
             this.verticesViewData.forEach(vertex => {
                 let dataVertex = this.network.graph.getVertex(vertex.publicKey)!;
-                vertex.selected = this.selectedNode ? this.selectedNode.publicKey === vertex.publicKey : false;
+                vertex.selected = false;
+                if(this.selectedNode)
+                    vertex.selected = this.selectedNode.publicKey === vertex.publicKey;
+                if(this.selectedOrganization) {
+                    vertex.selected = this.selectedOrganization.validators.includes(vertex.publicKey);
+                }
                 vertex.highlightAsOutgoing = this.highlightVertexAsTrusting(dataVertex);
                 vertex.highlightAsIncoming = this.highLightVertexAsTrusted(dataVertex);
             });
@@ -349,7 +373,8 @@
                             this.verticesViewData.get(vertex.publicKey)!.y : 0,
                         isPartOfTransitiveQuorumSet: this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey),
                         selected: this.selectedNode ?
-                            this.selectedNode.publicKey === vertex.publicKey : false,
+                            this.selectedNode.publicKey === vertex.publicKey :
+                        this.selectedOrganization ? this.selectedOrganization.validators.includes(vertex.publicKey): false,
                         highlightAsIncoming:
                             this.highLightVertexAsTrusted(vertex),
                         highlightAsOutgoing:
@@ -422,7 +447,7 @@
                             this.centerCorrectNode();
                         }
                         if (this.delayedVisualizeCenterNode) {
-                            this.visualizeSelectedNode();
+                            this.visualizeSelectedNodes();
                         }
                         this.transitivePath = this.getTransitiveQuorumSetHull(event.data.vertices);
                     }

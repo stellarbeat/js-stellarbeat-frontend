@@ -16,7 +16,7 @@
                             <ul v-if="!store.isLoading" class="sb-nav-list">
                                 <li class="sb-nav-item" v-if="selectedNode.organizationId">
                                     <organization-validators-dropdown :organization="organization"
-                                                                      :expand="false"/>
+                                                                      :expand="true"/>
                                 </li>
                                 <li class="sb-nav-item">
                                     <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
