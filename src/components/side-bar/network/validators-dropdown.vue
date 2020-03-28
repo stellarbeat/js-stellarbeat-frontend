@@ -7,6 +7,8 @@
                 :dropDownShowing="showing"
                 :showIcon="true"
                 :icon="'fe-disc'"
+                :show-sub-title="true"
+                :sub-title="'Transitive quorumset'"
         />
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link

@@ -51,7 +51,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
-    import HistoryCard from '@/components/node/node-cards/history-card.vue';
+    import HistoryCard from '@/components/charts/history-card.vue';
     import {PublicKey} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
 

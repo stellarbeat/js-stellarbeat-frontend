@@ -42,7 +42,7 @@
     import SearchCard from '@/components/node/node-cards/search-card.vue';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
     import QuorumSetExplorerCard from '@/components/node/node-cards/quorum-set-explorer-card.vue';
-    import HistoryCard from '@/components/node/node-cards/history-card.vue';
+    import HistoryCard from '@/components/charts/history-card.vue';
     import SimulateNewNode from '@/components/quorum-monitor-deprecated/quorum-set-explorer/simulate-new-node.vue';
     import CrawlTime from '@/components/crawl-time.vue';
     import OrganizationList from '@/components/quorum-monitor-deprecated/quorum-set-explorer/organization-list.vue';

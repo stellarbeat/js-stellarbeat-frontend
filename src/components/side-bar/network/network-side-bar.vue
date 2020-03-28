@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body px-4 pt-1">
                     <div class="sb-nav-bar">
-                        <h6 class="sb-navbar-heading">Explore transitive quorumset</h6>
+                        <h6 class="sb-navbar-heading">Explore</h6>
                         <ul v-if="!store.isLoading" class="sb-nav-list">
                             <li class="sb-nav-item">
                                 <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
