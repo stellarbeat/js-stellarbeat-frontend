@@ -225,7 +225,6 @@
         };
 
         protected visualizeSelectedNodes() {
-            console.log("vis");
             this.verticesViewData.forEach(vertex => {
                 let dataVertex = this.network.graph.getVertex(vertex.publicKey)!;
                 vertex.selected = false;
