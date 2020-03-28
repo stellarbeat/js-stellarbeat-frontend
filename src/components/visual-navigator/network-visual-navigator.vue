@@ -50,6 +50,11 @@
                     text: this.selectedNode.displayName,
                     active: true
                 });
+            if(this.selectedOrganization)
+                crumbs.push({
+                    text: this.selectedOrganization.name,
+                    active: true
+                });
             return crumbs;
         }
 
@@ -69,6 +74,9 @@
             return this.store.selectedNode;
         }
 
+        get selectedOrganization() {
+            return this.store.selectedOrganization;
+        }
         get centerNode() {
             return this.store.centerNode;
         }

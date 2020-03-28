@@ -4,7 +4,12 @@
         <div class="">
             <div class="row row-cards row-deck">
                 <div class="col-sm-5 col-md-4 col-lg-4 col-xl-3">
+                    <transition
+                            name="fade"
+                            mode="out-in"
+                    >
                     <router-view name="sideBar"/>
+                    </transition>
                 </div>
                 <div class="col-sm-7 col-md-8 col-lg-8 col-xl-9">
                     <div class="row">
