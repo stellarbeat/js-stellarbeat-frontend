@@ -1,8 +1,5 @@
 <template>
     <div class="card">
-        <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
-             class="card-alert alert alert-danger mb-0" show>No Transitive Quorum Set Detected in network!
-        </div>
         <div class="card-header sb-card-header pl-3 pt-0 pb-0 m-0">
             <b-button-group size="sm" class="mr-3">
                 <b-button :pressed="view === 'map'" @click="view = 'map'">Map</b-button>
@@ -12,13 +9,15 @@
                     name="fade"
                     mode="out-in"
             >
-            <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs" :key="breadCrumbKey"/>
+                <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs" :key="breadCrumbKey"/>
             </transition>
         </div>
+        <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
+             class="card-alert alert alert-danger mb-0" show>No transitive quorum set detected in network!
+        </div>
         <div class="card-body p-0" style="height: 450px">
-            <world-map v-if="view==='map'"></world-map>
-            <network-graph-card v-if="view === 'graph'"
-                                v-on:show-halting-analysis="$emit('show-halting-analysis', selectedNode.publicKey)"></network-graph-card>
+            <world-map v-if="view==='map'"/>
+            <network-graph-card v-if="view === 'graph'"/>
         </div>
 
     </div>
@@ -45,12 +44,12 @@
                 text: 'Stellar Public Network',
                 to: {name: 'network-dashboard'}
             });
-            if(this.selectedNode)
+            if (this.selectedNode)
                 crumbs.push({
                     text: this.selectedNode.displayName,
                     active: true
                 });
-            if(this.selectedOrganization)
+            if (this.selectedOrganization)
                 crumbs.push({
                     text: this.selectedOrganization.name,
                     active: true
@@ -60,7 +59,7 @@
 
         get breadCrumbKey() {
             //todo expand to orgs
-            if(this.selectedNode?.publicKey)
+            if (this.selectedNode?.publicKey)
                 return this.selectedNode?.publicKey;
 
             return 'stellar-public-network';
@@ -77,6 +76,7 @@
         get selectedOrganization() {
             return this.store.selectedOrganization;
         }
+
         get centerNode() {
             return this.store.centerNode;
         }
@@ -87,9 +87,10 @@
     }
 </script>
 <style scoped>
-    .sb-card-header{
+    .sb-card-header {
         min-height: 50px;
     }
+
     .sb-bread-crumbs {
         background-color: white;
         margin-bottom: 0px;

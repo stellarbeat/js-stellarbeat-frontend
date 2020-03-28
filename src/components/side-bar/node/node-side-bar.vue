@@ -10,6 +10,11 @@
                         <h3 class="card-title sb-card-title"><i class="fe fe-target sb-card-title-icon mr-1"/>
                             {{getDisplayName(selectedNode)}}</h3>
                     </div>
+                    <div v-if="network.isNodeFailing(selectedNode)"
+                         class="card-alert alert alert-danger mb-2" show>
+                        <i class="fe fe-alert-triangle"></i>
+                        Node not validating {{network.isQuorumSetFailing(selectedNode, selectedNode.quorumSet) ? ": quorumset not reaching threshold" : ""}}
+                    </div>
                     <div class="card-body px-4 pt-1">
                         <div class="sb-nav-bar">
                             <h6 class="sb-navbar-heading">Explore</h6>
@@ -27,10 +32,10 @@
                             <ul class="sb-nav-list">
                                 <li class="sb-nav-item">
                                     <nav-link
-                                            :title="'Export configuration'"
-                                            v-b-modal.tomlExportModal
+                                            :title="selectedNode.isValidating ? 'Stop validating' : 'Try validating'"
                                             :show-icon="true"
-                                            icon="fe-save"
+                                            :icon="selectedNode.isValidating ? 'fe-zap-off' : 'fe-zap'"
+                                            v-on:click="store.toggleValidating(selectedNode)"
                                     />
                                 </li>
                                 <li class="sb-nav-item">
@@ -56,6 +61,14 @@
                                             :show-icon="true"
                                             icon="fe-clipboard"
                                             v-clipboard:copy="selectedNode.publicKey"
+                                    />
+                                </li>
+                                <li class="sb-nav-item">
+                                    <nav-link
+                                            :title="'Export configuration'"
+                                            v-b-modal.tomlExportModal
+                                            :show-icon="true"
+                                            icon="fe-save"
                                     />
                                 </li>
                             </ul>

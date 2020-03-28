@@ -14,7 +14,14 @@
                     </div>
 
                     <div class="w-100 d-flex justify-content-between align-content-center">
-                        <nav-title :title="title" class="w-100 pt-0 pb-0 m-height" :class="titleClass" :has-warnings="hasWarnings"/>
+                        <nav-title
+                                :title="title" class="w-100 pt-0 pb-0 m-height"
+                                :class="titleClass"
+                                :has-warnings="hasWarnings"
+                                :warnings="warnings"
+                                :has-danger="hasDanger"
+                                :danger="dangers"
+                        />
                     </div>
                 </div>
                 <div v-if="showSubTitle" class="text-muted sub-title">
@@ -63,6 +70,12 @@
 
         @Prop()
         warnings!: string;
+
+        @Prop({default: false})
+        hasDanger!: boolean;
+
+        @Prop()
+        dangers!: string;
 
         @Prop({default: false})
         showIcon!: boolean;

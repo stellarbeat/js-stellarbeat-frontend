@@ -70,7 +70,7 @@
                     },
                         {
                             label: 'Not Validating',
-                            backgroundColor: 'red',
+                            backgroundColor: '#cd201f',
                             borderColor: '#1997c6',
                             data: this.data.map(data => {return {
                                 t: data.t,

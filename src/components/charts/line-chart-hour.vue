@@ -43,9 +43,9 @@
 
         get pointColors() {
             if(!this.inverted) {
-                return this.data.map(point => point.y ? 'rgba(94,186,0,1)' : 'red');
+                return this.data.map(point => point.y ? 'rgba(94,186,0,1)' : '#cd201f');
             } else {
-                return this.data.map(point => point.y ? 'red': 'rgba(94,186,0,1)');
+                return this.data.map(point => point.y ? '#cd201f': 'rgba(94,186,0,1)');
             }
         }
 

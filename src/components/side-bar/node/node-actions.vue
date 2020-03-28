@@ -6,7 +6,7 @@
             <b-dropdown-header id="dropdown-header-label">
                 Simulation options
             </b-dropdown-header>
-            <b-dropdown-item v-on:click="$emit('node-toggle-validating', node)" @click.prevent.stop>
+            <b-dropdown-item v-on:click.prevent.stop="store.toggleValidating(node)">
                 <i class="dropdown-icon fe fe-activity"></i>
                 {{node.isValidating ? 'Stop validating' : 'Try validating'}}
             </b-dropdown-item>
@@ -33,6 +33,7 @@
     import {Component, Prop} from "vue-property-decorator";
 
     import {Node} from "@stellarbeat/js-stellar-domain";
+    import Store from '@/store/Store';
 
     @Component({
     })
@@ -41,6 +42,10 @@
         public node!: Node;
         @Prop({default: false})
         public supportsDelete!: Boolean;
+
+        get store():Store {
+            return this.$root.$data.store;
+        }
     }
 </script>
 

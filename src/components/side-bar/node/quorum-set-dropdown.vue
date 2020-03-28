@@ -11,6 +11,8 @@
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
                 :has-warnings="true"
+                :has-danger="network.isQuorumSetFailing(store.selectedNode, quorumSet)"
+                :dangers="'Quorumset not reaching threshold'"
         >
             <template v-slot:action-dropdown>
                 <quorum-set-actions :level="level" :quorum-set="quorumSet"/>
@@ -23,7 +25,9 @@
                     :title="getDisplayName(validator)"
                     :isLinkInDropdown="true"
                     :has-warnings="true"
-            >
+                    :warnings="'warnings'"
+                    :has-danger="network.isNodeFailing(validator)"
+                    :dangers="'Node not validating ' + (network.isQuorumSetFailing(validator) ? ': quorumset not reaching threshold' : '')">
                 <template v-slot:action-dropdown>
                     <node-actions :node="validator" :supports-delete="true"/>
                 </template>
