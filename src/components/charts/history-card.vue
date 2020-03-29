@@ -1,6 +1,6 @@
 <template>
     <div class="card" style="">
-        <div class="card-header pl-3">
+        <div class="card-header pl-3 d-flex flex-wrap">
             <b-button-group size="sm" class="mr-3">
                 <b-button :pressed="chartView === '30D'" @click="select30DayView">30D</b-button>
                 <b-button :pressed="chartView === '24H'" @click="select24HView">24H</b-button>

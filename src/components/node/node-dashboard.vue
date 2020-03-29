@@ -12,7 +12,7 @@
         <div class="row row-cards row-deck">
             <div class="col-md-6 col-lg-4">
                 <history-card
-                        :subject="'Validating history'"
+                        :subject="'Validating'"
                         :entityId="selectedNode.publicKey"
                         :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
                         :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
@@ -24,7 +24,7 @@
             </div>
             <div class="col-md-6 col-lg-4">
                 <history-card
-                        :subject="'Full validator history'"
+                        :subject="'Full validator'"
                         :entityId="selectedNode.publicKey"
                         :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
                         :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-6 col-lg-4">
                 <history-card
-                        :subject="'Overloaded history'"
+                        :subject="'Overloaded'"
                         :entityId="selectedNode.publicKey"
                         :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
                         :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"

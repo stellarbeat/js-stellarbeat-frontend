@@ -1,25 +1,30 @@
 <template>
     <div>
         <Statistics :network="network"/>
-        <div class="">
-            <div class="row row-cards row-deck">
-                <div class="col-sm-5 col-md-4 col-lg-4 col-xl-3">
-                    <transition
-                            name="fade"
-                            mode="out-in"
-                    >
+        <div class="d-flex dashboard-container">
+            <div class="side-bar">
+                <transition
+                        name="fade"
+                        mode="out-in"
+                >
                     <router-view name="sideBar"/>
-                    </transition>
-                </div>
-                <div class="col-sm-7 col-md-8 col-lg-8 col-xl-9">
+                </transition>
+            </div>
+            <div class="row content">
+                <div class="col-12">
                     <div class="row">
                         <div class="col-12">
                             <network-visual-navigator/>
                         </div>
                     </div>
-                    <router-view name="dashboard"/>
+                    <div class="row">
+                        <div class="col-12">
+                            <router-view name="dashboard"/>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -147,6 +152,30 @@
 </script>
 
 <style>
+    .dashboard-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .side-bar {
+
+    }
+
+    @media (min-width: 700px) {
+        .side-bar {
+            flex: 0 0 250px;
+            margin-right: 20px;
+        }
+
+        .dashboard-container {
+            flex-direction: row;
+        }
+
+        .content {
+            width: 100%;
+        }
+    }
+
     .sb-card-title-icon {
         opacity: 0.6;
         width: 30px;
@@ -154,7 +183,7 @@
     }
 
     .sb-card-header {
-        border: none!important;
+        border: none !important;
         margin-top: 10px;
         margin-bottom: 0px;
         margin-left: 4px;
