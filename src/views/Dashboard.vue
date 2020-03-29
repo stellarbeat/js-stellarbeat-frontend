@@ -11,19 +11,22 @@
             </div>
         </div>
         <div class="d-flex dashboard-container">
-            <div class="side-bar">
-                <transition
-                        name="fade"
-                        mode="out-in"
-                >
-                    <router-view name="sideBar"/>
-                </transition>
-            </div>
-            <div class="row content">
+            <aside class="side-bar">
+                <affix :scrollAffix="true" :enabled="affixEnabled" relative-element-selector="#content" class="affix"
+                       :offset="{ top: 23, bottom: 24 }">
+                    <transition
+                            name="fade"
+                            mode="out-in"
+                    >
+                        <router-view name="sideBar"/>
+                    </transition>
+                </affix>
+            </aside>
+            <div class="row content" id="content">
                 <div class="col-12">
                     <div class="row">
-                        <div class="col-12">
-                            <network-visual-navigator/>
+                        <div class="col-12" >
+                            <network-visual-navigator />
                         </div>
                     </div>
                     <div class="row">
@@ -66,6 +69,7 @@
     import NodesCountryDistribution from '@/components/network/cards/nodes-country-distribution.vue';
     import NodesVersions from '@/components/network/cards/nodes-versions.vue';
     import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
+    import {Affix} from 'vue-affix';
 
     @Component({
         name: 'dashboard',
@@ -91,10 +95,13 @@
             Search,
             Statistics,
             HaltingAnalysis,
-            CrawlTime
+            CrawlTime,
+            Affix
         }
     })
     export default class Dashboard extends Vue {
+        protected affixEnabled:boolean = window.innerWidth > 666;
+
         @Watch('$route')
         public on$routeChanged(to: any) {
             this.store.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
@@ -106,7 +113,7 @@
 
         @Watch('store.haltingAnalysisPublicKey')
         public onHaltingAnalysisPublicKeyChanged(publicKey?: string) {
-            if(publicKey)
+            if (publicKey)
                 this.$nextTick(() => {
                     this.$scrollTo('#halting-analysis-card');
                 });
@@ -132,7 +139,12 @@
             return this.store.isSimulation;
         }
 
+        protected onResize() {
+            this.affixEnabled = window.innerWidth > 666;
+        }
+
         public created() {
+            window.addEventListener('resize', this.onResize);
             // fix centering and selection in graph
             if (this.$route.params['publicKey']) {
                 this.store.selectedNode = this.network.getNodeByPublicKey(this.$route.params['publicKey']);
@@ -160,11 +172,9 @@
             }
         }
 
-        /*public beforeDestroy() {
-            if (this.isSimulation) { // undo simulation
-                this.store.resetUpdates();
-            } // todo: better way to manage network adjustments
-        }*/
+        beforeDestroy() {
+            window.removeEventListener('resize', this.onResize)
+        }
     }
 </script>
 
@@ -178,7 +188,7 @@
 
     }
 
-    @media (min-width: 700px) {
+    @media (min-width: 666px) {
         .side-bar {
             flex: 0 0 270px;
             margin-right: 20px;
@@ -190,6 +200,10 @@
 
         .content {
             width: 100%;
+        }
+
+        .affix {
+            width: 270px;
         }
     }
 
