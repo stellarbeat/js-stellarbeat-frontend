@@ -43,11 +43,22 @@ export default class Store {
     protected measurementStore: MeasurementStore = new MeasurementStore();
     public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);
+    public isHaltingAnalysisVisible: boolean = false;
+    protected _haltingAnalysisPublicKey?: string = undefined;
 
     protected _uniqueId = 0;
 
     getUniqueId(){
         return this._uniqueId ++;
+    }
+
+    public showHaltingAnalysis(node: Node){
+        this.isHaltingAnalysisVisible = true;
+        this._haltingAnalysisPublicKey = node.publicKey;
+    }
+
+    get haltingAnalysisPublicKey() {
+        return this._haltingAnalysisPublicKey;
     }
 
     async fetchData(time?:Date): Promise<void> {

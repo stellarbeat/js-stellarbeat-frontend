@@ -52,15 +52,24 @@
                                             title="Halting analysis"
                                             :show-icon="true"
                                             icon="fe-cloud-lightning"
-                                            v-on:click=""
+                                            v-on:click="store.showHaltingAnalysis(selectedNode)"
                                     />
                                 </li>
                                 <li class="sb-nav-item">
+                                    <b-alert
+                                            :show="clipBoardAlert"
+                                            dismissible
+                                            variant="info"
+                                            @dismissed="clipBoardAlert=0"
+                                    >
+                                        Copied public key to clipboard!
+                                    </b-alert>
                                     <nav-link
-                                            title="Copy publickey to clipboard"
+                                            title="Copy publickey"
                                             :show-icon="true"
                                             icon="fe-clipboard"
                                             v-clipboard:copy="selectedNode.publicKey"
+                                            v-on:click="clipBoardAlert = 1"
                                     />
                                 </li>
                                 <li class="sb-nav-item">
@@ -123,6 +132,7 @@
         protected includeWatcherNodes: boolean = false;
         protected validatorsExpanded: boolean = false;
         protected organizationsExpanded: boolean = true;
+        protected clipBoardAlert: number = 0;
 
         get store(): Store {
             return this.$root.$data.store;

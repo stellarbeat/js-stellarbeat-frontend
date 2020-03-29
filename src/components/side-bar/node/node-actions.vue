@@ -17,13 +17,13 @@
             <b-dropdown-header id="dropdown-header-label">
                 Tools
             </b-dropdown-header>
-            <b-dropdown-item v-on:click="$emit('show-halting-analysis', node.publicKey)" @click.prevent.stop>
+            <b-dropdown-item v-on:click.prevent.stop="store.showHaltingAnalysis(node)">
                 <i class="dropdown-icon fe fe-cloud-lightning"></i>
                 Perform halting analysis
             </b-dropdown-item>
             <b-dropdown-item v-clipboard:copy="node.publicKey" @click.prevent.stop>
                 <i class="dropdown-icon fe fe-clipboard"></i>
-                Copy publickey to clipboard
+                Copy publickey
             </b-dropdown-item>
         </b-dropdown>
 </template>

@@ -1,6 +1,15 @@
 <template>
     <div>
         <Statistics :network="network"/>
+        <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
+            <div class="col-12">
+                <HaltingAnalysis
+                        :network="network"
+                        :publicKey="store.haltingAnalysisPublicKey"
+                        v-on:update-validating-states="updateValidatingStates">
+                </HaltingAnalysis>
+            </div>
+        </div>
         <div class="d-flex dashboard-container">
             <div class="side-bar">
                 <transition
@@ -93,6 +102,14 @@
             if (to.query.center === '1') {
                 this.store.centerNode = this.store.selectedNode;
             }
+        }
+
+        @Watch('store.haltingAnalysisPublicKey')
+        public onHaltingAnalysisPublicKeyChanged(publicKey?: string) {
+            if(publicKey)
+                this.$nextTick(() => {
+                    this.$scrollTo('#halting-analysis-card');
+                });
         }
 
         get store(): Store {

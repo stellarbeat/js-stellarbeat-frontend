@@ -1,14 +1,5 @@
 <template>
     <div>
-        <div class="row row-cards row-deck" v-if="showHaltingAnalysis" id="halting-analysis-card">
-            <div class="col-12">
-                <HaltingAnalysis
-                        :network="network"
-                        :publicKey="haltingAnalysisPublicKey"
-                        v-on:update-validating-states="updateValidatingStates">
-                </HaltingAnalysis>
-            </div>
-        </div>
         <div class="row row-cards row-deck">
             <div class="col-md-6 col-lg-4">
                 <history-card
@@ -69,15 +60,6 @@
 
         get selectedNode() {
             return this.store.selectedNode;
-        }
-
-        onShowHaltingAnalysis(publicKey: PublicKey) {
-            this.haltingAnalysisPublicKey = publicKey;
-            this.showHaltingAnalysis = true;
-
-            this.$nextTick(() => {
-                this.$scrollTo('#halting-analysis-card');
-            });
         }
     }
 </script>

@@ -1,5 +1,12 @@
 <template>
-    <b-card :header="'Halting analysis for ' + vertex.label" header-class="my-card-title">
+    <b-card>
+        <template v-slot:header>
+            <h3 class="card-title">Halting analysis for {{vertex.label}}</h3>
+            <div class="card-options">
+                <a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                <a href="#" v-on:click.prevent.stop="store.isHaltingAnalysisVisible = false" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+            </div>
+        </template>
         <div class="row">
             <div class="col-12">
                 <b-alert :show="!vertex.isValidating" variant="warning">{{vertex.label}} is failing.</b-alert>
@@ -68,6 +75,7 @@
     } from "@stellar/halting-analysis/src";
     import {GraphQuorumSet, Network, PublicKey, Vertex} from "@stellarbeat/js-stellar-domain";
     import HaltingAnalysisWorker from "worker-loader?name=dist/[name].js!./../../../workers/halting-analysisv1.worker.ts";
+    import Store from '@/store/Store';
 
     const _HaltingAnalysisWorker: any = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 
@@ -89,6 +97,10 @@
         protected simulated: boolean = false;
 
         protected haltingAnalysisWorker = new _HaltingAnalysisWorker();
+
+        get store():Store {
+            return this.$root.$data.store;
+        }
 
         get dimmerClass() {
             return {
@@ -122,7 +134,7 @@
             this.$emit('update-validating-states', this.selectedFailure.map(publicKey => {
                 return {'publicKey': publicKey, 'validating': false}
             }));
-            this.$scrollTo('#quorum-set-explorer-card');
+            //this.$scrollTo('#quorum-set-explorer-card');
         }
 
         resetFailureSimulation() {
