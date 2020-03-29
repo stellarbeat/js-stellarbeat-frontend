@@ -1,28 +1,29 @@
 <template>
     <div>
-        <b-dropdown right size="sm" text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
+        <b-dropdown ref="dropdown" v-on:click.prevent.stop="'#'" right text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
             <template slot="button-content">
                 <i class="fe fe-more-vertical"></i>
             </template>
-            <b-dropdown-header id="dropdown-header-label">
+            <b-dropdown-header id="dropdown-header-label" v-on:click.prevent.stop="'#'">
                 Simulation options
             </b-dropdown-header>
-            <b-dropdown-item v-b-modal="'add-validators-modal-' + id">
+            <b-dropdown-item v-b-modal="'add-validators-modal-' + id" v-on:click.prevent.stop>
                 <i class="dropdown-icon fe fe-plus-circle"></i>Add Validators
             </b-dropdown-item>
-            <b-dropdown-item v-if="!(level === 3)" v-on:click="addQuorumSet">
+            <b-dropdown-item v-if="!(level === 2)" v-on:click.prevent.stop="addQuorumSet">
                 <i class="dropdown-icon fe fe-plus-circle"></i>Add QuorumSet
             </b-dropdown-item>
-            <b-dropdown-item v-if="!(level === 1)" v-on:click="deleteQuorumSet">
+            <b-dropdown-item v-if="!(level === 0)" v-on:click.prevent.stop="deleteQuorumSet">
                 <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
             </b-dropdown-item>
-            <b-dropdown-form inline>
+            <b-dropdown-form form-class="inline" inline v-on:click.prevent.stop="'#'">
                 <i class="dropdown-icon fe fe-edit-2"></i>
                 <b-form-group
                         label-size="sm"
-                        label="Threshold: "
+                        label="Threshold"
                         label-for="dropdown-edit-threshold"
-                        @submit.stop.prevent>
+                        @submit.stop.prevent
+                v-on:click.prevent.stop>
                     <b-form-input
                             id="dropdown-edit-threshold"
                             :state="inputState"
@@ -64,8 +65,10 @@
     export default class QuorumSetActions extends Vue {
         @Prop()
         public quorumSet!: QuorumSet;
+        @Prop({default:null})
+        public parentQuorumSet!:QuorumSet;
         @Prop()
-        public level!:number;
+        public level!: number;
 
         public editingThreshold: boolean = false;
         public newThreshold: number = this.quorumSet.threshold;
@@ -81,16 +84,8 @@
             return this.store.selectedNode;
         }
 
-        public deleteQuorumSetFromInnerQuorumSet(quorumSet: QuorumSet, fromQuorumSet?: QuorumSet) {
-            if (fromQuorumSet === undefined) {
-                fromQuorumSet = this.quorumSet;
-            }
-
-            this.$emit('delete-quorum-set', quorumSet, fromQuorumSet);
-        }
-
         public deleteQuorumSet() {
-            this.$emit('delete-quorum-set', this.quorumSet);
+            this.store.deleteInnerQuorumSet(this.quorumSet, this.parentQuorumSet);
         }
 
         public get possibleValidatorsToAdd() {
@@ -99,20 +94,12 @@
                 && QuorumSet.getAllValidators(this.store.selectedNode!.quorumSet).indexOf(node.publicKey!) < 0);
         }
 
-        public addQuorumSetToInnerQuorumSet(toQuorumSet: QuorumSet) {
-            if (toQuorumSet === undefined) {
-                toQuorumSet = this.quorumSet;
-            }
-
-            this.$emit('add-quorum-set', toQuorumSet);
-        }
-
         public addValidatorsToQuorumSet(toQuorumSet: QuorumSet, validators: string[]) {
-            this.$emit('add-validators', toQuorumSet, validators);
+            this.store.addValidators(toQuorumSet, validators);
         }
 
         public addQuorumSet() {
-            this.$emit('add-quorum-set', this.quorumSet);
+            this.store.addInnerQuorumSet(this.quorumSet);
         }
 
         public enableThresholdEditMode() {
@@ -120,10 +107,6 @@
             this.$nextTick(() => {
                 (this.$refs['editThresholdInput' + this.id] as HTMLInputElement).focus();
             });
-        }
-
-        public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
-            this.$emit('quorumset-edit-threshold', quorumSet, newThreshold);
         }
 
         public saveThresholdFromInput() {
@@ -135,7 +118,7 @@
             this.inputState = null;
             this.editingThreshold = false;
             (this.$refs.dropdown as any).hide(true);
-            this.$emit('quorumset-edit-threshold', this.quorumSet, this.newThreshold);
+            this.store.editQuorumSetThreshold(this.quorumSet, this.newThreshold);
         }
 
         onValidatorsSelected(validators: Node[]) {
@@ -143,7 +126,6 @@
         }
 
         validatorsToAddModalOk(bvEvent: any, modalId: string) {
-            console.log(this.id);
             if (this.validatorsToAdd.length > 0) {
                 this.addValidatorsToQuorumSet(
                     this.quorumSet,
@@ -156,33 +138,11 @@
 </script>
 
 <style scoped>
-
-    .btn-group-xs > .btn, .btn-xs {
-        padding: .25rem .25rem;
-        font-size: .875rem;
-        line-height: .5;
-        border-radius: .2rem;
+    .inline {
+        display: flex!important;
     }
-
-    .btn-primary {
-        background: #1997c6;
-        border-color: #1997c6;
-    }
-
-    .btn-primary:hover {
-        color: #fff;
-        background-color: #1a85ad;
-        border-color: #1a85ad;
-    }
-
-    .dropdown-header {
-        padding: 0.5rem 1rem;
-    }
-
-    .hover-btn {
-        position: absolute;
-        right: 45px;
-        border: none;
-        outline: 0;
+    .thresholdEdit {
+        margin-left: 10px;
+        width: 45px !important;
     }
 </style>

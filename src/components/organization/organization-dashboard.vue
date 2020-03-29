@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="row row-cards">
+        <div class="row row-cards row-deck">
             <div class="col-sm-12 col-xl-4">
                 <organization-profile :organization="organization"/>
             </div>
@@ -17,13 +17,6 @@
                         :measurementProperty="'isSubQuorumAvailable'"
                 >
                 </history-card>
-            </div>
-        </div>
-        <div class="row row-cards">
-            <div class="col-sm-6 col-md-4">
-            </div>
-            <div class="col-sm-12 col-md-4">
-
             </div>
         </div>
     </div>

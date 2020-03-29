@@ -15,7 +15,10 @@
                 :dangers="'Quorumset not reaching threshold'"
         >
             <template v-slot:action-dropdown>
-                <quorum-set-actions :level="level" :quorum-set="quorumSet"/>
+                <quorum-set-actions
+                        :level="level"
+                        :quorum-set="quorumSet" :parentQuorumSet="parentQuorumSet"
+                />
             </template>
         </nav-link>
         <div v-if="showing" class="sb-nav-dropdown">
@@ -32,13 +35,13 @@
                     <node-actions :node="validator" :supports-delete="true"/>
                 </template>
             </nav-link>
-            <quorum-set-dropdown v-for="(innerQuorumSet, index) in innerQuorumSets" :quorumSet="innerQuorumSet" :level="level+1" :key="index"/>
+            <quorum-set-dropdown :parentQuorumSet="quorumSet" v-for="(innerQuorumSet, index) in innerQuorumSets" :quorumSet="innerQuorumSet" :level="level+1" :key="index"/>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-    import {Component, Prop, Mixins} from 'vue-property-decorator';
+    import {Component, Prop, Mixins, Watch} from 'vue-property-decorator';
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
@@ -59,13 +62,22 @@
         @Prop()
         quorumSet!:QuorumSet;
 
+        @Prop({default: null})
+        parentQuorumSet!:QuorumSet;
+
         @Prop({default: 0})
         protected level!: number;
+
+        @Watch("quorumSet", {deep: true})
+        onQuorumSetChanged(){
+            console.log("change");
+            this.showing = true;
+        }
 
         get classObject():any {
             return {
                 'pl-3': this.level === 1,
-                'pl-5': this.level === 2
+                'pl-4': this.level === 2
 
             }
         }

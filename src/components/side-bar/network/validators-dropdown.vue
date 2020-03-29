@@ -18,7 +18,7 @@
                     :isLinkInDropdown="true"
             >
                 <template v-slot:action-dropdown>
-                    <node-action-bar :node="node"/>
+                    <node-actions :node="node"/>
                 </template>
             </nav-link>
             <nav-pagination v-model="currentPage" v-on:input="currentPage = $event" :total-rows="nodes.length"/>
@@ -33,11 +33,11 @@
     import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
     import NavDropdownLink from '@/components/side-bar/nav-dropdown-link.vue';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
-    import NodeActionBar from '@/components/quorum-monitor-deprecated/quorum-set-explorer/node-action-bar.vue';
+    import NodeActions from '@/components/side-bar/node/node-actions.vue';
 
     @Component({
         components: {
-            NodeActionBar,
+            NodeActions,
             NavPagination,
             NavLink
         },
