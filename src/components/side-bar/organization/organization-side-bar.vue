@@ -6,7 +6,7 @@
         >
             <div class="card pt-0" :key="selectedOrganization.id">
                 <div class="card-header px-4 pb-4 sb-card-header">
-                    <h3 class="card-title sb-card-title"><i class="fe fe-globe sb-card-title-icon mr-1"/>
+                    <h3 class="card-title sb-card-title"><i v-if="selectedOrganization.isTierOneOrganization" class="fe fe-shield sb-card-title-icon" v-b-tooltip.hover title="Tier One Organization"/>
                         {{selectedOrganization.name}}</h3>
                 </div>
                 <div class="card-body px-4 pt-1">

@@ -1,20 +1,20 @@
 <template>
     <div class="card">
-        <div class="sb-card-header d-flex mt-0 pt-3 pb-0 m-0">
-            <div class="spacer h-100 border-bottom"></div>
+        <div class="sb-card-header d-flex flex-wrap-reverse mt-0 pt-3 pb-0 m-0">
+            <div class="spacer h-100"></div>
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
-                    <a href="#" @click.prevent.stop="view = 'map'" :class="getActiveClass('map')" class="sb-tab-nav-link border-bottom"
+                    <a href="#" @click.prevent.stop="view = 'map'" :class="getActiveClass('map')" class="sb-tab-nav-link"
                        data-toggle="tab">Map</a>
                 </li>
                 <li class="sb-tab-nav-item">
                     <a href="#" @click.prevent.stop="view = 'graph'"
                        :class="getActiveClass('graph')"
-                       class="sb-tab-nav-link border-left-0 border-bottom"
+                       class="sb-tab-nav-link border-left-0"
                        data-toggle="tab">Graph</a>
                 </li>
             </ul>
-            <div class="pl-3 sb-bread-crumbs-container border-bottom">
+            <div class="pl-3 sb-bread-crumbs-container">
                 <transition
                         name="fade"
                         mode="out-in"
@@ -27,7 +27,7 @@
         <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
              class="card-alert alert alert-danger mb-0" show>No transitive quorum set detected in network!
         </div>
-        <div class="card-body py-3 px-3" style="height: 450px">
+        <div class="card-body py-3 px-3 border-top" style="height: 450px">
             <world-map v-if="view==='map'"/>
             <network-graph-card v-if="view === 'graph'"/>
         </div>
@@ -51,7 +51,8 @@
 
         getActiveClass(linkView:string){
             return {
-                'sb-tab-active': linkView === this.view
+                'sb-tab-active': linkView === this.view,
+                'border-bottom-white': linkView === this.view
             }
         }
         get breadCrumbs() {
@@ -151,6 +152,11 @@
         border-bottom: 0;
         padding: 5px 20px;
         border-radius: 0px;
+    }
+
+    .border-bottom-white {
+        border-bottom: 1px solid white!important;
+        margin-bottom: -1px;
     }
 
     .sb-bread-crumbs-container {

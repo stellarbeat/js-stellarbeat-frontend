@@ -7,7 +7,9 @@
             >
                 <div :key="selectedNode.publicKey">
                     <div class="card-header px-4 pb-4 sb-card-header">
-                        <h3 class="card-title sb-card-title"><i class="fe fe-target sb-card-title-icon mr-1"/>
+                        <h3 class="card-title sb-card-title"><i v-if="selectedNode.isFullValidator"
+                                                                v-b-tooltip.hover title="Full Validator"
+                                                                class="fe fe-shield sb-card-title-icon"/>
                             {{getDisplayName(selectedNode)}}</h3>
                     </div>
                     <div v-if="network.isNodeFailing(selectedNode)"
