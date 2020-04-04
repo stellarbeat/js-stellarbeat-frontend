@@ -10,7 +10,8 @@
                 :icon="'fe-share-2'"
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
-                :has-warnings="true"
+                :has-warnings="hasWarnings"
+                :warnings="'Not all history archives up-to-date'"
                 :has-danger="network.isQuorumSetFailing(store.selectedNode, quorumSet)"
                 :dangers="'Quorumset not reaching threshold'"
         >
@@ -27,10 +28,12 @@
                     v-on:click="selectNode(validator)"
                     :title="getDisplayName(validator)"
                     :isLinkInDropdown="true"
-                    :has-warnings="true"
-                    :warnings="'warnings'"
                     :has-danger="network.isNodeFailing(validator)"
-                    :dangers="'Node not validating ' + (network.isQuorumSetFailing(validator) ? ': quorumset not reaching threshold' : '')">
+                    :dangers="'Node not validating ' + (network.isQuorumSetFailing(validator) ? ': quorumset not reaching threshold' : '')"
+                    :has-warnings="validator.historyUrl && !validator.isFullValidator"
+                    warnings="History archive not up-to-date"
+            >
+
                 <template v-slot:action-dropdown>
                     <node-actions :node="validator" :supports-delete="true"/>
                 </template>
@@ -42,7 +45,7 @@
 
 <script lang="ts">
     import {Component, Prop, Mixins, Watch} from 'vue-property-decorator';
-    import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
@@ -72,6 +75,12 @@
         onQuorumSetChanged(){
             console.log("change");
             this.showing = true;
+        }
+
+        get hasWarnings() {
+            return this.quorumSet.validators
+                .map(validator => this.network.getNodeByPublicKey(validator)!)
+                .some(validator => validator.historyUrl && !validator.isFullValidator)
         }
 
         get classObject():any {

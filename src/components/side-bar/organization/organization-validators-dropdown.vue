@@ -17,6 +17,8 @@
                     :is-link-in-dropdown="true"
                     :has-danger="network.isNodeFailing(validator)"
                     :dangers="'Node not validating ' + (network.isQuorumSetFailing(validator) ? ': quorumset not reaching threshold' : '')"
+                    :has-warnings="validator.historyUrl && !validator.isFullValidator"
+                    warnings="History archive not up-to-date"
             >
                 <template v-slot:action-dropdown>
                     <node-actions :node="validator"/>

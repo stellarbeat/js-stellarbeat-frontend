@@ -9,6 +9,8 @@
                 :icon="'fe-disc'"
                 :show-sub-title="true"
                 :sub-title="'Transitive quorumset'"
+                :has-warnings="hasGeneralValidatorsWarning"
+                warnings="Not all history archives up-to-date"
         />
         <div v-if="showing" class="sb-nav-dropdown">
             <nav-link
@@ -16,6 +18,8 @@
                     v-on:click="selectNode(node)"
                     :title="getDisplayName(node)"
                     :isLinkInDropdown="true"
+                    :has-warnings="hasWarnings(node)"
+                    :warnings="warnings()"
             >
                 <template v-slot:action-dropdown>
                     <node-actions :node="node"/>
@@ -53,6 +57,18 @@
                     return 1;
                 else return -1;
             });
+        }
+
+        hasWarnings(node:Node) {
+            return node.historyUrl && !node.isFullValidator;
+        }
+
+        get hasGeneralValidatorsWarning() {
+            return this.nodes.some(node => this.hasWarnings(node))
+        }
+
+        warnings() {
+            return 'History archive not up-to-date';
         }
 
         public selectNode(node: Node) {

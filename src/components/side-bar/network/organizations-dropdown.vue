@@ -17,6 +17,8 @@
                     v-on:click="selectOrganization(organization)"
                     :title="organization.name | truncate(30)"
                     :is-link-in-dropdown="true"
+                    :has-warnings="hasWarnings(organization)"
+                    warnings="Not all history archives up-to-date"
             />
             <nav-pagination
                     v-model="currentPage"
@@ -60,6 +62,12 @@
                 name: "organization-dashboard",
                 params: {organizationId: organization.id}
             });
+        }
+
+        public hasWarnings(organization: Organization) {
+            return organization.validators
+                .map(validator => this.network.getNodeByPublicKey(validator)!)
+                .some(validator => validator.historyUrl && !validator.isFullValidator)
         }
     }
 </script>
