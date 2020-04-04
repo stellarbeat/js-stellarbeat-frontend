@@ -5,8 +5,10 @@
                 mode="out-in"
         >
             <div class="card pt-0" :key="selectedOrganization.id">
-                <div class="card-header px-4 pb-4 sb-card-header">
-                    <h3 class="card-title sb-card-title"><i v-if="selectedOrganization.isTierOneOrganization" class="fe fe-shield sb-card-title-icon" v-b-tooltip.hover title="Tier One Organization"/>
+                <div class="card-header px-4 sb-card-header">
+                    <shield-check v-if="selectedOrganization.isTierOneOrganization"
+                                  v-b-tooltip.hover title="Tier One Organization" class="sb-card-title-icon"/>
+                    <h3 class="card-title sb-card-title">
                         {{selectedOrganization.name}}</h3>
                 </div>
                 <div class="card-body px-4 pt-1">
@@ -70,9 +72,11 @@
     import OrganizationValidatorsDropdown from '@/components/side-bar/organization/organization-validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import SimulateNewNode from '@/components/quorum-monitor-deprecated/quorum-set-explorer/simulate-new-node.vue';
+    import ShieldCheck from '@/components/svg/shield-check.vue';
 
     @Component({
         components: {
+            ShieldCheck,
             SimulateNewNode,
             NavLink,
             OrganizationValidatorsDropdown

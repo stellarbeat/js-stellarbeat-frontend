@@ -188,8 +188,7 @@
     }
 
     .sb-card-title-icon {
-        opacity: 0.6;
-        width: 30px;
+        opacity: 0.8;
         color: #1997c6;
     }
 

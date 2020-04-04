@@ -5,8 +5,9 @@
                 mode="out-in"
         >
             <div class="card pt-0" >
-                <div class="card-header px-4 pb-4 sb-card-header">
-                    <h3 class="card-title sb-card-title"><i class="fe fe-share-2 sb-card-title-icon mr-1"/>
+                <div class="card-header px-4 sb-card-header">
+                    <network class="sb-card-title-icon"/>
+                    <h3 class="card-title sb-card-title">
                         Stellar Public Network</h3>
                 </div>
                 <div class="card-body px-4 pt-1">
@@ -78,9 +79,11 @@
     import ValidatorsDropdown from '@/components/side-bar/network/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
+    import Network from '@/components/svg/network.vue';
 
     @Component({
         components: {
+            Network,
             OrganizationsDropdown,
             NavLink, NodeList, SimulateNewNode, GraphLegend, Graph, FullValidatorTitle, ValidatorsDropdown
         }

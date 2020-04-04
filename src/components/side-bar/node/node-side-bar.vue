@@ -6,10 +6,10 @@
                     mode="out-in"
             >
                 <div :key="selectedNode.publicKey">
-                    <div class="card-header px-4 pb-4 sb-card-header">
-                        <h3 class="card-title sb-card-title"><i v-if="selectedNode.isFullValidator"
-                                                                v-b-tooltip.hover title="Full Validator"
-                                                                class="fe fe-shield sb-card-title-icon"/>
+                    <div class="card-header px-4 sb-card-header">
+                        <shield-check v-if="selectedNode.isFullValidator"
+                                      v-b-tooltip.hover title="Full Validator" class="sb-card-title-icon"/>
+                        <h3 class="card-title sb-card-title">
                             {{getDisplayName(selectedNode)}}</h3>
                     </div>
                     <div v-if="network.isNodeFailing(selectedNode)"
@@ -120,9 +120,11 @@
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
     import OrganizationValidatorsDropdown from '@/components/side-bar/node/organization-validators-dropdown.vue';
+    import ShieldCheck from '@/components/svg/shield-check.vue';
 
     @Component({
         components: {
+            ShieldCheck,
             OrganizationValidatorsDropdown,
             OrganizationsDropdown,
             SimulateNewNode,

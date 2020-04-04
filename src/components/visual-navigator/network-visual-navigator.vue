@@ -1,6 +1,7 @@
 <template>
     <div class="card">
         <div class="sb-card-header d-flex flex-wrap-reverse mt-0 pt-3 pb-0 m-0">
+
             <div class="spacer h-100"></div>
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
@@ -24,10 +25,10 @@
                 </transition>
             </div>
         </div>
-        <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
-             class="card-alert alert alert-danger mb-0" show>No transitive quorum set detected in network!
-        </div>
         <div class="card-body py-3 px-3 border-top" style="height: 450px">
+            <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
+                 class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
+            </div>
             <world-map v-if="view==='map'"/>
             <network-graph-card v-if="view === 'graph'"/>
         </div>
