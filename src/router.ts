@@ -20,7 +20,7 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        {path: '/', component: Dashboard, alias: '/quorum-monitor',
+        {path: '/', component: Dashboard, alias: '/quorum-monitor/:view?', props: (route) => ({ view: route.query.view }),
             children: [
                 {
                     name: 'network-dashboard',
@@ -30,6 +30,7 @@ export default new Router({
                         dashboard: NetworkDashboard,
                         sideBar: NetworkSideBar
                     },
+                    props: (route) => ({ view: route.query.view }),
                 },
                 {
                     name: 'node-dashboard',
@@ -39,6 +40,7 @@ export default new Router({
                         dashboard: NodeDashboard,
                         sideBar: NodeSideBar
                     },
+                    props: (route) => ({ view: route.query.view }),
                 },
                 {
                     name: 'organization-dashboard',
@@ -47,6 +49,7 @@ export default new Router({
                         dashboard: OrganizationDashboard,
                         sideBar: OrganizationSideBar
                     },
+                    props: (route) => ({ view: route.query.view }),
                 },
             ],
         },

@@ -69,7 +69,7 @@ export default class GraphNode extends Vue {
             {
                 name: 'node-dashboard',
                 params: {publicKey: this.publicKey},
-                query: {'center': '0', 'no-scroll': '1'},
+                query: {'center': '0', 'no-scroll': '1', 'view': this.$route.query.view},
             },
             );
     }

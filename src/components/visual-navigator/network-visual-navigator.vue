@@ -1,18 +1,20 @@
 <template>
     <div class="card">
         <div class="sb-card-header d-flex flex-wrap-reverse mt-0 pt-3 pb-0 m-0">
-
             <div class="spacer h-100"></div>
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
-                    <a href="#" @click.prevent.stop="view = 'map'" :class="getActiveClass('map')" class="sb-tab-nav-link"
-                       data-toggle="tab">Map</a>
+                    <router-link :to="{path: $route.path, query: {'view': 'map'}}"
+                                 :class="['map', undefined].includes($route.query.view)  && 'router-link-exact-active'"
+                                 class="sb-tab-nav-link"
+                    >Map
+                    </router-link>
                 </li>
                 <li class="sb-tab-nav-item">
-                    <a href="#" @click.prevent.stop="view = 'graph'"
-                       :class="getActiveClass('graph')"
-                       class="sb-tab-nav-link border-left-0"
-                       data-toggle="tab">Graph</a>
+                    <router-link :to="{path: $route.path,
+                    query: {'view': 'graph'}}"
+                                 :class="$route.query.view === 'graph' && 'router-link-exact-active'"                                 class="sb-tab-nav-link">Graph
+                    </router-link>
                 </li>
             </ul>
             <div class="pl-3 sb-bread-crumbs-container">
@@ -48,20 +50,15 @@
         components: {NetworkGraphCard, WorldMap}
     })
     export default class NetworkVisualNavigator extends Vue {
-        protected view: string = 'map';
+        @Prop({default: 'map'})
+        public view!: string;
 
-        getActiveClass(linkView:string){
-            return {
-                'sb-tab-active': linkView === this.view,
-                'border-bottom-white': linkView === this.view
-            }
-        }
         get breadCrumbs() {
             //todo expand to orgs
             let crumbs = [];
             crumbs.push({
                 text: 'Stellar Public Network',
-                to: {name: 'network-dashboard'}
+                to: {name: 'network-dashboard', query: {view: this.$route.query.view}}
             });
             if (this.selectedNode)
                 crumbs.push({
@@ -111,6 +108,7 @@
         height: 100%;
         align-self: end;
     }
+
     .sb-bread-crumbs {
         background-color: white;
         margin: 0px;
@@ -127,11 +125,6 @@
         position: relative;
         z-index: 1000;
         border-bottom: 0;
-    }
-
-    .sb-tab-active {
-        background: #fff !important;
-        border-bottom: 0 !important;
     }
 
     .sb-tab-nav-link.sb-tab-active {
@@ -155,9 +148,10 @@
         border-radius: 0px;
     }
 
-    .border-bottom-white {
-        border-bottom: 1px solid white!important;
+    .router-link-exact-active {
+        border-bottom: 1px solid white !important;
         margin-bottom: -1px;
+        background: #fff !important;
     }
 
     .sb-bread-crumbs-container {

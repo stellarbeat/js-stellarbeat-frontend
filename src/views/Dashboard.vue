@@ -23,7 +23,7 @@
                 <div class="col-12">
                     <div class="row">
                         <div class="col-12">
-                            <network-visual-navigator/>
+                            <network-visual-navigator :view="view"/>
                         </div>
                     </div>
                     <div class="row">
@@ -61,6 +61,9 @@
         }
     })
     export default class Dashboard extends Vue {
+        @Prop({default: 'map'})
+        public view!:string;
+
         @Watch('$route')
         public on$routeChanged(to: any) {
             this.store.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
@@ -105,7 +108,7 @@
                 if (!this.store.selectedNode) {
                     this.$router.push(
                         {
-                            name: 'network-dashboard'
+                            name: 'network-dashboard', query: {view: this.$route.query.view}
                         },
                     );
                 }
@@ -116,7 +119,7 @@
                 if (!this.store.selectedOrganization) {
                     this.$router.push(
                         {
-                            name: 'network-dashboard'
+                            name: 'network-dashboard', query: {view: this.$route.query.view}
                         },
                     );
                 }

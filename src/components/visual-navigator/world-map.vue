@@ -141,7 +141,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
                 {
                     name: 'node-dashboard',
                     params: {publicKey: node.publicKey!},
-                    query: {'center': '1', 'no-scroll': '1'},
+                    query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view},
                 },
             );
         }

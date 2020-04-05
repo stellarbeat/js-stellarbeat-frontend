@@ -54,7 +54,7 @@
                                 <i class="fe fe-shield"></i>
                             </span>
                             <router-link v-if="data.item.isValidator"
-                                         :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' }}">
+                                         :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}">
                                 {{ data.item.name || " " | truncate(20)}}
                             </router-link>
                             <router-link v-else
@@ -64,7 +64,7 @@
                         </template>
                         <template v-slot:cell(organization)="data">
                             <router-link v-if="data.item.organizationId"
-                                    :to="{ name: 'organization-dashboard', params: { 'organizationId': data.item.organizationId }}">
+                                    :to="{ name: 'organization-dashboard', params: { 'organizationId': data.item.organizationId, 'view': $route.query.view }}">
                                 {{ data.item.organization}}
                             </router-link>
                         </template>
@@ -77,7 +77,7 @@
                         <template v-slot:cell(actions)="row">
                             <b-button-group class="btn-group-sm">
                                 <router-link v-if="row.item.isValidator" class="btn btn-secondary" role="button"
-                                             :to="{ name: 'node-dashboard', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1' }}">
+                                             :to="{ name: 'node-dashboard', params: { 'publicKey': row.item.publicKey }, query: { 'center': '1','view': $route.query.view}}">
                                     Dashboard
                                 </router-link>
                             </b-button-group>

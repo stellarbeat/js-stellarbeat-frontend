@@ -7,7 +7,7 @@
                 <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
                     <div polyfillclass="container-fluid">
                         <div class="d-flex">
-                            <router-link class="header-brand mt-2" :to="{ name: 'network-dashboard'}" exact>
+                            <router-link class="header-brand mt-2" :to="{ name: 'network-dashboard', query: { view: $route.query.view}}" exact>
                                 <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
                             </router-link>
                             <div class="d-flex flex-column ml-auto">
@@ -41,7 +41,7 @@
                         <div class="col-lg order-lg-first">
                             <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                 <li class="nav-item">
-                                    <router-link active-class="active" class="nav-link" :to="{ name: 'network-dashboard'}" exact><i
+                                    <router-link active-class="active" class="nav-link" :to="{ name: 'network-dashboard', query:{view:$route.query.view}}" exact><i
                                             class="fe fe-home"></i>Home
                                     </router-link>
                                 </li>

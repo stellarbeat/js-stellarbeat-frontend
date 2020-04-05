@@ -60,7 +60,8 @@
         public selectOrganization(organization: Organization) {
             this.$router.push({
                 name: "organization-dashboard",
-                params: {organizationId: organization.id}
+                params: {organizationId: organization.id},
+                query: {view: this.$route.query.view}
             });
         }
 
