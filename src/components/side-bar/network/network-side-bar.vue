@@ -70,12 +70,9 @@
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from '@/store/Store';
-    import Graph from '@/components/visual-navigator/graph/graph.vue';
-    import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
-    import SimulateNewNode from '@/components/quorum-monitor-deprecated/quorum-set-explorer/simulate-new-node.vue';
-    import NodeList from '@/components/quorum-monitor-deprecated/quorum-set-explorer/node-list.vue';
+    import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
     import ValidatorsDropdown from '@/components/side-bar/network/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
@@ -85,7 +82,7 @@
         components: {
             Network,
             OrganizationsDropdown,
-            NavLink, NodeList, SimulateNewNode, GraphLegend, Graph, FullValidatorTitle, ValidatorsDropdown
+            NavLink, SimulateNewNode, FullValidatorTitle, ValidatorsDropdown
         }
     })
     export default class NetworkSideBar extends Vue {

@@ -53,7 +53,7 @@
                 )) {
                 this.$router.push(
                     {
-                        name: "quorum-monitor",
+                        name: "network-dashboard",
                         query: {"no-scroll": "1"}
 
                     },

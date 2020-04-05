@@ -20,7 +20,7 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        {path: '/', component: Dashboard,
+        {path: '/', component: Dashboard, alias: '/quorum-monitor',
             children: [
                 {
                     name: 'network-dashboard',
@@ -52,22 +52,10 @@ export default new Router({
         },
         {name: 'nodes', path: '/nodes', component: Nodes},
         {name: 'organizations', path: '/organizations', component: Organizations},
-        //{name: 'node-details', path: '/nodes/:publicKey', component: NodeDetails},
-        {name: 'organization-details', path: '/organizations/:organizationId', component: OrganizationDetails},
 
         {name: 'faq', path: '/faq', component: FAQ, meta: {fullPreRender: true}},
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
-        {name: 'terms-and-conditions', path: '/terms-and-conditions', component: TermsAndConditions, meta: {fullPreRender: true}},
-        {//backwards compatibility
-            path: '/quorum-monitor', name: 'quorum-monitor', component: Dashboard,
-            children: [
-                {
-                    name: 'quorum-monitor-node',
-                    path: ':publicKey',
-                    component: Dashboard,
-                },
-            ],
-        }
+        {name: 'terms-and-conditions', path: '/terms-and-conditions', component: TermsAndConditions, meta: {fullPreRender: true}}
     ],
 
     scrollBehavior(to, from, savedPosition) {

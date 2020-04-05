@@ -32,7 +32,7 @@
                                           class="badge sb-badge badge-success pt-1 mr-1"
                                           v-b-tooltip.hover title="Full validator"><i class="fe fe-shield"></i></span>
                                         <router-link
-                                                :to="{ name: 'quorum-monitor-node', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
+                                                :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1' }}">
                                             {{ validator.name | truncate(30)}}
                                         </router-link>
                                         <span v-if="!validator.active"
@@ -65,7 +65,7 @@
                         </template>
                         <template v-slot:cell(name)="row">
                             <router-link
-                                    :to="{ name: 'organization-details', params: { 'organizationId': row.item.id }}">
+                                    :to="{ name: 'organization-dashboard', params: { 'organizationId': row.item.id }}">
                                 <span v-b-tooltip.hover title="Tier one organization" v-if="row.item.isTierOneOrganization"
                                       class="badge sb-badge badge-primary mr-1">
                             <i class="fe fe-shield"/>

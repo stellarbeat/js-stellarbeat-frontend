@@ -18,7 +18,6 @@
     import {Node} from "@stellarbeat/js-stellar-domain";
 
     @Component({
-        name: "simulate-new-node"
     })
     export default class SimulateNewNode extends Vue
     {
@@ -41,7 +40,7 @@
             this.store.addNodeToNetwork(node);
             this.$router.push(
                 {
-                    name: "quorum-monitor-node",
+                    name: "node-dashboard",
                     params: {publicKey: node.publicKey},
                     query: {"center": "1", "no-scroll": "1"},
                 },

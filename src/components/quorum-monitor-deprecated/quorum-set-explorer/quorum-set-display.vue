@@ -118,7 +118,7 @@
 
 <script lang="ts">
     import NodeActionBar from './node-action-bar.vue';
-    import AddValidatorsTable from './add-validators-table.vue';
+    import AddValidatorsTable from '../../node/simulation/add-validators-table.vue';
     import TomlConfigViewer from './toml-config-viewer.vue';
 
     import Vue from 'vue';

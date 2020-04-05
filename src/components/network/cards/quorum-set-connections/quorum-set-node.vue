@@ -57,7 +57,7 @@
                     return;//disable click on embedded graph
                 }
                 this.$router.push({
-                    name: 'quorum-monitor-node',
+                    name: 'node-dashboard',
                     params: {'publicKey': this.node.data.publicKey},
                     query: {'center': '1', "no-scroll": '0'}
                 });

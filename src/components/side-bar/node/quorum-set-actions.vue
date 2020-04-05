@@ -56,7 +56,7 @@
 
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import AddValidatorsTable
-        from '@/components/quorum-monitor-deprecated/quorum-set-explorer/add-validators-table.vue';
+        from '@/components/node/simulation/add-validators-table.vue';
     import Store from '@/store/Store';
 
     @Component({

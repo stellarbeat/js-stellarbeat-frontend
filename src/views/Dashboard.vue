@@ -41,57 +41,23 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import Graph from '../components/visual-navigator/graph/graph.vue';
-    import GraphLegend from '../components/visual-navigator/graph/graph-legend.vue';
-    import QuorumSetExplorer from '../components/quorum-monitor-deprecated/quorum-set-explorer/quorum-set-explorer.vue';
     import Search from '../components/node/search.vue';
     import Statistics from '../components/statistics.vue';
     import HaltingAnalysis from '@/components/node/halting-analysis/halting-analysis.vue';
     import {Node, Network, QuorumSet, PublicKey} from '@stellarbeat/js-stellar-domain';
     import {Component, Prop, Watch} from 'vue-property-decorator';
-    import UndoRedo from '@/components/node/UndoRedo.vue';
-    import FullValidatorTitle from '@/components/node/full-validator-title.vue';
-    import NodeList from '@/components/quorum-monitor-deprecated/quorum-set-explorer/node-list.vue';
     import Store from '@/store/Store';
-    import SearchCard from '@/components/node/node-cards/search-card.vue';
-    import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
-    import QuorumSetExplorerCard from '@/components/node/node-cards/quorum-set-explorer-card.vue';
-    import HistoryCard from '@/components/charts/history-card.vue';
-    import SimulateNewNode from '@/components/quorum-monitor-deprecated/quorum-set-explorer/simulate-new-node.vue';
-    import CrawlTime from '@/components/crawl-time.vue';
-    import OrganizationList from '@/components/quorum-monitor-deprecated/quorum-set-explorer/organization-list.vue';
     import NetworkVisualNavigator from '@/components/visual-navigator/network-visual-navigator.vue';
-    import QuorumSetConnections from '@/components/network/cards/quorum-set-connections/quorum-set-connections.vue';
-    import ValidatorsServerLoad from '@/components/network/cards/validator-load.vue';
-    import NodesCountryDistribution from '@/components/network/cards/nodes-country-distribution.vue';
-    import NodesVersions from '@/components/network/cards/nodes-versions.vue';
     import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
 
     @Component({
         name: 'dashboard',
         components: {
             NetworkSideBar,
-            NodesVersions,
-            NodesCountryDistribution,
-            ValidatorsServerLoad,
-            QuorumSetConnections,
             NetworkVisualNavigator,
-            OrganizationList,
-            HistoryCard,
-            SimulateNewNode,
-            QuorumSetExplorerCard,
-            NetworkGraphCard,
-            SearchCard,
-            NodeList,
-            FullValidatorTitle,
-            UndoRedo,
-            QuorumSetExplorer,
-            Graph,
-            GraphLegend,
             Search,
             Statistics,
-            HaltingAnalysis,
-            CrawlTime
+            HaltingAnalysis
         }
     })
     export default class Dashboard extends Vue {

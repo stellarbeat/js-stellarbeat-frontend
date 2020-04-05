@@ -12,7 +12,7 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component} from "vue-property-decorator";
-    import UndoRedo from '@/components/node/UndoRedo.vue';
+    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import Search from '@/components/node/search.vue';
 
     @Component({
