@@ -108,6 +108,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
 
         get markers(): Marker[] {
             return this.store.network.nodes
+                .filter(this.store.watcherNodeFilter)
                 .filter(node => node.geoData.latitude)
                 .map(geoNode => {
                     return {

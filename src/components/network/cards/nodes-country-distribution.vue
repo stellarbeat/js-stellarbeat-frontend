@@ -13,9 +13,11 @@
     import Chart from 'chart.js'
 
     import Vue from 'vue';
-    import {Component, Prop} from 'vue-property-decorator';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
 
     import {Network} from '@stellarbeat/js-stellar-domain';
+    import Store from '@/store/Store';
+    import {latLng} from 'leaflet';
 
     @Component({
         name: 'nodes-country-distribution',
@@ -24,12 +26,22 @@
     export default class NodesCountryDistribution extends Vue {
         public chart: Chart|null = null;
 
+        get store(): Store {
+            return this.$root.$data.store;
+        }
         get network(): Network {
-            return this.$root.$data.store.network;
+            return this.store.network;
+        }
+
+        @Watch('store.includeWatcherNodes')
+        protected onWatcherNodesOptionChanged(){
+            this.chart!.data.datasets![0].data = this.chartData;
+            this.chart!.update();
         }
 
         get sortedCountries() {
             let countries = this.network.nodes
+                .filter(this.store.watcherNodeFilter)
                 .filter(node => node.active)
                 .filter(node => node.geoData.countryName)
                 .map(node => node.geoData.countryName)
@@ -54,6 +66,17 @@
             });
         }
 
+        get chartData() {
+            return [
+                this.sortedCountries[0][1],
+                this.sortedCountries[1][1],
+                this.sortedCountries[2][1],
+                this.sortedCountries.slice(3).reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue[1];
+                },0)
+            ];
+        }
+
         initializeDoghnut() {
             if(this.sortedCountries.length === 0) {
                 return;
@@ -76,14 +99,7 @@
                             '#1bc98e', // success green
                             '#e4d836' // warning yellow
                         ],
-                        data: [
-                            this.sortedCountries[0][1],
-                            this.sortedCountries[1][1],
-                            this.sortedCountries[2][1],
-                            this.sortedCountries.slice(3).reduce((accumulator, currentValue) => {
-                                return accumulator + currentValue[1];
-                            },0)
-                        ],
+                        data: this.chartData
                     }]
                 },
 

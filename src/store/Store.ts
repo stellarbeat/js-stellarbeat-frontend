@@ -44,6 +44,12 @@ export default class Store {
     public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);
     public isHaltingAnalysisVisible: boolean = false;
+
+    public includeWatcherNodes: boolean = true;
+    public watcherNodeFilter = (node:Node) => {
+        return this.includeWatcherNodes || node.isValidator
+    };
+
     protected _haltingAnalysisPublicKey?: string = undefined;
 
     protected _uniqueId = 0;

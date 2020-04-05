@@ -17,9 +17,10 @@
 import Chart from 'chart.js';
 
 import Vue from 'vue';
-import {Component, Prop} from 'vue-property-decorator';
+import {Component, Prop, Watch} from 'vue-property-decorator';
 
 import {Network} from '@stellarbeat/js-stellar-domain';
+import Store from '@/store/Store';
 
 @Component({
     name: 'validators-server-load',
@@ -27,8 +28,12 @@ import {Network} from '@stellarbeat/js-stellar-domain';
 export default class ValidatorsServerLoad extends Vue {
     public chart: Chart|null = null;
 
+    get store(): Store {
+        return this.$root.$data.store;
+    }
+
     get network(): Network {
-        return this.$root.$data.store.network;
+        return this.store.network;
     }
 
     get overloadedBuckets() {
@@ -49,7 +54,7 @@ export default class ValidatorsServerLoad extends Vue {
             return buckets;
         };
         return this.network.nodes
-            .filter((node) => node.active && node.quorumSet.hasValidators())
+            .filter((node) => node.active && node.isValidator)
             .map((node) => node.statistics.overLoaded30DaysPercentage)
             .reduce(bucketReducer, buckets);
     }

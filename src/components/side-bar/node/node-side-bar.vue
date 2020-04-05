@@ -87,10 +87,10 @@
                             <h6 class="sb-navbar-heading mt-3">Options</h6>
                             <ul class="sb-nav-list">
                                 <li class="sb-nav-item">
-                                    <b-form-checkbox v-model="includeWatcherNodes" name="include-watcher-nodes-button"
+                                    <b-form-checkbox v-model="store.includeWatcherNodes" name="include-watcher-nodes-button"
                                                      class="sb-nav-item sb-nav-toggle"
                                                      switch>
-                                        Show watcher nodes
+                                        Watcher nodes
                                     </b-form-checkbox>
                                 </li>
                             </ul>
@@ -133,9 +133,6 @@
         }
     })
     export default class NodeSideBar extends Vue {
-        protected includeWatcherNodes: boolean = false;
-        protected validatorsExpanded: boolean = false;
-        protected organizationsExpanded: boolean = true;
         protected clipBoardAlert: number = 0;
 
         get store(): Store {
