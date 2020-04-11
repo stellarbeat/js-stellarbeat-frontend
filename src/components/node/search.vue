@@ -1,73 +1,101 @@
 <template>
     <div class="dropdown search">
-        <b-form-input class="form-control border-0 search-input" type="text" v-model.lazy="searchString" id="searchInput" placeholder="Search validators"
+        <b-form-input class="form-control search-input" type="text" v-model.lazy="searchString"
+                      id="searchInput" placeholder="Search"
                       autocomplete="off"
                       @keydown.down.native="onArrowDown"
                       @keydown.up.native="onArrowUp"
                       @keydown.enter.native.prevent.stop="onEnter">
         </b-form-input>
-        <div class="dropdown-menu" v-bind:class="{show: showSuggestions}"
+        <div class="dropdown-menu sb-dropdown-menu" v-bind:class="{show: showSuggestions}"
              aria-labelledby="searchInput">
             <a
                     class="dropdown-item"
-                    href="#" v-for="(node, i) in filteredList"
+                    href="#" v-for="(match, i) in filteredList"
                     :key="i"
-                    @click.prevent.stop="nodeSelected(node)"
+                    @click.prevent.stop="navigate(match)"
                     :class="{ 'active': i === arrowCounter }">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5  v-if="node.name !== undefined" class="mb-1 mr-2">{{ node.name }}</h5>
-                    <h5 v-else> {{node.publicKey | truncate(20)}}</h5>
+                <div class="w-100">
+                    <h5 class="mb-1 mr-2 name">{{ match.name | truncate(30) }}</h5>
                 </div>
-                <small v-if="node.name !== undefined">{{node.publicKey | truncate(20)}}</small>            </a>
+                <small>{{match.type}}</small>
+            </a>
+        </div>
+
+        <div class="input-icon-addon">
+            <i class="fe fe-search"></i>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 
-    import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
+    import Vue from 'vue';
+    import {Component, Prop} from 'vue-property-decorator';
 
-    import {Node} from "@stellarbeat/js-stellar-domain";
-    import Store from "@/store/Store";
+    import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
+    import Store from '@/store/Store';
+    import {RawLocation} from 'vue-router';
 
+    type Match =  { name: string, type: string, route: RawLocation };
     @Component({
-        name: "search"
+        name: 'search'
     })
     export default class Search extends Vue {
-        protected nodes: Node[] = this.store.network.nodes.filter(
-            node => node.isValidator
-        );
-
-        protected searchString: string = "";
+        protected searchString: string = '';
         protected arrowCounter: number = -1;
 
-        get store():Store {
+        get store(): Store {
             return this.$root.$data.store;
         }
 
+        get network(): Network {
+            return this.store.network;
+        }
+
         get showSuggestions() {
-            if (this.searchString === "") {
+            if (this.searchString === '') {
                 return false;
             }
 
             return this.filteredList.length !== 0;
         }
 
-        get filteredList() {
-            return this.nodes.filter((node) => {
-                return node.displayName.toLowerCase().includes(this.searchString.toLowerCase()) ||
-                    node.publicKey!.toLowerCase().includes(this.searchString.toLowerCase());
-            });
+        get filteredList(): Match[] {
+            let match = (text: string) => text.toLowerCase().includes(this.searchString.toLowerCase());
+
+            let matchedOrganizations = this.network.organizations.filter((organization) => {
+                return match(organization.name);
+            }).map(organization => {
+                    return {
+                        name: organization.name, type: 'organization', route: {
+                            name: 'organization-dashboard',
+                            params: {organizationId: organization.id},
+                            query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view}
+                        } as RawLocation
+                    };
+                }
+            );
+
+            let matchedNodes = this.network.nodes.filter((node) => {
+                return match(node.displayName) || match(node.publicKey!);
+            }).map(node => {
+                    return {
+                        name: node.displayName, type: node.isValidator ? 'validator node' : 'watcher node', route: {
+                            name: 'node-dashboard',
+                            params: {publicKey: node.publicKey!},
+                            query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view}
+                        } as RawLocation
+                    };
+                }
+            );
+
+            return matchedOrganizations.concat(matchedNodes).slice(0,10);
         }
 
-        protected nodeSelected(node: Node) {
-            this.searchString = "";
-            this.$router.push({
-                name: "node-dashboard",
-                params: {publicKey: node.publicKey!},
-                query: {"center": "1", 'no-scroll': '1', 'view': this.$route.query.view}
-            });
+        protected navigate(match: Match) {
+            this.searchString = '';
+            this.$router.push(match.route);
         }
 
         protected onArrowDown() {
@@ -84,7 +112,7 @@
 
         protected onEnter() {
             if (this.arrowCounter !== -1) {
-                this.nodeSelected(this.filteredList[this.arrowCounter]);
+                this.navigate(this.filteredList[this.arrowCounter]);
             }
 
             this.arrowCounter = -1;
@@ -97,12 +125,12 @@
         width: 100%;
     }
 
-    .search-input {
-        font-size: 20px;
-    }
-
     .dropdown-menu {
-        min-width: 100%;
+        width: 100%;
         z-index: 10000;
+        margin-top: 0!important;
+    }
+    .name {
+        white-space: normal;
     }
 </style>

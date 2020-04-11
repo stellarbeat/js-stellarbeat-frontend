@@ -25,11 +25,6 @@
                                 </div>
                             </div>
                             <b-navbar-toggle class="my-navbar-toggle mb-2" target="nav_collapse"></b-navbar-toggle>
-
-                            <!--a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse"
-                               data-target="#headerMenuCollapse">
-                                <span class="header-toggler-icon"></span>
-                            </a!-->
                         </div>
                     </div>
                 </div>
@@ -68,6 +63,11 @@
                             </ul>
                             <!--crawl-time></crawl-time!-->
 
+                        </div>
+                        <div class="col-lg-3 ml-auto">
+                            <form class="input-icon my-3 my-lg-0">
+                                <search v-if="!store.isLoading"/>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -122,10 +122,11 @@
     import Vue from "vue";
     import {Component} from "vue-property-decorator";
     import CrawlTime from '@/components/crawl-time.vue';
+    import Search from '@/components/node/search.vue';
 
     @Component({
         name: "app",
-        components: {CrawlTime},
+        components: {Search, CrawlTime},
         metaInfo: {
             title: "Stellarbeat.io - Stellar network visibility",
             meta: [
