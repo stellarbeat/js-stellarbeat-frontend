@@ -98,5 +98,6 @@ export default class Statistics extends Vue {
     .info {
         float: right;
         padding-bottom: 1px;
+        opacity: 0.5;
     }
 </style>

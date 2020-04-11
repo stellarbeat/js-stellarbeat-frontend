@@ -4,7 +4,7 @@
             <div class="spacer h-100"></div>
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
-                    <router-link :to="{path: $route.path, query: {'view': 'map'}}"
+                    <router-link :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
                                  :class="['map', undefined].includes($route.query.view)  && 'router-link-exact-active'"
                                  class="sb-tab-nav-link"
                     >Map
@@ -12,7 +12,7 @@
                 </li>
                 <li class="sb-tab-nav-item">
                     <router-link :to="{path: $route.path,
-                    query: {'view': 'graph'}}"
+                    query: {'view': 'graph', 'no-scroll': '1'}}"
                                  :class="$route.query.view === 'graph' && 'router-link-exact-active'"                                 class="sb-tab-nav-link">Graph
                     </router-link>
                 </li>
