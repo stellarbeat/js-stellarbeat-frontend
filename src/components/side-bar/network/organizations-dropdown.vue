@@ -61,7 +61,7 @@
             this.$router.push({
                 name: "organization-dashboard",
                 params: {organizationId: organization.id},
-                query: {view: this.$route.query.view}
+                query: {view: this.$route.query.view, 'no-scroll': '1'}
             });
         }
 

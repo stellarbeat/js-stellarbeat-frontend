@@ -94,6 +94,7 @@
                                     </b-form-checkbox>
                                 </li>
                             </ul>
+                            <undo-redo v-if="store.isSimulation || store.hasRedo"/>
                             <b-modal lazy size="lg" id="tomlExportModal"
                                      title="Stellar Core Configuration" ok-only ok-title="Close"
                             >
@@ -121,9 +122,11 @@
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
     import OrganizationValidatorsDropdown from '@/components/side-bar/node/organization-validators-dropdown.vue';
     import ShieldCheck from '@/components/svg/shield-check.vue';
+    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
 
     @Component({
         components: {
+            UndoRedo,
             ShieldCheck,
             OrganizationValidatorsDropdown,
             OrganizationsDropdown,

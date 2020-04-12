@@ -7,8 +7,8 @@
             <div class="card pt-0" >
                 <div class="card-header px-4 sb-card-header">
                     <network class="sb-card-title-icon"/>
-                    <h3 class="card-title sb-card-title">
-                        Stellar Public Network</h3>
+                    <h1 class="card-title sb-card-title">
+                        Stellar Public Network</h1>
                 </div>
                 <div class="card-body px-4 pt-1">
                     <div class="sb-nav-bar">
@@ -53,6 +53,7 @@
                                 </b-form-checkbox>
                             </li>
                         </ul>
+                        <undo-redo v-if="store.isSimulation || store.hasRedo"/>
                         <b-modal lazy size="lg" id="tomlExportModal"
                                  title="Stellar Core Configuration" ok-only ok-title="Close"
                         >
@@ -77,9 +78,11 @@
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
     import Network from '@/components/svg/network.vue';
+    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
 
     @Component({
         components: {
+            UndoRedo,
             Network,
             OrganizationsDropdown,
             NavLink, SimulateNewNode, FullValidatorTitle, ValidatorsDropdown

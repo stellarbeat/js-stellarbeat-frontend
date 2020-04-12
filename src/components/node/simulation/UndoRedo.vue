@@ -1,30 +1,32 @@
 <template>
-    <div class="btn-group" role="group" aria-label="UndoRedo">
-        <button type="button" class="btn btn-secondary btn-no-border"
-                v-b-popover.hover.top="'Undo change'"
-                v-on:click="onUndoUpdate" :disabled="!store.hasUndo">
-            <i class="fe fe-rotate-ccw"></i>
-        </button>
-        <button type="button" class="btn btn-secondary btn-no-border"
-                v-b-popover.hover.top="'Reset simulation'"
+    <div class="btn-group undo-redo" role="group" aria-label="UndoRedo">
+        <div v-b-popover.hover.bottomright="'Undo change'">
+            <button type="button" class="btn btn-secondary btn-icon"
+                    v-on:click="onUndoUpdate" :disabled="!store.hasUndo">
+                <i class="fe fe-rotate-ccw"></i>
+            </button>
+        </div>
+        <button type="button" class="btn btn-secondary"
                 v-on:click="onReset" :disabled="!store.hasUndo">
-            Reset
+            Reset simulation
         </button>
-        <button type="button" class="btn btn-secondary btn-no-border"
-                v-b-popover.hover.top="'Redo change'"
-                v-on:click="onRedoUpdate"
-                :disabled="!store.hasRedo">
-            <i class="fe fe-rotate-cw"></i>
-        </button>
+        <div v-b-popover.hover.bottomleft="'Redo change'"
+        >
+            <button type="button" class="btn btn-secondary btn-icon"
+                    v-on:click="onRedoUpdate"
+                    :disabled="!store.hasRedo">
+                <i class="fe fe-rotate-cw"></i>
+            </button>
+        </div>
     </div>
 </template>
 <script lang="ts">
-    import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
-    import Store from "@/store/Store";
+    import Vue from 'vue';
+    import {Component, Prop} from 'vue-property-decorator';
+    import Store from '@/store/Store';
 
     @Component({
-        name: "UndoRedo"
+        name: 'UndoRedo'
     })
     export default class UndoRedo extends Vue {
         get store(): Store {
@@ -53,8 +55,8 @@
                 )) {
                 this.$router.push(
                     {
-                        name: "network-dashboard",
-                        query: {"no-scroll": "1"}
+                        name: 'network-dashboard',
+                        query: {'no-scroll': '1'}
 
                     },
                 );
@@ -66,5 +68,8 @@
 <style scoped>
     .btn-no-border {
         border: none;
+    }
+    .undo-redo {
+        opacity: 0.75;
     }
 </style>

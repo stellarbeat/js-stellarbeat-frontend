@@ -25,6 +25,7 @@
                     <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs" :key="breadCrumbKey">
                     </b-breadcrumb>
                 </transition>
+                <simulation-badge class="mx-2"/>
             </div>
         </div>
         <div class="card-body py-3 px-3 border-top" style="height: 450px">
@@ -44,10 +45,11 @@
     import Store from '@/store/Store';
     import WorldMap from '@/components/visual-navigator/world-map.vue';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
+    import SimulationBadge from '@/components/simulation-badge.vue';
 
     @Component({
         name: 'network-visual-navigator',
-        components: {NetworkGraphCard, WorldMap}
+        components: {SimulationBadge, NetworkGraphCard, WorldMap}
     })
     export default class NetworkVisualNavigator extends Vue {
         @Prop({default: 'map'})
@@ -157,5 +159,6 @@
     .sb-bread-crumbs-container {
         display: flex;
         flex-grow: 1;
+        align-items: center;
     }
 </style>

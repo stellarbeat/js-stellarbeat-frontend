@@ -1,5 +1,12 @@
 <template>
     <div>
+        <div class="page-header d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+                <h1 class="page-title"> Dashboard</h1>
+                <simulation-badge/>
+            </div>
+            <crawl-time class=""/>
+        </div>
         <Statistics :network="network"/>
         <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
             <div class="col-12">
@@ -49,10 +56,14 @@
     import Store from '@/store/Store';
     import NetworkVisualNavigator from '@/components/visual-navigator/network-visual-navigator.vue';
     import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
+    import CrawlTime from '@/components/crawl-time.vue';
+    import SimulationBadge from '@/components/simulation-badge.vue';
 
     @Component({
         name: 'dashboard',
         components: {
+            SimulationBadge,
+            CrawlTime,
             NetworkSideBar,
             NetworkVisualNavigator,
             Search,
@@ -62,7 +73,7 @@
     })
     export default class Dashboard extends Vue {
         @Prop({default: 'map'})
-        public view!:string;
+        public view!: string;
 
         @Watch('$route')
         public on$routeChanged(to: any) {

@@ -1,11 +1,12 @@
 <template>
     <div>
         <div>
-            <div class="page-header">
-                <h1 class="page-title">
-                    Available nodes
-                </h1>
-                <crawl-time/>
+            <div class="page-header d-flex justify-content-between">
+                <div class="d-flex align-items-center">
+                    <h1 class="page-title">Nodes</h1>
+                    <simulation-badge/>
+                </div>
+                <crawl-time class=""/>
             </div>
             <div class="card mb-2 p-1">
                 <div class="card-header">
@@ -118,10 +119,12 @@ Age = Time since discovery
     import {Component, Prop} from "vue-property-decorator";
     import {Network, Node} from "@stellarbeat/js-stellar-domain";
     import CrawlTime from '@/components/crawl-time.vue';
+    import Store from '@/store/Store';
+    import SimulationBadge from '@/components/simulation-badge.vue';
 
     @Component({
         name: "nodes-table",
-        components: {CrawlTime},
+        components: {SimulationBadge, CrawlTime},
         metaInfo: {
             title: "Nodes overview - Stellarbeat.io",
             meta: [
@@ -160,6 +163,10 @@ Age = Time since discovery
         public network!: Network;
         @Prop()
         public isLoading!: boolean;
+
+        get store():Store {
+            return this.$root.$data.store;
+        }
 
         get nodes(): any[] {
             return this.network.nodes
