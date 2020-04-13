@@ -21,10 +21,10 @@
                 <i class="dropdown-icon fe fe-cloud-lightning"></i>
                 Perform halting analysis
             </b-dropdown-item>
-            <b-dropdown-item v-clipboard:copy="node.publicKey" @click.prevent.stop>
+            <b-dropdown-item-button v-on:click.prevent.stop="copyPublicKey">
                 <i class="dropdown-icon fe fe-clipboard"></i>
-                Copy publickey
-            </b-dropdown-item>
+                Copy public key
+            </b-dropdown-item-button>
         </b-dropdown>
 </template>
 
@@ -45,6 +45,10 @@
 
         get store():Store {
             return this.$root.$data.store;
+        }
+
+        copyPublicKey() {
+            this.$copyText(this.node.publicKey!);
         }
     }
 </script>

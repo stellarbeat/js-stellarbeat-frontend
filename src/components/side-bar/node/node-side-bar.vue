@@ -67,7 +67,7 @@
                                         Copied public key to clipboard!
                                     </b-alert>
                                     <nav-link
-                                            title="Copy publickey"
+                                            title="Copy public key"
                                             :show-icon="true"
                                             icon="fe-clipboard"
                                             v-clipboard:copy="selectedNode.publicKey"
