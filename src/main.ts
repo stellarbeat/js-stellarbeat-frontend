@@ -5,7 +5,7 @@ import SimpleAnalytics from "simple-analytics-vue";
 import VueTruncate from 'vue-truncate-filter';
 import 'tabler-ui/dist/assets/css/dashboard.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import BootstrapVue from 'bootstrap-vue';
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import Meta from 'vue-meta';
 import * as Sentry from '@sentry/browser';
 // Importing the global css file
@@ -36,6 +36,7 @@ if (isProd) {
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 Vue.use(Meta);
 Vue.use(SimpleAnalytics, { skip: !isProd });
 Vue.use(VueScrollTo);

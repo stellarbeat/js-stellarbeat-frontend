@@ -5,11 +5,19 @@
                 mode="out-in"
         >
             <div class="card pt-0" :key="selectedOrganization.id">
-                <div class="card-header px-4 sb-card-header">
-                    <shield-check v-if="selectedOrganization.isTierOneOrganization"
-                                  v-b-tooltip.hover title="Tier One Organization" class="sb-card-title-icon"/>
-                    <h3 class="card-title sb-card-title">
-                        {{selectedOrganization.name}}</h3>
+                <div class="card-header sb-card-header inverted d-flex align-items-start">
+                    <h3 class="title-icon">
+                        <b-icon-building scale="0.8"
+                                        class="bg-success rounded mr-1" variant="light"/>
+                    </h3>
+                    <!--TODO: failing org color!-->
+                    <div class="d-flex flex-column">
+                        <h3 class="card-title sb-card-title">
+                            {{selectedOrganization.name}}
+                        </h3>
+
+                        <h6 class="sb-card-subtitle">Organization</h6>
+                    </div>
                 </div>
                 <div class="card-body px-4 pt-1">
                     <div class="sb-nav-bar">
@@ -105,4 +113,7 @@
     }
 </script>
 <style scoped>
+    .sb-bg-primary {
+        background-color: #1997c6;
+    }
 </style>

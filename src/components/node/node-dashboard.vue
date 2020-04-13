@@ -2,6 +2,9 @@
     <div>
         <div class="row row-cards row-deck">
             <div class="col-md-6 col-lg-4">
+                <node-profile :node="selectedNode"></node-profile>
+            </div>
+            <div class="col-md-6 col-lg-4">
                 <history-card
                         :subject="'Validating'"
                         :entityId="selectedNode.publicKey"
@@ -45,9 +48,10 @@
     import HistoryCard from '@/components/charts/history-card.vue';
     import {PublicKey} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
+    import NodeProfile from '@/components/node/node-cards/node-profile.vue';
 
     @Component({
-        components: {HistoryCard}
+        components: {NodeProfile, HistoryCard}
     })
 
     export default class NodeDashboard extends Vue {

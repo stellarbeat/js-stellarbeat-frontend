@@ -167,6 +167,11 @@
         }
     }
 
+    .sb-card-title {
+        line-height: 1!important;
+        margin-bottom: 2px!important;
+    }
+
     .sb-card-title-icon {
         opacity: 0.8;
         color: #1997c6;
@@ -174,13 +179,21 @@
 
     .sb-card-header {
         border: none !important;
-        margin-top: 10px;
-        margin-bottom: 0px;
-        margin-left: 4px;
+        margin-top: 18px;
+        margin-bottom: 5px;
+        margin-left: 0px;
+        padding-left: 21px!important;
     }
 
-    .sb-card-title {
-        text-transform: capitalize;
+    .title-icon {
+        font-size: 2rem;
+        margin-bottom: 0;
+    }
+
+    .sb-card-subtitle {
+        opacity: 0.7;
+        font-weight: 500;
+        margin-bottom: 0;
     }
 
     .sb-navbar-heading {

@@ -1,21 +1,26 @@
 <template>
     <div>
-        <div class="card pt-0">
+        <div class="card pt-0 sidebar-card">
             <transition
                     name="fade"
                     mode="out-in"
             >
                 <div :key="selectedNode.publicKey">
-                    <div class="card-header px-4 sb-card-header">
-                        <shield-check v-if="selectedNode.isFullValidator"
-                                      v-b-tooltip.hover title="Full Validator" class="sb-card-title-icon"/>
-                        <h3 class="card-title sb-card-title">
-                            {{getDisplayName(selectedNode)}}</h3>
-                    </div>
-                    <div v-if="network.isNodeFailing(selectedNode)"
-                         class="card-alert alert alert-danger mb-2" show>
-                        <i class="fe fe-alert-triangle"></i>
-                        Node not validating {{network.isQuorumSetFailing(selectedNode, selectedNode.quorumSet) ? ": quorumset not reaching threshold" : ""}}
+                    <div class="card-header sb-card-header d-flex inverted d-flex align-items-start">
+                        <h3 class="title-icon">
+                            <b-icon-bullseye scale="0.8" v-b-tooltip.hover
+                                             :class="backGroundClass" class="rounded mr-1" variant="light"/>
+                        </h3>
+
+                        <div class="d-flex flex-column">
+                            <h3 class="card-title sb-card-title" :class="colorClass">
+                                {{getDisplayName(selectedNode)}}
+                            </h3>
+
+                            <h6 class="sb-card-subtitle">
+                                {{nodeType}}
+                            </h6>
+                        </div>
                     </div>
                     <div class="card-body px-4 pt-1">
                         <div class="sb-nav-bar">
@@ -87,7 +92,8 @@
                             <h6 class="sb-navbar-heading mt-3">Options</h6>
                             <ul class="sb-nav-list">
                                 <li class="sb-nav-item">
-                                    <b-form-checkbox v-model="store.includeWatcherNodes" name="include-watcher-nodes-button"
+                                    <b-form-checkbox v-model="store.includeWatcherNodes"
+                                                     name="include-watcher-nodes-button"
                                                      class="sb-nav-item sb-nav-toggle"
                                                      switch>
                                         Watcher nodes
@@ -160,6 +166,24 @@
             return this.store.network;
         }
 
+        get backGroundClass() {
+            return {
+                'bg-success': !this.network.isNodeFailing(this.selectedNode!),
+                'bg-danger': this.network.isNodeFailing(this.selectedNode!)
+            };
+        }
+
+        get colorClass() {
+            return {
+                'success': !this.network.isNodeFailing(this.selectedNode!),
+                'danger': this.network.isNodeFailing(this.selectedNode!)
+            };
+        }
+
+        get nodeType() {
+            return this.selectedNode!.isValidator ? (this.selectedNode!.isFullValidator ? 'Full Validator' : 'Validator') : 'Watcher';
+        }
+
         //todo: move to domain
         get networkTransitiveQuorumSetNodes() {
             return Array.from(this.network.graph.networkTransitiveQuorumSet)
@@ -188,4 +212,10 @@
     }
 </script>
 <style scoped>
+    .success {
+    }
+
+    .danger {
+        color: #cd201f
+    }
 </style>
