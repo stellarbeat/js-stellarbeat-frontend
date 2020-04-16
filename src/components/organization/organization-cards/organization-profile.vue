@@ -66,14 +66,26 @@
                     </a>
                 </li>
             </ul>
+            <b-alert :show="hasWarnings" variant="warning">
+                <b-icon-exclamation-triangle/> Not all history archives up-to-date
+            </b-alert>
         </div>
     </div>
 </template>
 <script lang="ts">
-    export default {
-        name: 'OrganizationProfile',
-        props: {
-            organization: {}
+    import Vue from 'vue';
+    import {Organization} from '@stellarbeat/js-stellar-domain';
+    import {Component, Prop} from 'vue-property-decorator';
+
+    @Component({})
+    export default class OrganizationProfile extends Vue {
+        @Prop()
+        organization!: Organization;
+
+        get hasWarnings() {
+            return this.organization.validators
+                .map(validator => this.$root.$data.store.network.getNodeByPublicKey(validator)!)
+                .some(validator => validator.historyUrl && !validator.isFullValidator)
         }
     };
 </script>

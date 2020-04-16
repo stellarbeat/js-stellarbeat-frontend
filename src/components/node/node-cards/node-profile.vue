@@ -19,8 +19,9 @@
                            :center-text="+node.statistics.validating24HoursPercentage.toFixed(2) + '%'"
                            /!-->
             </div>
-
-
+            <b-alert :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning">
+                <b-icon-exclamation-triangle/> History archive not up-to-date
+            </b-alert>
         </div>
     </div>
 </template>
