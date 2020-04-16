@@ -8,6 +8,9 @@
                     :bootstrap-styling="true"/>
         <vue-timepicker v-if="showTime" hide-clear-button input-width="6em" input-class="timepicker-no-border-right"
                         v-model="timePickerTime" @input="timeInputHandler"/>
+        <b-button @click="timeTravel" variant="secondary" size="md" class="time-travel-btn btn-primary" v-b-tooltip.hover
+                  title="Travel to selected time"><i class="fe fe-clock"></i>
+        </b-button>
         <b-button size="sm" v-on:click="$emit('goForward')" class="right"><i class="fe fe-chevron-right"/>
         </b-button>
     </div>
@@ -90,5 +93,11 @@
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
         height: 38px;
+    }
+
+    .time-travel-btn {
+        color: white;
+        margin-bottom: 0.3rem !important;
+        border-radius: 0;
     }
 </style>

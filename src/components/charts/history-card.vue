@@ -58,10 +58,6 @@
                                 class="mr-1 mb-1"
                         >
                         </date-navigator>
-                        <b-button @click="timeTravel" variant="secondary" size="md" class="time-travel-btn" v-b-tooltip.hover
-                                  title="Travel to selected time"><i class="fe fe-clock"></i>
-                            Travel
-                        </b-button>
                     </div>
                 </div>
             </div>
@@ -326,8 +322,5 @@
 <style scoped>
     .dimmer.active .dimmer-content {
         opacity: 0.4;
-    }
-    .time-travel-btn {
-        margin-bottom: 0.3rem !important;
     }
 </style>
