@@ -1,5 +1,9 @@
 <template>
     <div class="card card-profile">
+
+        <b-alert :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning" class="mb-0">
+            <b-icon-exclamation-triangle/> History archive not up-to-date
+        </b-alert>
         <div class="card-body d-flex flex-column justify-content-center">
             <div class="text-center">
                 <h3 class="mb-1">
@@ -17,9 +21,6 @@
                            :value="node.index" :max-value="1" title="Node index"
                            :centerText="+node.index.toFixed(2)"/>
             </div>
-            <b-alert :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning">
-                <b-icon-exclamation-triangle/> History archive not up-to-date
-            </b-alert>
         </div>
     </div>
 </template>
