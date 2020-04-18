@@ -10,19 +10,19 @@
                 <tbody>
                 <tr class="text-gray " v-if="node.homeDomain">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Domain</td>
-                    <td class="px-0">{{node.homeDomain}}</td>
+                    <td class="px-0 text-right">{{node.homeDomain}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.organizationId">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Organization</td>
-                    <td class="px-0">{{network.getOrganizationById(node.organizationId).name}}</td>
+                    <td class="px-0 text-right">{{network.getOrganizationById(node.organizationId).name}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.historyUrl">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">History url</td>
-                    <td class="px-0">{{node.historyUrl}}</td>
+                    <td class="px-0 text-right">{{node.historyUrl}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.alias">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Alias</td>
-                    <td class="px-0">{{node.alias}}</td>
+                    <td class="px-0 text-right">{{node.alias}}</td>
                 </tr>
                 </tbody>
             </table>

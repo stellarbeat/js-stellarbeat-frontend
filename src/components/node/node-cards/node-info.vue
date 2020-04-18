@@ -10,7 +10,7 @@
                 <tbody>
                 <tr class="text-gray ">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Public key</td>
-                    <td class="px-0">{{node.publicKey.substr(0, 12)}}...{{node.publicKey.substr(50, 100)}}
+                    <td class="px-0 text-right">{{node.publicKey.substr(0, 7)}}...{{node.publicKey.substr(51, 100)}}
                         <b-button size="sm" v-b-tooltip:hover.top="'Copy to clipboard'" v-clipboard:copy="node.publicKey">
                             <b-icon-clipboard />
                         </b-button>
@@ -18,19 +18,19 @@
                 </tr>
                 <tr class="text-gray" v-if="node.key">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">ip:port</td>
-                    <td class="px-0">{{node.key}}</td>
+                    <td class="px-0 text-right">{{node.key}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.geoData.countryName">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Country</td>
-                    <td class="px-0">{{node.geoData.countryName}}</td>
+                    <td class="px-0 text-right">{{node.geoData.countryName}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.isp">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">ISP</td>
-                    <td class="px-0">{{node.isp}}</td>
+                    <td class="px-0 text-right">{{node.isp}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.dateDiscovered">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Discovery date</td>
-                    <td class="px-0">{{node.dateDiscovered.toDateString()}}</td>
+                    <td class="px-0 text-right" >{{node.dateDiscovered.toDateString()}}</td>
                 </tr>
                 </tbody>
             </table>

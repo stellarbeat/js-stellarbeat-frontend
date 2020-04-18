@@ -12,7 +12,7 @@
                 </h3>
             </div>
             <div class="d-flex flex-row flex-wrap justify-content-center">
-                    <gauge width="100px" height="100px"
+                    <gauge width="120px" height="120px"
                            :value="node.index" :max-value="1" title="Node index"
                            :centerText="+node.index.toFixed(2)"/>
             </div>
