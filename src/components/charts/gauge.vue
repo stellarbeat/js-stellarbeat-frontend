@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex flex-column justify-content-around align-items-center">
-        <div class="relative">
+    <div class="d-flex flex-column align-items-center">
+        <div class="relative mb-2">
             <canvas :height="height" :width="width" ref="chart"/>
             <div class="absolute-center text-center">
                 {{centerText}}

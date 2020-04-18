@@ -1,8 +1,14 @@
 <template>
     <div>
         <div class="row row-cards row-deck">
-            <div class="col-md-6 col-lg-4">
-                <node-profile :node="selectedNode"></node-profile>
+            <div class="col-md-6 col-lg-6 col-xl-4">
+                <node-profile :node="selectedNode"/>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4">
+                <node-statistics-24-hours :node="selectedNode"/>
+            </div>
+            <div class="col-md-6 col-lg-6 col-xl-4">
+                <node-core-info :node="selectedNode"/>
             </div>
             <div class="col-md-6 col-lg-4">
                 <history-card
@@ -49,9 +55,11 @@
     import {PublicKey} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import NodeProfile from '@/components/node/node-cards/node-profile.vue';
+    import NodeStatistics24Hours from '@/components/node/node-cards/node-statistics-24-hours.vue';
+    import NodeCoreInfo from '@/components/node/node-cards/node-core-info.vue';
 
     @Component({
-        components: {NodeProfile, HistoryCard}
+        components: {NodeCoreInfo, NodeStatistics24Hours, NodeProfile, HistoryCard}
     })
 
     export default class NodeDashboard extends Vue {

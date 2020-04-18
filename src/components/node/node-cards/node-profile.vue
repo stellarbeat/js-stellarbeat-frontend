@@ -39,7 +39,6 @@
     export default class NodeProfile extends Vue {
         @Prop()
         protected node!: Node;
-        public chart: Chart | null = null;
 
         get store(): Store {
             return this.$root.$data.store;
