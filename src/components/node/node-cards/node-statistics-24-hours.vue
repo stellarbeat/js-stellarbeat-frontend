@@ -1,22 +1,31 @@
 <template>
     <div class="card">
-        <div class="card-header">
-            <h1 class="card-title">24H Statistics</h1>
-        </div>
 
         <div class="card-body d-flex flex-row flex-wrap justify-content-around align-items-center p-4">
-                    <gauge v-if="node.isValidator" width="100px" height="100px"
-                           :value="node.statistics.validating24HoursPercentage" :max-value="100" title="24H Validating"
-                           :centerText="+node.statistics.validating24HoursPercentage.toFixed(2) + '%'"
-                    value-color="#5eba00" negative-value-color="#cd201f"/>
-                <gauge v-else="node.isValidator" width="100px" height="100px"
-                       :value="node.statistics.active24HoursPercentage" :max-value="100" title="24H Active"
-                       :centerText="+node.statistics.active24HoursPercentage.toFixed(2) + '%'"
-                       value-color="#5eba00" negative-value-color="#cd201f"/>
-                <gauge width="100px" height="100px"
-                       :value="node.statistics.overLoaded24HoursPercentage" :max-value="100" title="24H Overloaded"
-                       :centerText="+node.statistics.overLoaded24HoursPercentage.toFixed(2) + '%'"
-                       value-color="#cd201f" negative-value-color="#5eba00"/>
+            <gauge v-if="node.isValidator" width="90px" height="90px"
+                   :value="node.statistics.validating24HoursPercentage" :max-value="100" title="24H Validating"
+                   :centerText="+node.statistics.validating24HoursPercentage.toFixed(2) + '%'"
+                   value-color="#5eba00" negative-value-color="#cd201f"/>
+            <gauge v-else="node.isValidator" width="90px" height="90px"
+                   :value="node.statistics.active24HoursPercentage" :max-value="100" title="24H Active"
+                   :centerText="+node.statistics.active24HoursPercentage.toFixed(2) + '%'"
+                   value-color="#5eba00" negative-value-color="#cd201f"/>
+            <gauge width="90px" height="90px"
+                   :value="node.statistics.overLoaded24HoursPercentage" :max-value="100" title="24H Overloaded"
+                   :centerText="+node.statistics.overLoaded24HoursPercentage.toFixed(2) + '%'"
+                   value-color="#cd201f" negative-value-color="#5eba00"/>
+            <gauge v-if="node.isValidator" width="90px" height="90px"
+                   :value="node.statistics.validating30DaysPercentage" :max-value="100" title="30D Validating"
+                   :centerText="+node.statistics.validating30DaysPercentage.toFixed(2) + '%'"
+                   value-color="#5eba00" negative-value-color="#cd201f"/>
+            <gauge v-else width="90px" height="90px"
+                   :value="node.statistics.active30DaysPercentage" :max-value="100" title="30D Active"
+                   :centerText="+node.statistics.active30DaysPercentage.toFixed(2) + '%'"
+                   value-color="#5eba00" negative-value-color="#cd201f"/>
+            <gauge width="90px" height="90px"
+                   :value="node.statistics.overLoaded30DaysPercentage" :max-value="100" title="30D Overloaded"
+                   :centerText="+node.statistics.overLoaded30DaysPercentage.toFixed(2) + '%'"
+                   value-color="#cd201f" negative-value-color="#5eba00"/>
         </div>
     </div>
 </template>
