@@ -4,8 +4,9 @@
             <div class="text-center">
                 <h3 class="mb-1">
                     <b-icon-shield v-b-tooltip.hover v-if="node.isFullValidator" title="Full validator"
-                                   class="border border-success bg-success rounded" variant="light"/>
+                                   class="rounded bg-success" variant="light"/>
                     {{node.displayName}}
+                    <b-badge v-show="network.isNodeFailing(node)" variant="danger">Failing</b-badge>
                 </h3>
                 <h4 class="card-subtitle mt-0">
                     {{node.publicKey.substr(0, 20)}}...{{node.publicKey.substr(50, 100)}}
@@ -48,6 +49,20 @@
         get network(): Network {
             return this.store.network;
         }
+
+        get colorClass() {
+            return {
+                'success': !this.network.isNodeFailing(this.node),
+                'danger': this.network.isNodeFailing(this.node)
+            };
+        }
+
+        get backGroundClass() {
+            return {
+                'bg-success': !this.network.isNodeFailing(this.node),
+                'bg-danger': this.network.isNodeFailing(this.node)
+            };
+        }
     };
 </script>
 
@@ -55,7 +70,9 @@
     li {
         margin-bottom: 5px;
     }
-
+    .danger {
+        color: #cd201f
+    }
     .title {
         font-size: 24px;
         line-height: 1.2;

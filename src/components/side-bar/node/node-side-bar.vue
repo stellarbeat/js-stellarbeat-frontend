@@ -9,12 +9,13 @@
                     <div class="card-header sb-card-header d-flex inverted d-flex align-items-start">
                         <h3 class="title-icon">
                             <b-icon-bullseye scale="0.8" v-b-tooltip.hover
-                                             :class="backGroundClass" class="rounded mr-1" variant="light"/>
+                                             class="bg-success rounded mr-1" variant="light"/>
                         </h3>
 
                         <div class="d-flex flex-column">
-                            <h3 class="card-title sb-card-title" :class="colorClass">
+                            <h3 class="card-title sb-card-title" >
                                 {{getDisplayName(selectedNode)}}
+                                <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger" style="vertical-align: bottom">Failing</b-badge>
                             </h3>
 
                             <h6 class="sb-card-subtitle">
