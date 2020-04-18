@@ -2,7 +2,7 @@
     <div class="card card-profile">
 
 
-        <div class="card-body d-flex flex-column justify-content-center p-4">
+        <div class="card-body d-flex flex-column justify-content-around p-4">
             <div class="text-center">
                 <h3 class="mb-1">
                     <b-icon-shield v-b-tooltip.hover v-if="node.isFullValidator" title="Full validator"
@@ -10,9 +10,6 @@
                     {{node.displayName}}
                     <b-badge v-show="network.isNodeFailing(node)" variant="danger">Failing</b-badge>
                 </h3>
-                <h4 class="card-subtitle mt-0">
-                    {{node.publicKey.substr(0, 20)}}...{{node.publicKey.substr(50, 100)}}
-                </h4>
             </div>
             <div class="d-flex flex-row flex-wrap justify-content-center">
                     <gauge width="100px" height="100px"

@@ -67,23 +67,6 @@
                                     />
                                 </li>
                                 <li class="sb-nav-item">
-                                    <b-alert
-                                            :show="clipBoardAlert"
-                                            dismissible
-                                            variant="info"
-                                            @dismissed="clipBoardAlert=0"
-                                    >
-                                        Copied public key to clipboard!
-                                    </b-alert>
-                                    <nav-link
-                                            title="Copy public key"
-                                            :show-icon="true"
-                                            icon="fe-clipboard"
-                                            v-clipboard:copy="selectedNode.publicKey"
-                                            v-on:click="clipBoardAlert = 1"
-                                    />
-                                </li>
-                                <li class="sb-nav-item">
                                     <nav-link
                                             :title="'Export configuration'"
                                             v-b-modal.tomlExportModal
@@ -146,8 +129,6 @@
         }
     })
     export default class NodeSideBar extends Vue {
-        protected clipBoardAlert: number = 0;
-
         get store(): Store {
             return this.$root.$data.store;
         }

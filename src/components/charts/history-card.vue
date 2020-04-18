@@ -15,9 +15,9 @@
             Error fetching data
         </div>
         <div class="card-body p-2">
-            <div v-bind:class="dimmerClass">
+            <div v-bind:class="dimmerClass" class="h-100">
                 <div class="loader"></div>
-                <div class="dimmer-content" ref="chartContainer">
+                <div class="dimmer-content h-100 d-flex flex-column align-items-center justify-content-center" ref="chartContainer">
                     <div v-if="rendered">
                         <ThirtyDayBarChart
                                 v-if="chartView === '30D'"
