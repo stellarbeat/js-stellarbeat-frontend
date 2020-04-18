@@ -72,6 +72,10 @@
                 },
                 // Configuration options go here
                 options: {
+                    animation: {
+                        duration: 0 // general animation time
+                    },
+                    responsiveAnimationDuration: 0, // animation duration after a resize
                     legend: {
                         display: false
                     },

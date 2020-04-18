@@ -89,9 +89,12 @@
                         display: false
                     },
                     animation: {
-                        animateScale: false,
-                        animateRotate: false,
+                        duration: 0 // general animation time
                     },
+                    hover: {
+                        animationDuration: 0 // duration of animations when hovering an item
+                    },
+                    responsiveAnimationDuration: 0, // animation duration after a resize
                     scales: {
                         gridLines: {
                             display: false,

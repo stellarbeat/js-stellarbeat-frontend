@@ -18,7 +18,7 @@
                 </tr>
                 <tr class="text-gray" v-if="node.historyUrl">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">History url</td>
-                    <td class="px-0 text-right">{{node.historyUrl}}</td>
+                    <td class="px-0 flex-wrap text-right wrap-word">{{node.historyUrl}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.alias">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Alias</td>
@@ -55,5 +55,8 @@
 </script>
 
 <style scoped>
-
+.wrap-word {
+    overflow-wrap: break-word;
+    max-width: 20px;
+}
 </style>
