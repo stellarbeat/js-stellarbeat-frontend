@@ -79,6 +79,12 @@
         canGoBack() {
             return this.selectedDate > this.minSelectedDate;
         }
+
+        async timeTravel() {
+            this.store.isLoading = true;
+            await this.store.fetchData(this.selectedDate);
+            this.store.isLoading = false;
+        }
     }
 </script>
 

@@ -13,7 +13,7 @@
             </div>
             <div class="d-flex flex-row flex-wrap justify-content-center">
                     <gauge width="100px" height="100px"
-                           :value="node.index" :max-value="1" title="Index"
+                           :value="node.index" :max-value="1" title="Node index"
                            :centerText="+node.index.toFixed(2)"/>
                     <!--gauge value-color="#5eba00" negative-value-color="#cd201f" width="150px" height="100px" :value="node.statistics.validating24HoursPercentage" :max-value="100" title="24H Validating"
                            :center-text="+node.statistics.validating24HoursPercentage.toFixed(2) + '%'"

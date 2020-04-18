@@ -118,12 +118,6 @@
             this.chartView = '30D';
         }
 
-        async timeTravel() {
-            this.store.isLoading = true;
-            await this.store.fetchData(this.selectedDate);
-            this.store.isLoading = false;
-        }
-
         async select24HView(time?: Date) {
             if (time instanceof Date)
                 this.selectedDate = moment(time).startOf('day').toDate();

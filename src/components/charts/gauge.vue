@@ -76,7 +76,7 @@
                         display: false
                     },
                     tooltips: {
-                        enabled: true
+                        enabled: false
                     },
                     hover: {mode: undefined},
                     responsive: false,
