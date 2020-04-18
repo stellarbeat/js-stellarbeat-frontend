@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex">
+    <div class="d-flex flex-wrap">
         <b-button :disabled="!canGoBack()" size="sm" class="left" v-on:click="$emit('goBack')"><i
                 class="fe fe-chevron-left"/></b-button>
         <datepicker v-model="datePickerDate" :disabledDates="disabledDates"

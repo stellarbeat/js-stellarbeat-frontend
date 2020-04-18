@@ -1,10 +1,8 @@
 <template>
     <div class="card card-profile">
 
-        <b-alert :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning" class="mb-0">
-            <b-icon-exclamation-triangle/> History archive not up-to-date
-        </b-alert>
-        <div class="card-body d-flex flex-column justify-content-center">
+
+        <div class="card-body d-flex flex-column justify-content-center p-4">
             <div class="text-center">
                 <h3 class="mb-1">
                     <b-icon-shield v-b-tooltip.hover v-if="node.isFullValidator" title="Full validator"
@@ -22,6 +20,9 @@
                            :centerText="+node.index.toFixed(2)"/>
             </div>
         </div>
+        <b-alert :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning" class="mb-0">
+            <b-icon-exclamation-triangle/> History archive not up-to-date
+        </b-alert>
     </div>
 </template>
 <script lang="ts">

@@ -13,13 +13,16 @@
                         </h3>
 
                         <div class="d-flex flex-column">
-                            <h3 class="card-title sb-card-title" >
+                            <h3 class="card-title sb-card-title">
                                 {{getDisplayName(selectedNode)}}
-                                <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger" style="vertical-align: bottom">Failing</b-badge>
                             </h3>
 
                             <h6 class="sb-card-subtitle">
                                 {{nodeType}}
+                                <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger"
+                                         style="vertical-align: bottom">Failing
+                                </b-badge>
+
                             </h6>
                         </div>
                     </div>
