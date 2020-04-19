@@ -45,7 +45,6 @@
 
         @Watch('value')
         onValueChanged() {
-            console.log('update');
             this.chart.data.datasets![0].data = [this.value, Math.round((this.maxValue - this.value)*100)/100];
 
             this.chart.update();

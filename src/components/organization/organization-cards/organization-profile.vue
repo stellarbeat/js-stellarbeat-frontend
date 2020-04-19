@@ -15,15 +15,7 @@
                     target="_blank"
                     href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
             </b-alert>
-            <b-alert :show="hasWarnings" variant="warning">
-                <p v-if="organization.subQuorumFailAt === 1" class="mb-1">
-                    <b-icon-exclamation-triangle/> If one more validator fails, this subquorum will fail.
-                </p>
-                <hr v-if="organization.subQuorumFailAt === 1 && notAllArchivesUpToDate">
-                <p v-if="notAllArchivesUpToDate" class="mb-0">
-                    <b-icon-exclamation-triangle/> Not all history archives up-to-date.
-                </p>
-            </b-alert>
+
 
             <ul class="social-links list-inline mb-4 mt-2">
                 <li v-if="organization.url" class="list-inline-item">
@@ -74,6 +66,15 @@
                 </li>
             </ul>
         </div>
+        <b-alert :show="hasWarnings" variant="warning" class="mb-0">
+            <p v-if="organization.subQuorumFailAt === 1" class="mb-1">
+                <b-icon-exclamation-triangle/> If one more validator fails, this subquorum will fail.
+            </p>
+            <hr v-if="organization.subQuorumFailAt === 1 && notAllArchivesUpToDate">
+            <p v-if="notAllArchivesUpToDate" class="mb-0">
+                <b-icon-exclamation-triangle/> Not all history archives up-to-date.
+            </p>
+        </b-alert>
     </div>
 </template>
 <script lang="ts">

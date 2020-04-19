@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-table striped hover responsive :items="nodes" :fields="fields" :sort-by.sync="sortBy"
+        <b-table striped hover :items="nodes" :fields="fields" :sort-by.sync="sortBy"
                  :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                  :filter="filter" class="mb-0">
             <template v-slot:cell(name)="data">
@@ -11,6 +11,7 @@
                             </span>
                 <router-link :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}"> {{ data.item.name }}
                 </router-link>
+                <b-badge variant="danger" v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))">Failing</b-badge>
             </template>
             <template v-slot:cell(organization)="data">
                 <router-link v-if="data.item.organizationId"
