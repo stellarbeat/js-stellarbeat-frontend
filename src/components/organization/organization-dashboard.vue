@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="row row-cards row-deck">
-            <div class="col-sm-12 col-xl-4">
+            <div class="col-md-12 col-lg-6 col-xl-4">
                 <organization-profile :organization="organization"/>
             </div>
-            <div class="col-sm-12 col-xl-4">
+            <div class="col-md-12 col-lg-6 col-xl-4">
                 <organization-subquorum-availability :fail-at="failAt" :organization="organization"/>
             </div>
-            <div class="col-sm-12 col-xl-4">
+            <div class="col-md-12 col-lg-12 col-xl-4">
                 <history-card
                         :subject="'Subquorum Availability history'"
                         :entityId="organization.id"
@@ -17,6 +17,9 @@
                         :measurementProperty="'isSubQuorumAvailable'"
                 >
                 </history-card>
+            </div>
+            <div class="col-md-12 col-lg-12 col-xl-12">
+                <organization-validators :organization="organization"/>
             </div>
         </div>
     </div>
@@ -33,9 +36,11 @@
     import HistoryCard from '@/components/charts/history-card.vue';
     import OrganizationProfile from '@/components/organization/organization-cards/organization-profile.vue';
     import OrganizationSubquorumAvailability from '@/components/organization/organization-cards/organization-subquorum-availability.vue';
+    import OrganizationValidators from '@/components/organization/organization-cards/organization-validators.vue';
 
     @Component({
         components: {
+            OrganizationValidators,
             OrganizationSubquorumAvailability,
             OrganizationProfile,
             HistoryCard, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution}
