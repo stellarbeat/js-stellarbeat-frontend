@@ -1,6 +1,6 @@
 <template>
     <div class="card card-profile">
-        <div class="card-body text-center mt-5 align-content-center">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
             <h3 class="mb-3">
                                 <span v-b-tooltip.hover v-if="organization.isTierOneOrganization"
                                       title="Tier one organization" class="badge sb-badge badge-primary">
@@ -8,15 +8,22 @@
                         </span>
                 {{organization.name}}
             </h3>
-            <p class="m-4">
+            <p class="m-4" v-if="organization.description">
                 {{organization.description}}
             </p>
-            <b-alert class="mx-5" v-if="!organization.description" show variant="info">Update your <a
+            <b-alert class="mt-2" v-else show variant="info">No description found in <a
                     target="_blank"
                     href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
-                file to include a description
             </b-alert>
-
+            <b-alert :show="hasWarnings" variant="warning">
+                <p v-if="organization.subQuorumFailAt === 1" class="mb-1">
+                    <b-icon-exclamation-triangle/> If one more validator fails, this subquorum will fail.
+                </p>
+                <hr v-if="organization.subQuorumFailAt === 1 && notAllArchivesUpToDate">
+                <p v-if="notAllArchivesUpToDate" class="mb-0">
+                    <b-icon-exclamation-triangle/> Not all history archives up-to-date.
+                </p>
+            </b-alert>
 
             <ul class="social-links list-inline mb-4 mt-2">
                 <li v-if="organization.url" class="list-inline-item">
@@ -66,9 +73,6 @@
                     </a>
                 </li>
             </ul>
-            <b-alert :show="hasWarnings" variant="warning">
-                <b-icon-exclamation-triangle/> Not all history archives up-to-date
-            </b-alert>
         </div>
     </div>
 </template>
@@ -82,10 +86,16 @@
         @Prop()
         organization!: Organization;
 
-        get hasWarnings() {
+        get notAllArchivesUpToDate(){
             return this.organization.validators
                 .map(validator => this.$root.$data.store.network.getNodeByPublicKey(validator)!)
-                .some(validator => validator.historyUrl && !validator.isFullValidator)
+                .some(validator => {
+                    return (validator.historyUrl !== undefined && !validator.isFullValidator)
+                })
+        }
+
+        get hasWarnings() {
+            return this.notAllArchivesUpToDate || this.organization.subQuorumFailAt === 1
         }
     };
 </script>
@@ -93,5 +103,9 @@
 <style scoped>
     .social-link {
         text-decoration: none;
+    }
+    hr{
+        margin: 0;
+        margin-bottom: 4px;
     }
 </style>
