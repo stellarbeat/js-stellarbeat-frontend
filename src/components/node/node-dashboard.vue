@@ -45,8 +45,8 @@
                 >
                 </history-card>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-4">
-                <node-toml-info v-if="selectedNode.homeDomain" :node="selectedNode"/>
+            <div v-if="selectedNode.homeDomain" class="col-md-12 col-lg-6 col-xl-4">
+                <node-toml-info :node="selectedNode"/>
             </div>
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <node-core-info :node="selectedNode"/>

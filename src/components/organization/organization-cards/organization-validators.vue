@@ -17,7 +17,7 @@
         @Prop()
         organization!: Organization;
         fields:any[] = [
-            'name',
+            {key: 'name', label: 'Validator'},
             'index',
             {key: 'validating24Hour', label: '24H validating'},
             {key: 'validating30Days', label: '30D validating'},

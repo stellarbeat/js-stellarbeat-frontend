@@ -11,7 +11,7 @@
                    :centerText="+organization.subQuorum24HoursAvailability.toFixed(2) + '%'"
                    value-color="#5eba00" negative-value-color="#cd201f"/>
             <gauge width="90px" height="90px"
-                   :value="organization.subQuorum30DaysAvailability" :max-value="100" title="24H Availability"
+                   :value="organization.subQuorum30DaysAvailability" :max-value="100" title="30D Availability"
                    :centerText="+organization.subQuorum30DaysAvailability.toFixed(2) + '%'"
                    value-color="#5eba00" negative-value-color="#cd201f"/>
         </div>
