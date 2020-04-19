@@ -61,8 +61,8 @@
 }
 
 .date-picker-wrapper {
-    width: 115px;
-    z-index: 500;
+    width: 135px;
+    z-index: 2000;
 }
 .date-picker-input-white {
     background-color: white!important;
@@ -70,6 +70,7 @@
     border-bottom-right-radius: 0;
     border-right: none;
     border-color: #d7dee9;
+    text-align: center;
 }
 .date-picker-input-white-no-border {
     border-radius: 0;
@@ -78,6 +79,7 @@
 .timepicker-no-border-right {
     border-radius: 0;
     border-right: none!important;
+    text-align: center;
 }
 .page-title {
     margin-right: 10px;
