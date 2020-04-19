@@ -14,7 +14,11 @@
                 </tr>
                 <tr class="text-gray" v-if="node.organizationId">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Organization</td>
-                    <td class="px-0 text-right">{{network.getOrganizationById(node.organizationId).name}}</td>
+                    <td class="px-0 text-right">
+                        <router-link :to="{ name: 'organization-dashboard', params: { 'organizationId': node.organizationId, 'view': $route.query.view }}">
+                            {{network.getOrganizationById(node.organizationId).name}}
+                        </router-link>
+                        </td>
                 </tr>
                 <tr class="text-gray" v-if="node.historyUrl">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">History url</td>

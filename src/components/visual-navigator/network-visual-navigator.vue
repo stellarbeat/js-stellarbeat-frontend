@@ -22,7 +22,7 @@
                         name="fade"
                         mode="out-in"
                 >
-                    <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs" :key="breadCrumbKey">
+                    <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs">
                     </b-breadcrumb>
                 </transition>
                 <simulation-badge class="mx-2"/>
@@ -56,31 +56,29 @@
         public view!: string;
 
         get breadCrumbs() {
-            //todo expand to orgs
             let crumbs = [];
             crumbs.push({
                 text: 'Stellar Public Network',
                 to: {name: 'network-dashboard', query: {view: this.$route.query.view}}
             });
-            if (this.selectedNode)
+
+            if (this.selectedNode) {
+                if (this.selectedNode.organizationId)
+                    crumbs.push({
+                        text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
+                        to: {name: 'organization-dashboard', params: { 'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view }},
+                        active: false
+                    });
                 crumbs.push({
                     text: this.selectedNode.displayName,
                     active: true
                 });
-            if (this.selectedOrganization)
+            } else if (this.selectedOrganization)
                 crumbs.push({
                     text: this.selectedOrganization.name,
                     active: true
                 });
             return crumbs;
-        }
-
-        get breadCrumbKey() {
-            //todo expand to orgs
-            if (this.selectedNode?.publicKey)
-                return this.selectedNode?.publicKey;
-
-            return 'stellar-public-network';
         }
 
         get store(): Store {
