@@ -93,15 +93,19 @@
     background-position-y: bottom 12px;
 }
 
-.page-link {
+.sb-nav-pagination .page-link {
     border: none!important;
 }
-.page-item.active .page-link {
+.sb-nav-pagination .page-item.active .page-link {
     font-weight: bolder;
-    background-color: inherit;
+    background-color: transparent!important;
     color: inherit;
     opacity: 1;
+}
 
+.page-item.active .page-link {
+    background-color: #1997c6!important;
+    border-color: #1997c6!important;
 }
 
 .btn-thin {

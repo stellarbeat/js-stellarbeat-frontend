@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-table striped hover :items="nodes" :fields="fields" :sort-by.sync="sortBy"
+        <b-table striped hover :responsive="true" :items="nodes" :fields="fields" :sort-by.sync="sortBy"
                  :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                  :filter="filter" class="mb-0">
             <template v-slot:cell(name)="data">
@@ -26,12 +26,9 @@
                 {{data.value || " " | truncate(28)}}
             </template>
         </b-table>
-        <b-row v-show="nodes.length >= perPage">
-            <b-col md="6" class="my-1">
-                <b-pagination :totalRows="totalRows" :per-page="perPage" v-model="currentPage"
-                              class="my-1"/>
-            </b-col>
-        </b-row>
+        <div class="d-flex justify-content-end m-1" v-show="nodes.length >= perPage">
+                <b-pagination class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
+        </div>
     </div>
 </template>
 
@@ -49,10 +46,12 @@
         public fields!: any;
         @Prop()
         public nodes!: Node[];
+        @Prop({default: 200})
+        public perPage!: number;
 
         public sortBy: string = 'index';
         public sortDesc: boolean = true;
-        public perPage: number = 200;
+
         public currentPage: number = 1;
 
         get store(): Store {

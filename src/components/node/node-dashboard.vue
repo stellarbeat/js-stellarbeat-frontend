@@ -45,11 +45,14 @@
                 >
                 </history-card>
             </div>
-            <div v-if="selectedNode.homeDomain" class="col-md-12 col-lg-6 col-xl-4">
+            <div v-if="selectedNode.homeDomain" class="col-md-12 col-lg-6 col-xl-8">
                 <node-toml-info :node="selectedNode"/>
             </div>
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <node-core-info :node="selectedNode"/>
+            </div>
+            <div class="col-12">
+                <node-quorum-set-validators :node="selectedNode"/>
             </div>
         </div>
     </div>
@@ -65,9 +68,12 @@
     import NodeCoreInfo from '@/components/node/node-cards/node-core-info.vue';
     import NodeInfo from '@/components/node/node-cards/node-info.vue';
     import NodeTomlInfo from '@/components/node/node-cards/node-toml-info.vue';
+    import NodeQuorumSetValidators from '@/components/node/node-cards/node-quorum-set-validators.vue';
 
     @Component({
-        components: {NodeTomlInfo, NodeInfo, NodeCoreInfo, NodeStatistics24Hours, NodeProfile, HistoryCard}
+        components: {
+            NodeQuorumSetValidators,
+            NodeTomlInfo, NodeInfo, NodeCoreInfo, NodeStatistics24Hours, NodeProfile, HistoryCard}
     })
 
     export default class NodeDashboard extends Vue {

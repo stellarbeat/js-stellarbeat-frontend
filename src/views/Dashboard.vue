@@ -17,8 +17,8 @@
                 </HaltingAnalysis>
             </div>
         </div>
-        <div class="d-flex dashboard-container">
-            <aside class="side-bar">
+        <div class="row">
+            <aside class="side-bar col-sm-5 col-lg-4 col-xl-auto">
                 <transition
                         name="fade"
                         mode="out-in"
@@ -26,21 +26,18 @@
                     <router-view name="sideBar"/>
                 </transition>
             </aside>
-            <div class="row content" id="content">
-                <div class="col-12">
-                    <div class="row">
-                        <div class="col-12">
-                            <network-visual-navigator :view="view"/>
-                        </div>
+            <div class="col-sm-7 col-lg-8 col-xl" id="content">
+                <div class="row">
+                    <div class="col">
+                        <network-visual-navigator :view="view"/>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <router-view name="dashboard"/>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <router-view name="dashboard"/>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -149,27 +146,12 @@
     }
 
     .side-bar {
-
-    }
-
-    @media (min-width: 666px) {
-        .side-bar {
-            flex: 0 0 270px;
-            margin-right: 20px;
-        }
-
-        .dashboard-container {
-            flex-direction: row;
-        }
-
-        .content {
-            width: 100%;
-        }
+        width: 270px;
     }
 
     .sb-card-title {
-        line-height: 1!important;
-        margin-bottom: 2px!important;
+        line-height: 1 !important;
+        margin-bottom: 2px !important;
     }
 
     .sb-card-title-icon {
@@ -182,7 +164,7 @@
         margin-top: 18px;
         margin-bottom: 5px;
         margin-left: 0px;
-        padding-left: 21px!important;
+        padding-left: 21px !important;
     }
 
     .title-icon {
