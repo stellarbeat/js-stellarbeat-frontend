@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column align-items-center">
-        <div class="relative mb-2">
+        <div class="relative">
             <canvas :height="height" :width="width" ref="chart"/>
             <div class="absolute-center text-center">
                 {{centerText}}
@@ -83,7 +83,7 @@
                     },
                     hover: {mode: undefined},
                     responsive: false,
-                    cutoutPercentage: 70,
+                    cutoutPercentage: 75,
                     maintainAspectRatio: true
 
                 },

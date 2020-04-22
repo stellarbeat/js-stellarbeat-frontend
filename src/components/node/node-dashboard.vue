@@ -1,14 +1,23 @@
 <template>
     <div>
         <div class="row row-cards row-deck">
-            <div class="col-md-12 col-lg-6 col-xl-4">
-                <node-profile :node="selectedNode"/>
+            <div class="col-sm-12 col-md-6 col-xl-3">
+                <node-index :node="selectedNode"/>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-4">
-                <node-statistics-24-hours :node="selectedNode"/>
+            <div class="col-sm-12 col-md-6 col-xl-3" v-if="selectedNode.isValidator">
+                <node-statistics-24-h-validating :node="selectedNode"/>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-4">
-                <node-info :node="selectedNode"/>
+            <div class="col-sm-12 col-md-6 col-xl-3" v-else>
+                <node-statistics-24-h-active :node="selectedNode"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-xl-3" v-if="selectedNode.isValidator">
+                <node-statistics-30-d-validating :node="selectedNode"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-xl-3" v-else>
+                <node-statistics-30-d-active :node="selectedNode"/>
+            </div>
+            <div class="col-sm-12 col-md-6 col-xl-3">
+                <node-statistics-30-d-overloaded :node="selectedNode"/>
             </div>
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <history-card
@@ -33,6 +42,8 @@
                 >
                 </history-card>
             </div>
+
+
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <history-card
                         :subject="'Overloaded'"
@@ -45,7 +56,10 @@
                 >
                 </history-card>
             </div>
-            <div v-if="selectedNode.homeDomain" class="col-md-12 col-lg-6 col-xl-8">
+            <div class="col-md-12 col-lg-6 col-xl-4">
+                <node-info :node="selectedNode"/>
+            </div>
+            <div v-if="selectedNode.homeDomain" class="col-md-12 col-lg-6 col-xl-4">
                 <node-toml-info :node="selectedNode"/>
             </div>
             <div class="col-md-12 col-lg-6 col-xl-4">
@@ -63,17 +77,30 @@
     import HistoryCard from '@/components/charts/history-card.vue';
     import {PublicKey} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import NodeProfile from '@/components/node/node-cards/node-profile.vue';
-    import NodeStatistics24Hours from '@/components/node/node-cards/node-statistics-24-hours.vue';
     import NodeCoreInfo from '@/components/node/node-cards/node-core-info.vue';
     import NodeInfo from '@/components/node/node-cards/node-info.vue';
     import NodeTomlInfo from '@/components/node/node-cards/node-toml-info.vue';
     import NodeQuorumSetValidators from '@/components/node/node-cards/node-quorum-set-validators.vue';
+    import NodeStatistics24HValidating
+        from '@/components/node/node-cards/statistics/node-statistics-24H-validating.vue';
+    import NodeStatistics24HActive from '@/components/node/node-cards/statistics/node-statistics-24H-active.vue';
+    import NodeStatistics30DValidating
+        from '@/components/node/node-cards/statistics/node-statistics-30D-validating.vue';
+    import NodeStatistics30DOverloaded
+        from '@/components/node/node-cards/statistics/node-statistics-30D-overloaded.vue';
+    import NodeIndex from '@/components/node/node-cards/statistics/node-index.vue';
+    import NodeStatistics30DActive from '@/components/node/node-cards/statistics/node-statistics-30D-active.vue';
 
     @Component({
         components: {
+            NodeStatistics30DActive,
+            NodeIndex,
+            NodeStatistics30DOverloaded,
+            NodeStatistics30DValidating,
+            NodeStatistics24HActive,
+            NodeStatistics24HValidating,
             NodeQuorumSetValidators,
-            NodeTomlInfo, NodeInfo, NodeCoreInfo, NodeStatistics24Hours, NodeProfile, HistoryCard}
+            NodeTomlInfo, NodeInfo, NodeCoreInfo, HistoryCard}
     })
 
     export default class NodeDashboard extends Vue {

@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-header">
-            <h1 class="card-title">Node TOML info
+            <h1 class="card-title">Toml info
             </h1>
         </div>
 
