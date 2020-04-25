@@ -19,8 +19,7 @@
                 <p>Retrieve all organizations from latest crawl result.</p>
                 <h3>/v1/organizations/{organizationID}</h3>
                 <p>Retrieve a single organization from latest crawl result.</p>
-                <a href="https://api.stellarbeat.io/docs" class="btn btn-primary" target="_blank"><i
-                        class="fe fe-external-link"></i>View documentation</a>
+                <a href="https://api.stellarbeat.io/docs" class="btn btn-primary" target="_blank">View documentation</a>
             </div>
         </div>
     </div>

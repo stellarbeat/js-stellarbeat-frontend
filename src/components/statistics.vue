@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
-                        <i id="activeNodesTooltip" class="fe fe-info"></i>
+                        <b-icon-info-circle id="activeNodesTooltip"/>
                     </div>
                     <b-tooltip target="activeNodesTooltip" placement="top">
                         Number of nodes that were active in the latest crawl.
@@ -18,7 +18,7 @@
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
-                        <i id="ActiveValidatorsTooltip" class="fe fe-info"></i>
+                        <b-icon-info-circle id="ActiveValidatorsTooltip"/>
                     </div>
 
                     <b-tooltip target="ActiveValidatorsTooltip" placement="top">
@@ -33,7 +33,7 @@
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
-                        <i id="fullValidatorsTooltip" class="fe fe-info"></i>
+                        <b-icon-info-circle id="fullValidatorsTooltip"/>
                     </div>
 
                     <b-tooltip target="fullValidatorsTooltip" placement="top">
@@ -49,7 +49,7 @@
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
-                        <i id="FailingValidatorsTooltip" class="fe fe-info"></i>
+                        <b-icon-info-circle id="FailingValidatorsTooltip"/>
                     </div>
 
                     <b-tooltip target="FailingValidatorsTooltip" placement="top">

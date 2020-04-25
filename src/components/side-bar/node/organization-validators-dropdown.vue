@@ -5,8 +5,6 @@
                 :title="organization.name"
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
-                :showIcon="true"
-                :icon="'fe-grid'"
                 :drop-down-showing="showing"
                 :sub-title="'organization'"
                 :show-sub-title="true"

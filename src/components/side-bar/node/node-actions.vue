@@ -1,28 +1,28 @@
 <template>
         <b-dropdown right size="sm" text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
             <template slot="button-content">
-                <i class="fe fe-more-vertical"></i>
+                <b-icon-three-dots-vertical scale="0.9"/>
             </template>
             <b-dropdown-header id="dropdown-header-label">
                 Simulation options
             </b-dropdown-header>
             <b-dropdown-item v-on:click.prevent.stop="store.toggleValidating(node)">
-                <i class="dropdown-icon fe fe-activity"></i>
+                <b-icon-lightning scale="0.9"/>
                 {{node.isValidating ? 'Stop validating' : 'Try validating'}}
             </b-dropdown-item>
             <b-dropdown-item v-if="supportsDelete" v-on:click="$emit('node-delete', node)" @click.prevent.stop>
-                <i class="dropdown-icon fe fe-minus-circle"></i>
+                <b-icon-x-circle scale="0.9"/>
                 Remove
             </b-dropdown-item>
             <b-dropdown-header id="dropdown-header-label">
                 Tools
             </b-dropdown-header>
             <b-dropdown-item v-on:click.prevent.stop="store.showHaltingAnalysis(node)">
-                <i class="dropdown-icon fe fe-cloud-lightning"></i>
-                Perform halting analysis
+                <b-icon-gear-wide scale="0.9"/>
+                Halting analysis
             </b-dropdown-item>
             <b-dropdown-item-button v-on:click.prevent.stop="copyPublicKey">
-                <i class="dropdown-icon fe fe-clipboard"></i>
+                <b-icon-clipboard scale="0.9"/>
                 Copy public key
             </b-dropdown-item-button>
         </b-dropdown>

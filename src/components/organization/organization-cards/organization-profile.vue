@@ -4,7 +4,7 @@
             <h3 class="mb-3">
                                 <span v-b-tooltip.hover v-if="organization.isTierOneOrganization"
                                       title="Tier one organization" class="badge sb-badge badge-primary">
-                            <i class="fe fe-shield"/>
+                            <b-icon-shield/>
                         </span>
                 {{organization.name}}
             </h3>
@@ -23,37 +23,38 @@
                        v-b-tooltip.hover :title="organization.url"
                        class="social-link"
                        target="_blank">
-                        <i class="fe fe-link"></i>
+                        <b-icon-link/>
                     </a>
                 </li>
                 <li v-if="organization.physicalAddress" class="list-inline-item">
                     <a :href="'https://www.google.com/maps/search/?api=1&query=' + organization.physicalAddress"
                        target="_blank" class="social-link" v-b-tooltip.hover
-                       :title="organization.physicalAddress"><i class="fe fe-map-pin"> </i>
+                       :title="organization.physicalAddress"><b-icon-compass/>
                     </a>
                 </li>
                 <li v-if="organization.officialEmail" class="list-inline-item">
                     <a class="social-link" v-b-tooltip.hover :title="organization.officialEmail"
-                       :href="'mailto:' + organization.officialEmail" target="_blank"><i
-                            class="fe fe-mail"> </i>
+                       :href="'mailto:' + organization.officialEmail" target="_blank">
+                        <b-icon-envelope/>
                     </a>
                 </li>
                 <li v-if="organization.phoneNumber" class="list-inline-item">
                     <a class="social-link" v-b-tooltip.hover :title="organization.phoneNumber"
                        :href="'tel:' + organization.phoneNumber" target="_blank">
-                        <i class="fe fe-phone"> </i>
+                        <b-icon-phone/>
                     </a>
                 </li>
                 <li v-if="organization.twitter" class="list-inline-item">
                     <a :href="'https://twitter.com/' + organization.twitter" class="social-link"
                        v-b-tooltip.hover title="Twitter"
                        target="_blank">
-                        <i class="fe fe-twitter"></i></a>
+                        <twitter/>
+                    </a>
                 </li>
                 <li v-if="organization.github" class="list-inline-item">
                     <a :href="'https://github.com/' + organization.github" target="_blank"
-                       v-b-tooltip.hover title="Github" class="social-link"><i
-                            class="fe fe-github"> </i>
+                       v-b-tooltip.hover title="Github" class="social-link">
+                        <github/>
                     </a>
                 </li>
                 <li v-if="organization.keybase" class="list-inline-item">
@@ -81,8 +82,13 @@
     import Vue from 'vue';
     import {Organization} from '@stellarbeat/js-stellar-domain';
     import {Component, Prop} from 'vue-property-decorator';
+    import Github from '@/components/organization/logo/github.vue';
+    import Twitter from '@/components/organization/logo/twitter.vue';
 
-    @Component({})
+
+    @Component({
+        components: {Twitter, Github}
+    })
     export default class OrganizationProfile extends Vue {
         @Prop()
         organization!: Organization;

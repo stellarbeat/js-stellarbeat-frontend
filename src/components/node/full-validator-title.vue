@@ -3,7 +3,7 @@
         <span v-if="node.isFullValidator"
               class="badge sb-badge badge-success full-validator-badge"
               v-b-popover.hover.top="'Full Validator'">
-            <i class="fe fe-shield"></i>
+            <b-icon-shield/>
         </span>
         {{node.displayName | truncate(26)}}
     </div>

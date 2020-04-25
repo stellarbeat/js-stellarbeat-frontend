@@ -78,8 +78,7 @@ Age = Time since discovery
                 <p>
                     All code is open-source and available on <a href="https://github.com/stellarbeat"
                                                 class="btn btn-sm bt btn-outline-primary"
-                                                target="_blank"><i
-                        class="fe fe-github"></i> Github</a>
+                                                target="_blank"><github/> Github</a>
                 </p>
             </div>
         </div>
@@ -89,9 +88,11 @@ Age = Time since discovery
 <script lang="ts">
     import Vue from "vue";
     import {Component} from "vue-property-decorator";
+    import Github from '@/components/organization/logo/github.vue';
 
     @Component({
         name: "faq",
+        components: {Github},
         metaInfo: {
             title: "FAQ - Stellarbeat.io",
             meta: [

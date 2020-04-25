@@ -2,7 +2,7 @@
     <div class="card ">
         <div class="card-header">
             <h3 class="card-title">Validator loads </h3>
-            <i id="overLoadedTooltip" class="fe fe-info ml-2 mt-0 text-muted"></i>
+            <b-icon-info-circle class="ml-2 mt-0 text-muted" id="overLoadedTooltip"/>
             <b-tooltip target="overLoadedTooltip" placement="top">
                 A validator has a high load when it disconnects due to 'high load' most of the time during the last 30 days.
             </b-tooltip>

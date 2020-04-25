@@ -2,7 +2,7 @@
     <span v-if="store.isSimulation" class="tag">Simulation
         <a href="#"
            v-on:click.stop.prevent="store.resetUpdates()"
-           class="tag-addon"><i class="fe fe-x"></i>
+           class="tag-addon"><b-icon-x/>
         </a>
     </span>
 </template>

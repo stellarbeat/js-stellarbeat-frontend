@@ -3,7 +3,7 @@
         <template v-slot:header>
             <h3 class="card-title">Halting analysis for {{vertex.label}}</h3>
             <div class="card-options">
-                <a href="#" v-on:click.prevent.stop="store.isHaltingAnalysisVisible = false" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
+                <a href="#" v-on:click.prevent.stop="store.isHaltingAnalysisVisible = false" class="card-options-remove" data-toggle="card-remove"><b-icon-x/></a>
             </div>
         </template>
         <div class="row">

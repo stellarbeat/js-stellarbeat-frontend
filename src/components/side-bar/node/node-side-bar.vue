@@ -56,7 +56,7 @@
                                 <nav-link
                                         :title="selectedNode.isValidating ? 'Stop validating' : 'Try validating'"
                                         :show-icon="true"
-                                        :icon="selectedNode.isValidating ? 'fe-zap-off' : 'fe-zap'"
+                                        :icon="selectedNode.isValidating ? 'lightning-fill' : 'lightning'"
                                         v-on:click="store.toggleValidating(selectedNode)"
                                 />
                             </li>
@@ -65,7 +65,7 @@
                                         v-b-modal.simulate-node-modal
                                         :title="'Simulate new node'"
                                         :show-icon="true"
-                                        icon="fe-plus-circle"
+                                        icon="plus"
                                 />
                                 <simulate-new-node/>
                             </li>
@@ -73,7 +73,7 @@
                                 <nav-link
                                         title="Halting analysis"
                                         :show-icon="true"
-                                        icon="fe-cloud-lightning"
+                                        icon="gear-wide"
                                         v-on:click="store.showHaltingAnalysis(selectedNode)"
                                 />
                             </li>
@@ -82,7 +82,7 @@
                                         :title="'Export configuration'"
                                         v-b-modal.tomlExportModal
                                         :show-icon="true"
-                                        icon="fe-save"
+                                        icon="download"
                                 />
                             </li>
                         </ul>

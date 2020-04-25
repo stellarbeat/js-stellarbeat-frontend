@@ -39,7 +39,7 @@
                                             :title="'Export configuration'"
                                             v-b-modal.tomlExportModal
                                             :show-icon="true"
-                                            icon="fe-save"
+                                            icon="download"
                                     />
                                 </li>
                                 <li class="sb-nav-item">
@@ -47,7 +47,7 @@
                                             v-b-modal.simulate-node-modal
                                             :title="'Simulate new node'"
                                             :show-icon="true"
-                                            icon="fe-plus-circle"
+                                            icon="plus"
                                     />
                                     <simulate-new-node/>
                                 </li>
@@ -81,7 +81,6 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
-    import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from '@/store/Store';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
@@ -98,7 +97,7 @@
             UndoRedo,
             Network,
             OrganizationsDropdown,
-            NavLink, SimulateNewNode, FullValidatorTitle, ValidatorsDropdown
+            NavLink, SimulateNewNode, ValidatorsDropdown
         }
     })
     export default class NetworkSideBar extends Vue {

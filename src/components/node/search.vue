@@ -23,7 +23,7 @@
         </div>
 
         <div class="input-icon-addon">
-            <i class="fe fe-search"></i>
+            <b-icon-search/>
         </div>
     </div>
 </template>

@@ -31,7 +31,10 @@
                                     <div class="">
                                     <span v-if="validator.isFullValidator"
                                           class="badge sb-badge badge-success pt-1 mr-1"
-                                          v-b-tooltip.hover title="Full validator"><i class="fe fe-shield"></i></span>
+                                          v-b-tooltip.hover title="Full validator">
+                                        <b-icon-shield/>
+                                        </span>
+
                                         <router-link
                                                 :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view}}">
                                             {{ validator.name | truncate(30)}}
@@ -69,7 +72,7 @@
                                     :to="{ name: 'organization-dashboard', params: { 'organizationId': row.item.id, 'view': $route.query.view }}">
                                 <span v-b-tooltip.hover title="Tier one organization" v-if="row.item.isTierOneOrganization"
                                       class="badge sb-badge badge-primary mr-1">
-                            <i class="fe fe-shield"/>
+                            <b-icon-shield/>
                         </span>{{ row.item.name}}
                             </router-link>
                         </template>

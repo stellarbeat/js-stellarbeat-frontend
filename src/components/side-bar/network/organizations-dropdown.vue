@@ -6,8 +6,6 @@
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
                 :showIcon="true"
-                :icon="'fe-grid'"
-                :drop-down-showing="showing"
                 :show-sub-title="true"
                 :sub-title="'Transitive quorumset'"
         />

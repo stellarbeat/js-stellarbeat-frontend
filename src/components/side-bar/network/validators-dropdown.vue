@@ -5,8 +5,6 @@
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
                 :dropDownShowing="showing"
-                :showIcon="true"
-                :icon="'fe-disc'"
                 :show-sub-title="true"
                 :sub-title="'Transitive quorumset'"
                 :has-warnings="hasGeneralValidatorsWarning"

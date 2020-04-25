@@ -37,7 +37,7 @@
                                                 :title="'Export configuration'"
                                                 v-b-modal.tomlExportModal
                                                 :show-icon="true"
-                                                icon="fe-save"
+                                                icon="download"
                                         />
                                     </li>
                                     <li class="sb-nav-item">
@@ -45,7 +45,7 @@
                                                 v-b-modal.simulate-node-modal
                                                 :title="'Simulate new node'"
                                                 :show-icon="true"
-                                                icon="fe-plus-circle"
+                                                icon="plus"
                                         />
                                         <simulate-new-node/>
                                     </li>

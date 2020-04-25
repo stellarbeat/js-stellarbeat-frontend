@@ -4,7 +4,7 @@
                     :bootstrap-styling="true"/>
         <vue-timepicker hide-clear-button input-width="8em" class="" v-model="crawlTime" input-class="timepicker-no-border-right" format="HH:mm:ss"/>
         <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn" @click="timeTravel">
-            <i class="fe fe-clock"></i>
+            <b-icon-clock/>
         </button>
     </div>
 </template>

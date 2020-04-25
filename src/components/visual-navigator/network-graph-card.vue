@@ -8,14 +8,13 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
-    import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from '@/store/Store';
     import Graph from '@/components/visual-navigator/graph/graph.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
     @Component({
         name: 'network-graph-card',
-        components: {GraphLegend, Graph, FullValidatorTitle}
+        components: {GraphLegend, Graph}
     })
     export default class NetworkGraphCard extends Vue {
         @Watch('$root.$data.store.network', {deep: true})

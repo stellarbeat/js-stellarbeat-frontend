@@ -1,10 +1,8 @@
 <template>
     <div class="sb-nav-title" :class="classObject">
         {{title}}
-        <i :title="danger" v-if="hasDanger" v-b-popover.hover.top
-           class="fe fe-alert-triangle sb-danger mr-1"/>
-        <i :title="warnings" v-else-if="hasWarnings" v-b-popover.hover.top
-           class="fe fe-alert-triangle sb-alert mr-1"/>
+        <b-icon-exclamation-triangle :title="danger" v-if="hasDanger" v-b-popover.hover.top class="sb-danger mr-1"/>
+        <b-icon-exclamation-triangle :title="warnings" v-else-if="hasWarnings" v-b-popover.hover.top class="sb-alert mr-1"/>
     </div>
 </template>
 <script lang="ts">
@@ -35,7 +33,7 @@
 
 <style scoped>
     .sb-nav-title {
-
+        padding-top: 2px;
     }
 
     .sb-danger {

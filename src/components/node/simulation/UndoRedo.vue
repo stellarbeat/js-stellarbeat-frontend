@@ -3,7 +3,7 @@
         <div v-b-popover.hover.bottomright="'Undo change'">
             <button type="button" class="btn btn-secondary btn-icon"
                     v-on:click="onUndoUpdate" :disabled="!store.hasUndo">
-                <i class="fe fe-rotate-ccw"></i>
+                <b-icon-arrow-counterclockwise/>
             </button>
         </div>
         <button type="button" class="btn btn-secondary"
@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-secondary btn-icon"
                     v-on:click="onRedoUpdate"
                     :disabled="!store.hasRedo">
-                <i class="fe fe-rotate-cw"></i>
+                <b-icon-arrow-clockwise/>
             </button>
         </div>
     </div>

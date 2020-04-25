@@ -7,7 +7,7 @@
                             <span v-if="data.item.isFullValidator"
                                   class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
                                   v-b-tooltip.hover title="Full validator">
-                                <i class="fe fe-shield"></i>
+                                <b-icon-shield/>
                             </span>
                 <router-link :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}"> {{ data.item.name }}
                 </router-link>

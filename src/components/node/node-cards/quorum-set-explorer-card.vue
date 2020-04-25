@@ -6,7 +6,7 @@
             </h3>
         </div>
         <div v-if="$root.$data.store.network.isNodeFailing($root.$data.store.quorumMonitorStore.selectedNode)" class="card-alert alert alert-danger mb-0">
-            <i class="fe fe-alert-triangle"></i>
+            <b-icon-exclamation-triangle/>
             Node not validating {{network.isQuorumSetFailing(selectedNode, selectedNode.quorumSet) ? ": quorumset not reaching threshold" : ""}}
         </div>
         <div class="card-body p-3 quorum-set-explorer-card-body">

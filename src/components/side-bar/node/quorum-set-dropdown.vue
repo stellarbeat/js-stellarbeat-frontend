@@ -7,7 +7,6 @@
                 :showIcon="isRoot"
                 :show-sub-title="true"
                 :sub-title="'with treshold ' + quorumSet.threshold"
-                :icon="'fe-share-2'"
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
                 :has-warnings="hasWarnings"

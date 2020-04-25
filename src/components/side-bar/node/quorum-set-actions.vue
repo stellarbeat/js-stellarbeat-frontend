@@ -2,22 +2,22 @@
     <div>
         <b-dropdown ref="dropdown" v-on:click.prevent.stop="'#'" right text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
             <template slot="button-content">
-                <i class="fe fe-more-vertical"></i>
+                <b-icon-three-dots-vertical scale="0.9"/>
             </template>
             <b-dropdown-header id="dropdown-header-label" v-on:click.prevent.stop="'#'">
                 Simulation options
             </b-dropdown-header>
             <b-dropdown-item v-b-modal="'add-validators-modal-' + id" v-on:click.prevent.stop>
-                <i class="dropdown-icon fe fe-plus-circle"></i>Add Validators
+                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>Add Validators
             </b-dropdown-item>
             <b-dropdown-item v-if="!(level === 2)" v-on:click.prevent.stop="addQuorumSet">
-                <i class="dropdown-icon fe fe-plus-circle"></i>Add QuorumSet
+                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>Add QuorumSet
             </b-dropdown-item>
             <b-dropdown-item v-if="!(level === 0)" v-on:click.prevent.stop="deleteQuorumSet">
-                <i class="dropdown-icon fe fe-minus-circle"></i>Delete QuorumSet
+                <b-icon-x-circle class="dropdown-icon" scale="0.9"/>Delete QuorumSet
             </b-dropdown-item>
             <b-dropdown-form form-class="inline" inline v-on:click.prevent.stop="'#'">
-                <i class="dropdown-icon fe fe-edit-2"></i>
+                <b-icon-pencil class="dropdown-icon" scale="0.9"/>
                 <b-form-group
                         label-size="sm"
                         label="Threshold"

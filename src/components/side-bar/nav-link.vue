@@ -9,13 +9,13 @@
             <div class="w-100 d-flex flex-column align-items-stretch">
                 <div class="w-100 d-flex align-items-center align-content-center">
                     <div class="sb-nav-link-icon align-content-center">
-                        <i v-if="showDropdownToggle" class="fe fe-chevron-down" :class="chevronClass"></i>
-                        <i v-else-if="showIcon" class="fe" :class="icon"></i>
+                        <b-icon :icon="chevronDirection" scale="0.8" v-if="showDropdownToggle"/>
+                        <b-icon v-else-if="showIcon" :icon="icon" scale="0.8"/>
                     </div>
 
                     <div class="w-100 d-flex justify-content-between align-content-center">
                         <nav-title
-                                :title="title" class="w-100 pt-0 pb-0 m-height"
+                                :title="title" class="w-100 pb-0 m-height"
                                 :class="titleClass"
                                 :has-warnings="hasWarnings"
                                 :warnings="warnings"
@@ -80,7 +80,7 @@
         @Prop({default: false})
         showIcon!: boolean;
 
-        @Prop({default: 'fe-globe'})
+        @Prop({})
         icon!: string;
 
         @Prop({default: false})
@@ -94,11 +94,10 @@
             };
         }
 
-        get chevronClass(): any {
-            return {
-                'fe-chevron-right': !this.dropDownShowing,
-                'fe-chevron-down': this.dropDownShowing,
-            };
+        get chevronDirection(): any {
+            if(this.dropDownShowing)
+                return 'chevron-down';
+            else return 'chevron-right'
         }
 
         get classObject(): any {
@@ -126,7 +125,7 @@
     }
 
     .m-height {
-        min-height: 24.4px;
+        min-height: 26px;
     }
 
     .sub-title {

@@ -11,7 +11,7 @@
             </h5>
         </div>
         <div v-if="failed" class="card-alert alert alert-danger mb-0">
-            <i class="fe fe-alert-triangle"></i>
+            <b-icon-exclamation-triangle/>
             Error fetching data
         </div>
         <div class="card-body p-2">

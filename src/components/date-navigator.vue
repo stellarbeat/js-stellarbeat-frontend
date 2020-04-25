@@ -1,7 +1,8 @@
 <template>
     <div class="d-flex flex-wrap">
-        <b-button :disabled="!canGoBack()" size="sm" class="left" v-on:click="$emit('goBack')"><i
-                class="fe fe-chevron-left"/></b-button>
+        <b-button :disabled="!canGoBack()" size="sm" class="left" v-on:click="$emit('goBack')">
+            <b-icon-chevron-left/>
+        </b-button>
         <datepicker v-model="datePickerDate" :disabledDates="disabledDates"
                     :input-class="'date-picker-input-white date-picker-input-white-no-border'"
                     :wrapper-class="'date-picker-wrapper'"
@@ -9,9 +10,12 @@
         <vue-timepicker v-if="showTime" hide-clear-button input-width="6em" input-class="timepicker-no-border-right"
                         v-model="timePickerTime" @input="timeInputHandler"/>
         <b-button @click="timeTravel" variant="secondary" size="md" class="time-travel-btn" v-b-tooltip.hover
-                  title="Travel to selected time"><i class="fe fe-clock"></i>
+                  title="Travel to selected time">
+            <b-icon-clock/>
+
         </b-button>
-        <b-button size="sm" v-on:click="$emit('goForward')" class="right"><i class="fe fe-chevron-right"/>
+        <b-button size="sm" v-on:click="$emit('goForward')" class="right">
+            <b-icon-chevron-right/>
         </b-button>
     </div>
 </template>

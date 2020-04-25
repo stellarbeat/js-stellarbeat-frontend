@@ -5,8 +5,6 @@
                 :title="'Validators'"
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
-                :showIcon="true"
-                :icon="'fe-grid'"
                 :drop-down-showing="showing"
         />
         <div v-if="showing" class="sb-nav-dropdown">

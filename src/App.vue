@@ -19,11 +19,10 @@
                                 <div class="d-flex ml-auto">
                                     <div class="nav-item d-none d-lg-flex">
                                         <a href="https://github.com/stellarbeat"
-                                           class="btn btn-sm bt btn-outline-primary" target="_blank"><i
-                                                class="fe fe-github"></i> Github</a>
+                                           class="btn btn-sm bt btn-outline-primary" target="_blank"><github/> Github</a>
                                         <a href="mailto:stellarbeatio@gmail.com"
-                                           class="btn btn-sm bt btn-outline-primary ml-2" target="_blank"><i
-                                                class="fe fe-mail"></i> Mail</a>
+                                           class="btn btn-sm bt btn-outline-primary ml-2" target="_blank">
+                                            <b-icon-envelope/> Mail</a>
                                     </div>
                                 </div>
                                 <b-navbar-toggle class="my-navbar-toggle mb-2" target="nav_collapse"></b-navbar-toggle>
@@ -40,29 +39,35 @@
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
                                                      :to="{ name: 'network-dashboard', query:{view:$route.query.view}}"
-                                                     exact><i
-                                                class="fe fe-home"></i>Home
+                                                     exact>
+                                            <b-icon-house class="mr-1" scale="0.9"/>
+                                            Home
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link active-class="active" exact-active-class="active" class="nav-link" :to="{ name: 'nodes'}" exact><i
-                                                class="fe fe-list"></i>Nodes
+                                        <router-link active-class="active" exact-active-class="active" class="nav-link"
+                                                     :to="{ name: 'nodes'}" exact>
+                                            <b-icon-bullseye class="mr-1" scale="0.9"/>
+                                            Nodes
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'organizations'}" exact><i
-                                                class="fe fe-globe"></i>Organizations
+                                                     :to="{ name: 'organizations'}" exact>
+                                            <b-icon-building class="mr-1" scale="0.9"/>
+                                            Organizations
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link" :to="{ name: 'api'}">
-                                            <i class="fe fe-share-2"></i>API
+                                            <b-icon-code class="mr-1" scale="0.9"/>
+                                            API
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link active-class="active" class="nav-link" :to="{ name: 'faq'}"><i
-                                                class="fe fe-help-circle"></i>FAQ
+                                        <router-link active-class="active" class="nav-link" :to="{ name: 'faq'}">
+                                            <b-icon-question-circle class="mr-1" scale="0.9"/>
+                                            FAQ
                                         </router-link>
                                     </li>
                                 </ul>
@@ -132,10 +137,11 @@
     import CrawlTime from '@/components/crawl-time.vue';
     import Search from '@/components/node/search.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
+    import Github from '@/components/organization/logo/github.vue';
 
     @Component({
         name: 'app',
-        components: {UndoRedo, Search, CrawlTime},
+        components: {Github, UndoRedo, Search, CrawlTime},
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
             meta: [
