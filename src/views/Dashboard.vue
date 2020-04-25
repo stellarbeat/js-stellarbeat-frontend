@@ -23,7 +23,7 @@
                         name="fade"
                         mode="out-in"
                 >
-                    <router-view name="sideBar" class="h-100"/>
+                    <router-view name="sideBar" class="h-100 side-bar"/>
                 </transition>
             </aside>
             <div class="col-sm-7 col-lg-8 col-xl" id="content">
@@ -145,8 +145,10 @@
         align-items: stretch;
     }
 
-    .side-bar {
-        width: 300px!important;
+    @media (min-width: 1200px) {
+        .side-bar {
+            width: 275px;
+        }
     }
 
     .sb-card-title {
