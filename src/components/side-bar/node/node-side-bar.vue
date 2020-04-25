@@ -44,7 +44,7 @@
                                     </li>
                                     <li class="sb-nav-item">
                                         <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
-                                                             :expand="false"/>
+                                                             :expand="quorumSetExpanded" v-on:toggleExpand="quorumSetExpanded=!quorumSetExpanded"/>
                                     </li>
                                 </ul>
                             </div>
@@ -138,6 +138,8 @@
         }
     })
     export default class NodeSideBar extends Vue {
+        public quorumSetExpanded:boolean = false;
+
         get store(): Store {
             return this.$root.$data.store;
         }

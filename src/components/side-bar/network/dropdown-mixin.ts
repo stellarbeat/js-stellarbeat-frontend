@@ -28,5 +28,6 @@ export class DropdownMixin extends Vue {
 
     toggleShow(): void {
         this.showing = !this.showing;
+        this.$emit("toggleExpand");
     }
 }
