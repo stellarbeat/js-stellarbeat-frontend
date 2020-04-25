@@ -79,9 +79,9 @@
                 </b-collapse>
             </div>
 
-            <div class="my-0 my-md-5 pl-4 pr-4">
+            <div class="mt-0 mt-md-5 pl-4 pr-4">
                 <div class="container-fluid">
-                    <div class="my-3 my-md-5">
+                    <div class="mt-3 mt-md-5">
                         <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
                         <div v-if="store.isLoading" class="row">
                             <div class="col-5"></div>

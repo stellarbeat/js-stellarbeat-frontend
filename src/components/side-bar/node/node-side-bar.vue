@@ -1,98 +1,100 @@
 <template>
     <div>
-        <div class="card pt-0 sidebar-card">
+        <div class="card pt-0 sidebar-card h-100">
             <transition
                     name="fade"
                     mode="out-in"
             >
-                <div :key="selectedNode.publicKey">
-                    <div class="card-header sb-card-header d-flex inverted d-flex align-items-start">
-                        <h3 class="title-icon">
-                            <b-icon-bullseye scale="0.8" v-b-tooltip.hover
-                                             class="bg-success rounded mr-1" variant="light"/>
-                        </h3>
-
-                        <div class="d-flex flex-column">
-                            <h3 class="card-title sb-card-title">
-                                {{getDisplayName(selectedNode)}}
+                <div id="sticky">
+                    <div :key="selectedNode.publicKey">
+                        <div class="card-header sb-card-header d-flex inverted d-flex align-items-start">
+                            <h3 class="title-icon">
+                                <b-icon-bullseye scale="0.8" v-b-tooltip.hover
+                                                 class="bg-success rounded mr-1" variant="light"/>
                             </h3>
 
-                            <h6 class="sb-card-subtitle">
-                                {{nodeType}}
-                                <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger"
-                                         style="vertical-align: bottom">Failing
-                                </b-badge>
+                            <div class="d-flex flex-column">
+                                <h3 class="card-title sb-card-title">
+                                    {{getDisplayName(selectedNode)}}
+                                </h3>
 
-                            </h6>
+                                <h6 class="sb-card-subtitle">
+                                    {{nodeType}}
+                                    <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger"
+                                             style="vertical-align: bottom">Failing
+                                    </b-badge>
+
+                                </h6>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body px-4 pt-1">
-                        <div class="sb-nav-bar">
-                            <h6 class="sb-navbar-heading">Explore</h6>
-                            <ul v-if="!store.isLoading" class="sb-nav-list">
-                                <li class="sb-nav-item" v-if="selectedNode.organizationId">
-                                    <organization-validators-dropdown :organization="organization"
-                                                                      :expand="true"/>
-                                </li>
-                                <li class="sb-nav-item">
-                                    <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
-                                                         :expand="true"/>
-                                </li>
-                            </ul>
-                            <h6 class="sb-navbar-heading mt-4">Tools</h6>
-                            <ul class="sb-nav-list">
-                                <li class="sb-nav-item">
-                                    <nav-link
-                                            :title="selectedNode.isValidating ? 'Stop validating' : 'Try validating'"
-                                            :show-icon="true"
-                                            :icon="selectedNode.isValidating ? 'fe-zap-off' : 'fe-zap'"
-                                            v-on:click="store.toggleValidating(selectedNode)"
-                                    />
-                                </li>
-                                <li class="sb-nav-item">
-                                    <nav-link
-                                            v-b-modal.simulate-node-modal
-                                            :title="'Simulate new node'"
-                                            :show-icon="true"
-                                            icon="fe-plus-circle"
-                                    />
-                                    <simulate-new-node/>
-                                </li>
-                                <li class="sb-nav-item">
-                                    <nav-link
-                                            title="Halting analysis"
-                                            :show-icon="true"
-                                            icon="fe-cloud-lightning"
-                                            v-on:click="store.showHaltingAnalysis(selectedNode)"
-                                    />
-                                </li>
-                                <li class="sb-nav-item">
-                                    <nav-link
-                                            :title="'Export configuration'"
-                                            v-b-modal.tomlExportModal
-                                            :show-icon="true"
-                                            icon="fe-save"
-                                    />
-                                </li>
-                            </ul>
+                        <div class="card-body px-4 pt-1">
+                            <div class="sb-nav-bar">
+                                <h6 class="sb-navbar-heading">Explore</h6>
+                                <ul v-if="!store.isLoading" class="sb-nav-list">
+                                    <li class="sb-nav-item" v-if="selectedNode.organizationId">
+                                        <organization-validators-dropdown :organization="organization"
+                                                                          :expand="true"/>
+                                    </li>
+                                    <li class="sb-nav-item">
+                                        <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
+                                                             :expand="true"/>
+                                    </li>
+                                </ul>
+                                <h6 class="sb-navbar-heading mt-4">Tools</h6>
+                                <ul class="sb-nav-list">
+                                    <li class="sb-nav-item">
+                                        <nav-link
+                                                :title="selectedNode.isValidating ? 'Stop validating' : 'Try validating'"
+                                                :show-icon="true"
+                                                :icon="selectedNode.isValidating ? 'fe-zap-off' : 'fe-zap'"
+                                                v-on:click="store.toggleValidating(selectedNode)"
+                                        />
+                                    </li>
+                                    <li class="sb-nav-item">
+                                        <nav-link
+                                                v-b-modal.simulate-node-modal
+                                                :title="'Simulate new node'"
+                                                :show-icon="true"
+                                                icon="fe-plus-circle"
+                                        />
+                                        <simulate-new-node/>
+                                    </li>
+                                    <li class="sb-nav-item">
+                                        <nav-link
+                                                title="Halting analysis"
+                                                :show-icon="true"
+                                                icon="fe-cloud-lightning"
+                                                v-on:click="store.showHaltingAnalysis(selectedNode)"
+                                        />
+                                    </li>
+                                    <li class="sb-nav-item">
+                                        <nav-link
+                                                :title="'Export configuration'"
+                                                v-b-modal.tomlExportModal
+                                                :show-icon="true"
+                                                icon="fe-save"
+                                        />
+                                    </li>
+                                </ul>
 
-                            <h6 class="sb-navbar-heading mt-3">Options</h6>
-                            <ul class="sb-nav-list">
-                                <li class="sb-nav-item">
-                                    <b-form-checkbox v-model="store.includeWatcherNodes"
-                                                     name="include-watcher-nodes-button"
-                                                     class="sb-nav-item sb-nav-toggle"
-                                                     switch>
-                                        Watcher nodes
-                                    </b-form-checkbox>
-                                </li>
-                            </ul>
-                            <undo-redo v-if="store.isSimulation || store.hasRedo"/>
-                            <b-modal lazy size="lg" id="tomlExportModal"
-                                     title="Stellar Core Configuration" ok-only ok-title="Close"
-                            >
-                                <pre><code>{{tomlNodesExport}}</code></pre>
-                            </b-modal>
+                                <h6 class="sb-navbar-heading mt-3">Options</h6>
+                                <ul class="sb-nav-list">
+                                    <li class="sb-nav-item">
+                                        <b-form-checkbox v-model="store.includeWatcherNodes"
+                                                         name="include-watcher-nodes-button"
+                                                         class="sb-nav-item sb-nav-toggle"
+                                                         switch>
+                                            Watcher nodes
+                                        </b-form-checkbox>
+                                    </li>
+                                </ul>
+                                <undo-redo v-if="store.isSimulation || store.hasRedo"/>
+                                <b-modal lazy size="lg" id="tomlExportModal"
+                                         title="Stellar Core Configuration" ok-only ok-title="Close"
+                                >
+                                    <pre><code>{{tomlNodesExport}}</code></pre>
+                                </b-modal>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -116,6 +118,7 @@
     import OrganizationValidatorsDropdown from '@/components/side-bar/node/organization-validators-dropdown.vue';
     import ShieldCheck from '@/components/svg/shield-check.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
+    import stickybits from 'stickybits';
 
     @Component({
         components: {
@@ -193,6 +196,10 @@
                 return node.name;
 
             return node.publicKey!.substr(0, 7) + '...' + node.publicKey!.substr(50, 100);
+        }
+
+        mounted() {
+            stickybits('#sticky');
         }
     }
 </script>

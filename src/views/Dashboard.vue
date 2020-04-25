@@ -17,13 +17,13 @@
                 </HaltingAnalysis>
             </div>
         </div>
-        <div class="row">
-            <aside class="side-bar col-xs-12 col-sm-5 col-lg-4 col-xl-auto">
+        <div class="row align-items-stretch">
+            <aside class="side-bar col-xs-12 col-sm-5 col-lg-4 col-xl-auto mb-5">
                 <transition
                         name="fade"
                         mode="out-in"
                 >
-                    <router-view name="sideBar"/>
+                    <router-view name="sideBar" class="h-100"/>
                 </transition>
             </aside>
             <div class="col-sm-7 col-lg-8 col-xl" id="content">
@@ -146,7 +146,7 @@
     }
 
     .side-bar {
-        width: 270px;
+        width: 300px;
     }
 
     .sb-card-title {

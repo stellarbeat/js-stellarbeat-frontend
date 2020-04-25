@@ -34,6 +34,7 @@
     "regenerator-runtime": "^0.13.3",
     "serve-static": "^1.13.2",
     "simple-analytics-vue": "^1.1.0",
+    "stickybits": "^3.7.7",
     "svg-pan-zoom": "^3.6.0",
     "tabler-ui": "^0.0.34",
     "vue": "^2.6.11",

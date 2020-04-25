@@ -4,67 +4,71 @@
                 name="fade"
                 mode="out-in"
         >
-            <div class="card pt-0" >
-                <div class="card-header sb-card-header inverted d-flex align-items-start">
-                    <h3 class="title-icon" v-b-tooltip:hover title="network">
-                        <b-icon-house scale="0.9" class="bg-success rounded mr-1" variant="light"/>
-                    </h3>
-                    <div class="d-flex flex-column">
-                        <h3 class="card-title sb-card-title">
-                            Stellar Public Network
+            <div class="card pt-0 h-100">
+                <div  id="sticky">
+                    <div class="card-header sb-card-header inverted d-flex align-items-start">
+                        <h3 class="title-icon" v-b-tooltip:hover title="network">
+                            <b-icon-house scale="0.9" class="bg-success rounded mr-1" variant="light"/>
                         </h3>
-                        <h6 class="sb-card-subtitle">Network</h6>
+                        <div class="d-flex flex-column">
+                            <h3 class="card-title sb-card-title">
+                                Stellar Public Network
+                            </h3>
+                            <h6 class="sb-card-subtitle">Network</h6>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body px-4 pt-1">
-                    <div class="sb-nav-bar">
-                        <h6 class="sb-navbar-heading">Explore</h6>
-                        <ul v-if="!store.isLoading" class="sb-nav-list">
-                            <li class="sb-nav-item">
-                                <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
-                                                        :expand="organizationsExpanded"/>
-                            </li>
-                            <li class="sb-nav-item">
-                                <validators-dropdown :nodes="networkTransitiveQuorumSetNodes" :expand="validatorsExpanded"/>
-                            </li>
-                        </ul>
-                        <h6 class="sb-navbar-heading mt-4">Tools</h6>
-                        <ul class="sb-nav-list">
-                            <li class="sb-nav-item">
-                                <nav-link
-                                        :title="'Export configuration'"
-                                        v-b-modal.tomlExportModal
-                                        :show-icon="true"
-                                        icon="fe-save"
-                                />
-                            </li>
-                            <li class="sb-nav-item">
-                                <nav-link
-                                        v-b-modal.simulate-node-modal
-                                        :title="'Simulate new node'"
-                                        :show-icon="true"
-                                        icon="fe-plus-circle"
-                                />
-                                <simulate-new-node/>
-                            </li>
-                        </ul>
+                    <div class="card-body px-4 pt-1 h-100">
+                        <div class="sb-nav-bar">
+                            <h6 class="sb-navbar-heading">Explore</h6>
+                            <ul v-if="!store.isLoading" class="sb-nav-list">
+                                <li class="sb-nav-item">
+                                    <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
+                                                            :expand="organizationsExpanded"/>
+                                </li>
+                                <li class="sb-nav-item">
+                                    <validators-dropdown :nodes="networkTransitiveQuorumSetNodes"
+                                                         :expand="validatorsExpanded"/>
+                                </li>
+                            </ul>
+                            <h6 class="sb-navbar-heading mt-4">Tools</h6>
+                            <ul class="sb-nav-list">
+                                <li class="sb-nav-item">
+                                    <nav-link
+                                            :title="'Export configuration'"
+                                            v-b-modal.tomlExportModal
+                                            :show-icon="true"
+                                            icon="fe-save"
+                                    />
+                                </li>
+                                <li class="sb-nav-item">
+                                    <nav-link
+                                            v-b-modal.simulate-node-modal
+                                            :title="'Simulate new node'"
+                                            :show-icon="true"
+                                            icon="fe-plus-circle"
+                                    />
+                                    <simulate-new-node/>
+                                </li>
+                            </ul>
 
-                        <h6 class="sb-navbar-heading mt-3">Options</h6>
-                        <ul class="sb-nav-list">
-                            <li class="sb-nav-item">
-                                <b-form-checkbox v-model="store.includeWatcherNodes" name="include-watcher-nodes-button"
-                                                 class="sb-nav-item sb-nav-toggle"
-                                                 switch>
-                                    Watcher nodes
-                                </b-form-checkbox>
-                            </li>
-                        </ul>
-                        <undo-redo v-if="store.isSimulation || store.hasRedo"/>
-                        <b-modal lazy size="lg" id="tomlExportModal"
-                                 title="Stellar Core Configuration" ok-only ok-title="Close"
-                        >
-                            <pre><code>{{tomlNodesExport}}</code></pre>
-                        </b-modal>
+                            <h6 class="sb-navbar-heading mt-3">Options</h6>
+                            <ul class="sb-nav-list">
+                                <li class="sb-nav-item">
+                                    <b-form-checkbox v-model="store.includeWatcherNodes"
+                                                     name="include-watcher-nodes-button"
+                                                     class="sb-nav-item sb-nav-toggle"
+                                                     switch>
+                                        Watcher nodes
+                                    </b-form-checkbox>
+                                </li>
+                            </ul>
+                            <undo-redo v-if="store.isSimulation || store.hasRedo"/>
+                            <b-modal lazy size="lg" id="tomlExportModal"
+                                     title="Stellar Core Configuration" ok-only ok-title="Close"
+                            >
+                                <pre><code>{{tomlNodesExport}}</code></pre>
+                            </b-modal>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -85,6 +89,7 @@
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
     import Network from '@/components/svg/network.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
+    import stickybits from 'stickybits'
 
     @Component({
         components: {
@@ -132,8 +137,16 @@
             let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
             return stellarCoreConfigurationGenerator.nodesToToml(this.networkTransitiveQuorumSetNodes);
         }
+
+        mounted() {
+            stickybits("#sticky");
+        }
     }
 </script>
 <style scoped>
-
+    .sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0px;
+    }
 </style>
