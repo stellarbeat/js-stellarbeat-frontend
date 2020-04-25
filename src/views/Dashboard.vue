@@ -146,7 +146,7 @@
     }
 
     .side-bar {
-        width: 300px;
+        width: 300px!important;
     }
 
     .sb-card-title {

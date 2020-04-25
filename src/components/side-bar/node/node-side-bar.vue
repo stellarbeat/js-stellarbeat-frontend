@@ -31,6 +31,7 @@
                 <div class="card-body px-4 pt-1">
                     <div class="sb-nav-bar">
                         <h6 class="sb-navbar-heading">Explore</h6>
+                        <div class="overflow">
                         <transition
                                 name="fade"
                                 mode="out-in"
@@ -43,12 +44,12 @@
                                     </li>
                                     <li class="sb-nav-item">
                                         <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
-                                                             :expand="true"/>
+                                                             :expand="false"/>
                                     </li>
                                 </ul>
                             </div>
                         </transition>
-
+                        </div>
                         <h6 class="sb-navbar-heading mt-4">Tools</h6>
                         <ul class="sb-nav-list">
                             <li class="sb-nav-item">
@@ -209,6 +210,10 @@
     }
 </script>
 <style scoped>
+    .overflow {
+        overflow-y: auto;
+        max-height: calc(100vh - 20rem);
+    }
     .success {
     }
 
