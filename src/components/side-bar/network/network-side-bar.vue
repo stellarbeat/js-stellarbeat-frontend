@@ -5,7 +5,7 @@
                 mode="out-in"
         >
             <div class="card pt-0 h-100">
-                <div  id="sticky">
+                <div id="sticky">
                     <div class="card-header sb-card-header inverted d-flex align-items-start">
                         <h3 class="title-icon" v-b-tooltip:hover title="network">
                             <b-icon-house scale="0.9" class="bg-success rounded mr-1" variant="light"/>
@@ -20,16 +20,18 @@
                     <div class="card-body px-4 pt-1 h-100">
                         <div class="sb-nav-bar">
                             <h6 class="sb-navbar-heading">Explore</h6>
-                            <ul v-if="!store.isLoading" class="sb-nav-list">
-                                <li class="sb-nav-item">
-                                    <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
-                                                            :expand="organizationsExpanded"/>
-                                </li>
-                                <li class="sb-nav-item">
-                                    <validators-dropdown :nodes="networkTransitiveQuorumSetNodes"
-                                                         :expand="validatorsExpanded"/>
-                                </li>
-                            </ul>
+                            <div class="overflow">
+                                <ul v-if="!store.isLoading" class="sb-nav-list">
+                                    <li class="sb-nav-item">
+                                        <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
+                                                                :expand="organizationsExpanded"/>
+                                    </li>
+                                    <li class="sb-nav-item">
+                                        <validators-dropdown :nodes="networkTransitiveQuorumSetNodes"
+                                                             :expand="validatorsExpanded"/>
+                                    </li>
+                                </ul>
+                            </div>
                             <h6 class="sb-navbar-heading mt-4">Tools</h6>
                             <ul class="sb-nav-list">
                                 <li class="sb-nav-item">
@@ -89,7 +91,7 @@
     import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
     import Network from '@/components/svg/network.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
-    import stickybits from 'stickybits'
+    import stickybits from 'stickybits';
 
     @Component({
         components: {
@@ -139,14 +141,13 @@
         }
 
         mounted() {
-            stickybits("#sticky");
+            stickybits('#sticky');
         }
     }
 </script>
 <style scoped>
-    .sticky {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0px;
+    .overflow {
+        overflow-y: auto;
+        max-height: calc(100vh - 18rem);
     }
 </style>
