@@ -10,7 +10,7 @@
                 :has-warnings="hasGeneralValidatorsWarning"
                 warnings="Not all history archives up-to-date"
         />
-        <div v-if="showing" class="sb-nav-dropdown">
+        <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="node in paginatedNodes"
                     v-on:click="selectNode(node)"

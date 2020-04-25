@@ -1,6 +1,6 @@
 import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepicker";
 <template>
-    <l-map ref="myMap"
+    <l-map style="height: 430px" ref="myMap"
            :center="center" :zoom="zoom" :options="mapOptions"
     >
         <l-tile-layer

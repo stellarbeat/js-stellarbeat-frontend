@@ -21,7 +21,7 @@
                 />
             </template>
         </nav-link>
-        <div v-if="showing" class="sb-nav-dropdown">
+        <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="validator in validators"
                     v-on:click="selectNode(validator)"

@@ -1,23 +1,23 @@
 <template>
     <div class="card">
-        <div class="sb-card-header d-flex flex-wrap-reverse mt-0 pt-3 pb-0 m-0">
+        <div class="sb-card-header d-flex flex-wrap-reverse mt-0 pl-1 pt-3 pb-0 m-0">
             <div class="spacer h-100"></div>
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
                     <router-link :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
                                  :class="['map', undefined].includes($route.query.view)  && 'router-link-exact-active'"
-                                 class="sb-tab-nav-link"
+                                 class="sb-tab-nav-link py-2"
                     >Map
                     </router-link>
                 </li>
                 <li class="sb-tab-nav-item">
                     <router-link :to="{path: $route.path,
                     query: {'view': 'graph', 'no-scroll': '1'}}"
-                                 :class="$route.query.view === 'graph' && 'router-link-exact-active'"                                 class="sb-tab-nav-link">Graph
+                                 :class="$route.query.view === 'graph' && 'router-link-exact-active'"                                 class="sb-tab-nav-link py-2">Graph
                     </router-link>
                 </li>
             </ul>
-            <div class="pl-3 sb-bread-crumbs-container">
+            <div class="pl-3 sb-bread-crumbs-container py-2">
                 <transition
                         name="fade"
                         mode="out-in"
@@ -28,7 +28,7 @@
                 <simulation-badge class="mx-2"/>
             </div>
         </div>
-        <div class="card-body py-3 px-3 border-top" style="height: 450px">
+        <div class="card-body py-3 px-3 border-top">
             <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
                  class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
             </div>

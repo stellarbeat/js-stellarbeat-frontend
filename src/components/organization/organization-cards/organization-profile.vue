@@ -1,6 +1,6 @@
 <template>
     <div class="card card-profile">
-        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+        <div class="card-body d-flex flex-column text-center justify-content-center align-items-center">
             <h3 class="mb-3">
                                 <span v-b-tooltip.hover v-if="organization.isTierOneOrganization"
                                       title="Tier one organization" class="badge sb-badge badge-primary">

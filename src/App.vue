@@ -78,15 +78,16 @@
                                     <search v-if="!store.isLoading"/>
                                 </form>
                             </div>
+
+
                         </div>
                     </div>
 
                 </b-collapse>
             </div>
 
-            <div class="mt-0 mt-md-5 pl-4 pr-4">
+            <div class="mt-0 mt-md-2 pl-4 pr-4">
                 <div class="container-fluid">
-                    <div class="mt-3 mt-md-5">
                         <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
                         <div v-if="store.isLoading" class="row">
                             <div class="col-5"></div>
@@ -101,9 +102,6 @@
                             />
 
                         </div>
-
-                    </div>
-
                 </div>
             </div>
         </div>

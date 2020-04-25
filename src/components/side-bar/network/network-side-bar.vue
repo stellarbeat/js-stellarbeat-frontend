@@ -12,7 +12,7 @@
                         </h3>
                         <div class="d-flex flex-column">
                             <h3 class="card-title sb-card-title">
-                                Stellar Public Network
+                                Stellar Public
                             </h3>
                             <h6 class="sb-card-subtitle">Network</h6>
                         </div>
@@ -91,9 +91,11 @@
     import Network from '@/components/svg/network.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
+    import Search from '@/components/node/search.vue';
 
     @Component({
         components: {
+            Search,
             UndoRedo,
             Network,
             OrganizationsDropdown,

@@ -2,12 +2,11 @@
     <div>
         <div class="page-header d-flex justify-content-between">
             <div class="d-flex align-items-center">
-                <h1 class="page-title"> Dashboard</h1>
+                <h2 class="page-title"> Dashboard</h2>
                 <simulation-badge/>
             </div>
             <crawl-time class=""/>
         </div>
-        <Statistics :network="network"/>
         <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
@@ -97,8 +96,38 @@
             return this.store.selectedNode;
         }
 
+        get selectedOrganization() {
+            return this.store.selectedOrganization;
+        }
+
         get network(): Network {
             return this.$root.$data.store.network;
+        }
+
+        get breadCrumbs() {
+            let crumbs = [];
+            crumbs.push({
+                text: 'Stellar Public Network',
+                to: {name: 'network-dashboard', query: {view: this.$route.query.view}}
+            });
+
+            if (this.selectedNode) {
+                if (this.selectedNode.organizationId)
+                    crumbs.push({
+                        text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
+                        to: {name: 'organization-dashboard', params: { 'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view }},
+                        active: false
+                    });
+                crumbs.push({
+                    text: this.selectedNode.displayName,
+                    active: true
+                });
+            } else if (this.selectedOrganization)
+                crumbs.push({
+                    text: this.selectedOrganization.name,
+                    active: true
+                });
+            return crumbs;
         }
 
         public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {
@@ -147,7 +176,7 @@
 
     @media (min-width: 1279px) {
         .side-bar {
-            width: 275px;
+            width: 272px;
         }
     }
 

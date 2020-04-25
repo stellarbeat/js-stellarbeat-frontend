@@ -84,6 +84,10 @@
 .page-title {
     margin-right: 10px;
 }
+.page-header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 
 .table.b-table > thead > tr > [aria-sort]:not(.b-table-sort-icon-left), .table.b-table > tfoot > tr > [aria-sort]:not(.b-table-sort-icon-left) {
     background-position: right calc(0.75rem / 2) bottom;

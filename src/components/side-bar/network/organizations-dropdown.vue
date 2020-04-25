@@ -9,7 +9,7 @@
                 :show-sub-title="true"
                 :sub-title="'Transitive quorumset'"
         />
-        <div v-if="showing" class="sb-nav-dropdown">
+        <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="organization in paginatedOrganizations"
                     v-on:click="selectOrganization(organization)"

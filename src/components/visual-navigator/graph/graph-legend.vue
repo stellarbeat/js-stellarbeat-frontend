@@ -1,74 +1,71 @@
 <template>
-    <div class="row" style="width: 100%">
-        <div class="col-12">
-            <div class="row">
-                <div class="col-12 legend-link mb-2">
+    <div class="d-flex align-items-center justify-content-between mt-2">
+        <div class="legend-link mr-2">
 
-                    <a v-show="!showLegend" v-on:click.prevent.stop="showLegend=true" href="#">Show legend</a>
-                    <a v-show="showLegend" v-on:click.prevent.stop="showLegend=false" href="#">Hide legend</a>
-                </div>
-            </div>
-            <div v-show="showLegend" class="row quorum-graph-legend mb-2">
-                <div class="col-4 col-sm-2 d-flex">
-                    <div class="element selected-node px-2 m-2">
-                    </div>
-                    <div >
-                        Selected node
-                    </div>
-                </div>
-
-                <div class="col-4 col-sm-2  d-flex">
-                    <div class=" element active-node px-2 m-2"></div>
-                    <div >
-                        Active node
-                    </div>
-                </div>
-
-                <div class="col-4 col-sm-2  d-flex">
-                    <div class=" element failing-node px-2 m-2"></div>
-                    <div >
-                        Failing node
-                    </div>
-                </div>
-
-                <div class="col-4 col-sm-2  d-flex">
-                    <div class=" element incoming-connection px-2 m-2"></div>
-                    <div >
-                        Incoming Link
-                    </div>
-                </div>
-
-                <div class="col-4 col-sm-2  d-flex">
-                    <div class=" element outgoing-connection px-2 m-2"></div>
-                    <div >
-                        Outgoing Link
-                    </div>
-                </div>
-            </div>
-
+            <a v-show="!showLegend" v-on:click.prevent.stop="showLegend=true" href="#">Legend</a>
+            <a v-show="showLegend" v-on:click.prevent.stop="showLegend=false" href="#">Legend</a>
         </div>
+        <div v-if="showLegend" class="d-flex flex-wrap quorum-graph-legend">
+            <div class="d-flex align-items-center">
+                <div class="element selected-node m-2">
+                </div>
+                <div>
+                    Selected
+                </div>
+            </div>
 
+            <div class="d-flex align-items-center">
+                <div class=" element active-node m-2"></div>
+                <div>
+                    Validating
+                </div>
+            </div>
 
+            <div class="d-flex align-items-center">
+                <div class=" element failing-node m-2"></div>
+                <div>
+                    Failing
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div class=" element incoming-connection m-2"></div>
+                <div>
+                    Incoming Link
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <div class=" element outgoing-connection m-2"></div>
+                <div>
+                    Outgoing Link
+                </div>
+            </div>
+        </div>
     </div>
 
 </template>
 
 <script lang="ts">
-export default {
-    name: 'graph-legend',
-    data() {
-        return {
-            showLegend: false,
-        };
-    },
-};
+    export default {
+        name: 'graph-legend',
+        data() {
+            return {
+                showLegend: true,
+            };
+        },
+    };
 </script>
 
 <style scoped>
+    div {
+        color: #797979;
+    }
+
     .quorum-graph-legend .element {
         color: white;
-        border-radius: 0px;
-        width: 30px;
+        border-radius: 50px;
+        width: 10px;
         height: 10px;
     }
 
