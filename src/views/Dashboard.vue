@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="row">
-            <aside class="side-bar col-sm-5 col-lg-4 col-xl-auto">
+            <aside class="side-bar col-xs-12 col-sm-5 col-lg-4 col-xl-auto">
                 <transition
                         name="fade"
                         mode="out-in"
