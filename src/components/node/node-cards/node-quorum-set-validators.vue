@@ -1,5 +1,8 @@
 <template>
     <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">Trusts <b-badge variant="success">{{validators.length}}</b-badge> nodes</h1>
+        </div>
         <nodes-table :nodes="validators" :fields="fields" per-page="10"/>
     </div>
 </template>

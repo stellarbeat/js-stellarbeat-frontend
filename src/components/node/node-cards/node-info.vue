@@ -1,16 +1,11 @@
 <template>
     <div class="card">
-        <div class="card-header">
-            <h1 class="card-title"><b-icon-shield v-b-tooltip.hover v-if="node.isFullValidator" title="Full validator"
+        <div class="card-body py-0 d-flex flex-column justify-content-center">
+            <h1 class="card-title mt-5 mb-4"><b-icon-shield v-b-tooltip.hover v-if="node.isFullValidator" title="Full validator"
                                                   class="rounded bg-success" variant="light"/>
                 {{node.displayName}}
                 <b-badge v-show="network.isNodeFailing(node)" variant="danger">Failing</b-badge>
             </h1>
-        </div>
-        <b-alert class="card-alert" :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning">
-            <b-icon-exclamation-triangle/> History archive not up-to-date
-        </b-alert>
-        <div class="card-body py-0">
             <table class="table card-table">
                 <tbody>
                 <tr class="text-gray ">
@@ -44,6 +39,9 @@
                 </tbody>
             </table>
         </div>
+        <b-alert class="card-alert" :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning">
+            <b-icon-exclamation-triangle/> History archive not up-to-date
+        </b-alert>
     </div>
 </template>
 <script lang="ts">

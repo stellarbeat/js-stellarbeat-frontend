@@ -66,6 +66,7 @@
             <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
                 <node-trusted-by :node="selectedNode"/>
             </div>
+
             <div class="col-12" v-if="selectedNode.isValidator">
                 <node-quorum-set-validators :node="selectedNode"/>
             </div>

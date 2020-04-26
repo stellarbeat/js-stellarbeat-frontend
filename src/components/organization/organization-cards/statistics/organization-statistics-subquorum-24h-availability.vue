@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-body d-flex flex-row flex-wrap align-items-center p-3">
-            <gauge width="45px" height="45px"
+            <gauge width="65px" height="65px"
                    :value="organization.subQuorum24HoursAvailability" :max-value="100"
                    value-color="#5eba00" negative-value-color="#cd201f"
             class="mr-3"/>

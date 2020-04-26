@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-body py-0">
+        <div class="card-body py-0 d-flex justify-content-center align-items-center">
             <table class="table card-table">
                 <tbody>
                 <tr class="text-gray ">
@@ -23,10 +23,6 @@
                 <tr class="text-gray">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">History url</td>
                     <td class="px-0 flex-wrap text-right wrap-word">{{node.historyUrl ? node.historyUrl : 'N/A'}}</td>
-                </tr>
-                <tr class="text-gray">
-                    <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Alias</td>
-                    <td class="px-0 text-right">{{node.alias ? node.alias : 'N/A'}}</td>
                 </tr>
                 <tr class="text-gray" v-if="node.overlayVersion">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Overlay version</td>

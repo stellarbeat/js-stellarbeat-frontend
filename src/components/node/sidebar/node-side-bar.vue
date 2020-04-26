@@ -3,28 +3,28 @@
         <div class="card pt-0 sidebar-card h-100">
             <div id="sticky">
                 <div class="card-header sb-card-header d-flex inverted d-flex align-items-start">
-                    <h3 class="title-icon">
-                        <b-icon-bullseye scale="0.8" v-b-tooltip.hover
-                                         class="bg-success rounded mr-1" variant="light"/>
-                    </h3>
-
                     <transition
                             name="fade"
                             mode="out-in"
                     >
-
-                        <div class="d-flex flex-column" :key="selectedNode.publicKey">
-                            <h3 class="card-title sb-card-title">
-                                {{getDisplayName(selectedNode)}}
+                        <div class="d-flex" :key="selectedNode.publicKey">
+                            <h3 class="title-icon">
+                                <b-icon-bullseye scale="0.8" v-b-tooltip.hover
+                                                 class="bg-success rounded mr-1" variant="light"/>
                             </h3>
+                            <div class="d-flex flex-column">
+                                <h3 class="card-title sb-card-title">
+                                    {{getDisplayName(selectedNode)}}
+                                </h3>
 
-                            <h6 class="sb-card-subtitle">
-                                {{nodeType}}
-                                <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger"
-                                         style="vertical-align: bottom">Failing
-                                </b-badge>
+                                <h6 class="sb-card-subtitle">
+                                    {{nodeType}}
+                                    <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger"
+                                             style="vertical-align: bottom">Failing
+                                    </b-badge>
 
-                            </h6>
+                                </h6>
+                            </div>
                         </div>
                     </transition>
                 </div>
@@ -32,23 +32,24 @@
                     <div class="sb-nav-bar">
                         <h6 class="sb-navbar-heading">Explore</h6>
                         <div class="overflow">
-                        <transition
-                                name="fade"
-                                mode="out-in"
-                        >
-                            <div :key="selectedNode.publicKey">
-                                <ul v-if="!store.isLoading" class="sb-nav-list">
-                                    <li class="sb-nav-item" v-if="selectedNode.organizationId">
-                                        <organization-validators-dropdown :organization="organization"
-                                                                          :expand="true"/>
-                                    </li>
-                                    <li class="sb-nav-item">
-                                        <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
-                                                             :expand="quorumSetExpanded" v-on:toggleExpand="quorumSetExpanded=!quorumSetExpanded"/>
-                                    </li>
-                                </ul>
-                            </div>
-                        </transition>
+                            <transition
+                                    name="fade"
+                                    mode="out-in"
+                            >
+                                <div :key="selectedNode.publicKey">
+                                    <ul v-if="!store.isLoading" class="sb-nav-list">
+                                        <li class="sb-nav-item" v-if="selectedNode.organizationId">
+                                            <organization-validators-dropdown :organization="organization"
+                                                                              :expand="true"/>
+                                        </li>
+                                        <li class="sb-nav-item">
+                                            <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
+                                                                 :expand="quorumSetExpanded"
+                                                                 v-on:toggleExpand="quorumSetExpanded=!quorumSetExpanded"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </transition>
                         </div>
                         <h6 class="sb-navbar-heading mt-4">Tools</h6>
                         <ul class="sb-nav-list">
@@ -136,7 +137,7 @@
         }
     })
     export default class NodeSideBar extends Vue {
-        public quorumSetExpanded:boolean = false;
+        public quorumSetExpanded: boolean = false;
 
         get store(): Store {
             return this.$root.$data.store;
@@ -214,6 +215,7 @@
         overflow-y: auto;
         max-height: calc(100vh - 20rem);
     }
+
     .success {
     }
 
