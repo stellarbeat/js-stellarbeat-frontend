@@ -69,6 +69,8 @@ export default class Store {
     }
 
     async fetchData(time?:Date): Promise<void> {
+        if(this.isSimulation)
+            this.changeQueue.reset();
         try {
             let params:any = {};
             if(time){

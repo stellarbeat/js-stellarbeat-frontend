@@ -51,7 +51,7 @@
         name: 'graph-legend',
         data() {
             return {
-                showLegend: true,
+                showLegend: false,
             };
         },
     };
