@@ -12,7 +12,7 @@
                 <div v-else class="strong">
                     N/A
                 </div>
-                <div class="text-muted">30D Overloaded</div>
+                <div class="text-muted">30D Overload</div>
             </div>
         </div>
     </div>

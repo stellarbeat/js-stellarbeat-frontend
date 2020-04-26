@@ -1,6 +1,6 @@
 <template>
     <div class="row row-cards row-deck">
-        <div class="col-sm-3 col-6 ">
+        <div class="col-md-6 col-lg-3">
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3 col-6 ">
+        <div class="col-md-6 col-lg-3">
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3 col-6 ">
+        <div class="col-md-6 col-lg-3">
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-3 col-6 ">
+        <div class="col-md-6 col-lg-3">
             <div class="card">
                 <div class="card-body m-2 p-0 text-center">
                     <div class="text-right text-gray info">
