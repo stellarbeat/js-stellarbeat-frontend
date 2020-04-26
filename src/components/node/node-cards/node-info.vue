@@ -21,19 +21,23 @@
                         </b-button>
                     </td>
                 </tr>
-                <tr class="text-gray" v-if="node.key">
+                <tr class="text-gray">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">ip:port</td>
                     <td class="px-0 text-right">{{node.key}}</td>
                 </tr>
-                <tr class="text-gray" v-if="node.geoData.countryName">
+                <tr class="text-gray " v-if="node.versionStr" v-b-popover.hover.top="node.versionStr">
+                    <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Version</td>
+                    <td class="px-0 text-right">{{node.versionStr | truncate(35)}}</td>
+                </tr>
+                <tr class="text-gray">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Country</td>
-                    <td class="px-0 text-right">{{node.geoData.countryName}}</td>
+                    <td class="px-0 text-right">{{node.geoData.countryName ? node.geoData.countryName : 'N/A'}}</td>
                 </tr>
-                <tr class="text-gray" v-if="node.isp">
+                <tr class="text-gray">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">ISP</td>
-                    <td class="px-0 text-right">{{node.isp}}</td>
+                    <td class="px-0 text-right">{{node.isp ? node.isp : 'N/A'}}</td>
                 </tr>
-                <tr class="text-gray" v-if="node.dateDiscovered">
+                <tr class="text-gray">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Discovery date</td>
                     <td class="px-0 text-right" >{{node.dateDiscovered.toDateString()}}</td>
                 </tr>

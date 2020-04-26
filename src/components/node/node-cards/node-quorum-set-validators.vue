@@ -25,7 +25,7 @@
             {key: 'country', label: 'country', sortable: true},
             {key: 'isp', label: 'isp', sortable: true}
 
-        ]
+        ];
 
         get store(): Store {
             return this.$root.$data.store;

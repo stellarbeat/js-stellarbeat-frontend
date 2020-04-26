@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="d-flex flex-column align-items-center justify-content-end">
         <b-table striped hover :responsive="true" :items="nodes" :fields="fields" :sort-by.sync="sortBy"
                  :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                  :filter="filter" class="mb-0">
@@ -27,7 +27,7 @@
             </template>
         </b-table>
         <div class="d-flex justify-content-end m-1" v-show="nodes.length >= perPage">
-                <b-pagination class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
+                <b-pagination limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
         </div>
     </div>
 </template>

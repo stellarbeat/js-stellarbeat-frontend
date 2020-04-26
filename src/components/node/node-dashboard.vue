@@ -59,11 +59,12 @@
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <node-info :node="selectedNode"/>
             </div>
-            <div v-if="selectedNode.homeDomain" class="col-md-12 col-lg-6 col-xl-4">
-                <node-toml-info :node="selectedNode"/>
-            </div>
             <div class="col-md-12 col-lg-6 col-xl-4">
-                <node-core-info :node="selectedNode"/>
+                <node-extra-info :node="selectedNode"/>
+            </div>
+
+            <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
+                <node-trusted-by :node="selectedNode"/>
             </div>
             <div class="col-12" v-if="selectedNode.isValidator">
                 <node-quorum-set-validators :node="selectedNode"/>
@@ -77,9 +78,8 @@
     import HistoryCard from '@/components/charts/history-card.vue';
     import {PublicKey} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import NodeCoreInfo from '@/components/node/node-cards/node-core-info.vue';
     import NodeInfo from '@/components/node/node-cards/node-info.vue';
-    import NodeTomlInfo from '@/components/node/node-cards/node-toml-info.vue';
+    import NodeExtraInfo from '@/components/node/node-cards/node-extra-info.vue';
     import NodeQuorumSetValidators from '@/components/node/node-cards/node-quorum-set-validators.vue';
     import NodeStatistics24HValidating
         from '@/components/node/node-cards/statistics/node-statistics-24H-validating.vue';
@@ -90,9 +90,11 @@
         from '@/components/node/node-cards/statistics/node-statistics-30D-overloaded.vue';
     import NodeIndex from '@/components/node/node-cards/statistics/node-index.vue';
     import NodeStatistics30DActive from '@/components/node/node-cards/statistics/node-statistics-30D-active.vue';
+    import NodeTrustedBy from '@/components/node/node-cards/node-trusted-by.vue';
 
     @Component({
         components: {
+            NodeTrustedBy,
             NodeStatistics30DActive,
             NodeIndex,
             NodeStatistics30DOverloaded,
@@ -100,7 +102,7 @@
             NodeStatistics24HActive,
             NodeStatistics24HValidating,
             NodeQuorumSetValidators,
-            NodeTomlInfo, NodeInfo, NodeCoreInfo, HistoryCard}
+            NodeExtraInfo, NodeInfo, HistoryCard}
     })
 
     export default class NodeDashboard extends Vue {
