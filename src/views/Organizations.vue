@@ -4,7 +4,8 @@
             <div class="page-header d-flex justify-content-between">
                 <div class="d-flex align-items-center">
                     <h1 class="page-title">Organizations</h1>
-                    <simulation-badge/>
+                    <simulation-badge class="mr-2"/>
+                    <time-travel-badge/>
                 </div>
                 <crawl-time class=""/>
             </div>
@@ -115,10 +116,11 @@
     import CrawlTime from '@/components/crawl-time.vue';
     import Store from '@/store/Store';
     import SimulationBadge from '@/components/simulation-badge.vue';
+    import TimeTravelBadge from '@/components/time-travel-badge.vue';
 
     @Component({
         name: 'organizations-table',
-        components: {SimulationBadge, CrawlTime},
+        components: {TimeTravelBadge, SimulationBadge, CrawlTime},
         metaInfo: {
             title: 'Organizations - Stellarbeat.io',
             meta: [

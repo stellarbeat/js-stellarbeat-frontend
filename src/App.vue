@@ -89,11 +89,8 @@
             <div class="mt-0 mt-md-2 pl-4 pr-4">
                 <div class="container-fluid">
                         <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
-                        <div v-if="store.isLoading" class="row">
-                            <div class="col-5"></div>
-                            <div class="col-2 loader"></div>
-                            <div class="col-5"></div>
-
+                        <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
+                            <div class="loader"></div>
                         </div>
                         <div v-else>
                             <router-view v-if="!store.isLoading || isFullPreRenderRoute"

@@ -44,6 +44,7 @@ export default class Store {
     public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);
     public isHaltingAnalysisVisible: boolean = false;
+    public isTimeTravel: boolean = false;
 
     public includeWatcherNodes: boolean = true;
     public watcherNodeFilter = (node:Node) => {
@@ -70,8 +71,12 @@ export default class Store {
     async fetchData(time?:Date): Promise<void> {
         try {
             let params:any = {};
-            if(time)
+            if(time){
                 params['at'] = time.toISOString();
+                this.isTimeTravel = true;
+            }
+            else
+                this.isTimeTravel = false;
 
             let result = await axios.get(process.env.VUE_APP_API_URL + '/v2/all', {params});
             if (result.data.nodes) {

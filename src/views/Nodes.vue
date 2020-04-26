@@ -4,7 +4,8 @@
             <div class="page-header d-flex justify-content-between">
                 <div class="d-flex align-items-center">
                     <h1 class="page-title">Nodes</h1>
-                    <simulation-badge/>
+                    <simulation-badge class="mr-2"/>
+                    <time-travel-badge/>
                 </div>
                 <crawl-time class=""/>
             </div>
@@ -77,9 +78,10 @@ Age = Time since discovery
     import Store from '@/store/Store';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import NodesTable from '@/components/node/nodes-table.vue';
+    import TimeTravelBadge from '@/components/time-travel-badge.vue';
 
     @Component({
-        components: {NodesTable, SimulationBadge, CrawlTime},
+        components: {TimeTravelBadge, NodesTable, SimulationBadge, CrawlTime},
         metaInfo: {
             title: "Nodes overview - Stellarbeat.io",
             meta: [

@@ -3,7 +3,8 @@
         <div class="page-header d-flex justify-content-between">
             <div class="d-flex align-items-center">
                 <h2 class="page-title"> Dashboard</h2>
-                <simulation-badge/>
+                <simulation-badge class="mr-2"/>
+                <time-travel-badge/>
             </div>
             <crawl-time class=""/>
         </div>
@@ -54,10 +55,12 @@
     import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
     import CrawlTime from '@/components/crawl-time.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
+    import TimeTravelBadge from '@/components/time-travel-badge.vue';
 
     @Component({
         name: 'dashboard',
         components: {
+            TimeTravelBadge,
             SimulationBadge,
             CrawlTime,
             NetworkSideBar,
