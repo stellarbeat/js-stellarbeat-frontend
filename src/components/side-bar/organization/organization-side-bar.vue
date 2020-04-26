@@ -18,7 +18,8 @@
                                     {{selectedOrganization.name}}
                                 </h3>
 
-                                <h6 class="sb-card-subtitle">Organization</h6>
+                                <h6 class="sb-card-subtitle">Organization <b-badge v-if="failAt <= 0" variant="danger" v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing</b-badge></h6>
+
                             </div>
                         </div>
                         <div class="card-body px-4 pt-1">
@@ -116,6 +117,15 @@
 
         get tomlNodesExport() {
             return '';
+        }
+
+        get failAt() {
+            let nrOfValidatingNodes = this.selectedOrganization!.validators
+                .map(validator => this.network.getNodeByPublicKey(validator))
+                .filter(validator => validator !== undefined)
+                .filter(node => node!.isValidating).length;
+
+            return nrOfValidatingNodes - this.selectedOrganization!.subQuorumThreshold + 1;
         }
 
         mounted() {

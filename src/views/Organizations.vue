@@ -49,21 +49,26 @@
                                 </li>
                             </ul>
                         </template>
+                        <template v-slot:head(failAt)="data">
+                            <span class="">{{ data.label }}
+                                <b-icon-info-circle class="text-gray" v-b-tooltip:hover="'Availability: more than or equal to 50% of the organization validators are validating.'"/>
+                            </span>
+                        </template>
                         <template v-slot:cell(failAt)="row">
                             <span v-if="row.item.failAt > 1"
                                   class="badge sb-badge badge-success"
                                   v-b-tooltip.hover
-                                  :title="'At least ' + row.item.failAt + ' validators have to fail to bring this subquorum down'"
+                                  :title="(row.item.failAt - 1) + ' more validators can fail without impacting availability'"
                             >Ok
                             </span>
                             <span v-else-if="row.item.failAt === 1"
                                   class="badge sb-badge badge-warning ml-1"
-                                  v-b-tooltip.hover title="If one more validator fails, this subquorum will fail"
+                                  v-b-tooltip.hover title="If one more validator fails, this organization will fail"
                             >Warning
                             </span>
                             <span v-else
                                   class="badge sb-badge badge-danger ml-1"
-                                  v-b-tooltip.hover title="This subquorum is failing"
+                                  v-b-tooltip.hover title="Failing, not available"
                             >Failing
                             </span>
                         </template>
@@ -131,9 +136,9 @@
         public fields = [
             {key: 'name', sortable: true},
             {key: 'validators', sortable: false},
-            {key: 'failAt', label: 'Subquorum availability', sortable: true},
-            {key: 'subQuorum24HAvailability', label: '24H subquorum availability', sortable: true},
-            {key: 'subQuorum30DAvailability', label: '30D subquorum availability', sortable: true},
+            {key: 'failAt', label: 'Availability', sortable: true},
+            {key: 'subQuorum24HAvailability', label: '24H Availability', sortable: true},
+            {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true},
             {key: 'url', sortable: true},
             {key: 'keybase', sortable: true},
             {key: 'email', sortable: true}

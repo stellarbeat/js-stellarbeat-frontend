@@ -5,11 +5,12 @@
                 <organization-profile :organization="organization"/>
             </div>
             <div class="col-md-12 col-lg-6 col-xl-4">
-                <organization-subquorum-availability :fail-at="failAt" :organization="organization"/>
+                <organization-statistics-subquorum-24h-availability :organization="organization"/>
+                <organization-statistics-subquorum-30-d-availability :organization="organization"/>
             </div>
             <div class="col-md-12 col-lg-12 col-xl-4">
                 <history-card
-                        :subject="'Subquorum Availability history'"
+                        :subject="'Availability history'"
                         :entityId="organization.id"
                         :fetchDayMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getDayMeasurements(organizationId, from, to)"
                         :fetchMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getMeasurements(organizationId, from, to)"
@@ -35,13 +36,17 @@
     import Store from '@/store/Store';
     import HistoryCard from '@/components/charts/history-card.vue';
     import OrganizationProfile from '@/components/organization/organization-cards/organization-profile.vue';
-    import OrganizationSubquorumAvailability from '@/components/organization/organization-cards/organization-subquorum-availability.vue';
     import OrganizationValidators from '@/components/organization/organization-cards/organization-validators.vue';
+    import OrganizationStatisticsSubquorum24hAvailability
+        from '@/components/organization/organization-cards/statistics/organization-statistics-subquorum-24h-availability.vue';
+    import OrganizationStatisticsSubquorum30DAvailability
+        from '@/components/organization/organization-cards/statistics/organization-statistics-subquorum-30D-availability.vue';
 
     @Component({
         components: {
+            OrganizationStatisticsSubquorum30DAvailability,
+            OrganizationStatisticsSubquorum24hAvailability,
             OrganizationValidators,
-            OrganizationSubquorumAvailability,
             OrganizationProfile,
             HistoryCard, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution}
     })

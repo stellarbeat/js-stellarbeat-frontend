@@ -25,7 +25,7 @@
                     <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs">
                     </b-breadcrumb>
                 </transition>
-                <simulation-badge class="mx-2"/>
+                <simulation-badge class="mx-2" style="height: 23.5px"/>
             </div>
         </div>
         <div class="card-body py-3 px-3 border-top">

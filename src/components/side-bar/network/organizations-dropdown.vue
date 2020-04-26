@@ -17,6 +17,8 @@
                     :is-link-in-dropdown="true"
                     :has-warnings="hasWarnings(organization)"
                     warnings="Not all history archives up-to-date"
+                    :has-danger="getFailAt(organization) <=0"
+                    :dangers="'More then 50% of its validators are failing'"
             />
             <nav-pagination
                     v-model="currentPage"
@@ -59,7 +61,7 @@
             this.$router.push({
                 name: "organization-dashboard",
                 params: {organizationId: organization.id},
-                query: {view: this.$route.query.view, 'no-scroll': '1'}
+                query: {view: this.$route.query.view, 'no-scroll': '0'}
             });
         }
 
@@ -67,6 +69,15 @@
             return organization.validators
                 .map(validator => this.network.getNodeByPublicKey(validator)!)
                 .some(validator => validator.historyUrl && !validator.isFullValidator)
+        }
+
+        public getFailAt(organization: Organization) {
+            let nrOfValidatingNodes = organization.validators
+                .map(validator => this.network.getNodeByPublicKey(validator))
+                .filter(validator => validator !== undefined)
+                .filter(node => node!.isValidating).length;
+
+            return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
         }
     }
 </script>

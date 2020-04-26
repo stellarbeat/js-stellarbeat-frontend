@@ -7,6 +7,7 @@
                             <b-icon-shield/>
                         </span>
                 {{organization.name}}
+                <b-badge v-if="failAt <= 0" variant="danger" v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing</b-badge>
             </h3>
             <p class="m-4" v-if="organization.description">
                 {{organization.description}}
@@ -29,7 +30,8 @@
                 <li v-if="organization.physicalAddress" class="list-inline-item">
                     <a :href="'https://www.google.com/maps/search/?api=1&query=' + organization.physicalAddress"
                        target="_blank" class="social-link" v-b-tooltip.hover
-                       :title="organization.physicalAddress"><b-icon-compass/>
+                       :title="organization.physicalAddress">
+                        <b-icon-map/>
                     </a>
                 </li>
                 <li v-if="organization.officialEmail" class="list-inline-item">
@@ -67,20 +69,22 @@
                 </li>
             </ul>
         </div>
-        <b-alert :show="hasWarnings" variant="warning" class="mb-0">
-            <p v-if="organization.subQuorumFailAt === 1" class="mb-1">
-                <b-icon-exclamation-triangle/> If one more validator fails, this subquorum will fail.
+        <b-alert :show="hasWarnings" variant="warning" class="mb-0 text-center">
+            <p v-if="failAt === 1" class="mb-1">
+                <b-icon-exclamation-triangle/>
+                If one more validator fails, this organization will fail.
             </p>
-            <hr v-if="organization.subQuorumFailAt === 1 && notAllArchivesUpToDate">
+            <hr v-if="failAt === 1 && notAllArchivesUpToDate">
             <p v-if="notAllArchivesUpToDate" class="mb-0">
-                <b-icon-exclamation-triangle/> Not all history archives up-to-date.
+                <b-icon-exclamation-triangle/>
+                Not all history archives up-to-date.
             </p>
         </b-alert>
     </div>
 </template>
 <script lang="ts">
     import Vue from 'vue';
-    import {Organization} from '@stellarbeat/js-stellar-domain';
+    import {Network, Organization} from '@stellarbeat/js-stellar-domain';
     import {Component, Prop} from 'vue-property-decorator';
     import Github from '@/components/organization/logo/github.vue';
     import Twitter from '@/components/organization/logo/twitter.vue';
@@ -93,16 +97,29 @@
         @Prop()
         organization!: Organization;
 
-        get notAllArchivesUpToDate(){
+        get network(): Network {
+            return this.$root.$data.store.network;
+        }
+
+        get notAllArchivesUpToDate() {
             return this.organization.validators
                 .map(validator => this.$root.$data.store.network.getNodeByPublicKey(validator)!)
                 .some(validator => {
-                    return (validator.historyUrl !== undefined && !validator.isFullValidator)
-                })
+                    return (validator.historyUrl !== undefined && !validator.isFullValidator);
+                });
+        }
+
+        get failAt() {
+            let nrOfValidatingNodes = this.organization.validators
+                .map(validator => this.network.getNodeByPublicKey(validator))
+                .filter(validator => validator !== undefined)
+                .filter(node => node!.isValidating).length;
+
+            return nrOfValidatingNodes - this.organization.subQuorumThreshold + 1;
         }
 
         get hasWarnings() {
-            return this.notAllArchivesUpToDate || this.organization.subQuorumFailAt === 1
+            return this.notAllArchivesUpToDate || this.failAt === 1;
         }
     };
 </script>
@@ -111,7 +128,8 @@
     .social-link {
         text-decoration: none;
     }
-    hr{
+
+    hr {
         margin: 0;
         margin-bottom: 4px;
     }
