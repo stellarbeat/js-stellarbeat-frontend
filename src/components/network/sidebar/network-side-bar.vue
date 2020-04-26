@@ -88,7 +88,6 @@
     import ValidatorsDropdown from '@/components/network/sidebar/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
-    import Network from '@/components/svg/network.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
     import Search from '@/components/node/search.vue';
@@ -97,7 +96,6 @@
         components: {
             Search,
             UndoRedo,
-            Network,
             OrganizationsDropdown,
             NavLink, SimulateNewNode, ValidatorsDropdown
         }

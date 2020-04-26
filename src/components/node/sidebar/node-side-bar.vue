@@ -122,14 +122,12 @@
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
     import OrganizationValidatorsDropdown from '@/components/node/sidebar/organization-validators-dropdown.vue';
-    import ShieldCheck from '@/components/svg/shield-check.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
 
     @Component({
         components: {
             UndoRedo,
-            ShieldCheck,
             OrganizationValidatorsDropdown,
             OrganizationsDropdown,
             SimulateNewNode,

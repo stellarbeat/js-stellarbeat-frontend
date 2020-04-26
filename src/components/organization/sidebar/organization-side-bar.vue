@@ -88,14 +88,12 @@
         from '@/components/organization/sidebar/organization-validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
-    import ShieldCheck from '@/components/svg/shield-check.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
 
     @Component({
         components: {
             UndoRedo,
-            ShieldCheck,
             SimulateNewNode,
             NavLink,
             OrganizationValidatorsDropdown
