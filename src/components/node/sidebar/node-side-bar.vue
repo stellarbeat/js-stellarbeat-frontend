@@ -116,12 +116,12 @@
     import Store from '@/store/Store';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
-    import QuorumSetDropdown from '@/components/side-bar/node/quorum-set-dropdown.vue';
+    import QuorumSetDropdown from '@/components/node/sidebar/quorum-set-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
-    import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
-    import OrganizationValidatorsDropdown from '@/components/side-bar/node/organization-validators-dropdown.vue';
+    import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
+    import OrganizationValidatorsDropdown from '@/components/node/sidebar/organization-validators-dropdown.vue';
     import ShieldCheck from '@/components/svg/shield-check.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';

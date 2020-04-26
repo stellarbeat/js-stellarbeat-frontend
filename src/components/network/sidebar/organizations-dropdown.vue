@@ -33,7 +33,7 @@
     import {Component, Prop, Mixins} from 'vue-property-decorator';
     import {Organization} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
-    import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
+    import {DropdownMixin} from '@/components/side-bar/dropdown-mixin';
     import NavDropdownLink from '@/components/side-bar/nav-dropdown-link.vue';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
 

@@ -9,10 +9,10 @@ import Api from './views/Api.vue';
 import TermsAndConditions from './views/TermsAndConditions.vue';
 import NetworkDashboard from '@/components/network/network-dashboard.vue';
 import NodeDashboard from '@/components/node/node-dashboard.vue';
-import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
-import NodeSideBar from '@/components/side-bar/node/node-side-bar.vue';
+import NetworkSideBar from '@/components/network/sidebar/network-side-bar.vue';
+import NodeSideBar from '@/components/node/sidebar/node-side-bar.vue';
 import OrganizationDashboard from '@/components/organization/organization-dashboard.vue';
-import OrganizationSideBar from '@/components/side-bar/organization/organization-side-bar.vue';
+import OrganizationSideBar from '@/components/organization/sidebar/organization-side-bar.vue';
 
 Vue.use(Router);
 

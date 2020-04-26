@@ -85,9 +85,9 @@
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
     import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
-    import ValidatorsDropdown from '@/components/side-bar/network/validators-dropdown.vue';
+    import ValidatorsDropdown from '@/components/network/sidebar/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
-    import OrganizationsDropdown from '@/components/side-bar/network/organizations-dropdown.vue';
+    import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
     import Network from '@/components/svg/network.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';

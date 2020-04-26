@@ -85,7 +85,7 @@
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
     import OrganizationValidatorsDropdown
-        from '@/components/side-bar/organization/organization-validators-dropdown.vue';
+        from '@/components/organization/sidebar/organization-validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
     import ShieldCheck from '@/components/svg/shield-check.vue';

@@ -46,10 +46,10 @@
     import {Component, Prop, Mixins, Watch} from 'vue-property-decorator';
     import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
-    import {DropdownMixin} from '@/components/side-bar/network/dropdown-mixin';
+    import {DropdownMixin} from '@/components/side-bar/dropdown-mixin';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
-    import NodeActions from '@/components/side-bar/node/node-actions.vue';
-    import QuorumSetActions from '@/components/side-bar/node/quorum-set-actions.vue';
+    import NodeActions from '@/components/node/sidebar/node-actions.vue';
+    import QuorumSetActions from '@/components/node/sidebar/quorum-set-actions.vue';
 
     @Component({
         name: 'quorum-set-dropdown',

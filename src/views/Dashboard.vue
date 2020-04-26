@@ -52,7 +52,7 @@
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import NetworkVisualNavigator from '@/components/visual-navigator/network-visual-navigator.vue';
-    import NetworkSideBar from '@/components/side-bar/network/network-side-bar.vue';
+    import NetworkSideBar from '@/components/network/sidebar/network-side-bar.vue';
     import CrawlTime from '@/components/crawl-time.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
