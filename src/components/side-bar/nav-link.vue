@@ -95,6 +95,7 @@
         }
 
         get chevronDirection(): any {
+            console.log(this.dropDownShowing);
             if(this.dropDownShowing)
                 return 'chevron-down';
             else return 'chevron-right'

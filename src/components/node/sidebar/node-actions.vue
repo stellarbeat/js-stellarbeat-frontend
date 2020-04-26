@@ -1,5 +1,5 @@
 <template>
-        <b-dropdown right size="sm" text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
+        <b-dropdown right size="sm" text="More" class="p-0 m-0" boundary="viewport" toggle-class="more-button btn-thin" no-caret>
             <template slot="button-content">
                 <b-icon-three-dots-vertical scale="0.9"/>
             </template>

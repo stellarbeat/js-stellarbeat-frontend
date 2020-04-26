@@ -5,6 +5,7 @@
                 title="Organizations"
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
+                :dropDownShowing="showing"
                 :showIcon="true"
                 :show-sub-title="true"
                 :sub-title="'Transitive quorumset'"

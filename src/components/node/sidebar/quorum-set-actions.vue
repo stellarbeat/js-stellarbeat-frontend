@@ -1,6 +1,7 @@
 <template>
     <div>
-        <b-dropdown ref="dropdown" v-on:click.prevent.stop="'#'" right text="More" class="p-0 m-0" toggle-class="more-button btn-thin" no-caret>
+        <b-dropdown ref="dropdown" boundary="viewport" v-on:click.prevent.stop="'#'" right text="More" class="p-0 m-0"
+                    toggle-class="more-button btn-thin" no-caret>
             <template slot="button-content">
                 <b-icon-three-dots-vertical scale="0.9"/>
             </template>
@@ -8,32 +9,37 @@
                 Simulation options
             </b-dropdown-header>
             <b-dropdown-item v-b-modal="'add-validators-modal-' + id" v-on:click.prevent.stop>
-                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>Add Validators
+                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>
+                Add Validators
             </b-dropdown-item>
             <b-dropdown-item v-if="!(level === 2)" v-on:click.prevent.stop="addQuorumSet">
-                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>Add QuorumSet
+                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>
+                Add QuorumSet
             </b-dropdown-item>
             <b-dropdown-item v-if="!(level === 0)" v-on:click.prevent.stop="deleteQuorumSet">
-                <b-icon-x-circle class="dropdown-icon" scale="0.9"/>Delete QuorumSet
+                <b-icon-x-circle class="dropdown-icon" scale="0.9"/>
+                Delete QuorumSet
             </b-dropdown-item>
-            <b-dropdown-form form-class="inline" inline v-on:click.prevent.stop="'#'">
-                <b-icon-pencil class="dropdown-icon" scale="0.9"/>
-                <b-form-group
-                        label-size="sm"
-                        label="Threshold"
-                        label-for="dropdown-edit-threshold"
-                        @submit.stop.prevent
-                v-on:click.prevent.stop>
-                    <b-form-input
-                            id="dropdown-edit-threshold"
-                            :state="inputState"
-                            class="thresholdEdit"
-                            size="sm"
-                            v-model="newThreshold"
-                            type="number"
-                    >
-                    </b-form-input>
-                </b-form-group>
+            <b-dropdown-form inline v-on:click.prevent.stop="'#'">
+                <div class="d-flex align-items-center">
+                    <b-icon-pencil class="dropdown-icon" scale="0.9"/>
+                    <b-form-group
+                            label-size="sm"
+                            label="Threshold"
+                            label-for="dropdown-edit-threshold"
+                            @submit.stop.prevent
+                            v-on:click.prevent.stop>
+                        <b-form-input
+                                id="dropdown-edit-threshold"
+                                :state="inputState"
+                                class="thresholdEdit"
+                                size="sm"
+                                v-model="newThreshold"
+                                type="number"
+                        >
+                        </b-form-input>
+                    </b-form-group>
+                </div>
                 <b-button variant="primary" size="sm" @click="saveThresholdFromInput" class="mt-2">Save Threshold
                 </b-button>
             </b-dropdown-form>
@@ -65,8 +71,8 @@
     export default class QuorumSetActions extends Vue {
         @Prop()
         public quorumSet!: QuorumSet;
-        @Prop({default:null})
-        public parentQuorumSet!:QuorumSet;
+        @Prop({default: null})
+        public parentQuorumSet!: QuorumSet;
         @Prop()
         public level!: number;
 
@@ -139,8 +145,9 @@
 
 <style scoped>
     .inline {
-        display: flex!important;
+        display: flex !important;
     }
+
     .thresholdEdit {
         margin-left: 10px;
         width: 45px !important;
