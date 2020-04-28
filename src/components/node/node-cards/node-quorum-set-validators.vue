@@ -2,8 +2,18 @@
     <div class="card">
         <div class="card-header">
             <h1 class="card-title">Trusts <b-badge variant="success">{{validators.length}}</b-badge> nodes</h1>
+            <div class="card-options">
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search" name="s" v-model="filter">
+                        <div class="input-icon-addon">
+                            <b-icon-search/>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <nodes-table :nodes="validators" :fields="fields" per-page="10"/>
+        <nodes-table :filter="filter" :nodes="validators" :fields="fields" per-page="10"/>
     </div>
 </template>
 <script lang="ts">
@@ -19,6 +29,9 @@
     export default class NodeQuorumSetValidators extends Vue{
         @Prop()
         node!: Node;
+
+        protected filter:string="";
+
         fields:any[] = [
             {key: 'name', label: 'Quorumset validator', sortable: true},
             {key: 'index', label: 'index', sortable: true},

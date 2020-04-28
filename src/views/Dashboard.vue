@@ -17,7 +17,7 @@
                 </HaltingAnalysis>
             </div>
         </div>
-        <div class="row align-items-stretch">
+        <div class="row">
             <aside class="side-bar col-xs-12 col-sm-5 col-lg-3 col-xl-auto mb-5">
                 <div class="card pt-0 sidebar-card h-100">
                     <transition
