@@ -1,81 +1,42 @@
 <template>
-    <div>
-        <transition
-                name="fade"
-                mode="out-in"
-        >
-            <div class="card pt-0 h-100">
-                <div id="sticky">
-                    <div :key="selectedOrganization.id">
-                        <div class="card-header sb-card-header inverted d-flex align-items-start">
-                            <h3 class="title-icon">
-                                <b-icon-building scale="0.8"
-                                                 class="bg-success rounded mr-1" variant="light"/>
-                            </h3>
-                            <!--TODO: failing org color!-->
-                            <div class="d-flex flex-column">
-                                <h3 class="card-title sb-card-title">
-                                    {{selectedOrganization.name}}
-                                </h3>
-
-                                <h6 class="sb-card-subtitle">Organization <b-badge v-if="failAt <= 0" variant="danger" v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing</b-badge></h6>
-
-                            </div>
-                        </div>
-                        <div class="card-body px-4 pt-1">
-                            <div class="sb-nav-bar">
-                                <h6 class="sb-navbar-heading">Explore</h6>
-                                <ul v-if="!store.isLoading" class="sb-nav-list">
-                                    <li class="sb-nav-item">
-                                        <organization-validators-dropdown :organization="selectedOrganization"
-                                                                          :expand="true"/>
-                                    </li>
-                                </ul>
-                                <h6 class="sb-navbar-heading mt-4">Tools</h6>
-                                <ul class="sb-nav-list">
-                                    <li class="sb-nav-item">
-                                        <nav-link
-                                                :title="'Export configuration'"
-                                                v-b-modal.tomlExportModal
-                                                :show-icon="true"
-                                                icon="download"
-                                        />
-                                    </li>
-                                    <li class="sb-nav-item">
-                                        <nav-link
-                                                v-b-modal.simulate-node-modal
-                                                :title="'Simulate new node'"
-                                                :show-icon="true"
-                                                icon="plus"
-                                        />
-                                        <simulate-new-node/>
-                                    </li>
-                                </ul>
-
-                                <h6 class="sb-navbar-heading mt-3">Options</h6>
-                                <ul class="sb-nav-list">
-                                    <li class="sb-nav-item">
-                                        <b-form-checkbox v-model="store.includeWatcherNodes"
-                                                         name="include-watcher-nodes-button"
-                                                         class="sb-nav-item sb-nav-toggle"
-                                                         switch>
-                                            Watcher nodes
-                                        </b-form-checkbox>
-                                    </li>
-                                </ul>
-                                <undo-redo v-if="store.isSimulation || store.hasRedo"/>
-                                <b-modal lazy size="lg" id="tomlExportModal"
-                                         title="Stellar Core Configuration" ok-only ok-title="Close"
-                                >
-                                    <pre><code>{{tomlNodesExport}}</code></pre>
-                                </b-modal>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </transition>
-    </div>
+    <side-bar :sticky-key="selectedOrganization.id" icon="building">
+        <template v-slot:title>
+            {{selectedOrganization.name}}
+        </template>
+        <template v-slot:sub-title>
+            <h6 class="sb-card-subtitle">
+                {{organizationType}}
+                <b-badge v-if="failAt <= 0" variant="danger"
+                         v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing
+                </b-badge>
+            </h6>
+        </template>
+        <template v-slot:explore-list-items>
+            <li class="sb-nav-item">
+                <organization-validators-dropdown :organization="selectedOrganization"
+                                                  :expand="true"/>
+            </li>
+        </template>
+        <template v-slot:tool-list-items>
+            <li class="sb-nav-item">
+                <nav-link
+                        :title="'Export configuration'"
+                        v-b-modal.tomlExportModal
+                        :show-icon="true"
+                        icon="download"
+                />
+            </li>
+            <li class="sb-nav-item">
+                <nav-link
+                        v-b-modal.simulate-node-modal
+                        :title="'Simulate new node'"
+                        :show-icon="true"
+                        icon="plus"
+                />
+                <simulate-new-node/>
+            </li>
+        </template>
+    </side-bar>
 </template>
 
 <script lang="ts">
@@ -90,10 +51,11 @@
     import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
+    import SideBar from '@/components/side-bar/side-bar.vue';
 
     @Component({
         components: {
-            UndoRedo,
+            SideBar,
             SimulateNewNode,
             NavLink,
             OrganizationValidatorsDropdown
@@ -107,6 +69,10 @@
 
         get selectedOrganization() {
             return this.store.selectedOrganization;
+        }
+
+        get organizationType() {
+            return this.selectedOrganization!.isTierOneOrganization ? 'T1 Organization' : 'Organization';
         }
 
         get network() {
@@ -124,10 +90,6 @@
                 .filter(node => node!.isValidating).length;
 
             return nrOfValidatingNodes - this.selectedOrganization!.subQuorumThreshold + 1;
-        }
-
-        mounted() {
-            stickybits('#sticky');
         }
     }
 </script>
