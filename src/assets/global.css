@@ -61,7 +61,7 @@
 }
 
 .date-picker-wrapper {
-    width: 135px;
+    width: 120px;
     z-index: 2000;
 }
 .date-picker-input-white {
@@ -76,6 +76,10 @@
     border-radius: 0;
     border-left: none;
 }
+.vue__time-picker .dropdown {
+    z-index: 500;
+}
+
 .timepicker-no-border-right {
     border-radius: 0;
     border-right: none!important;
