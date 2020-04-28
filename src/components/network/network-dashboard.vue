@@ -1,7 +1,7 @@
 <template>
     <div class="row row-cards">
         <div class="col-12">
-            <Statistics :network="network"/>
+            <network-statistics :network="network"/>
         </div>
         <div class="col-md-12 col-lg-4 col-xl-5">
             <NodesCountryDistribution/>
@@ -21,10 +21,10 @@
     import ValidatorsServerLoad from '@/components/network/cards/validator-load.vue';
     import QuorumSetConnections from '@/components/network/cards/quorum-set-connections/quorum-set-connections.vue';
     import {Network} from '@stellarbeat/js-stellar-domain';
-    import Statistics from '@/components/statistics.vue';
+    import NetworkStatistics from '@/components/network/cards/network-statistics.vue';
 
     @Component({
-        components: {Statistics, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution}
+        components: {NetworkStatistics, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution}
     })
 
     export default class NetworkDashboard extends Vue {

@@ -19,12 +19,14 @@
         </div>
         <div class="row align-items-stretch">
             <aside class="side-bar col-xs-12 col-sm-5 col-lg-3 col-xl-auto mb-5">
-                <transition
-                        name="fade"
-                        mode="out-in"
-                >
-                    <router-view name="sideBar" class="h-100 side-bar"/>
-                </transition>
+                <div class="card pt-0 sidebar-card h-100">
+                    <transition
+                            name="fade"
+                            mode="out-in"
+                    >
+                        <router-view name="sideBar" class="h-100 side-bar"/>
+                    </transition>
+                </div>
             </aside>
             <div class="col-sm-7 col-lg-9 col-xl" id="content">
                 <div class="row">
@@ -46,7 +48,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import Search from '../components/node/search.vue';
-    import Statistics from '../components/statistics.vue';
+    import NetworkStatistics from '../components/network/cards/network-statistics.vue';
     import HaltingAnalysis from '@/components/node/halting-analysis/halting-analysis.vue';
     import {Node, Network, QuorumSet, PublicKey} from '@stellarbeat/js-stellar-domain';
     import {Component, Prop, Watch} from 'vue-property-decorator';
@@ -66,7 +68,7 @@
             NetworkSideBar,
             NetworkVisualNavigator,
             Search,
-            Statistics,
+            Statistics: NetworkStatistics,
             HaltingAnalysis
         }
     })
@@ -118,7 +120,10 @@
                 if (this.selectedNode.organizationId)
                     crumbs.push({
                         text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
-                        to: {name: 'organization-dashboard', params: { 'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view }},
+                        to: {
+                            name: 'organization-dashboard',
+                            params: {'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view}
+                        },
                         active: false
                     });
                 crumbs.push({

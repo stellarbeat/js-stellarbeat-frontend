@@ -72,7 +72,7 @@ import {Network} from '@stellarbeat/js-stellar-domain';
 @Component({
     name: 'statistics',
 })
-export default class Statistics extends Vue {
+export default class NetworkStatistics extends Vue {
     @Prop()
     public network!: Network;
 
