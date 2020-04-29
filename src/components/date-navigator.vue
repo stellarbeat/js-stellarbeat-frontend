@@ -1,22 +1,28 @@
 <template>
-    <div class="d-flex flex-wrap">
-        <b-button :disabled="!canGoBack()" size="sm" class="left" v-on:click="$emit('goBack')">
-            <b-icon-chevron-left/>
-        </b-button>
-        <datepicker v-model="datePickerDate" :disabledDates="disabledDates"
-                    :input-class="'date-picker-input-white date-picker-input-white-no-border'"
-                    :wrapper-class="'date-picker-wrapper'"
-                    :bootstrap-styling="true"/>
-        <vue-timepicker v-if="showTime" hide-clear-button input-width="6em" input-class="timepicker-no-border-right"
-                        v-model="timePickerTime" @input="timeInputHandler"/>
-        <b-button @click="timeTravel" variant="secondary" size="md" class="time-travel-btn" v-b-tooltip.hover
-                  title="Travel to selected time">
-            <b-icon-clock/>
-
-        </b-button>
-        <b-button size="sm" v-on:click="$emit('goForward')" class="right">
-            <b-icon-chevron-right/>
-        </b-button>
+    <div class="d-flex">
+        <b-button-group>
+            <b-button :disabled="!canGoBack()" class="left" v-on:click="$emit('goBack')">
+                <b-icon-chevron-left/>
+            </b-button>
+            <div>
+                <b-datepicker v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker"
+                              :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
+                              :min="minSelectedDate" :max="new Date()">
+                    <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
+                </b-datepicker>
+                <b-timepicker v-else v-model="time" class="time-picker"
+                              @hidden="timeInputHandler" :key="time">
+                    <template v-slot:button-content></template>
+                </b-timepicker>
+            </div>
+            <b-button @click="timeTravel" variant="secondary" class="time-travel-btn" v-b-tooltip.hover
+                      title="Travel to selected time">
+                <b-icon-clock/>
+            </b-button>
+            <b-button v-on:click="$emit('goForward')" class="right">
+                <b-icon-chevron-right/>
+            </b-button>
+        </b-button-group>
     </div>
 </template>
 
@@ -24,16 +30,11 @@
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
-    import Datepicker from 'vuejs-datepicker';
-    import VueTimePicker from 'vue2-timepicker';
-    import 'vue2-timepicker/dist/VueTimepicker.css';
     import moment from 'moment';
 
     @Component({
         name: 'date-navigator',
         components: {
-            datepicker: Datepicker,
-            'vue-timepicker': VueTimePicker
         }
     })
     export default class DateNavigator extends Vue {
@@ -44,35 +45,25 @@
         @Prop({default: false})
         showTime!: boolean;
 
-        datePickerDate: string = this.selectedDate.toDateString();
-        timePickerTime: { HH: string, mm: string } = {
-            HH: moment(this.selectedDate).format('HH'),
-            mm: moment(this.selectedDate).format('mm')
-        };
-        disabledDates: any = {
-            to: this.minSelectedDate,
-            from: new Date()
-        };
+        datePickerDate: Date = this.selectedDate;
+        time: string = moment(this.selectedDate).format('HH:mm');
 
         @Watch('selectedDate')
         onSelectedDateChanged() {
-            this.datePickerDate = this.selectedDate.toDateString();
-            this.timePickerTime = {
-                HH: moment(this.selectedDate).format('HH'),
-                mm: moment(this.selectedDate).format('mm')
-            };
+            this.datePickerDate = this.selectedDate;
+            this.time = moment(this.selectedDate).format('HH:mm');
         }
 
         @Watch('datePickerDate', {})
         async onDatePickerDateChanged(to: string, from: string) {
-            if (this.datePickerDate && from !== null && this.selectedDate.toDateString() !== this.datePickerDate) {
+            if (this.datePickerDate && from !== null && this.selectedDate !== this.datePickerDate) {
                 this.$emit('dateChanged', this.datePickerDate);
             }
         }
 
-        timeInputHandler(time: { HH: string, mm: string, ss: string }) {
-            if (time.HH !== moment(this.selectedDate).format('HH')) {
-                this.$emit('dateChanged', moment(this.selectedDate).hours(Number(time.HH)).minutes(Number(time.mm)).toDate());
+        timeInputHandler() {
+            if (this.time !== moment(this.selectedDate).startOf('minutes').format('HH:mm:ss')) {
+                this.$emit('dateChanged', moment(this.selectedDate).hours(Number(this.time.substr(0, 2))).minutes(Number(this.time.substr(3, 2))).toDate());
             }
         }
 
@@ -93,22 +84,19 @@
 </script>
 
 <style scoped>
-    .right {
-        border-bottom-left-radius: 0;
-        border-top-left-radius: 0;
-        height: 38px;
-    }
-
-    .left {
-        border-bottom-right-radius: 0;
-        border-top-right-radius: 0;
-        height: 38px;
-    }
-
     .time-travel-btn {
         color: #1997c6;
         border-radius: 0;
-        border-right: none;
-        height: 38px;
+    }
+    .time-picker {
+        border-radius: 0;
+        border-left:0;
+        width: 125px;
+        height: 100% !important;
+        animation: highlight 1s;
+    }
+    .date-picker {
+        border-radius: 0;
+        border-left:0;
     }
 </style>

@@ -46,9 +46,7 @@
     "vue-scrollto": "^2.16.3",
     "vue-truncate-filter": "^1.1.7",
     "vue2-leaflet": "^2.5.2",
-    "vue2-leaflet-markercluster": "^3.1.0",
-    "vue2-timepicker": "^1.0.8",
-    "vuejs-datepicker": "^1.6.2"
+    "vue2-leaflet-markercluster": "^3.1.0"
   },
   "devDependencies": {
     "@types/chart.js": "^2.7.41",

@@ -1,8 +1,13 @@
 <template>
     <div class="crawl-time-component">
-        <datepicker id="datePickerCrawlTime" input-class="date-picker-input-white" :wrapper-class="'date-picker-wrapper'" v-model="crawlDate" :disabledDates="disabledDates"
-                    :bootstrap-styling="true"/>
-        <vue-timepicker hide-clear-button input-width="8em" class="" v-model="crawlTime" input-class="timepicker-no-border-right" format="HH:mm:ss"/>
+        <b-datepicker v-model="crawlDate" class="date-picker"
+                      :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
+                      :min="minSelectedDate" :max="new Date()">
+            <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
+        </b-datepicker>
+        <b-timepicker v-model="crawlTime" class="time-picker" dropleft>
+            <template v-slot:button-content></template>
+        </b-timepicker>
         <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn" @click="timeTravel">
             <b-icon-clock/>
         </button>
@@ -13,37 +18,18 @@
     import Vue from 'vue';
     import {Component} from 'vue-property-decorator';
     import Store from '@/store/Store';
-    import Datepicker from 'vuejs-datepicker';
     import moment from 'moment';
-    import 'vue2-timepicker/dist/VueTimepicker.css';
-    import VueTimePicker from 'vue2-timepicker';
 
     @Component({
         name: 'crawl-time',
         components: {
-            Datepicker,
-            'vue-timepicker': VueTimePicker
         }
     })
     export default class CrawlTime extends Vue {
-        protected crawlDate:Date;
-        protected crawlTime:{ HH: string, mm: string, ss:string };
+        protected crawlDate:Date = new Date(this.store.network.crawlDate.getTime());
+        protected crawlTime:string = moment(this.crawlDate).format('HH:mm:ss');
         protected minSelectedDate: Date = this.store.measurementsStartDate;
 
-        protected disabledDates: any = {
-            to: this.minSelectedDate,
-            from: new Date()
-        };
-
-        constructor() {
-            super();
-            this.crawlDate = new Date(this.store.network.crawlDate.getTime());
-            this.crawlTime = {
-                HH: moment(this.crawlDate).format('HH'),
-                mm: moment(this.crawlDate).format('mm'),
-                ss: moment(this.crawlDate).format('ss')
-            };
-        }
         get store(): Store {
             return this.$root.$data.store;
         }
@@ -51,7 +37,7 @@
         public async timeTravel() {
             this.store.isLoading = true;
             await this.store.fetchData(
-                moment(this.crawlDate).hours(Number(this.crawlTime.HH)).minutes(Number(this.crawlTime.mm)).seconds(Number(this.crawlTime.ss)).toDate()
+                moment(this.crawlDate).hours(Number(this.crawlTime.substr(0, 2))).minutes(Number(this.crawlTime.substr(3, 2))).toDate()
             );
             this.store.isLoading = false;
         }
@@ -60,16 +46,22 @@
 </script>
 
 <style scoped>
+    .date-picker {
+        width: auto;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-right:0;
+    }
     .crawl-time-component {
         display: flex;
-        align-items: stretch;
     }
     .time-travel-btn {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
-    #datePickerCrawlTime {
-        background-color: white;
+    .time-picker {
+        width: 125px;
+        border-radius: 0;
     }
 </style>
 <style>
