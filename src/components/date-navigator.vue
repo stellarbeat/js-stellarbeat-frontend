@@ -5,12 +5,12 @@
                 <b-icon-chevron-left/>
             </b-button>
             <div>
-                <b-form-datepicker size="sm"  v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker"
+                <b-form-datepicker size="sm"  v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker p-0"
                               :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
                               :min="minSelectedDate" :max="new Date()">
                     <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
                 </b-form-datepicker>
-                <b-form-timepicker size="sm" v-else v-model="time" class="time-picker"
+                <b-form-timepicker size="sm" v-else v-model="time" class="time-picker p-0"
                               @hidden="timeInputHandler" :key="time">
                     <template v-slot:button-content></template>
                 </b-form-timepicker>
