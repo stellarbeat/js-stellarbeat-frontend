@@ -1,6 +1,6 @@
 <template>
     <div class="btn-group undo-redo" role="group" aria-label="UndoRedo">
-        <div v-b-popover.hover.bottomright="'Undo change'">
+        <div v-b-tooltip:hover.bottomright="'Undo change'">
             <button type="button" class="btn btn-secondary btn-icon"
                     v-on:click="onUndoUpdate" :disabled="!store.hasUndo">
                 <b-icon-arrow-counterclockwise/>
@@ -10,7 +10,7 @@
                 v-on:click="onReset" :disabled="!store.hasUndo">
             Reset simulation
         </button>
-        <div v-b-popover.hover.bottomleft="'Redo change'"
+        <div v-b-tooltip:hover.bottomleft="'Redo change'"
         >
             <button type="button" class="btn btn-secondary btn-icon"
                     v-on:click="onRedoUpdate"
@@ -24,9 +24,12 @@
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
     import Store from '@/store/Store';
+    import {BIconArrowClockwise, BIconArrowCounterclockwise, VBTooltip} from 'bootstrap-vue';
 
     @Component({
-        name: 'UndoRedo'
+        name: 'UndoRedo',
+        components: {BIconArrowCounterclockwise: BIconArrowCounterclockwise, BIconArrowClockwise: BIconArrowClockwise},
+        directives:{'b-tooltip': VBTooltip}
     })
     export default class UndoRedo extends Vue {
         get store(): Store {

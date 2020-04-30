@@ -5,15 +5,15 @@
                 <b-icon-chevron-left/>
             </b-button>
             <div>
-                <b-datepicker v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker"
+                <b-form-datepicker v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker"
                               :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
                               :min="minSelectedDate" :max="new Date()">
                     <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
-                </b-datepicker>
-                <b-timepicker v-else v-model="time" class="time-picker"
+                </b-form-datepicker>
+                <b-form-timepicker v-else v-model="time" class="time-picker"
                               @hidden="timeInputHandler" :key="time">
                     <template v-slot:button-content></template>
-                </b-timepicker>
+                </b-form-timepicker>
             </div>
             <b-button @click="timeTravel" variant="secondary" class="time-travel-btn" v-b-tooltip.hover
                       title="Travel to selected time">
@@ -31,11 +31,12 @@
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import moment from 'moment';
+    import {BButton, BIconChevronRight, BIconChevronLeft, BIconClock, BFormDatepicker, BFormTimepicker, VBTooltip, BIconCalendar, BButtonGroup} from 'bootstrap-vue';
 
     @Component({
         name: 'date-navigator',
-        components: {
-        }
+        components: {BButton, BIconChevronRight, BIconClock, BFormDatepicker, BFormTimepicker, BIconChevronLeft, BIconCalendar, BButtonGroup},
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class DateNavigator extends Vue {
         @Prop()

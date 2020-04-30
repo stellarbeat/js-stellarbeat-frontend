@@ -60,12 +60,16 @@
     import Search from '@/components/node/search.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
 
+    import {BModal, VBModal} from 'bootstrap-vue';
+
     @Component({
         components: {
             SideBar,
             OrganizationsDropdown,
-            NavLink, SimulateNewNode, ValidatorsDropdown
-        }
+            NavLink, SimulateNewNode, ValidatorsDropdown,
+            BModal
+        },
+        directives: {'b-modal': VBModal}
     })
     export default class NetworkSideBar extends Vue {
         protected validatorsExpanded: boolean = false;

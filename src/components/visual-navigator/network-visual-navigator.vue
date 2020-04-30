@@ -45,10 +45,11 @@
     import WorldMap from '@/components/visual-navigator/world-map.vue';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
+    import {BBreadcrumb} from 'bootstrap-vue';
 
     @Component({
         name: 'network-visual-navigator',
-        components: {SimulationBadge, NetworkGraphCard, WorldMap}
+        components: {SimulationBadge, NetworkGraphCard, WorldMap, BBreadcrumb}
     })
     export default class NetworkVisualNavigator extends Vue {
         @Prop({default: 'map'})

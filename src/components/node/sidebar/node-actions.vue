@@ -31,11 +31,13 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
+    import {BDropdown, BDropdownItem, BIconThreeDotsVertical, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton} from 'bootstrap-vue';
 
     import {Node} from "@stellarbeat/js-stellar-domain";
     import Store from '@/store/Store';
 
     @Component({
+        components: {BDropdown, BDropdownItem, BIconThreeDotsVertical, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton}
     })
     export default class NodeActions extends Vue {
         @Prop()

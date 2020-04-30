@@ -19,9 +19,11 @@
     import Store from '@/store/Store';
     import Chart from 'chart.js';
     import Gauge from '@/components/charts/gauge.vue';
+    import {VBTooltip, BIconInfoCircle} from 'bootstrap-vue';
 
     @Component({
-        components: {Gauge}
+        components: {Gauge, BIconInfoCircle},
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class OrganizationStatistics30DSubQuorumAvailability extends Vue {
         @Prop()

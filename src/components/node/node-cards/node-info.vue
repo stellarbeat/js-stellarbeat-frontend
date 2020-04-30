@@ -20,7 +20,7 @@
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">ip:port</td>
                     <td class="px-0 text-right">{{node.key}}</td>
                 </tr>
-                <tr class="text-gray " v-if="node.versionStr" v-b-popover.hover.top="node.versionStr">
+                <tr class="text-gray " v-if="node.versionStr" v-b-tooltip:hover.top="node.versionStr">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Version</td>
                     <td class="px-0 text-right">{{node.versionStr | truncate(35)}}</td>
                 </tr>
@@ -51,9 +51,19 @@
     import Store from '@/store/Store';
     import Chart from 'chart.js';
     import Gauge from '@/components/charts/gauge.vue';
+    import {
+        BAlert,
+        BBadge,
+        BButton,
+        BIconClipboard,
+        BIconExclamationTriangle,
+        BIconShield,
+        VBTooltip
+    } from 'bootstrap-vue';
 
     @Component({
-        components: {}
+        components: {BIconExclamationTriangle: BIconExclamationTriangle, BAlert: BAlert, BBadge: BBadge, BIconClipboard: BIconClipboard, BButton:BButton, BIconShield: BIconShield},
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class NodeInfo extends Vue {
         @Prop()

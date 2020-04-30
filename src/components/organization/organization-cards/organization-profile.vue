@@ -88,10 +88,12 @@
     import {Component, Prop} from 'vue-property-decorator';
     import Github from '@/components/organization/logo/github.vue';
     import Twitter from '@/components/organization/logo/twitter.vue';
+    import {BAlert, BBadge, BIconExclamationCircle, BIconLink, BIconShield, VBTooltip} from 'bootstrap-vue';
 
 
     @Component({
-        components: {Twitter, Github}
+        components: {Twitter, Github, BAlert: BAlert, BIconExclamationTriangle: BIconExclamationCircle, BBadge: BBadge, BIconLink: BIconLink, BIconShield: BIconShield},
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class OrganizationProfile extends Vue {
         @Prop()

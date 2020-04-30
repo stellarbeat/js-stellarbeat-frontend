@@ -12,9 +12,12 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
+    import {VBPopover, BIconShield} from 'bootstrap-vue';
 
     @Component({
-        name: "FullValidatorTitle"
+        name: "FullValidatorTitle",
+        components: {BIconShield},
+        directives: {'b-popover': VBPopover}
     })
     export default class FullValidatorTitle extends Vue {
         @Prop()

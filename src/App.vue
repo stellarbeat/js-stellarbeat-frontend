@@ -133,10 +133,11 @@
     import Search from '@/components/node/search.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import Github from '@/components/organization/logo/github.vue';
+    import {BNavbar, BAlert, BCollapse, BIconBuilding, BIconBullseye, BIconHouse, BIconCode, BIconQuestionCircle, BIconEnvelope, BNavbarToggle} from 'bootstrap-vue';
 
     @Component({
         name: 'app',
-        components: {Github, UndoRedo, Search, CrawlTime},
+        components: {Github, UndoRedo, Search, CrawlTime, BNavbar, BAlert, BCollapse, BIconBuilding, BIconBullseye, BIconHouse, BIconCode, BIconQuestionCircle, BIconEnvelope, BNavbarToggle},
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
             meta: [

@@ -8,9 +8,11 @@
 </template>
 <script lang="ts">
     import Store from '@/store/Store';
+    import {BIconX} from 'bootstrap-vue';
 
     export default {
         name: 'time-travel-badge',
+        components: {BIconX: BIconX},
         computed: {
             store():Store {
                 return (this as any).$root.$data.store;

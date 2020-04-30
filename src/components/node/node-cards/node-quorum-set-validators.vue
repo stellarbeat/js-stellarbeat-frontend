@@ -22,9 +22,10 @@
     import {Network, Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import NodesTable from '@/components/node/nodes-table.vue';
+    import {BBadge, BIconSearch} from 'bootstrap-vue';
 
     @Component({
-        components: {NodesTable}
+        components: {NodesTable, BIconSearch: BIconSearch, BBadge:BBadge}
     })
     export default class NodeQuorumSetValidators extends Vue{
         @Prop()

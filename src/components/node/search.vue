@@ -36,10 +36,12 @@
     import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import {RawLocation} from 'vue-router';
+    import {BIconSearch, BFormInput} from 'bootstrap-vue';
 
     type Match =  { name: string, type: string, route: RawLocation };
     @Component({
-        name: 'search'
+        name: 'search',
+        components: {BIconSearch, BFormInput}
     })
     export default class Search extends Vue {
         protected searchString: string = '';

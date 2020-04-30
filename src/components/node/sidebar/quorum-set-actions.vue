@@ -64,9 +64,35 @@
     import AddValidatorsTable
         from '@/components/node/simulation/add-validators-table.vue';
     import Store from '@/store/Store';
+    import {
+        BButton,
+        BDropdown,
+        BDropdownForm, BDropdownHeader, BDropdownItem,
+        BFormGroup,
+        BFormInput, BIconPencil, BIconPlusCircle,
+        BIconSearch, BIconThreeDotsVertical, BIconXCircle,
+        BModal,
+        VBModal
+    } from 'bootstrap-vue';
 
     @Component({
-        components: {AddValidatorsTable}
+        components: {
+            AddValidatorsTable,
+            BModal: BModal,
+            BIconSearch: BIconSearch,
+            BDropdown: BDropdown,
+            BDropdownForm: BDropdownForm,
+            BButton: BButton,
+            BFormGroup: BFormGroup,
+            BFormInput: BFormInput,
+            BIconPencil: BIconPencil,
+            BIconXCircle: BIconXCircle,
+            BDropdownItem: BDropdownItem,
+            BIconPlusCircle: BIconPlusCircle,
+            BDropdownHeader: BDropdownHeader,
+            BIconThreeDotsVertical: BIconThreeDotsVertical
+        },
+        directives: {'b-modal': VBModal}
     })
     export default class QuorumSetActions extends Vue {
         @Prop()

@@ -9,9 +9,14 @@
                                   v-b-tooltip.hover title="Full validator">
                                 <b-icon-shield/>
                             </span>
-                <router-link :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}"> {{ data.item.name }}
+                <router-link
+                        :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}">
+                    {{ data.item.name }}
                 </router-link>
-                <b-badge variant="danger" v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))">Failing</b-badge>
+                <b-badge variant="danger"
+                         v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))">
+                    Failing
+                </b-badge>
             </template>
             <template v-slot:cell(organization)="data">
                 <router-link v-if="data.item.organizationId"
@@ -27,7 +32,7 @@
             </template>
         </b-table>
         <div class="d-flex justify-content-end m-1" v-show="nodes.length >= perPage">
-                <b-pagination limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
+            <b-pagination limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
         </div>
     </div>
 </template>
@@ -38,7 +43,13 @@
     import {Network, Node} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
 
-    @Component({})
+    import {BBadge, BIconShield, BPagination, BTable, VBTooltip} from 'bootstrap-vue';
+
+    @Component(
+        {
+            components: {BTable, BPagination, BIconShield: BIconShield, BBadge: BBadge},
+            directives: {'b-tooltip': VBTooltip}
+        })
     export default class NodesTable extends Vue {
         @Prop({default: ''})
         public filter!: string;

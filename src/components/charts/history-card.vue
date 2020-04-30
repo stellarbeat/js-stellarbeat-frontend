@@ -75,6 +75,8 @@
     import LineChartHour from '@/components/charts/line-chart-hour.vue';
     import {DayMeasurement, Measurement} from '@/store/MeasurementStore';
 
+    import {BButton, BButtonGroup, BIconExclamationCircle} from 'bootstrap-vue';
+
     @Component({
         name: 'history-card',
         components: {
@@ -82,6 +84,7 @@
             DateNavigator,
             ThirtyDayBarChart: BarChartDay,
             TwentyFourHourBarChart: BarChartDay,
+            BButton, BButtonGroup, BIconExclamationCircle
         }
     })
     export default class HistoryCard extends Vue {

@@ -68,9 +68,10 @@ import Vue from 'vue';
 import {Component, Prop} from 'vue-property-decorator';
 
 import {Network} from '@stellarbeat/js-stellar-domain';
+import {BTooltip, BIconInfoCircle} from 'bootstrap-vue';
 
 @Component({
-    name: 'statistics',
+    components: {BTooltip, BIconInfoCircle}
 })
 export default class NetworkStatistics extends Vue {
     @Prop()

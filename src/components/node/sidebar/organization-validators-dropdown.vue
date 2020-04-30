@@ -36,12 +36,14 @@
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
     import NodeActions from '@/components/node/sidebar/node-actions.vue';
     import Store from '@/store/Store';
+    import {BIconSearch} from 'bootstrap-vue';
 
     @Component({
         components: {
             NodeActions,
             NavPagination,
-            NavLink
+            NavLink,
+            BIconSearch: BIconSearch
         },
     })
     export default class OrganizationValidatorsDropdown extends Mixins(DropdownMixin) {

@@ -33,9 +33,19 @@
     import {Component, Prop, Model} from 'vue-property-decorator';
 
     import {Node} from '@stellarbeat/js-stellar-domain';
+    import {BFormInput, BIconShield, BPagination, BTable, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         name: 'add-validators-table',
+        components: {
+            BFormInput: BFormInput,
+            BTable: BTable,
+            BIconShield: BIconShield,
+            BPagination: BPagination
+        },
+        directives: {
+            'b-tooltip': VBTooltip
+        }
     })
 
     export default class AddValidatorsTable extends Vue {

@@ -52,14 +52,16 @@
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
     import SideBar from '@/components/side-bar/side-bar.vue';
+    import {BModal, VBModal} from 'bootstrap-vue';
 
     @Component({
         components: {
             SideBar,
             SimulateNewNode,
             NavLink,
-            OrganizationValidatorsDropdown
-        }
+            OrganizationValidatorsDropdown,
+        },
+        directives: {'b-modal': VBModal}
     })
     export default class OrganizationSideBar extends Vue {
 

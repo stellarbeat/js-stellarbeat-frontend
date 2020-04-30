@@ -17,7 +17,10 @@
     import Store from "@/store/Store";
     import {Node} from "@stellarbeat/js-stellar-domain";
 
+    import {BFormInput, BModal} from 'bootstrap-vue';
+
     @Component({
+        components: {BFormInput, BModal}
     })
     export default class SimulateNewNode extends Vue
     {

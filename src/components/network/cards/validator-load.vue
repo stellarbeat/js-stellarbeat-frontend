@@ -21,9 +21,11 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
 
 import {Network} from '@stellarbeat/js-stellar-domain';
 import Store from '@/store/Store';
+import {BTooltip, BIconInfoCircle} from 'bootstrap-vue';
 
 @Component({
     name: 'validators-server-load',
+    components: {BTooltip, BIconInfoCircle}
 })
 export default class ValidatorsServerLoad extends Vue {
     public chart: Chart|null = null;

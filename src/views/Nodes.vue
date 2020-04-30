@@ -79,9 +79,10 @@ Age = Time since discovery
     import SimulationBadge from '@/components/simulation-badge.vue';
     import NodesTable from '@/components/node/nodes-table.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
+    import {BFormInput} from 'bootstrap-vue';
 
     @Component({
-        components: {TimeTravelBadge, NodesTable, SimulationBadge, CrawlTime},
+        components: {TimeTravelBadge, NodesTable, SimulationBadge, CrawlTime, BFormInput: BFormInput},
         metaInfo: {
             title: "Nodes overview - Stellarbeat.io",
             meta: [

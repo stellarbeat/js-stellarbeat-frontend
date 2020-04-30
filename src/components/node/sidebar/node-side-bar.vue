@@ -78,6 +78,7 @@
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
     import SideBar from '@/components/side-bar/side-bar.vue';
+    import {BBadge, BModal, VBModal} from 'bootstrap-vue';
 
     @Component({
         components: {
@@ -86,7 +87,12 @@
             OrganizationsDropdown,
             SimulateNewNode,
             NavLink,
-            QuorumSetDropdown
+            QuorumSetDropdown,
+            BModal: BModal,
+            BBadge: BBadge
+        },
+        directives: {
+            'b-modal': VBModal
         }
     })
     export default class NodeSideBar extends Vue {

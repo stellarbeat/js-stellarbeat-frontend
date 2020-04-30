@@ -61,10 +61,15 @@
     import Store from '@/store/Store';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
+    import {BIcon, BFormCheckbox, BIconHouse, BIconBullseye, BIconBuilding} from 'bootstrap-vue';
 
     @Component({
         components: {
-            UndoRedo
+            UndoRedo,
+            BIcon,
+            BFormCheckbox,
+            BIconHouse,
+            BIconBullseye, BIconBuilding
         }
     })
     export default class SideBar extends Vue {

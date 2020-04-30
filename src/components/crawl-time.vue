@@ -1,13 +1,13 @@
 <template>
     <div class="crawl-time-component">
-        <b-datepicker v-model="crawlDate" class="date-picker"
+        <b-form-datepicker v-model="crawlDate" class="date-picker"
                       :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
                       :min="minSelectedDate" :max="new Date()">
             <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
-        </b-datepicker>
-        <b-timepicker v-model="crawlTime" class="time-picker" dropleft>
+        </b-form-datepicker>
+        <b-form-timepicker v-model="crawlTime" class="time-picker" dropleft>
             <template v-slot:button-content></template>
-        </b-timepicker>
+        </b-form-timepicker>
         <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn" @click="timeTravel">
             <b-icon-clock/>
         </button>
@@ -19,11 +19,12 @@
     import {Component} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import moment from 'moment';
+    import {BIconClock, BIconCalendar, BFormTimepicker, BFormDatepicker, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         name: 'crawl-time',
-        components: {
-        }
+        components: {BIconClock, BIconCalendar, BFormTimepicker, BFormDatepicker},
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class CrawlTime extends Vue {
         protected crawlDate:Date = new Date(this.store.network.crawlDate.getTime());

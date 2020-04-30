@@ -42,9 +42,23 @@
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
     import NavTitle from '@/components/side-bar/nav-title.vue';
+    import {
+        BIcon,
+        BIconPlus,
+        BIconDownload,
+        BIconChevronRight,
+        BIconChevronDown,
+        BIconLightning,
+        BIconLightningFill,
+        BIconGearWide
+    } from 'bootstrap-vue';
 
     @Component({
-        components: {NavTitle}
+        components: {
+            NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning,
+            BIconLightningFill,
+            BIconGearWide
+        }
     })
     export default class NavLink extends Vue {
         @Prop()
@@ -95,10 +109,9 @@
         }
 
         get chevronDirection(): any {
-            console.log(this.dropDownShowing);
-            if(this.dropDownShowing)
+            if (this.dropDownShowing)
                 return 'chevron-down';
-            else return 'chevron-right'
+            else return 'chevron-right';
         }
 
         get classObject(): any {
@@ -121,6 +134,7 @@
     .action {
         min-width: 20px;
     }
+
     .secondary {
         font-size: 14px;
     }

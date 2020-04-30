@@ -3,7 +3,10 @@
         <template v-slot:header>
             <h3 class="card-title">Halting analysis for {{vertex.label}}</h3>
             <div class="card-options">
-                <a href="#" v-on:click.prevent.stop="store.isHaltingAnalysisVisible = false" class="card-options-remove" data-toggle="card-remove"><b-icon-x/></a>
+                <a href="#" v-on:click.prevent.stop="store.isHaltingAnalysisVisible = false" class="card-options-remove"
+                   data-toggle="card-remove">
+                    <b-icon-x/>
+                </a>
             </div>
         </template>
         <div class="row">
@@ -31,8 +34,12 @@
                         </b-form-group>
                     </b-form>
 
-                        <b-button size="sm" variant="primary" @click="restartHaltingAnalysis" class="mt-1">Detect failures</b-button>
-                    <b-alert dismissible :show="numberOfNodeFailures > 4" variant="warning" class="mt-3">Analyzing combinations of {{numberOfNodeFailures}} nodes could take some time. If possible try with a lower number first.</b-alert>
+                    <b-button size="sm" variant="primary" @click="restartHaltingAnalysis" class="mt-1">Detect failures
+                    </b-button>
+                    <b-alert dismissible :show="numberOfNodeFailures > 4" variant="warning" class="mt-3">Analyzing
+                        combinations of {{numberOfNodeFailures}} nodes could take some time. If possible try with a
+                        lower number first.
+                    </b-alert>
                 </div>
 
                 <div v-bind:class="dimmerClass">
@@ -40,18 +47,22 @@
                     <div class="dimmer-content">
                         <div v-if="showAnalysisResult">
                             <h3 v-if="nodeFailures.length === 0" class="mt-3">
-                                Great! No combination of {{numberOfNodeFailures}} validators can bring down {{vertex.label}}
+                                Great! No combination of {{numberOfNodeFailures}} validators can bring down
+                                {{vertex.label}}
                             </h3>
                             <div v-else class="mt-3">
                                 <h3>
-                                    Found {{nodeFailures.length}} combinations of validators that can halt {{vertex.label}}
+                                    Found {{nodeFailures.length}} combinations of validators that can halt
+                                    {{vertex.label}}
                                 </h3>
                                 <b-form>
                                     <b-form-select :disabled="simulated" :select-size="4" v-model="selectedFailure"
                                                    :options="nodeFailures"></b-form-select>
-                                    <b-button v-if="!simulated" size="sm" variant="primary" @click="simulateFailure" class="mt-2">Simulate failure
+                                    <b-button v-if="!simulated" size="sm" variant="primary" @click="simulateFailure"
+                                              class="mt-2">Simulate failure
                                     </b-button>
-                                    <b-button v-else size="sm" variant="secondary" @click="resetFailureSimulation" class="mt-2">Reactivate nodes
+                                    <b-button v-else size="sm" variant="secondary" @click="resetFailureSimulation"
+                                              class="mt-2">Reactivate nodes
                                     </b-button>
                                 </b-form>
                             </div>
@@ -66,20 +77,32 @@
 
 <script lang="ts">
 
-    import Vue from "vue";
-    import {Component, Prop, Watch} from "vue-property-decorator";
+    import Vue from 'vue';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
     import {
         NetworkGraphNode,
         QuorumSet as NetworkQuorumSet
-    } from "@stellar/halting-analysis/src";
-    import {GraphQuorumSet, Network, PublicKey, Vertex} from "@stellarbeat/js-stellar-domain";
-    import HaltingAnalysisWorker from "worker-loader?name=dist/[name].js!./../../../workers/halting-analysisv1.worker.ts";
+    } from '@stellar/halting-analysis/src';
+    import {GraphQuorumSet, Network, PublicKey, Vertex} from '@stellarbeat/js-stellar-domain';
+    import HaltingAnalysisWorker
+        from 'worker-loader?name=dist/[name].js!./../../../workers/halting-analysisv1.worker.ts';
     import Store from '@/store/Store';
+    import {BAlert, BButton, BCard, BForm, BFormGroup, BFormInput, BFormSelect, BIconX} from 'bootstrap-vue';
 
     const _HaltingAnalysisWorker: any = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 
     @Component({
-        name: "halting-analysis"
+        name: 'halting-analysis',
+        components: {
+            BCard: BCard,
+            BForm: BForm,
+            BButton: BButton,
+            BFormSelect: BFormSelect,
+            BAlert: BAlert,
+            BFormInput: BFormInput,
+            BFormGroup: BFormGroup,
+            BIconX: BIconX
+        }
     })
     export default class HaltingAnalysis extends Vue {
         @Prop()
@@ -97,7 +120,7 @@
 
         protected haltingAnalysisWorker = new _HaltingAnalysisWorker();
 
-        get store():Store {
+        get store(): Store {
             return this.$root.$data.store;
         }
 
@@ -108,12 +131,12 @@
             };
         }
 
-        @Watch("publicKey")
+        @Watch('publicKey')
         public onPublicKeyChanged() {
-           this.nodeFailures = [];
-           this.selectedFailure = null;
-           this.simulated = false;
-           this.showAnalysisResult = false;
+            this.nodeFailures = [];
+            this.selectedFailure = null;
+            this.simulated = false;
+            this.showAnalysisResult = false;
         }
 
         get vertex() {
@@ -126,25 +149,26 @@
         }
 
         simulateFailure() {
-            if(this.selectedFailure === null) {
+            if (this.selectedFailure === null) {
                 return;
             }
             this.simulated = true;
             this.$emit('update-validating-states', this.selectedFailure.map(publicKey => {
-                return {'publicKey': publicKey, 'validating': false}
+                return {'publicKey': publicKey, 'validating': false};
             }));
             //this.$scrollTo('#quorum-set-explorer-card');
         }
 
         resetFailureSimulation() {
-            if(this.selectedFailure === null) {
+            if (this.selectedFailure === null) {
                 return;
             }
             this.$emit('update-validating-states', this.selectedFailure.map(publicKey => {
-                return {'publicKey': publicKey, 'validating': true}
+                return {'publicKey': publicKey, 'validating': true};
             }));
             this.simulated = false;
         }
+
         restartHaltingAnalysis() {
             this.isLoading = true;
             this.simulated = false;
@@ -156,10 +180,10 @@
 
         mapVertexToNetworkGraphNode(vertex: Vertex, isRoot: boolean) {
             return {
-                "distance": isRoot ? 0 : 1,
-                "node": vertex.publicKey,
-                "status": vertex.isValidating ? "tracking" : "missing",
-                "qset": vertex.isValidating ? this.mapGraphQuorumSetToNetworkQuorumSet(vertex.graphQuorumSet) : undefined
+                'distance': isRoot ? 0 : 1,
+                'node': vertex.publicKey,
+                'status': vertex.isValidating ? 'tracking' : 'missing',
+                'qset': vertex.isValidating ? this.mapGraphQuorumSetToNetworkQuorumSet(vertex.graphQuorumSet) : undefined
             } as NetworkGraphNode;
         }
 
@@ -170,8 +194,8 @@
             v.push(...graphQuorumSet.validators);
             innerQSets.forEach(innerQSet => v.push(innerQSet));
             return {
-                "t": graphQuorumSet.threshold,
-                "v": v
+                't': graphQuorumSet.threshold,
+                'v': v
             };
         }
 
@@ -180,11 +204,11 @@
                 event: { data: { type: string, failures: any } }
             ) => {
                 switch (event.data.type) {
-                    case "tick": {
+                    case 'tick': {
 
                     }
                         break;
-                    case "end": {
+                    case 'end': {
                         this.nodeFailures = event.data.failures.map((failure: Array<PublicKey>) => {
                             return {
                                 value: failure,
@@ -192,7 +216,7 @@
                                     this.network.getNodeByPublicKey(publicKey)!.name ?
                                         this.network.getNodeByPublicKey(publicKey)!.displayName :
                                         publicKey.substr(0, 5)
-                                ).join(", ")
+                                ).join(', ')
                             };
                         });
                         if (this.nodeFailures.length > 0) {

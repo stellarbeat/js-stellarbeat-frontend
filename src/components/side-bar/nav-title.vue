@@ -9,8 +9,12 @@
     import Component from 'vue-class-component';
     import Vue from 'vue';
     import {Prop} from 'vue-property-decorator';
+    import {BIcon, BIconExclamationTriangle, VBPopover} from 'bootstrap-vue';
 
-    @Component({})
+    @Component({
+        components: {BIcon, BIconExclamationTriangle},
+        directives: {'b-popover': VBPopover}
+    })
     export default class NavTitle extends Vue {
         @Prop()
         title!:string;

@@ -12,12 +12,15 @@
     </div>
 </template>
 <script lang="ts">
+    import {BPagination} from 'bootstrap-vue';
+
     export default {
         name: 'nav-pagination',
         props: {
             value: {},
             totalRows: {}
-        }
+        },
+        components:{BPagination}
     };
 </script>
 

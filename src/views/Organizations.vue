@@ -52,7 +52,8 @@
                         </template>
                         <template v-slot:head(failAt)="data">
                             <span class="">{{ data.label }}
-                                <b-icon-info-circle class="text-gray" v-b-tooltip:hover="'Availability: more than or equal to 50% of the organization validators are validating.'"/>
+                                <b-icon-info-circle class="text-gray"
+                                                    v-b-tooltip:hover="'Availability: more than or equal to 50% of the organization validators are validating.'"/>
                             </span>
                         </template>
                         <template v-slot:cell(failAt)="row">
@@ -76,7 +77,8 @@
                         <template v-slot:cell(name)="row">
                             <router-link
                                     :to="{ name: 'organization-dashboard', params: { 'organizationId': row.item.id, 'view': $route.query.view }}">
-                                <span v-b-tooltip.hover title="Tier one organization" v-if="row.item.isTierOneOrganization"
+                                <span v-b-tooltip.hover title="Tier one organization"
+                                      v-if="row.item.isTierOneOrganization"
                                       class="badge sb-badge badge-primary mr-1">
                             <b-icon-shield/>
                         </span>{{ row.item.name}}
@@ -117,10 +119,23 @@
     import Store from '@/store/Store';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
+    import {BCol, BFormInput, BIconInfoCircle, BIconShield, BPagination, BRow, BTable, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         name: 'organizations-table',
-        components: {TimeTravelBadge, SimulationBadge, CrawlTime},
+        components: {
+            TimeTravelBadge,
+            SimulationBadge,
+            CrawlTime,
+            BPagination: BPagination,
+            BCol: BCol,
+            BRow: BRow,
+            BTable: BTable,
+            BIconShield: BIconShield,
+            BFormInput: BFormInput,
+            BIconInfoCircle: BIconInfoCircle
+        },
+        directives: {'b-tooltip': VBTooltip},
         metaInfo: {
             title: 'Organizations - Stellarbeat.io',
             meta: [
@@ -154,6 +169,7 @@
         get store(): Store {
             return this.$root.$data.store;
         }
+
         get organizations(): any[] {
             return this.network.organizations
                 .map((organization) => {
