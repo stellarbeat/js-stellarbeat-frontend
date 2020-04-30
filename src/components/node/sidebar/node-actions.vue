@@ -3,7 +3,7 @@
             <template slot="button-content">
                 <b-icon-three-dots-vertical scale="0.9"/>
             </template>
-            <b-dropdown-header id="dropdown-header-label">
+            <b-dropdown-header>
                 Simulation options
             </b-dropdown-header>
             <b-dropdown-item v-on:click.prevent.stop="store.toggleValidating(node)">
@@ -14,7 +14,7 @@
                 <b-icon-x-circle scale="0.9"/>
                 Remove
             </b-dropdown-item>
-            <b-dropdown-header id="dropdown-header-label">
+            <b-dropdown-header>
                 Tools
             </b-dropdown-header>
             <b-dropdown-item v-on:click.prevent.stop="store.showHaltingAnalysis(node)">

@@ -7,7 +7,9 @@
                             <b-icon-shield/>
                         </span>
                 {{organization.name}}
-                <b-badge v-if="failAt <= 0" variant="danger" v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing</b-badge>
+                <b-badge v-if="failAt <= 0" variant="danger"
+                         v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing
+                </b-badge>
             </h3>
             <p class="m-4" v-if="organization.description">
                 {{organization.description}}
@@ -88,11 +90,20 @@
     import {Component, Prop} from 'vue-property-decorator';
     import Github from '@/components/organization/logo/github.vue';
     import Twitter from '@/components/organization/logo/twitter.vue';
-    import {BAlert, BBadge, BIconExclamationCircle, BIconLink, BIconShield, VBTooltip} from 'bootstrap-vue';
+    import {BAlert, BBadge, BIconExclamationCircle, BIconLink, BIconMap, BIconShield, VBTooltip} from 'bootstrap-vue';
 
 
     @Component({
-        components: {Twitter, Github, BAlert: BAlert, BIconExclamationTriangle: BIconExclamationCircle, BBadge: BBadge, BIconLink: BIconLink, BIconShield: BIconShield},
+        components: {
+            Twitter,
+            Github,
+            BAlert: BAlert,
+            BIconExclamationTriangle: BIconExclamationCircle,
+            BBadge: BBadge,
+            BIconLink: BIconLink,
+            BIconShield: BIconShield,
+            BIconMap: BIconMap
+        },
         directives: {'b-tooltip': VBTooltip}
     })
     export default class OrganizationProfile extends Vue {

@@ -11,7 +11,7 @@
                 <tr class="text-gray ">
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Public key</td>
                     <td class="px-0 text-right">{{node.publicKey.substr(0, 7)}}...{{node.publicKey.substr(51, 100)}}
-                        <b-button size="sm" v-b-tooltip:hover.top="'Copy to clipboard'" v-clipboard:copy="node.publicKey">
+                        <b-button size="sm" v-b-tooltip:hover.top="'Copy to clipboard'" @click="copyPublicKey">
                             <b-icon-clipboard />
                         </b-button>
                     </td>
@@ -75,6 +75,10 @@
 
         get network(): Network {
             return this.store.network;
+        }
+
+        copyPublicKey() {
+            this.$copyText(this.node.publicKey!);
         }
     };
 </script>

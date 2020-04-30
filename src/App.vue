@@ -8,8 +8,7 @@
                         <div polyfillclass="container-fluid">
                             <div class="d-flex">
                                 <router-link class="header-brand mt-2"
-                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view}}"
-                                             exact>
+                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view}}">
                                     <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
                                 </router-link>
                                 <div class="d-flex flex-column ml-auto">
@@ -41,8 +40,9 @@
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'network-dashboard', query:{view:$route.query.view}}"
-                                                     exact>
+                                                     :to="{
+                                            name: 'network-dashboard'}"
+                                        >
                                             <b-icon-house class="mr-1" scale="0.9"/>
                                             Home
                                         </router-link>
