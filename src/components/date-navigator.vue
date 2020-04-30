@@ -1,25 +1,25 @@
 <template>
     <div class="d-flex">
         <b-button-group>
-            <b-button :disabled="!canGoBack()" class="left" v-on:click="$emit('goBack')">
+            <b-button size="sm" :disabled="!canGoBack()" class="left" v-on:click="$emit('goBack')">
                 <b-icon-chevron-left/>
             </b-button>
             <div>
-                <b-form-datepicker v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker"
+                <b-form-datepicker size="sm"  v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker"
                               :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
                               :min="minSelectedDate" :max="new Date()">
                     <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
                 </b-form-datepicker>
-                <b-form-timepicker v-else v-model="time" class="time-picker"
+                <b-form-timepicker size="sm" v-else v-model="time" class="time-picker"
                               @hidden="timeInputHandler" :key="time">
                     <template v-slot:button-content></template>
                 </b-form-timepicker>
             </div>
-            <b-button @click="timeTravel" variant="secondary" class="time-travel-btn" v-b-tooltip.hover
+            <b-button size="sm" @click="timeTravel" variant="secondary" class="time-travel-btn" v-b-tooltip.hover
                       title="Travel to selected time">
                 <b-icon-clock/>
             </b-button>
-            <b-button v-on:click="$emit('goForward')" class="right">
+            <b-button size="sm" v-on:click="$emit('goForward')" class="right">
                 <b-icon-chevron-right/>
             </b-button>
         </b-button-group>
@@ -92,8 +92,7 @@
     .time-picker {
         border-radius: 0;
         border-left:0;
-        width: 125px;
-        height: 100% !important;
+        width: 100px;
         animation: highlight 1s;
     }
     .date-picker {

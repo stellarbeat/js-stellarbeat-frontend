@@ -1,11 +1,11 @@
 <template>
     <div class="crawl-time-component">
-        <b-form-datepicker v-model="crawlDate" class="date-picker"
+        <b-form-datepicker size="sm" v-model="crawlDate" class="date-picker"
                       :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
                       :min="minSelectedDate" :max="new Date()">
             <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
         </b-form-datepicker>
-        <b-form-timepicker v-model="crawlTime" class="time-picker" dropleft>
+        <b-form-timepicker size="sm" v-model="crawlTime" class="time-picker" dropleft>
             <template v-slot:button-content></template>
         </b-form-timepicker>
         <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn" @click="timeTravel">
@@ -61,7 +61,7 @@
         border-bottom-left-radius: 0;
     }
     .time-picker {
-        width: 125px;
+        width: 100px;
         border-radius: 0;
     }
 </style>
