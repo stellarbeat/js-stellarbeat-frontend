@@ -19,10 +19,13 @@
                                 <div class="d-flex ml-auto">
                                     <div class="nav-item d-none d-lg-flex">
                                         <a href="https://github.com/stellarbeat"
-                                           class="btn btn-sm bt btn-outline-primary" target="_blank"><github/> Github</a>
+                                           class="btn btn-sm bt btn-outline-primary" target="_blank">
+                                            <github/>
+                                            Github</a>
                                         <a href="mailto:stellarbeatio@gmail.com"
                                            class="btn btn-sm bt btn-outline-primary ml-2" target="_blank">
-                                            <b-icon-envelope/> Mail</a>
+                                            <b-icon-envelope/>
+                                            Mail</a>
                                     </div>
                                 </div>
                                 <b-navbar-toggle class="my-navbar-toggle mb-2" target="nav_collapse"></b-navbar-toggle>
@@ -88,17 +91,17 @@
 
             <div class="mt-0 mt-md-2 pl-4 pr-4">
                 <div class="container-fluid">
-                        <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
-                        <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
-                            <div class="loader"></div>
-                        </div>
-                        <div v-else>
-                            <router-view v-if="!store.isLoading || isFullPreRenderRoute"
-                                         :network="network"
-                                         :isLoading="store.isLoading"
-                            />
+                    <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
+                    <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
+                        <div class="loader"></div>
+                    </div>
+                    <div v-else>
+                        <router-view v-if="!store.isLoading || isFullPreRenderRoute"
+                                     :network="network"
+                                     :isLoading="store.isLoading"
+                        />
 
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,11 +136,37 @@
     import Search from '@/components/node/search.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import Github from '@/components/organization/logo/github.vue';
-    import {BNavbar, BAlert, BCollapse, BIconBuilding, BIconBullseye, BIconHouse, BIconCode, BIconQuestionCircle, BIconEnvelope, BNavbarToggle} from 'bootstrap-vue';
+    import {
+        BNavbar,
+        BAlert,
+        BCollapse,
+        BIconBuilding,
+        BIconBullseye,
+        BIconHouse,
+        BIconCode,
+        BIconQuestionCircle,
+        BIconEnvelope,
+        BNavbarToggle
+    } from 'bootstrap-vue';
 
     @Component({
         name: 'app',
-        components: {Github, UndoRedo, Search, CrawlTime, BNavbar, BAlert, BCollapse, BIconBuilding, BIconBullseye, BIconHouse, BIconCode, BIconQuestionCircle, BIconEnvelope, BNavbarToggle},
+        components: {
+            Github,
+            UndoRedo,
+            Search,
+            CrawlTime,
+            BNavbar,
+            BAlert,
+            BCollapse,
+            BIconBuilding,
+            BIconBullseye,
+            BIconHouse,
+            BIconCode,
+            BIconQuestionCircle,
+            BIconEnvelope,
+            BNavbarToggle
+        },
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
             meta: [
