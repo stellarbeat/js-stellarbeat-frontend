@@ -40,9 +40,8 @@
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
-                                                     :to="{
-                                            name: 'network-dashboard'}"
-                                        >
+                                                     exact
+                                                     :to="{name: 'network-dashboard'}" :class="homeActiveClass">
                                             <b-icon-house class="mr-1" scale="0.9"/>
                                             Home
                                         </router-link>
@@ -204,6 +203,12 @@
 
         get isHeadlessRoute() {
             return this.$router.currentRoute.meta.isHeadlessRoute;
+        }
+
+        get homeActiveClass() {
+            return {
+                'active': this.$route.name === 'network-dashboard' || this.$route.name === 'node-dashboard' || this.$route.name === 'organization-dashboard'
+            };
         }
     }
 </script>
