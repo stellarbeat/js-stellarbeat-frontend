@@ -16,96 +16,12 @@
                             <b-form-input class="form-control search mr-0" type="text" v-model="filter"
                                           id="searchInput"
                                           placeholder="Search"/>
-
                         </div>
                     </div>
-
                 </div>
                 <div class="card-body">
-
-                    <b-table striped hover responsive :items="organizations" :fields="fields" :sort-by.sync="sortBy"
-                             :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
-                             :filter="filter" @filtered="onFiltered">
-                        <template v-slot:cell(validators)="row">
-                            <ul class="validator-list">
-                                <li v-for="validator in row.item.validators">
-                                    <div class="">
-                                    <span v-if="validator.isFullValidator"
-                                          class="badge sb-badge badge-success pt-1 mr-1"
-                                          v-b-tooltip.hover title="Full validator">
-                                        <b-icon-shield/>
-                                        </span>
-
-                                        <router-link
-                                                :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view}}">
-                                            {{ validator.name | truncate(30)}}
-                                        </router-link>
-                                        <span v-if="!validator.active"
-                                              class="badge sb-badge badge-danger ml-1"
-                                        >Not active</span>
-                                        <span v-if="!validator.isValidating"
-                                              class="badge sb-badge badge-danger ml-1"
-                                        >Not validating
-                </span></div>
-                                </li>
-                            </ul>
-                        </template>
-                        <template v-slot:head(failAt)="data">
-                            <span class="">{{ data.label }}
-                                <b-icon-info-circle class="text-gray"
-                                                    v-b-tooltip:hover="'Availability: more than or equal to 50% of the organization validators are validating.'"/>
-                            </span>
-                        </template>
-                        <template v-slot:cell(failAt)="row">
-                            <span v-if="row.item.failAt > 1"
-                                  class="badge sb-badge badge-success"
-                                  v-b-tooltip.hover
-                                  :title="(row.item.failAt - 1) + ' more validators can fail without impacting availability'"
-                            >Ok
-                            </span>
-                            <span v-else-if="row.item.failAt === 1"
-                                  class="badge sb-badge badge-warning ml-1"
-                                  v-b-tooltip.hover title="If one more validator fails, this organization will fail"
-                            >Warning
-                            </span>
-                            <span v-else
-                                  class="badge sb-badge badge-danger ml-1"
-                                  v-b-tooltip.hover title="Failing, not available"
-                            >Failing
-                            </span>
-                        </template>
-                        <template v-slot:cell(name)="row">
-                            <router-link
-                                    :to="{ name: 'organization-dashboard', params: { 'organizationId': row.item.id, 'view': $route.query.view }}">
-                                <span v-b-tooltip.hover title="Tier one organization"
-                                      v-if="row.item.isTierOneOrganization"
-                                      class="badge sb-badge badge-primary mr-1">
-                            <b-icon-shield/>
-                        </span>{{ row.item.name}}
-                            </router-link>
-                        </template>
-                        <template v-slot:cell(url)="row">
-                            <a :href="row.item.url" target="_blank">{{row.item.url}}</a>
-                        </template>
-                        https://keybase.io/
-                        <template v-slot:cell(keybase)="row">
-                            <a :href="'https://keybase.io/' + row.item.keybase" target="_blank">{{row.item.keybase}}</a>
-                        </template>
-                        <template v-slot:cell(email)="row">
-                            <a v-if="row.item.email" :href="'mailto:' + row.item.email"
-                               class="" target="_blank">{{row.item.email}}</a>
-                        </template>
-
-                    </b-table>
-                    <b-row>
-                        <b-col md="6" class="my-1">
-                            <b-pagination ref="paginator" :totalRows="totalRows" :per-page="perPage"
-                                          v-model="currentPage"
-                                          class="my-1"/>
-                        </b-col>
-                    </b-row>
+                    <organizations-table :organizations="organizations" :fields="fields" :filter="filter"/>
                 </div>
-
             </div>
         </div>
     </div>
@@ -120,10 +36,12 @@
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
     import {BCol, BFormInput, BIconInfoCircle, BIconShield, BPagination, BRow, BTable, VBTooltip} from 'bootstrap-vue';
+    import OrganizationsTable from '@/components/organization/organizations-table.vue';
 
     @Component({
-        name: 'organizations-table',
+        name: 'organizations',
         components: {
+            OrganizationsTable,
             TimeTravelBadge,
             SimulationBadge,
             CrawlTime,
@@ -144,16 +62,10 @@
         },
     })
     export default class Organizations extends Vue {
-        public sortBy: string = 'subQuorum30DAvailability';
-        public sortDesc: boolean = true;
-        public perPage: number = 200;
-        public totalRows: number = 1;
-        public currentPage: number = 1;
         public filter: string = '';
         public fields = [
             {key: 'name', sortable: true},
             {key: 'validators', sortable: false},
-            {key: 'failAt', label: 'Availability', sortable: true},
             {key: 'subQuorum24HAvailability', label: '24H Availability', sortable: true},
             {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true},
             {key: 'url', sortable: true},
@@ -214,30 +126,10 @@
 
             return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
         }
-
-        public onFiltered = (filteredItems: any[]) => {
-            this.totalRows = 1;
-            (this.$refs.paginator as any)._data.currentPage = 1;
-            (this.$refs.paginator as any)._data.localNumPages = Math.round(filteredItems.length / this.perPage);
-            //reactivity doesn't work on currentPage and totalRows. why?
-        };
-
-        mounted() {
-            // Set the initial number of items
-            this.totalRows = this.organizations.length;
-        }
     }
 </script>
 <style scoped>
     .header-row {
         width: 100%
-    }
-
-    ul {
-        list-style-type: none;
-    }
-
-    .validator-list {
-        width: 370px;
     }
 </style>

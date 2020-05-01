@@ -1,11 +1,9 @@
 <template>
     <div class="card">
-        <div class="card-body py-0 d-flex flex-column justify-content-center">
-            <h1 class="card-title mt-5 mb-4"><b-icon-shield v-b-tooltip.hover v-if="node.isFullValidator" title="Full validator"
-                                                  class="rounded bg-success" variant="light"/>
-                {{node.displayName}}
+        <div class="card-body py-0 d-flex flex-column justify-content-center align-items-center">
+            <h3 class="mt-5 mb-4 text-center d-flex align-items-center"><full-validator-title :node="node"/>
                 <b-badge v-show="network.isNodeFailing(node)" variant="danger">Failing</b-badge>
-            </h1>
+            </h3>
             <table class="table card-table">
                 <tbody>
                 <tr class="text-gray ">
@@ -60,9 +58,12 @@
         BIconShield,
         VBTooltip
     } from 'bootstrap-vue';
+    import FullValidatorTitle from '@/components/node/full-validator-title.vue';
 
     @Component({
-        components: {BIconExclamationTriangle: BIconExclamationTriangle, BAlert: BAlert, BBadge: BBadge, BIconClipboard: BIconClipboard, BButton:BButton, BIconShield: BIconShield},
+        components: {
+            FullValidatorTitle,
+            BIconExclamationTriangle: BIconExclamationTriangle, BAlert: BAlert, BBadge: BBadge, BIconClipboard: BIconClipboard, BButton:BButton, BIconShield: BIconShield},
         directives: {'b-tooltip': VBTooltip}
     })
     export default class NodeInfo extends Vue {

@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="d-flex justify-content-center">
         <span v-if="node.isFullValidator"
-              class="badge sb-badge badge-success full-validator-badge"
+              class="badge sb-badge badge-success mr-1"
               v-b-popover.hover.top="'Full Validator'">
             <b-icon-shield/>
         </span>

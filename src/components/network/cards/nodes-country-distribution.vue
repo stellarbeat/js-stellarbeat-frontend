@@ -1,9 +1,6 @@
 <template>
     <div class="card ">
-        <div class="card-header">
-            <h3 class="card-title">Node countries</h3>
-        </div>
-        <div class="card-body p-3 pb-6">
+        <div class="card-body p-3 pt-0 d-flex flex-row justify-content-center">
             <canvas id="countryDistributionGraph" ref="countryDistributionGraph"></canvas>
         </div>
     </div>
@@ -105,11 +102,17 @@
 
                 // Configuration options go here
                 options: {
-                    responsive: true,
+                    title: {
+                       text: 'Node countries',
+                        display: true,
+                        fontSize: 20
+                    },
+                    responsive: false,
                     aspectRatio: 1.45,
                     cutoutPercentage: 70,
                     legend: {
-                        display: true
+                        display: true,
+                        position: 'bottom'
                     },
                     animation: {
                         animateScale: true, // animate from small to large

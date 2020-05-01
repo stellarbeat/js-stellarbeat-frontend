@@ -1,12 +1,40 @@
 <template>
     <div>
         <div v-if="!isHeadlessRoute" class="card ">
-            <div class="card-header">
-                <h3 class="card-title">Quorumset connections</h3>
-            </div>
             <div class="card-body p-3 pb-6">
-                <div class="row">
-                    <div class="col-6 d-flex">
+                <div class="d-flex justify-content-center">
+                    <div class="graph-container">
+                        <svg class="graph" xmlns="http://www.w3.org/2000/svg"
+                             height="100%"
+                             width="100%"
+                             viewBox="-40 0 800 720"
+                        >
+                            <g v-bind:transform="svgTransform" ref="quorumSvg">
+                                <g>
+                                    <QuorumSetNode v-for="node in treeNodes" :node="node"
+                                                   v-on:node-selected="showTrustLinks(node)"
+                                                   v-on:node-deselected="removeTrustLinks()">
+                                    </QuorumSetNode>
+                                </g>
+                                <g>
+                                    <path v-for="link in links" class="quorum-set-link"
+                                          v-bind:d="path(link)"
+                                    />
+                                    <path v-for="link in targetLinks" class="link-target"
+                                          v-bind:d="path(link)"
+                                    />
+                                    <path v-for="link in sourceLinks" class="link-source"
+                                          v-bind:d="path(link)"
+                                    />
+                                </g>
+
+                            </g>
+
+                        </svg>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex">
                         <div class="quorum-connections-legend incoming-connection px-2 m-2">
 
                         </div>
@@ -15,42 +43,13 @@
                         </div>
 
                     </div>
-                    <div class="col-6 d-flex">
+                    <div class="d-flex">
                         <div class="quorum-connections-legend outgoing-connection px-2 m-2">
                         </div>
                         <div class="text-right">
                             Outgoing (trusts)
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <svg class="graph" xmlns="http://www.w3.org/2000/svg"
-                         height="100%"
-                         width="100%"
-                         viewBox="-40 0 800 720"
-                    >
-                        <g v-bind:transform="svgTransform" ref="quorumSvg">
-                            <g>
-                                <QuorumSetNode v-for="node in treeNodes" :node="node"
-                                               v-on:node-selected="showTrustLinks(node)"
-                                               v-on:node-deselected="removeTrustLinks()">
-                                </QuorumSetNode>
-                            </g>
-                            <g>
-                                <path v-for="link in links" class="quorum-set-link"
-                                      v-bind:d="path(link)"
-                                />
-                                <path v-for="link in targetLinks" class="link-target"
-                                      v-bind:d="path(link)"
-                                />
-                                <path v-for="link in sourceLinks" class="link-source"
-                                      v-bind:d="path(link)"
-                                />
-                            </g>
-
-                        </g>
-
-                    </svg>
                 </div>
             </div>
         </div>
@@ -106,8 +105,7 @@
         components: {
             QuorumSetNode
         },
-        props: {
-        },
+        props: {},
         created() {
 
             let children = this.network.nodes
@@ -217,6 +215,10 @@
 </script>
 
 <style scoped>
+    .graph-container {
+        max-height: 740px;
+        max-width: 740px;
+    }
 
     .quorum-set-link {
         stroke: #1997c6;

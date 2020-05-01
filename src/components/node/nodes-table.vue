@@ -4,19 +4,23 @@
                  :sort-desc.sync="sortDesc" :per-page="perPage" :current-page="currentPage"
                  :filter="filter" class="mb-0">
             <template v-slot:cell(name)="data">
+                <div class="d-flex flex-row justify-content-start align-items-center">
                             <span v-if="data.item.isFullValidator"
-                                  class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
+                                  class="badge sb-badge badge-success mr-1"
                                   v-b-tooltip.hover title="Full validator">
                                 <b-icon-shield/>
                             </span>
-                <router-link
-                        :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}">
-                    {{ data.item.name }}
-                </router-link>
-                <b-badge variant="danger"
-                         v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))">
-                    Failing
-                </b-badge>
+                    <div class="mr-1">
+                        <router-link
+                                :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view}}">
+                            {{ data.item.name }}
+                        </router-link>
+                    </div>
+                    <b-badge variant="danger"
+                             v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))">
+                        Failing
+                    </b-badge>
+                </div>
             </template>
             <template v-slot:cell(organization)="data">
                 <router-link v-if="data.item.organizationId"
@@ -32,7 +36,7 @@
             </template>
         </b-table>
         <div class="d-flex justify-content-end m-1" v-show="nodes.length >= perPage">
-            <b-pagination limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
+            <b-pagination size="sm" limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
         </div>
     </div>
 </template>
