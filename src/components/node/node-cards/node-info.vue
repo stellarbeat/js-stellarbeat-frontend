@@ -1,8 +1,8 @@
 <template>
     <div class="card">
         <div class="card-body py-0 d-flex flex-column justify-content-center align-items-center">
-            <h3 class="mt-5 mb-4 text-center d-flex align-items-center"><full-validator-title :node="node"/>
-                <b-badge v-show="network.isNodeFailing(node)" variant="danger">Failing</b-badge>
+            <h3 class="mt-5 mb-4  text-center d-flex align-items-center"><full-validator-title :node="node"/>
+                <b-badge v-show="network.isNodeFailing(node)" variant="danger" class="ml-1">Failing</b-badge>
             </h3>
             <table class="table card-table">
                 <tbody>

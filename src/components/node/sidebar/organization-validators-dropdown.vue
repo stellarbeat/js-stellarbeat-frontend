@@ -12,6 +12,7 @@
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="validator in validators"
+                    :key="validator.publicKey"
                     v-on:click="selectValidator(validator)"
                     :title="getDisplayName(validator)"
                     :is-link-in-dropdown="true"

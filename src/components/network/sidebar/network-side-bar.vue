@@ -60,14 +60,15 @@
     import Search from '@/components/node/search.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
 
-    import {BModal, VBModal} from 'bootstrap-vue';
+    import {BIconX, BModal, VBModal} from 'bootstrap-vue';
 
     @Component({
         components: {
             SideBar,
             OrganizationsDropdown,
             NavLink, SimulateNewNode, ValidatorsDropdown,
-            BModal
+            BModal,
+            BIconX: BIconX
         },
         directives: {'b-modal': VBModal}
     })
