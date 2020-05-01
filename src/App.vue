@@ -39,7 +39,7 @@
                             <div class="col-lg order-lg-first">
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
                                     <li class="nav-item">
-                                        <router-link active-class="active" class="nav-link"
+                                        <router-link active-class="active" exact-active-class="active" class="nav-link"
                                                      :to="{
                                             name: 'network-dashboard'}"
                                         >

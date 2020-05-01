@@ -115,9 +115,8 @@
                         position: 'bottom'
                     },
                     animation: {
-                        animateScale: true, // animate from small to large
-                        animateRotate: false // animate clockwise
-                    }
+                        duration: 0 // general animation time
+                    },
                 }
             });
         }

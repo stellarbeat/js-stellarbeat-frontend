@@ -97,6 +97,9 @@
                         display: true,
                         position: 'bottom'
                     },
+                    animation: {
+                        duration: 0 // general animation time
+                    },
                 },
             });
         }

@@ -11,7 +11,8 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        {path: '/', component: Dashboard, alias: '/quorum-monitor/:view?', props: (route) => ({ view: route.query.view }),
+        { path: '/', redirect: { path: '/network/stellar-public/' }},
+        {path: '/network/stellar-public/', component: Dashboard, alias: ['/','/quorum-monitor/:view?'], props: (route) => ({ view: route.query.view }),
             children: [
                 {
                     name: 'network-dashboard',
