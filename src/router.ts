@@ -11,18 +11,20 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        { path: '/', redirect: { path: '/network/stellar-public/' }},
-        {path: '/network/stellar-public/', component: Dashboard, alias: ['/','/quorum-monitor/:view?'], props: (route) => ({ view: route.query.view }),
+        {path: '/', component: Dashboard, alias: ['/quorum-monitor/:view?'], props: (route) => ({ view: route.query.view }),
             children: [
                 {
                     name: 'network-dashboard',
-                    path: '',
-                    alias: ['network', 'quorum-monitor'],
+                    path: '/',
+                    alias: ['/network/stellar-public', 'quorum-monitor'],
                     components: {
                         dashboard: () => import(/* webpackChunkName: "network-dashboard" */ '@/components/network/network-dashboard.vue') as any,
                         sideBar: () => import(/* webpackChunkName: "network-dashboard" */ '@/components/network/sidebar/network-side-bar.vue') as any
                     },
                     props: (route) => ({ view: route.query.view }),
+                    children: [
+
+                    ]
                 },
                 {
                     name: 'node-dashboard',
