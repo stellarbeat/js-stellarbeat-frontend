@@ -1,5 +1,5 @@
 <template>
-    <side-bar :sticky-key="selectedNode.publicKey" icon="bullseye">
+    <side-bar :sticky-key="selectedNode.publicKey" icon="bullseye" :hasExploreSection="selectedNode.isValidator">
         <template v-slot:title>
             {{getDisplayName(selectedNode)}}
         </template>
@@ -15,13 +15,13 @@
                                                   :expand="true"/>
             </li>
             <li class="sb-nav-item">
-                <quorum-set-dropdown :quorum-set="selectedNode.quorumSet"
+                <quorum-set-dropdown :quorum-set="selectedNode.quorumSet" v-if="selectedNode.isValidator"
                                      :expand="quorumSetExpanded"
                                      v-on:toggleExpand="quorumSetExpanded=!quorumSetExpanded"/>
             </li>
         </template>
         <template v-slot:tool-list-items>
-            <li class="sb-nav-item">
+            <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
                         :title="selectedNode.isValidating ? 'Stop validating' : 'Try validating'"
                         :show-icon="true"
@@ -38,7 +38,7 @@
                 />
                 <simulate-new-node/>
             </li>
-            <li class="sb-nav-item">
+            <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
                         title="Halting analysis"
                         :show-icon="true"
@@ -46,7 +46,7 @@
                         v-on:click="store.showHaltingAnalysis(selectedNode)"
                 />
             </li>
-            <li class="sb-nav-item">
+            <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
                         :title="'Export configuration'"
                         v-b-modal.tomlExportModal

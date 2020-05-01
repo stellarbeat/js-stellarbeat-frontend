@@ -19,7 +19,7 @@
             <div class="col-sm-12 col-md-6 col-xl-3">
                 <node-statistics-30-d-overloaded :node="selectedNode"/>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-4">
+            <div class="col-md-12 col-lg-6 col-xl-4"  v-if="selectedNode.isValidator">
                 <history-card
                         :subject="'Validating'"
                         :entityId="selectedNode.publicKey"
@@ -31,7 +31,19 @@
                 >
                 </history-card>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-4">
+            <div v-else class="col-md-12 col-lg-6 col-xl-4">
+                <history-card
+                        :subject="'Active'"
+                        :entityId="selectedNode.publicKey"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :dayMeasurementProperty="'isActiveCount'"
+                        :measurementProperty="'isActive'"
+                        :chartType="'bar'"
+                >
+                </history-card>
+            </div>
+            <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
                 <history-card
                         :subject="'Full validator'"
                         :entityId="selectedNode.publicKey"
@@ -44,7 +56,7 @@
             </div>
 
 
-            <div class="col-md-12 col-lg-6 col-xl-4">
+            <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
                 <history-card
                         :subject="'Overloaded'"
                         :entityId="selectedNode.publicKey"

@@ -23,8 +23,8 @@
                     </div>
                     <div class="card-body px-4 pt-1">
                         <div class="sb-nav-bar">
-                            <h6 class="sb-navbar-heading">Explore</h6>
-                            <div class="overflow">
+                            <h6 v-if="hasExploreSection" class="sb-navbar-heading">Explore</h6>
+                            <div v-if="hasExploreSection" class="overflow">
                                 <div>
                                     <ul v-if="!store.isLoading" class="sb-nav-list">
                                         <slot name="explore-list-items"></slot>
@@ -78,6 +78,9 @@
 
         @Prop()
         icon!: string;
+
+        @Prop({default: true})
+        hasExploreSection!: boolean;
 
         get store(): Store {
             return this.$root.$data.store;
