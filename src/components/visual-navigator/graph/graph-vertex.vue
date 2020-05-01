@@ -65,6 +65,9 @@ export default class GraphNode extends Vue {
     }
 
     public nodeSelected() {
+        if(this.$route.params.publicKey && this.$route.params.publicKey === this.publicKey)
+            return;
+
         this.$router.push(
             {
                 name: 'node-dashboard',

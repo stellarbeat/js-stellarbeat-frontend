@@ -137,6 +137,9 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         }
 
         public nodeSelected(node: Node) {
+            if(this.$route.params.publicKey && this.$route.params.publicKey === node.publicKey)
+                return;
+
             this.$router.push(
                 {
                     name: 'node-dashboard',

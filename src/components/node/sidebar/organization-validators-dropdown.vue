@@ -70,6 +70,9 @@
         }
 
         public selectValidator(validator: Node) {
+            if(this.$route.params.publicKey && this.$route.params.publicKey === validator.publicKey)
+                return;
+
             this.$router.push({
                 name: 'node-dashboard',
                 params: {publicKey: validator.publicKey!},
