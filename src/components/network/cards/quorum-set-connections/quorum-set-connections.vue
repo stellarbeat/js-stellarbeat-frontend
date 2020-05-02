@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="!isHeadlessRoute" class="card ">
+        <div class="card ">
             <div class="card-body p-3 pb-6">
                 <div class="d-flex justify-content-center">
                     <div class="graph-container">
@@ -12,6 +12,7 @@
                             <g v-bind:transform="svgTransform" ref="quorumSvg">
                                 <g>
                                     <QuorumSetNode v-for="node in treeNodes" :node="node"
+                                                   :key="node.publicKey"
                                                    v-on:node-selected="showTrustLinks(node)"
                                                    v-on:node-deselected="removeTrustLinks()">
                                     </QuorumSetNode>
@@ -53,35 +54,6 @@
                 </div>
             </div>
         </div>
-        <div class="headless" v-else>
-            <svg class="graph" xmlns="http://www.w3.org/2000/svg"
-                 height="100%"
-                 width="100%"
-                 viewBox="0 0 716 720"
-            >
-                <g v-bind:transform="svgTransform" ref="quorumSvg">
-                    <g>
-                        <QuorumSetNode v-for="node in treeNodes" :node="node"
-                                       v-on:node-selected="showTrustLinks(node)"
-                                       v-on:node-deselected="removeTrustLinks()">
-                        </QuorumSetNode>
-                    </g>
-                    <g>
-                        <path v-for="link in links" class="quorum-set-link"
-                              v-bind:d="path(link)"
-                        />
-                        <path v-for="link in targetLinks" class="link-target"
-                              v-bind:d="path(link)"
-                        />
-                        <path v-for="link in sourceLinks" class="link-source"
-                              v-bind:d="path(link)"
-                        />
-                    </g>
-
-                </g>
-            </svg>
-        </div>
-
     </div>
 </template>
 

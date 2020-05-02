@@ -19,6 +19,7 @@
                                 />
                             </g>
                             <GraphEdge v-for="edge in edgesViewData"
+                                       :key="edge.source.publicKey + edge.target.publicKey"
                                        :highlightAsOutgoing="edge.highlightAsOutgoing"
                                        :highlightAsIncoming="edge.highlightAsIncoming"
                                        :isPartOfStronglyConnectedComponent="edge.isPartOfStronglyConnectedComponent"
@@ -28,7 +29,7 @@
                                        :childY="edge.target.y"
                                        :isFailing="edge.isFailing"
                                        :hideRegular="!optionShowRegularEdges"
-                            ></GraphEdge>
+                            />
                             <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
                                          :publicKey="vertex.publicKey"
                                          :selected="vertex.selected"

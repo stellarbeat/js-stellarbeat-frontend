@@ -9,6 +9,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         />
         <v-marker-cluster :options="clusterOptions" ref="clusterRef">
             <l-circle-marker v-for="marker in markers" :lat-lng="marker.latLng" @click="nodeSelected(marker.node)"
+                             :key="marker.node.publicKey"
                              :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7"
                              :options="{publicKey: marker.node.publicKey, isNodeFailing: isNodeFailing(marker.node), organizationId: marker.node.organizationId}">
                 <slot>lol</slot>

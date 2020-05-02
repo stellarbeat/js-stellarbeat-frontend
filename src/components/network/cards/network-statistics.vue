@@ -7,10 +7,10 @@
                         <b-icon-info-circle id="activeNodesTooltip"/>
                     </div>
                     <b-tooltip target="activeNodesTooltip" placement="top">
-                        Number of nodes that were active in the latest crawl.
+                        Number of watcher nodes that were active in the latest crawl.
                     </b-tooltip>
-                    <div class="h1 m-2">{{numberOfActiveNodes}}</div>
-                    <div class="text-muted mb-1">Active Nodes</div>
+                    <div class="h1 m-2">{{numberOfActiveWatchers}}</div>
+                    <div class="text-muted mb-1">Watcher nodes</div>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                         Number of active validators in the latest crawl.
                     </b-tooltip>
                     <div class="h1 m-2">{{numberOfActiveValidators}}</div>
-                    <div class="text-muted mb-1">Active Validators</div>
+                    <div class="text-muted mb-1">Validator nodes</div>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
                         Number of active Full Validators in the latest crawl.
                     </b-tooltip>
 
-                    <div class="h1 m-2">{{numberOfFullValidators}}</div>
+                    <div class="h1 m-2">{{numberOfActiveFullValidators}}</div>
                     <div class="text-muted mb-1">Full Validators</div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
 import Vue from 'vue';
 import {Component, Prop} from 'vue-property-decorator';
 
-import {Network} from '@stellarbeat/js-stellar-domain';
+import {Network, Organization} from '@stellarbeat/js-stellar-domain';
 import {BTooltip, BIconInfoCircle} from 'bootstrap-vue';
 
 @Component({
@@ -77,12 +77,12 @@ export default class NetworkStatistics extends Vue {
     @Prop()
     public network!: Network;
 
-    get numberOfFullValidators() {
-        return this.network.nodes.filter(node => node.active && node.isValidating && node.isFullValidator).length;
+    get numberOfActiveFullValidators() {
+        return this.network.nodes.filter(node => node.isFullValidator && !this.network.isNodeFailing(node)).length;
     }
 
-    get numberOfActiveNodes() {
-        return this.network.nodes.filter((node) => node.active).length;
+    get numberOfActiveWatchers() {
+        return this.network.nodes.filter((node) => !node.isValidator && node.active).length;
     }
 
     get numberOfActiveValidators() {
@@ -90,7 +90,16 @@ export default class NetworkStatistics extends Vue {
     }
 
     get numberOfOrganizations() {
-        return this.network.organizations.length;
+        return this.network.organizations.filter(organization => !this.isOrganizationFailing(organization)).length;
+    }
+
+    isOrganizationFailing(organization: Organization) {
+        let nrOfValidatingNodes = organization.validators
+            .map(validator => this.network.getNodeByPublicKey(validator)!)
+            .filter(validator => validator !== undefined)
+            .filter(node => !this.network.isNodeFailing(node)).length;
+
+        return nrOfValidatingNodes - organization.subQuorumThreshold < 0;
     }
 }
 </script>

@@ -13,6 +13,7 @@
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="organization in paginatedOrganizations"
+                    :key="organization.id"
                     v-on:click="selectOrganization(organization)"
                     :title="organization.name | truncate(30)"
                     :is-link-in-dropdown="true"

@@ -13,6 +13,7 @@
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="node in paginatedNodes"
+                    :key="node.publicKey"
                     v-on:click="selectNode(node)"
                     :title="getDisplayName(node)"
                     :isLinkInDropdown="true"

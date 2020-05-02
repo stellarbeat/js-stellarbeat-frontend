@@ -48,9 +48,9 @@
 
         get numberOfActiveNodes() {
             if(this.store.includeWatcherNodes)
-                return this.network.nodes.filter((node) => node.active).length;
+                return this.network.nodes.filter((node) => !this.network.isNodeFailing(node)).length;
             else
-                return this.network.nodes.filter((node) => node.isValidator && node.isValidating).length;
+                return this.network.nodes.filter((node) => node.isValidator && !this.network.isNodeFailing(node)).length;
         }
 
         get validators() {

@@ -4,12 +4,10 @@
             {{selectedOrganization.name}}
         </template>
         <template v-slot:sub-title>
-            <h6 class="sb-card-subtitle">
                 {{organizationType}}
                 <b-badge v-if="failAt <= 0" variant="danger"
                          v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing
                 </b-badge>
-            </h6>
         </template>
         <template v-slot:explore-list-items>
             <li class="sb-nav-item">
@@ -54,10 +52,8 @@
         from '@/components/organization/sidebar/organization-validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
-    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
-    import stickybits from 'stickybits';
     import SideBar from '@/components/side-bar/side-bar.vue';
-    import {BModal, VBModal} from 'bootstrap-vue';
+    import {BModal, VBModal, BBadge, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         components: {
@@ -65,9 +61,10 @@
             SimulateNewNode,
             NavLink,
             OrganizationValidatorsDropdown,
-            BModal: BModal
+            BModal: BModal,
+            BBadge
         },
-        directives: {'b-modal': VBModal}
+        directives: {'b-modal': VBModal, 'b-tooltip': VBTooltip}
     })
     export default class OrganizationSideBar extends Vue {
 

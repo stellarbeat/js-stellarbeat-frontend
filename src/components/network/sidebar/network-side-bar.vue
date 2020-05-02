@@ -4,9 +4,7 @@
             Stellar Public
         </template>
         <template v-slot:sub-title>
-            <h6 class="sb-card-subtitle">
                 Network
-            </h6>
         </template>
         <template v-slot:explore-list-items>
             <li class="sb-nav-item">
