@@ -35,6 +35,11 @@
                 />
                 <simulate-new-node/>
             </li>
+            <b-modal lazy size="lg" id="tomlExportModal"
+                     title="Stellar Core Configuration" ok-only ok-title="Close"
+            >
+                <pre><code>{{tomlNodesExport}}</code></pre>
+            </b-modal>
         </template>
     </side-bar>
 </template>
@@ -60,6 +65,7 @@
             SimulateNewNode,
             NavLink,
             OrganizationValidatorsDropdown,
+            BModal: BModal
         },
         directives: {'b-modal': VBModal}
     })
@@ -73,6 +79,10 @@
             return this.store.selectedOrganization;
         }
 
+        get validators() {
+            return this.selectedOrganization!.validators.map(validator => this.network.getNodeByPublicKey(validator)!);
+        }
+
         get organizationType() {
             return this.selectedOrganization!.isTierOneOrganization ? 'T1 Organization' : 'Organization';
         }
@@ -82,12 +92,12 @@
         }
 
         get tomlNodesExport() {
-            return '';
+            let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
+            return stellarCoreConfigurationGenerator.nodesToToml(this.validators);
         }
 
         get failAt() {
-            let nrOfValidatingNodes = this.selectedOrganization!.validators
-                .map(validator => this.network.getNodeByPublicKey(validator))
+            let nrOfValidatingNodes = this.validators
                 .filter(validator => validator !== undefined)
                 .filter(node => node!.isValidating).length;
 

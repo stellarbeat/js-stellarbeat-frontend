@@ -122,7 +122,7 @@
 
         get tomlNodesExport() {
             let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
-            return '';//stellarCoreConfigurationGenerator.nodesToToml(this.networkTransitiveQuorumSetNodes);
+            return stellarCoreConfigurationGenerator.nodesToToml([this.selectedNode!]);
         }
 
         getDisplayName(node: Node) {

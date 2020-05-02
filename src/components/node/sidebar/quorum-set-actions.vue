@@ -43,6 +43,11 @@
                 <b-button variant="primary" size="sm" @click="saveThresholdFromInput" class="mt-2">Save Threshold
                 </b-button>
             </b-dropdown-form>
+            <b-dropdown-divider/>
+            <b-dropdown-item v-b-modal="'quorumSetTomlExportModal' + id" v-on:click.prevent.stop>
+                <b-icon-download class="dropdown-icon" scale="0.9"/>
+                Export config
+            </b-dropdown-item>
         </b-dropdown>
         <b-modal lazy size="lg" :id="'add-validators-modal-' + id"
                  title="Select validators to add"
@@ -52,6 +57,11 @@
                 <AddValidatorsTable v-if="visible" :validators="possibleValidatorsToAdd"
                                     v-on:validators-selected="onValidatorsSelected"/>
             </template>
+        </b-modal>
+        <b-modal lazy size="lg" :id="'quorumSetTomlExportModal'+id"
+                 title="Stellar Core Configuration" ok-only ok-title="Close"
+        >
+            <pre><code>{{tomlNodesExport}}</code></pre>
         </b-modal>
     </div>
 </template>
@@ -66,14 +76,16 @@
     import Store from '@/store/Store';
     import {
         BButton,
-        BDropdown,
+        BDropdown, BDropdownDivider,
         BDropdownForm, BDropdownHeader, BDropdownItem,
         BFormGroup,
-        BFormInput, BIconPencil, BIconPlusCircle,
+        BFormInput, BIconDownload, BIconPencil, BIconPlusCircle,
         BIconSearch, BIconThreeDotsVertical, BIconXCircle,
         BModal,
         VBModal
     } from 'bootstrap-vue';
+    import StellarCoreConfigurationGenerator
+        from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
 
     @Component({
         components: {
@@ -90,7 +102,9 @@
             BDropdownItem: BDropdownItem,
             BIconPlusCircle: BIconPlusCircle,
             BDropdownHeader: BDropdownHeader,
-            BIconThreeDotsVertical: BIconThreeDotsVertical
+            BIconThreeDotsVertical: BIconThreeDotsVertical,
+            BIconDownload: BIconDownload,
+            BDropdownDivider: BDropdownDivider
         },
         directives: {'b-modal': VBModal}
     })
@@ -164,6 +178,11 @@
                     this.validatorsToAdd
                 );
             }
+        }
+
+        get tomlNodesExport() {
+            let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.store.network);
+            return stellarCoreConfigurationGenerator.quorumSetToToml(this.quorumSet);
         }
 
     }
