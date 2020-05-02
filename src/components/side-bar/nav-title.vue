@@ -1,19 +1,19 @@
 <template>
     <div class="sb-nav-title" :class="classObject">
         {{title}}
-        <b-icon-exclamation-triangle :title="danger" v-if="hasDanger" v-b-popover.hover.top class="sb-danger mr-1"/>
-        <b-icon-exclamation-triangle :title="warnings" v-else-if="hasWarnings" v-b-popover.hover.top class="sb-alert mr-1"/>
+        <b-icon-exclamation-triangle :title="danger" v-if="hasDanger" v-b-tooltip:hover.top="{ variant: 'danger' }" class="sb-danger mr-1"/>
+        <b-icon-exclamation-triangle :title="warnings" v-else-if="hasWarnings" v-b-tooltip:hover.top="{ variant: 'warning' }" class="sb-alert mr-1"/>
     </div>
 </template>
 <script lang="ts">
     import Component from 'vue-class-component';
     import Vue from 'vue';
     import {Prop} from 'vue-property-decorator';
-    import {BIcon, BIconExclamationTriangle, VBPopover} from 'bootstrap-vue';
+    import {BIcon, BIconExclamationTriangle, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         components: {BIcon, BIconExclamationTriangle},
-        directives: {'b-popover': VBPopover}
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class NavTitle extends Vue {
         @Prop()
