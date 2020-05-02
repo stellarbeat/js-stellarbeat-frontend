@@ -96,7 +96,7 @@
         }
     })
     export default class NodeSideBar extends Vue {
-        public quorumSetExpanded: boolean = false;
+        public quorumSetExpanded: boolean = this.selectedNode!.organizationId === undefined;
 
         get store(): Store {
             return this.$root.$data.store;

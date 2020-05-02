@@ -1,8 +1,8 @@
 <template>
-    <div class="d-flex justify-content-center">
+    <div>
         <span v-if="node.isFullValidator"
-              class="badge sb-badge badge-success mr-1"
-              v-b-popover.hover.top="'Full Validator'">
+              class="badge sb-badge badge-success vertical"
+              v-b-tooltip:hover.top="'Full Validator'">
             <b-icon-shield/>
         </span>
         {{node.displayName | truncate(26)}}
@@ -12,12 +12,12 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import {VBPopover, BIconShield} from 'bootstrap-vue';
+    import {BIconShield, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         name: "FullValidatorTitle",
         components: {BIconShield},
-        directives: {'b-popover': VBPopover}
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class FullValidatorTitle extends Vue {
         @Prop()
@@ -26,5 +26,7 @@
 </script>
 
 <style scoped>
-
+    .vertical {
+        vertical-align: text-bottom;
+    }
 </style>
