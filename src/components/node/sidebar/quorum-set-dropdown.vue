@@ -6,7 +6,7 @@
                 :showDropdownToggle="true"
                 :showIcon="isRoot"
                 :show-sub-title="true"
-                :sub-title="'with treshold ' + quorumSet.threshold"
+                :sub-title="'with threshold ' + quorumSet.threshold"
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
                 :has-warnings="hasWarnings"
