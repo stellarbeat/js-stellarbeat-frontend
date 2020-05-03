@@ -87,6 +87,12 @@
 
                 // Configuration options go here
                 options: {
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 20
+                        }
+                    },
                     title: {
                         text: 'Validator loads',
                         display: true,
@@ -120,6 +126,6 @@
 
 <style scoped>
     .canvas-container {
-        height: 220px;
+        height: 250px;
     }
 </style>

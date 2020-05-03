@@ -96,6 +96,12 @@
 
                 // Configuration options go here
                 options: {
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 20
+                        }
+                    },
                     title: {
                         text: 'Node versions',
                         display: true,
@@ -107,6 +113,7 @@
                     legend: {
                         display: true,
                         position: 'bottom',
+
                     },
                     animation: {
                         duration: 0 // general animation time
@@ -128,6 +135,6 @@
 
 <style scoped>
     .canvas-container {
-        height: 220px;
+        height: 250px;
     }
 </style>
