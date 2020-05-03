@@ -6229,10 +6229,10 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
-leaflet-sleep@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/leaflet-sleep/-/leaflet-sleep-0.5.1.tgz#91f8433f38edbb6b8a9b78d3d04ec7396e9f60f6"
-  integrity sha1-kfhDPzjtu2uKm3jT0E7HOW6fYPY=
+leaflet-sleep@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/leaflet-sleep/-/leaflet-sleep-0.5.2.tgz#0e051ee3fca7b075a820b4651a545230434ce162"
+  integrity sha512-Los9EAa3PJi9syu9aX579U5YWv8ESl/OpzUv04wMgHiaUmmTRcUtcxrjCm0WgzvOBAN1cBV7gGw2zMgVzD0ZFg==
 
 leaflet.markercluster@^1.4.1:
   version "1.4.1"

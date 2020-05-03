@@ -24,6 +24,8 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
 </template>
 
 <script lang="ts">
+    require('leaflet-sleep');
+
     import {Component, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
     import {Node} from '@stellarbeat/js-stellar-domain';
@@ -190,7 +192,8 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
                 sleepTime: 250,
                 sleepNote: false,
                 wakeMessage: false,
-                sleepOpacity: 1
+                sleepOpacity: 1,
+                noBlockingAnimations: true
             };
         }
 

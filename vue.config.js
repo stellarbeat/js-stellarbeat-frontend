@@ -2,6 +2,11 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     configureWebpack: {
+        optimization: {
+            splitChunks: {
+                chunks: 'all'
+            }
+        },
         plugins: [
             // To strip all locales except “en”
             new MomentLocalesPlugin()
@@ -40,4 +45,4 @@ module.exports = {
             openAnalyzer: false
         }
     }
-};
+}

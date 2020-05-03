@@ -84,12 +84,11 @@
 
 .fade-enter-active,
 .fade-leave-active {
-    transition-duration: 0.01s;
-    transition-property: opacity;
+    transition-duration: 0.2s;
     transition-timing-function: ease;
 }
 
 .fade-enter,
-.fade-leave-active {
+.fade-leave-to {
     opacity: 0
 }
