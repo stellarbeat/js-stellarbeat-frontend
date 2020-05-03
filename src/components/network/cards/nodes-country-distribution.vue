@@ -1,7 +1,9 @@
 <template>
     <div class="card ">
-        <div class="card-body p-3 pt-0 d-flex flex-row justify-content-center">
-            <canvas id="countryDistributionGraph" ref="countryDistributionGraph"></canvas>
+        <div class="card-body d-flex flex-row justify-content-center">
+            <div class="canvas-container">
+                <canvas id="countryDistributionGraph" ref="countryDistributionGraph"></canvas>
+            </div>
         </div>
     </div>
 </template>
@@ -87,7 +89,7 @@
                         this.sortedCountries[0][0],
                         this.sortedCountries[1][0],
                         this.sortedCountries[2][0],
-                        "Other countries"
+                        "Other"
                     ],
                     datasets: [{
                         label: "Node countries",
@@ -102,17 +104,19 @@
 
                 // Configuration options go here
                 options: {
+
                     title: {
                        text: 'Node countries',
                         display: true,
                         fontSize: 20
                     },
-                    responsive: false,
-                    aspectRatio: 1.45,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     cutoutPercentage: 70,
                     legend: {
                         display: true,
-                        position: 'bottom'
+                        position: 'bottom',
+
                     },
                     animation: {
                         duration: 0 // general animation time
@@ -133,6 +137,8 @@
     }
 </script>
 
-<style>
-
+<style scoped>
+    .canvas-container {
+        height: 220px;
+    }
 </style>

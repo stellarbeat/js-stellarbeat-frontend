@@ -13,7 +13,7 @@
                 </form>
             </div>
         </div>
-        <organizations-table :filter="filter" :organizations="organizations" :fields="fields" per-page="5"/>
+        <organizations-table :filter="filter" :organizations="organizations" :fields="fields" per-page="10"/>
     </div>
 </template>
 <script lang="ts">

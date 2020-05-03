@@ -6,32 +6,20 @@
             </div>
         </div>
         <div class="row row-cards row-deck">
-            <div class="col-lg-12 col-xl-8">
-                <div class="row row-cards row-deck">
-                    <div class="col-lg-6 col-xl-6">
-                        <NodesCountryDistribution/>
-                    </div>
-                    <div class="col-lg-6 col-xl-6">
-                        <ValidatorsServerLoad/>
-                    </div>
-                </div>
-                <div class="row row-cards row-deck">
-                    <div class="col-lg-6 col-xl-6">
-                        <NodesVersions/>
-                    </div>
-                    <div class="col-lg-6 col-xl-6">
-                        <network-organizations/>
-                    </div>
-                </div>
+            <div class="col-lg-4 col-xl-4">
+                <NodesCountryDistribution/>
             </div>
-
-            <div class="col-xl-4 col-lg-12">
+            <div class="col-lg-4 col-xl-4">
+                <NodesVersions/>
+            </div>
+            <div class="col-lg-4 col-xl-4">
+                <ValidatorsServerLoad/>
+            </div>
+            <div class="col-lg-6 col-xl-6">
+                <network-organizations/>
+            </div>
+            <div class="col-lg-6 col-xl-6">
                 <network-nodes/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <QuorumSetConnections/>
             </div>
         </div>
     </div>

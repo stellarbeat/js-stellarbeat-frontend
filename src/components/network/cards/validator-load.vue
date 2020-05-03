@@ -7,8 +7,10 @@
                 A validator has a high load when it disconnects due to 'high load' most of the time during the last 30 days.
             </b-tooltip>
         </div!-->
-        <div class="card-body p-3 d-flex flex-row justify-content-center">
-            <canvas id="overLoadedBarChart" ref="overLoadedBarChart"></canvas>
+        <div class="card-body d-flex flex-row justify-content-center h-100">
+            <div class="canvas-container">
+                <canvas id="overLoadedBarChart" ref="overLoadedBarChart"></canvas>
+            </div>
         </div>
     </div>
 </template>
@@ -90,12 +92,12 @@
                         display: true,
                         fontSize: 20
                     },
-                    responsive: false,
-                    aspectRatio: 1.45,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     cutoutPercentage: 70,
                     legend: {
                         display: true,
-                        position: 'bottom'
+                        position: 'bottom',
                     },
                     animation: {
                         duration: 0 // general animation time

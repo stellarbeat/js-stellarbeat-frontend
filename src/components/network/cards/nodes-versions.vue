@@ -1,6 +1,6 @@
 <template>
     <div class="card h-100">
-        <div class="card-body p-3 d-flex flex-row justify-content-center h-100">
+        <div class="card-body d-flex flex-row justify-content-center">
             <div class="canvas-container">
                 <canvas id="versionGraph" ref="versionGraph"/>
             </div>
@@ -81,7 +81,7 @@
                         this.sortedVersions[0][0],
                         this.sortedVersions[1][0],
                         this.sortedVersions[2][0],
-                        'Other versions'
+                        'Other'
                     ],
                     datasets: [{
                         label: 'Node versions',
@@ -101,12 +101,12 @@
                         display: true,
                         fontSize: 20
                     },
-                    responsive: false,
-                    aspectRatio: 1,
-                    cutoutPercentage: 60,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutoutPercentage: 70,
                     legend: {
                         display: true,
-                        position: 'bottom'
+                        position: 'bottom',
                     },
                     animation: {
                         duration: 0 // general animation time
@@ -128,6 +128,6 @@
 
 <style scoped>
     .canvas-container {
-        height: 300px;
+        height: 220px;
     }
 </style>
