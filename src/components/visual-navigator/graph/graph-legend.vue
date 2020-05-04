@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex align-items-center justify-content-between mt-2">
+    <div class="d-flex align-items-center justify-content-between">
         <div class="legend-link mr-2">
 
             <a v-show="!showLegend" v-on:click.prevent.stop="showLegend=true" href="#">Legend</a>

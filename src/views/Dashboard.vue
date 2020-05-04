@@ -34,11 +34,43 @@
                         <network-visual-navigator :view="view"/>
                     </div>
                 </div>
+                <!--div class="row">
+                    <div class="col">
+                        <div class="card border" id="map">
+                            <div class="card-body border-0 pt-3 px-3 pb-0">
+                                <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
+                                     class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
+                                </div>
+                                <world-map/>
+                            </div>
+                            <div class="card-footer border-0 px-3 py-1">
+                                <div class="pl-0 sb-bread-crumbs-container">
+                                    <transition
+                                            name="fade"
+                                            mode="out-in"
+                                    >
+                                        <b-breadcrumb class="sb-bread-crumbs p-0 mb-0" :items="breadCrumbs">
+                                        </b-breadcrumb>
+                                    </transition>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div!-->
                 <div class="row">
                     <div class="col-12">
                         <router-view name="dashboard"/>
                     </div>
                 </div>
+                <!--div class="row">
+                    <div class="col">
+                        <div class="card border" id="graph">
+                            <div class="card-body border-0 p-3">
+                                <network-graph-card/>
+                            </div>
+                        </div>
+                    </div>
+                </div!-->
             </div>
         </div>
     </div>
@@ -58,10 +90,15 @@
     import CrawlTime from '@/components/crawl-time.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
+    import WorldMap from '@/components/visual-navigator/world-map.vue';
+    import {BBreadcrumb} from 'bootstrap-vue';
+    import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
 
     @Component({
         name: 'dashboard',
         components: {
+            NetworkGraphCard,
+            WorldMap,
             TimeTravelBadge,
             SimulationBadge,
             CrawlTime,
@@ -69,11 +106,12 @@
             NetworkVisualNavigator,
             Search,
             Statistics: NetworkStatistics,
-            HaltingAnalysis
+            HaltingAnalysis,
+            BBreadcrumb: BBreadcrumb
         }
     })
     export default class Dashboard extends Vue {
-        @Prop({default: 'map'})
+        @Prop({default: 'graph'})
         public view!: string;
 
         @Watch('$route')
@@ -93,6 +131,32 @@
                 });
         }
 
+        get breadCrumbs() {
+            let crumbs = [];
+            crumbs.push({
+                text: 'Stellar Public Network',
+                to: {name: 'network-dashboard'}
+            });
+
+            if (this.selectedNode) {
+                if (this.selectedNode.organizationId)
+                    crumbs.push({
+                        text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
+                        to: {name: 'organization-dashboard', params: { 'organizationId': this.selectedNode.organizationId}},
+                        active: false
+                    });
+                crumbs.push({
+                    text: this.selectedNode.displayName,
+                    active: true
+                });
+            } else if (this.selectedOrganization)
+                crumbs.push({
+                    text: this.selectedOrganization.name,
+                    active: true
+                });
+            return crumbs;
+        }
+
         get store(): Store {
             return this.$root.$data.store;
         }
@@ -107,35 +171,6 @@
 
         get network(): Network {
             return this.$root.$data.store.network;
-        }
-
-        get breadCrumbs() {
-            let crumbs = [];
-            crumbs.push({
-                text: 'Stellar Public Network',
-                to: {name: 'network-dashboard', query: {view: this.$route.query.view}}
-            });
-
-            if (this.selectedNode) {
-                if (this.selectedNode.organizationId)
-                    crumbs.push({
-                        text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
-                        to: {
-                            name: 'organization-dashboard',
-                            params: {'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view}
-                        },
-                        active: false
-                    });
-                crumbs.push({
-                    text: this.selectedNode.displayName,
-                    active: true
-                });
-            } else if (this.selectedOrganization)
-                crumbs.push({
-                    text: this.selectedOrganization.name,
-                    active: true
-                });
-            return crumbs;
         }
 
         public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {
@@ -251,5 +286,11 @@
 
     .sb-nav-dropdown {
         margin-left: 0em;
+    }
+    .sb-bread-crumbs {
+        background: white!important;
+        margin: 0px;
+        padding: 0px;
+        align-self: center;
     }
 </style>

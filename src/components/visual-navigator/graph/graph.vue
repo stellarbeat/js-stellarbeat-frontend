@@ -7,7 +7,7 @@
                     <svg class="graph" xmlns="http://www.w3.org/2000/svg"
                          ref="graphSvg"
                          width="100%"
-                         height="430px"
+                         height="550px"
                     >
                         <g class="svg-pan-zoom_viewport">
 
@@ -46,7 +46,9 @@
                 </div>
             </div>
         </div>
-        <graph-legend></graph-legend>
+        <div class="col-xs-12 px-3 py-2">
+            <graph-legend></graph-legend>
+        </div>
         <div v-show="false">
             <label v-if="selectedNode" class="custom-switch mt-2 mr-2">
 

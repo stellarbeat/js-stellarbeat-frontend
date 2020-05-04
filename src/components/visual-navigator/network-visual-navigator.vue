@@ -4,16 +4,15 @@
             <div class="spacer h-100"></div>
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
-                    <router-link :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
-                                 :class="['map', undefined].includes($route.query.view)  && 'router-link-exact-active'"
-                                 class="sb-tab-nav-link py-2"
-                    >Map
+                    <router-link :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
+                                 :class="['graph', undefined].includes($route.query.view) && 'router-link-exact-active'" class="sb-tab-nav-link py-2">Graph
                     </router-link>
                 </li>
                 <li class="sb-tab-nav-item">
-                    <router-link :to="{path: $route.path,
-                    query: {'view': 'graph', 'no-scroll': '1'}}"
-                                 :class="$route.query.view === 'graph' && 'router-link-exact-active'"                                 class="sb-tab-nav-link py-2">Graph
+                    <router-link :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
+                                 :class="$route.query.view === 'map'  && 'router-link-exact-active'"
+                                 class="sb-tab-nav-link py-2"
+                    >Map
                     </router-link>
                 </li>
             </ul>

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import Router, {Route} from 'vue-router';
 import Dashboard from './views/Dashboard.vue';
 import FAQ from './views/FAQ.vue';
 import Api from './views/Api.vue';

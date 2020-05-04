@@ -121,6 +121,7 @@
         }
 
         get tomlNodesExport() {
+            console.log("lazy?");
             let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
             return stellarCoreConfigurationGenerator.nodesToToml([this.selectedNode!]);
         }
