@@ -5,7 +5,8 @@
             <ul class="sb-tab-nav">
                 <li class="sb-tab-nav-item">
                     <router-link :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
-                                 :class="['graph', undefined].includes($route.query.view) && 'router-link-exact-active'" class="sb-tab-nav-link py-2">Graph
+                                 :class="['graph', undefined].includes($route.query.view) && 'router-link-exact-active'"
+                                 class="sb-tab-nav-link py-2">Graph
                     </router-link>
                 </li>
                 <li class="sb-tab-nav-item">
@@ -30,7 +31,12 @@
             <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
                  class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
             </div>
-            <world-map v-if="view==='map'"/>
+            <div v-if="view==='map'" style="height: 430px">
+                <div class="world-loader">
+                    <div class="loader"></div>
+                </div>
+                <world-map />
+            </div>
             <network-graph-card v-if="view === 'graph'"/>
         </div>
 
@@ -47,7 +53,12 @@
 
     @Component({
         name: 'network-visual-navigator',
-        components: {SimulationBadge, NetworkGraphCard, WorldMap: () => import('@/components/visual-navigator/world-map.vue'), BBreadcrumb}
+        components: {
+            SimulationBadge,
+            NetworkGraphCard,
+            WorldMap: () => import('@/components/visual-navigator/world-map.vue'),
+            BBreadcrumb
+        }
     })
     export default class NetworkVisualNavigator extends Vue {
         @Prop({default: 'map'})
@@ -64,7 +75,10 @@
                 if (this.selectedNode.organizationId)
                     crumbs.push({
                         text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
-                        to: {name: 'organization-dashboard', params: { 'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view }},
+                        to: {
+                            name: 'organization-dashboard',
+                            params: {'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view}
+                        },
                         active: false
                     });
                 crumbs.push({
@@ -89,10 +103,6 @@
 
         get selectedOrganization() {
             return this.store.selectedOrganization;
-        }
-
-        get centerNode() {
-            return this.store.centerNode;
         }
 
         get network() {
@@ -156,5 +166,11 @@
         display: flex;
         flex-grow: 1;
         align-items: center;
+    }
+    .world-loader {
+        position: absolute;
+        left: 50%;
+        right: 50%;
+        top: 30%;
     }
 </style>

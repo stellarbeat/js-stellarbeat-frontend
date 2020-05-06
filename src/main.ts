@@ -14,9 +14,6 @@ import Store from '@/store/Store';
 import VueClipboard from 'vue-clipboard2'
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import 'leaflet/dist/leaflet.css';
-import "leaflet.markercluster/dist/MarkerCluster.css";
-import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import { Vue as VueIntegration } from '@sentry/integrations';
 const isProd = process.env.NODE_ENV === 'production';
 

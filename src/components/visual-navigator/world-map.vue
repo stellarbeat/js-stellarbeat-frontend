@@ -1,9 +1,4 @@
-import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepicker";
 <template>
-    <div style="height: 430px">
-        <div class="world-loader">
-            <div class="loader"></div>
-        </div>
         <l-map ref="myMap"
                :center="center" :zoom="zoom" :options="mapOptions"
         >
@@ -25,11 +20,13 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
                 </l-circle-marker>
             </v-marker-cluster>
         </l-map>
-    </div>
 </template>
 
 <script lang="ts">
     require('leaflet-sleep');
+    import 'leaflet/dist/leaflet.css';
+    import "leaflet.markercluster/dist/MarkerCluster.css";
+    import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
     import {Component, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
@@ -209,12 +206,6 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
 </script>
 
 <style>
-    .world-loader {
-        position: absolute;
-        left: 50%;
-        right: 50%;
-        top: 30%;
-    }
     .marker-cluster div {
         width: 30px;
         height: 30px;

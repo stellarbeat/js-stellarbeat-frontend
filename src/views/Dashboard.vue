@@ -90,15 +90,11 @@
     import CrawlTime from '@/components/crawl-time.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
-    import WorldMap from '@/components/visual-navigator/world-map.vue';
     import {BBreadcrumb} from 'bootstrap-vue';
-    import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
 
     @Component({
         name: 'dashboard',
         components: {
-            NetworkGraphCard,
-            WorldMap,
             TimeTravelBadge,
             SimulationBadge,
             CrawlTime,

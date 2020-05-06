@@ -16,7 +16,6 @@
 
     import {Network} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import {latLng} from 'leaflet';
 
     @Component({
         name: 'nodes-country-distribution',
