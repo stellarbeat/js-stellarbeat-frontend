@@ -41,14 +41,13 @@
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
-    import WorldMap from '@/components/visual-navigator/world-map.vue';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import {BBreadcrumb} from 'bootstrap-vue';
 
     @Component({
         name: 'network-visual-navigator',
-        components: {SimulationBadge, NetworkGraphCard, WorldMap, BBreadcrumb}
+        components: {SimulationBadge, NetworkGraphCard, WorldMap: () => import('@/components/visual-navigator/world-map.vue'), BBreadcrumb}
     })
     export default class NetworkVisualNavigator extends Vue {
         @Prop({default: 'map'})

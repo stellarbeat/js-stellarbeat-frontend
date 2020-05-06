@@ -1,26 +1,31 @@
 import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepicker";
 <template>
-    <l-map style="height: 430px" ref="myMap"
-           :center="center" :zoom="zoom" :options="mapOptions"
-    >
-        <l-tile-layer
-                :url="url"
-                :attribution="attribution"
-        />
-        <v-marker-cluster :options="clusterOptions" ref="clusterRef">
-            <l-circle-marker v-for="marker in markers" :lat-lng="marker.latLng" @click="nodeSelected(marker.node)"
-                             :key="marker.node.publicKey"
-                             :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7"
-                             :options="{publicKey: marker.node.publicKey, isNodeFailing: isNodeFailing(marker.node), organizationId: marker.node.organizationId}">
-                <slot>lol</slot>
-                <l-tooltip :options="{ permanent: false, interactive: true }">
-                    <div :id="marker.node.publicKey">
-                        <full-validator-title :node="marker.node"/>
-                    </div>
-                </l-tooltip>
-            </l-circle-marker>
-        </v-marker-cluster>
-    </l-map>
+    <div style="height: 430px">
+        <div class="world-loader">
+            <div class="loader"></div>
+        </div>
+        <l-map ref="myMap"
+               :center="center" :zoom="zoom" :options="mapOptions"
+        >
+            <l-tile-layer
+                    :url="url"
+                    :attribution="attribution"
+            />
+            <v-marker-cluster :options="clusterOptions" ref="clusterRef">
+                <l-circle-marker v-for="marker in markers" :lat-lng="marker.latLng" @click="nodeSelected(marker.node)"
+                                 :key="marker.node.publicKey"
+                                 :fillColor="marker.color" :fillOpacity="1" :color="getColor(marker)" :radius="7"
+                                 :options="{publicKey: marker.node.publicKey, isNodeFailing: isNodeFailing(marker.node), organizationId: marker.node.organizationId}">
+                    <slot>lol</slot>
+                    <l-tooltip :options="{ permanent: false, interactive: true }">
+                        <div :id="marker.node.publicKey">
+                            <full-validator-title :node="marker.node"/>
+                        </div>
+                    </l-tooltip>
+                </l-circle-marker>
+            </v-marker-cluster>
+        </l-map>
+    </div>
 </template>
 
 <script lang="ts">
@@ -105,7 +110,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
             return this.store.network;
         }
 
-        isNodeFailing(node:Node){
+        isNodeFailing(node: Node) {
             return this.network.isNodeFailing(node);
         }
 
@@ -140,7 +145,7 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
         }
 
         public nodeSelected(node: Node) {
-            if(this.$route.params.publicKey && this.$route.params.publicKey === node.publicKey)
+            if (this.$route.params.publicKey && this.$route.params.publicKey === node.publicKey)
                 return;
 
             this.$router.push(
@@ -166,20 +171,20 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
             };
         }
 
-        getMarkerClusterClasses(markers:any[]){
-            let classes:string[] = ['marker-cluster'];
-            if(markers.filter((marker:any) => !marker.options.isNodeFailing).length === 0)
+        getMarkerClusterClasses(markers: any[]) {
+            let classes: string[] = ['marker-cluster'];
+            if (markers.filter((marker: any) => !marker.options.isNodeFailing).length === 0)
                 classes.push('marker-cluster-failing');
 
             let isSelected = false;
 
-            if(this.selectedNode)
-                isSelected = markers.some((marker:any) => marker.options.publicKey === this.selectedNode!.publicKey);
+            if (this.selectedNode)
+                isSelected = markers.some((marker: any) => marker.options.publicKey === this.selectedNode!.publicKey);
 
-            if(this.selectedOrganization)
-                isSelected = markers.some((marker:any) => marker.options.organizationId === this.selectedOrganization!.id);
+            if (this.selectedOrganization)
+                isSelected = markers.some((marker: any) => marker.options.organizationId === this.selectedOrganization!.id);
 
-            if(isSelected)
+            if (isSelected)
                 classes.push('marker-cluster-selected');
 
             return classes.join(' ');
@@ -204,6 +209,12 @@ import Datepicker from "vuejs-datepicker";import VueTimePicker from "vue2-timepi
 </script>
 
 <style>
+    .world-loader {
+        position: absolute;
+        left: 50%;
+        right: 50%;
+        top: 30%;
+    }
     .marker-cluster div {
         width: 30px;
         height: 30px;
