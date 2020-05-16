@@ -60,6 +60,7 @@
         </b-modal>
         <b-modal lazy size="lg" :id="'quorumSetTomlExportModal'+id"
                  title="Stellar Core Configuration" ok-only ok-title="Close"
+                 v-on:show="loadTomlExport(id)"
         >
             <pre><code>{{tomlNodesExport}}</code></pre>
         </b-modal>
@@ -70,7 +71,7 @@
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
 
-    import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import AddValidatorsTable
         from '@/components/node/simulation/add-validators-table.vue';
     import Store from '@/store/Store';
@@ -121,9 +122,14 @@
         public id: number = Math.ceil(Math.random() * 1000);
         public validatorsToAdd: string[] = [];
         public inputState: boolean | null = null;
+        protected tomlNodesExport:string = '';
 
         get store(): Store {
             return this.$root.$data.store;
+        }
+
+        get network():Network {
+            return this.store.network;
         }
 
         get selectedNode() {
@@ -180,11 +186,10 @@
             }
         }
 
-        get tomlNodesExport() {
-            let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.store.network);
-            return stellarCoreConfigurationGenerator.quorumSetToToml(this.quorumSet);
+        loadTomlExport() {
+            let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
+            this.tomlNodesExport = stellarCoreConfigurationGenerator.quorumSetToToml(this.quorumSet);
         }
-
     }
 </script>
 

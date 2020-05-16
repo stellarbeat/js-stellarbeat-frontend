@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex align-items-center justify-content-between">
+    <div class="d-flex flex-column align-items-start justify-content-start legend">
         <div class="legend-link mr-2">
 
             <a v-show="!showLegend" v-on:click.prevent.stop="showLegend=true" href="#">Legend</a>
@@ -58,6 +58,8 @@
 </script>
 
 <style scoped>
+    .legend {
+    }
     div {
         color: #797979;
     }

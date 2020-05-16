@@ -1,8 +1,5 @@
 <template>
-    <Graph ref="graph" :network="network"
-           :centerNode="centerNode"
-           :selectedNode="selectedNode"
-    />
+
 </template>
 
 <script lang="ts">

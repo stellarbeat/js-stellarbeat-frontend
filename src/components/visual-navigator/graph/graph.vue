@@ -46,43 +46,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-xs-12 px-3 py-2">
-            <graph-legend></graph-legend>
-        </div>
-        <div v-show="false">
-            <label v-if="selectedNode" class="custom-switch mt-2 mr-2">
-
-                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                       v-model="optionHighlightTrustedNodes">
-                <span class="custom-switch-indicator"></span>
-                <span class="custom-switch-description">Highlight trusted nodes</span>
-
-            </label>
-            <label  v-if="selectedNode" class="custom-switch mt-2 mr-2">
-
-                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                       v-model="optionHighlightTrustingNodes">
-                <span class="custom-switch-indicator"></span>
-                <span class="custom-switch-description">Highlight trusting nodes</span>
-
-            </label>
-            <label class="custom-switch mt-2 mr-2">
-
-                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                       v-model="optionShowRegularEdges">
-                <span class="custom-switch-indicator"></span>
-                <span class="custom-switch-description">Show regular edges</span>
-
-            </label>
-            <label class="custom-switch mt-2 mr-2">
-
-                <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                       v-model="optionShowFailingEdges">
-                <span class="custom-switch-indicator"></span>
-                <span class="custom-switch-description">Show failing edges</span>
-
-            </label>
-        </div>
     </div>
 
 </template>
@@ -138,6 +101,18 @@
         @Prop()
         public selectedNode!: Node;
 
+        @Prop({default: false})
+        public optionShowFailingEdges!: boolean;
+
+        @Prop({default: true})
+        public optionHighlightTrustingNodes!: boolean;
+
+        @Prop({default: true})
+        public optionHighlightTrustedNodes!: boolean;
+
+        @Prop({default: true})
+        public optionShowRegularEdges!: boolean;
+
         public name: string = "graph";
         public panZoom!: SvgPanZoom.Instance;
         public isLoading: boolean = true;
@@ -148,10 +123,6 @@
         public transitiveCentroid: { 0: number, 1: number } = {0: 0, 1: 0};
         public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
         public edgesViewData: EdgeViewData[] = [];
-        public optionShowFailingEdges: boolean = false;
-        public optionHighlightTrustingNodes: boolean = true;
-        public optionHighlightTrustedNodes: boolean = true;
-        public optionShowRegularEdges: boolean = true;
 
         @Watch("networkUpdated")
         public onNetworkUpdated() {
@@ -499,5 +470,4 @@
     .dimmer.active .dimmer-content {
         opacity: 0.4;
     }
-
 </style>

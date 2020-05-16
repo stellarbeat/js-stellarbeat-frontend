@@ -10,7 +10,7 @@
             </b-badge>
         </template>
         <template v-slot:explore-list-items>
-            <li class="sb-nav-item" v-if="selectedNode.organizationId">
+            <li class="sb-nav-item" v-if="hasOrganization">
                 <organization-validators-dropdown :organization="organization"
                                                   :expand="true"/>
             </li>
@@ -54,7 +54,7 @@
                         icon="download"
                 />
             </li>
-            <b-modal lazy size="lg" id="tomlExportModal"
+            <b-modal lazy size="lg" id="tomlExportModal" v-on:show="loadTomlExport()"
                      title="Stellar Core Configuration" ok-only ok-title="Close"
             >
                 <pre><code>{{tomlNodesExport}}</code></pre>
@@ -75,8 +75,6 @@
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
     import OrganizationValidatorsDropdown from '@/components/node/sidebar/organization-validators-dropdown.vue';
-    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
-    import stickybits from 'stickybits';
     import SideBar from '@/components/side-bar/side-bar.vue';
     import {BBadge, BModal, VBModal} from 'bootstrap-vue';
 
@@ -96,7 +94,8 @@
         }
     })
     export default class NodeSideBar extends Vue {
-        public quorumSetExpanded: boolean = this.selectedNode!.organizationId === undefined;
+        public quorumSetExpanded: boolean = !this.hasOrganization;
+        protected tomlNodesExport: string = '';
 
         get store(): Store {
             return this.$root.$data.store;
@@ -106,9 +105,13 @@
             return this.store.selectedNode;
         }
 
+        get hasOrganization() {
+            return this.selectedNode!.organizationId && this.network.getOrganizationById(this.selectedNode!.organizationId);
+        }
+
         get organization() {
-            if (this.selectedNode!.organizationId)
-                return this.network.getOrganizationById(this.selectedNode!.organizationId);
+            if (this.hasOrganization)
+                return this.network.getOrganizationById(this.selectedNode!.organizationId!);
             else return null;
         }
 
@@ -120,10 +123,9 @@
             return this.selectedNode!.isValidator ? (this.selectedNode!.isFullValidator ? 'Full Validator' : 'Validator') : 'Watcher';
         }
 
-        get tomlNodesExport() {
-            console.log("lazy?");
+        loadTomlExport() {
             let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(this.network);
-            return stellarCoreConfigurationGenerator.nodesToToml([this.selectedNode!]);
+            this.tomlNodesExport = stellarCoreConfigurationGenerator.nodesToToml([this.selectedNode!]);
         }
 
         getDisplayName(node: Node) {
