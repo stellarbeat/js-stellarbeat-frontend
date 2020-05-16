@@ -9,55 +9,41 @@
                 <h6 class="sb-navbar-heading mt-3 ml-0 pl-0">View</h6>
                 <div class="mt-3">
                     <ul style="list-style: none" class="pl-0">
-                        <li class="mb-1 view-link" :class="{'view-link-active': view === 'graph'}">
-                            <router-link :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
-                                         :class="['graph', undefined].includes($route.query.view) && 'router-link-exact-active'"
-                                         v-on:click.native="menuVisible = false">
-                                Graph
-                            </router-link>
-                        </li>
-                        <li class="view-link" :class="{'view-link-active': view === 'map'}">
-                            <router-link :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
-                                         v-on:click.native="menuVisible = false"
-                                         :class="$route.query.view === 'map' && 'router-link-exact-active'">Map
-                            </router-link>
-                        </li>
+                        <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
+                                     :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
+                                     class="pl-3 mb-1 view-link"
+                                     v-on:click.native="menuVisible = false">
+                            Graph
+                        </router-link>
+                        <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
+                                     v-on:click.native="menuVisible = false"
+                                     class="pl-3 mb-1 view-link"
+                                     :class="$route.query.view === 'map' && 'router-link-exact-active'">Map
+                        </router-link>
                     </ul>
                 </div>
                 <h6 class="sb-navbar-heading mt-3 ml-0 pl-0" v-if="view === 'graph'">Options</h6>
                 <div v-if="view === 'graph'">
-                    <label v-if="selectedNode" class="mt-2 mr-2">
-
-                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                               v-model="optionHighlightTrustedNodes">
-                        <span class="custom-switch-indicator"></span>
-                        <span class="custom-switch-description">Highlight trusted nodes</span>
-
-                    </label>
-                    <label v-if="selectedNode" class="mt-2 mr-2">
-
-                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                               v-model="optionHighlightTrustingNodes">
-                        <span class="custom-switch-indicator"></span>
-                        <span class="custom-switch-description">Highlight trusting nodes</span>
-
-                    </label>
-                    <label class="mt-2 mr-2">
-
-                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                               v-model="optionShowRegularEdges">
-                        <span class="custom-switch-indicator"></span>
-                        <span class="custom-switch-description">Show regular edges</span>
-
-                    </label>
-                    <label class="mt-2 mr-2">
-
-                        <input name="custom-switch-checkbox" class="custom-switch-input" type="checkbox"
-                               v-model="optionShowFailingEdges">
-                        <span class="custom-switch-indicator"></span>
-                        <span class="custom-switch-description">Show failing edges</span>
-
-                    </label>
+                    <b-form-checkbox v-model="optionHighlightTrustedNodes"
+                                     class="sb-nav-item sb-nav-toggle mt-1"
+                                     switch>
+                        Highlight trusted nodes
+                    </b-form-checkbox>
+                    <b-form-checkbox v-model="optionHighlightTrustingNodes"
+                                     class="sb-nav-item sb-nav-toggle mt-1"
+                                     switch>
+                        Highlight trusting nodes
+                    </b-form-checkbox>
+                    <b-form-checkbox v-model="optionShowRegularEdges"
+                                     class="sb-nav-item sb-nav-toggle mt-1"
+                                     switch>
+                        Show active edges
+                    </b-form-checkbox>
+                    <b-form-checkbox v-model="optionShowFailingEdges"
+                                     class="sb-nav-item sb-nav-toggle mt-1"
+                                     switch>
+                        Show failing edges
+                    </b-form-checkbox>
                 </div>
                 </div>
                 <div>
@@ -108,7 +94,7 @@
     import Store from '@/store/Store';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
-    import {BBreadcrumb, BIconList, BButton, BIconChevronDoubleLeft} from 'bootstrap-vue';
+    import {BBreadcrumb, BIconList, BButton, BIconChevronDoubleLeft, BFormCheckbox} from 'bootstrap-vue';
     import Graph from '@/components/visual-navigator/graph/graph.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
@@ -123,7 +109,8 @@
             BBreadcrumb,
             BIconList,
             BButton,
-            BIconChevronDoubleLeft
+            BIconChevronDoubleLeft,
+            BFormCheckbox
         }
     })
     export default class NetworkVisualNavigator extends Vue {
@@ -227,7 +214,6 @@
     }
 
     .view-link-active {
-        background-color: rgba(32, 107, 196, .06);
     }
 
     .view-link a {
@@ -243,6 +229,7 @@
     .router-link-exact-active {
         color: #206bc4 !important;
         text-decoration: none;
+        background-color: rgba(32, 107, 196, .06);
     }
 
     .preview-text {
