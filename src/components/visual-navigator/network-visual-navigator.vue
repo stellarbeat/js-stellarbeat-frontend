@@ -164,7 +164,8 @@
                         text: this.network.getOrganizationById(this.selectedNode.organizationId)!.name,
                         to: {
                             name: 'organization-dashboard',
-                            params: {'organizationId': this.selectedNode.organizationId, 'view': this.$route.query.view}
+                            params: {'organizationId': this.selectedNode.organizationId},
+                            query: {'view': this.$route.query.view}
                         },
                         active: false
                     });
