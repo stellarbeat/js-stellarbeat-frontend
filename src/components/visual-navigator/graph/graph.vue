@@ -113,6 +113,9 @@
         @Prop({default: true})
         public optionShowRegularEdges!: boolean;
 
+        @Prop({default: true})
+        public optionTransitiveQuorumSetOnly!:boolean
+
         public name: string = "graph";
         public panZoom!: SvgPanZoom.Instance;
         public isLoading: boolean = true;
@@ -152,6 +155,11 @@
 
         @Watch("optionHighlightTrustedNodes")
         public onOptionHighlightTrustedNodesChanged() {
+            this.computeGraph();
+        }
+
+        @Watch("optionTransitiveQuorumSetOnly")
+        public onOptionTransitiveQuorumSetOnlyChanged() {
             this.computeGraph();
         }
 
@@ -339,6 +347,7 @@
         public computeGraph() {
             this.isLoading = true;
             const simulationVertices: Array<VertexViewData> = Array.from(this.network.graph.vertices.values())
+                .filter((vertex) => !this.optionTransitiveQuorumSetOnly || this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey) )
                 .map((vertex) => {
                     return {
                         publicKey: vertex.publicKey,
@@ -360,6 +369,7 @@
                 });
 
             const simulationEdges: Array<EdgeViewData> = Array.from(this.network.graph.edges.values())
+                .filter(edge => this.network.graph.isEdgePartOfNetworkTransitiveQuorumSet(edge) || !this.optionTransitiveQuorumSetOnly)
                 .filter((edge) => edge.isActive || this.optionShowFailingEdges)
                 .map((edge) => {
                     return {

@@ -44,6 +44,11 @@
                                      switch>
                         Show failing edges
                     </b-form-checkbox>
+                    <b-form-checkbox v-model="optionTransitiveQuorumSetOnly"
+                                     class="sb-nav-item sb-nav-toggle mt-1"
+                                     switch>
+                        Transitive quorumset only
+                    </b-form-checkbox>
                 </div>
                 </div>
                 <div>
@@ -73,7 +78,9 @@
             <Graph :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
                    :option-highlight-trusting-nodes="optionHighlightTrustingNodes"
                    :option-show-failing-edges="optionShowFailingEdges"
-                   :option-show-regular-edges="optionShowRegularEdges" v-if="view === 'graph'" ref="graph"
+                   :option-show-regular-edges="optionShowRegularEdges"
+                   :option-transitive-quorum-set-only="optionTransitiveQuorumSetOnly"
+                   v-if="view === 'graph'" ref="graph"
                    :network="network"
                    :centerNode="centerNode"
                    :selectedNode="selectedNode"
@@ -121,6 +128,7 @@
         public optionHighlightTrustingNodes: boolean = true;
         public optionHighlightTrustedNodes: boolean = true;
         public optionShowRegularEdges: boolean = true;
+        public optionTransitiveQuorumSetOnly: boolean = false;
 
         protected menuVisible: boolean = false;
 
