@@ -411,7 +411,7 @@
             this.d3Grid = select(this.$refs.grid as Element);
             this.graphZoom = zoom.zoom().on('zoom', () => {
                 this.d3Grid.attr('transform', d3Event.transform);
-            });
+            }).scaleExtent([2, 2]);
            this.d3svg = select(this.$refs.graphSvg as Element)
                 .call(this.graphZoom)
                 .call(this.graphZoom.transform, transform);
