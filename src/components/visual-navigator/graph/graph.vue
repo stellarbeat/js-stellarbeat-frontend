@@ -7,6 +7,12 @@
                  width="100%"
                  height="100%"
             >
+                <defs>
+                    <filter x="0" y="0" width="1" height="1" id="solid">
+                        <feFlood flood-color="white" flood-opacity="0.8"/>
+                        <feComposite in="SourceGraphic"/>
+                    </filter>
+                </defs>
                 <g ref="grid">
 
                     <g class="transitive-quorum-set">
