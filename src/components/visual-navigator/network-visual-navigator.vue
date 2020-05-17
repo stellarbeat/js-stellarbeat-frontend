@@ -1,55 +1,55 @@
 <template>
-    <div class="card">
+    <div class="card" :class="{'card-fullscreen': fullScreen, 'sb-card-fullscreen': fullScreen}" style="height: 600px">
         <div class="menu border-right p-3" v-show="menuVisible">
             <div class="text-gray collapse-icon" v-on:click="menuVisible = false">
                 <b-icon-chevron-double-left font-scale="1"/>
             </div>
             <div class="d-flex flex-column justify-content-between h-100">
                 <div>
-                <h6 class="sb-navbar-heading mt-3 ml-0 pl-0">View</h6>
-                <div class="mt-3">
-                    <ul style="list-style: none" class="pl-0">
-                        <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
-                                     :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
-                                     class="pl-3 mb-1 view-link"
-                                     v-on:click.native="menuVisible = false">
-                            Graph
-                        </router-link>
-                        <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
-                                     v-on:click.native="menuVisible = false"
-                                     class="pl-3 mb-1 view-link"
-                                     :class="$route.query.view === 'map' && 'router-link-exact-active'">Map
-                        </router-link>
-                    </ul>
-                </div>
-                <h6 class="sb-navbar-heading mt-3 ml-0 pl-0" v-if="view === 'graph'">Options</h6>
-                <div v-if="view === 'graph'">
-                    <b-form-checkbox v-model="optionHighlightTrustedNodes" v-show="selectedNode"
-                                     class="sb-nav-item sb-nav-toggle mt-1"
-                                     switch>
-                        Highlight trusted nodes
-                    </b-form-checkbox>
-                    <b-form-checkbox v-model="optionHighlightTrustingNodes" v-show="selectedNode"
-                                     class="sb-nav-item sb-nav-toggle mt-1"
-                                     switch>
-                        Highlight trusting nodes
-                    </b-form-checkbox>
-                    <b-form-checkbox v-model="optionShowRegularEdges"
-                                     class="sb-nav-item sb-nav-toggle mt-1"
-                                     switch>
-                        Show active edges
-                    </b-form-checkbox>
-                    <b-form-checkbox v-model="optionShowFailingEdges"
-                                     class="sb-nav-item sb-nav-toggle mt-1"
-                                     switch>
-                        Show failing edges
-                    </b-form-checkbox>
-                    <b-form-checkbox v-model="optionTransitiveQuorumSetOnly"
-                                     class="sb-nav-item sb-nav-toggle mt-1"
-                                     switch>
-                        Transitive quorumset only
-                    </b-form-checkbox>
-                </div>
+                    <h6 class="sb-navbar-heading mt-3 ml-0 pl-0">View</h6>
+                    <div class="mt-3">
+                        <ul style="list-style: none" class="pl-0">
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
+                                         :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
+                                         class="pl-3 mb-1 view-link"
+                                         v-on:click.native="menuVisible = false">
+                                Graph
+                            </router-link>
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
+                                         v-on:click.native="menuVisible = false"
+                                         class="pl-3 mb-1 view-link"
+                                         :class="$route.query.view === 'map' && 'router-link-exact-active'">Map
+                            </router-link>
+                        </ul>
+                    </div>
+                    <h6 class="sb-navbar-heading mt-3 ml-0 pl-0" v-if="view === 'graph'">Options</h6>
+                    <div v-if="view === 'graph'">
+                        <b-form-checkbox v-model="optionHighlightTrustedNodes" v-show="selectedNode"
+                                         class="sb-nav-item sb-nav-toggle mt-1"
+                                         switch>
+                            Highlight trusted nodes
+                        </b-form-checkbox>
+                        <b-form-checkbox v-model="optionHighlightTrustingNodes" v-show="selectedNode"
+                                         class="sb-nav-item sb-nav-toggle mt-1"
+                                         switch>
+                            Highlight trusting nodes
+                        </b-form-checkbox>
+                        <b-form-checkbox v-model="optionShowRegularEdges"
+                                         class="sb-nav-item sb-nav-toggle mt-1"
+                                         switch>
+                            Show active edges
+                        </b-form-checkbox>
+                        <b-form-checkbox v-model="optionShowFailingEdges"
+                                         class="sb-nav-item sb-nav-toggle mt-1"
+                                         switch>
+                            Show failing edges
+                        </b-form-checkbox>
+                        <b-form-checkbox v-model="optionTransitiveQuorumSetOnly"
+                                         class="sb-nav-item sb-nav-toggle mt-1"
+                                         switch>
+                            Transitive quorumset only
+                        </b-form-checkbox>
+                    </div>
                 </div>
                 <div>
                     <graph-legend v-if="view === 'graph'"/>
@@ -64,16 +64,23 @@
                 <b-breadcrumb class="sb-bread-crumbs" :items="breadCrumbs">
                 </b-breadcrumb>
             </div>
+            <a v-if="!fullScreen" href="#" class="card-options-fullscreen mx-4" @click.prevent.stop="fullScreen=true" v-b-tooltip="'Fullscreen'">
+                <b-icon-fullscreen/>
+            </a>
+            <a v-else href="#" class="card-options-fullscreen mx-4" @click.prevent.stop="fullScreen=false" v-b-tooltip="'Exit fullscreen'">
+                <b-icon-fullscreen-exit/>
+            </a>
         </div>
         <div class="card-body p-0">
             <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
                  class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
             </div>
-            <div v-if="view==='map'" style="height: 430px">
+            <div v-if="view==='map'" style="height: 100%">
                 <div class="world-loader">
                     <div class="loader"></div>
                 </div>
-                <world-map/>
+                <world-map :fullScreen="fullScreen"
+                />
             </div>
             <Graph :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
                    :option-highlight-trusting-nodes="optionHighlightTrustingNodes"
@@ -84,6 +91,8 @@
                    :network="network"
                    :centerNode="centerNode"
                    :selectedNode="selectedNode"
+                   style="height: 100%"
+                   :fullScreen="fullScreen"
             />
             <div v-show="!menuVisible" class="preview" v-on:click="navigateToView">
                 <img v-if="view === 'map'" src="@/assets/graph-preview.png" alt="graph-preview" class="preview-image">
@@ -101,7 +110,15 @@
     import Store from '@/store/Store';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
-    import {BBreadcrumb, BIconList, BButton, BIconChevronDoubleLeft, BFormCheckbox} from 'bootstrap-vue';
+    import {
+        BBreadcrumb,
+        BIconList,
+        BButton,
+        BIconChevronDoubleLeft,
+        BFormCheckbox,
+        BIconFullscreen,
+        BIconFullscreenExit, VBTooltip
+    } from 'bootstrap-vue';
     import Graph from '@/components/visual-navigator/graph/graph.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
@@ -117,8 +134,9 @@
             BIconList,
             BButton,
             BIconChevronDoubleLeft,
-            BFormCheckbox
-        }
+            BFormCheckbox, BIconFullscreen, BIconFullscreenExit
+        },
+        directives: {'b-tooltip': VBTooltip}
     })
     export default class NetworkVisualNavigator extends Vue {
         @Prop({default: 'map'})
@@ -131,6 +149,7 @@
         public optionTransitiveQuorumSetOnly: boolean = false;
 
         protected menuVisible: boolean = false;
+        protected fullScreen: boolean = false;
 
         get breadCrumbs() {
             let crumbs = [];
@@ -194,6 +213,11 @@
     }
 </script>
 <style scoped>
+    .sb-card-fullscreen {
+        z-index: 2;
+        height: 100%!important;
+    }
+
     .collapse-icon {
         cursor: pointer;
         position: absolute;

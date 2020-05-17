@@ -1,67 +1,65 @@
 <template xmlns="http://www.w3.org/1999/html">
-    <div class="graph mr-1">
-        <div class="col-xs-12" style="width: 100%">
-            <div v-bind:class="dimmerClass">
-                <div class="loader"></div>
-                <div class="dimmer-content">
-                    <svg class="graph" xmlns="http://www.w3.org/2000/svg"
-                         ref="graphSvg"
-                         width="100%"
-                         height="550px"
-                    >
-                        <g class="svg-pan-zoom_viewport">
+    <div v-bind:class="dimmerClass" style="height: 100%;">
+        <div class="loader"></div>
+        <div class="dimmer-content" style="height: 100%;">
+            <svg class="graph" xmlns="http://www.w3.org/2000/svg"
+                 ref="graphSvg"
+                 width="100%"
+                 height="100%"
+            >
+                <g ref="grid">
 
-                            <g class="transitive-quorum-set">
-                                <path
-                                        class="transitive-path"
-                                        v-bind:d="transitivePath"
-                                        v-bind:transform="transitiveTransform"
-                                />
-                            </g>
-                            <GraphEdge v-for="edge in edgesViewData"
-                                       :key="edge.source.publicKey + edge.target.publicKey"
-                                       :highlightAsOutgoing="edge.highlightAsOutgoing"
-                                       :highlightAsIncoming="edge.highlightAsIncoming"
-                                       :isPartOfStronglyConnectedComponent="edge.isPartOfStronglyConnectedComponent"
-                                       :parentX="edge.source.x"
-                                       :parentY="edge.source.y"
-                                       :childX="edge.target.x"
-                                       :childY="edge.target.y"
-                                       :isFailing="edge.isFailing"
-                                       :hideRegular="!optionShowRegularEdges"
-                            />
-                            <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
-                                         :publicKey="vertex.publicKey"
-                                         :selected="vertex.selected"
-                                         :highlightAsOutgoing="vertex.highlightAsOutgoing"
-                                         :highlightAsIncoming="vertex.highlightAsIncoming"
-                                         :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
-                                         :x="vertex.x"
-                                         :y="vertex.y"
-                                         :isValidating="vertex.isValidating"
-                                         :label="vertex.label"
-                            ></GraphVertex>
-                        </g>
-                    </svg>
-                </div>
-            </div>
+                    <g class="transitive-quorum-set">
+                        <path
+                                class="transitive-path"
+                                v-bind:d="transitivePath"
+                                v-bind:transform="transitiveTransform"
+                        />
+                    </g>
+                    <GraphEdge v-for="edge in edgesViewData"
+                               :key="edge.source.publicKey + edge.target.publicKey"
+                               :highlightAsOutgoing="edge.highlightAsOutgoing"
+                               :highlightAsIncoming="edge.highlightAsIncoming"
+                               :isPartOfStronglyConnectedComponent="edge.isPartOfStronglyConnectedComponent"
+                               :parentX="edge.source.x"
+                               :parentY="edge.source.y"
+                               :childX="edge.target.x"
+                               :childY="edge.target.y"
+                               :isFailing="edge.isFailing"
+                               :hideRegular="!optionShowRegularEdges"
+                    />
+                    <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
+                                 :publicKey="vertex.publicKey"
+                                 :selected="vertex.selected"
+                                 :highlightAsOutgoing="vertex.highlightAsOutgoing"
+                                 :highlightAsIncoming="vertex.highlightAsIncoming"
+                                 :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
+                                 :x="vertex.x"
+                                 :y="vertex.y"
+                                 :isValidating="vertex.isValidating"
+                                 :label="vertex.label"
+                    ></GraphVertex>
+                </g>
+            </svg>
         </div>
     </div>
-
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
-    import {Network, Node, PublicKey, Vertex, QuorumSet} from "@stellarbeat/js-stellar-domain";
-    import GraphVertex from "./graph-vertex.vue";
-    import svgPanZoom from "svg-pan-zoom";
-    import {line, curveLinearClosed} from "d3-shape";
-    import {polygonHull, polygonCentroid} from "d3-polygon";
+    import Vue from 'vue';
+    import {Network, Node, PublicKey, Vertex, QuorumSet} from '@stellarbeat/js-stellar-domain';
 
-    import ComputeGraphWorker from "worker-loader?name=dist/[name].js!./../../../workers/compute-graphv6.worker";
-    import {Component, Prop, Watch} from "vue-property-decorator";
-    import GraphEdge from "@/components/visual-navigator/graph/graph-edge.vue";
+    import GraphVertex from './graph-vertex.vue';
+    import {line, curveLinearClosed} from 'd3-shape';
+    import {polygonHull, polygonCentroid} from 'd3-polygon';
+
+    import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graphv6.worker';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import GraphEdge from '@/components/visual-navigator/graph/graph-edge.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
+
+    import * as zoom from 'd3-zoom';
+    import {select, event as d3Event, Selection} from 'd3-selection';
 
     type VertexViewData = {
         publicKey: PublicKey,
@@ -114,25 +112,31 @@
         public optionShowRegularEdges!: boolean;
 
         @Prop({default: true})
-        public optionTransitiveQuorumSetOnly!:boolean
+        public optionTransitiveQuorumSetOnly!: boolean;
 
-        public name: string = "graph";
-        public panZoom!: SvgPanZoom.Instance;
+        @Prop({default:false})
+        public fullScreen!:boolean;
+
+        public d3svg!: any;
+        public d3Grid!: any; //used for zooming and panning
+        public graphZoom!:any;
+
+        public name: string = 'graph';
         public isLoading: boolean = true;
         public computeGraphWorker = new _ComputeGraphWorker();
         public delayedCenter: boolean = false;
         public delayedVisualizeCenterNode: boolean = false;
-        public transitivePath: string = "";
+        public transitivePath: string = '';
         public transitiveCentroid: { 0: number, 1: number } = {0: 0, 1: 0};
         public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
         public edgesViewData: EdgeViewData[] = [];
 
-        @Watch("networkUpdated")
+        @Watch('networkUpdated')
         public onNetworkUpdated() {
             this.restartSimulation();
         }
 
-        @Watch("centerNode")
+        @Watch('centerNode')
         public onCenterNodeChanged() {
             if (!this.isLoading) {
                 this.centerCorrectNode();
@@ -143,27 +147,27 @@
             }
         }
 
-        @Watch("optionShowFailingEdges")
+        @Watch('optionShowFailingEdges')
         public onOptionShowFailingEdgesChanged() {
             this.computeGraph();
         }
 
-        @Watch("optionHighlightTrustingNodes")
+        @Watch('optionHighlightTrustingNodes')
         public onOptionHighlightTrustingNodesChanged() {
             this.computeGraph();
         }
 
-        @Watch("optionHighlightTrustedNodes")
+        @Watch('optionHighlightTrustedNodes')
         public onOptionHighlightTrustedNodesChanged() {
             this.computeGraph();
         }
 
-        @Watch("optionTransitiveQuorumSetOnly")
+        @Watch('optionTransitiveQuorumSetOnly')
         public onOptionTransitiveQuorumSetOnlyChanged() {
             this.computeGraph();
         }
 
-        @Watch("selectedNode")
+        @Watch('selectedNode')
         public onSelectedNodeChanged() {
             if (!this.isLoading) {
                 this.visualizeSelectedNodes();
@@ -172,13 +176,28 @@
             }
         }
 
-        @Watch("selectedOrganization")
+        @Watch('selectedOrganization')
         public onSelectedOrganizationChanged() {
             if (!this.isLoading) {
                 this.visualizeSelectedNodes();
             } else {
                 this.delayedVisualizeCenterNode = true;
             }
+        }
+
+        @Watch('fullScreen')
+        public onFullScreenChanged(){
+            let transform = zoom.zoomIdentity.translate((this.width-(2*this.width))/2, (this.height-(2*this.height))/2).scale(2);
+            if(this.fullScreen){
+                this.d3svg.call(this.graphZoom.transform, transform);
+            } else {
+                if(this.centerNode){
+                    this.centerCorrectNode();
+                } else {
+                    this.d3svg.call(this.graphZoom.transform, transform);
+                }
+            }
+
         }
 
         get store() {
@@ -213,9 +232,9 @@
             this.verticesViewData.forEach(vertex => {
                 let dataVertex = this.network.graph.getVertex(vertex.publicKey)!;
                 vertex.selected = false;
-                if(this.selectedNode)
+                if (this.selectedNode)
                     vertex.selected = this.selectedNode.publicKey === vertex.publicKey;
-                if(this.selectedOrganization) {
+                if (this.selectedOrganization) {
                     vertex.selected = this.selectedOrganization.validators.includes(vertex.publicKey);
                 }
                 vertex.highlightAsOutgoing = this.highlightVertexAsTrusting(dataVertex);
@@ -250,7 +269,7 @@
         }
 
         get transitiveTransform() {
-            return "translate(" + this.transitiveCentroid[0] + "," + (this.transitiveCentroid[1]) + ") scale(1)";
+            return 'translate(' + this.transitiveCentroid[0] + ',' + (this.transitiveCentroid[1]) + ') scale(1)';
         }
 
         public restartSimulation() {
@@ -260,18 +279,12 @@
         public centerCorrectNode() {
             if (this.centerVertex() !== undefined) {
                 let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.publicKey);
-                // noinspection TypeScriptUnresolvedFunction
-                const height = this.panZoom.getSizes().height;
-                // noinspection TypeScriptUnresolvedFunction
-                const width = this.panZoom.getSizes().width;
-                // noinspection TypeScriptUnresolvedFunction
-                const sizes = this.panZoom.getSizes();
-                // noinspection TypeScriptUnresolvedVariable
-                const zoom = sizes.realZoom;
-                const realNodeX = -centerVertexViewData!.x * zoom + width / 2;
-                const realNodeY = -centerVertexViewData!.y * zoom + height / 2;
-                // noinspection TypeScriptValidateTypes
-                this.panZoom.pan({x: realNodeX, y: realNodeY});
+
+                const realNodeX = -centerVertexViewData!.x * 2 + this.width / 2;
+                const realNodeY = -centerVertexViewData!.y * 2 + this.height / 2;
+
+                let transform = zoom.zoomIdentity.translate(realNodeX, realNodeY).scale(2);
+                this.d3svg.call(this.graphZoom.transform, transform);
                 this.delayedCenter = false;
             }
         }
@@ -290,7 +303,7 @@
                     .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
                     .map(vertex => [vertex.x, vertex.y]));
             if (!transitiveQSetHull)
-                return "";
+                return '';
             this.transitiveCentroid = polygonCentroid(transitiveQSetHull);
             let hull = valueLine(
                 transitiveQSetHull.map(point => {
@@ -302,7 +315,7 @@
                 return hull;
             }
 
-            return "";
+            return '';
         }
 
         highlightVertexAsTrusting(vertex: Vertex) {
@@ -347,7 +360,7 @@
         public computeGraph() {
             this.isLoading = true;
             const simulationVertices: Array<VertexViewData> = Array.from(this.network.graph.vertices.values())
-                .filter((vertex) => !this.optionTransitiveQuorumSetOnly || this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey) )
+                .filter((vertex) => !this.optionTransitiveQuorumSetOnly || this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey))
                 .map((vertex) => {
                     return {
                         publicKey: vertex.publicKey,
@@ -359,7 +372,7 @@
                         isPartOfTransitiveQuorumSet: this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey),
                         selected: this.selectedNode ?
                             this.selectedNode.publicKey === vertex.publicKey :
-                        this.selectedOrganization ? this.selectedOrganization.validators.includes(vertex.publicKey): false,
+                            this.selectedOrganization ? this.selectedOrganization.validators.includes(vertex.publicKey) : false,
                         highlightAsIncoming:
                             this.highLightVertexAsTrusted(vertex),
                         highlightAsOutgoing:
@@ -394,17 +407,14 @@
         }
 
         public mounted() {
-            this.panZoom = svgPanZoom(this.$refs.graphSvg as SVGElement,
-                {
-                    mouseWheelZoomEnabled: false,
-                    minZoom: 0.5
-                    , maxZoom: 10
-                    , fit: false
-                    , contain: false
-                    , center: false,
-                    controlIconsEnabled: true,
-                });
-            this.panZoom.zoomBy(2);
+            let transform = zoom.zoomIdentity.translate((this.width-(2*this.width))/2, (this.height-(2*this.height))/2).scale(2);
+            this.d3Grid = select(this.$refs.grid as Element);
+            this.graphZoom = zoom.zoom().on('zoom', () => {
+                this.d3Grid.attr('transform', d3Event.transform);
+            });
+           this.d3svg = select(this.$refs.graphSvg as Element)
+                .call(this.graphZoom)
+                .call(this.graphZoom.transform, transform);
 
             if (this.centerNode)
                 this.delayedCenter = true;
@@ -413,11 +423,11 @@
                 event: { data: { type: string, vertices: VertexViewData[], edges: EdgeViewData[] } }
             ) => {
                 switch (event.data.type) {
-                    case "tick": {
+                    case 'tick': {
 
                     }
                         break;
-                    case "end": {
+                    case 'end': {
                         this.verticesViewData = new Map<PublicKey, VertexViewData>();
                         event.data.vertices.forEach(
                             vertex => this.verticesViewData.set(vertex.publicKey, vertex)

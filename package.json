@@ -26,7 +26,9 @@
     "d3-force": "^1.1.2",
     "d3-hierarchy": "^1.1.8",
     "d3-polygon": "^1.0.5",
+    "d3-selection": "^1.4.1",
     "d3-shape": "^1.3.5",
+    "d3-zoom": "^1.8.3",
     "express": "^4.16.4",
     "leaflet": "1.6.0",
     "leaflet-sleep": "^0.5.2",
@@ -35,7 +37,6 @@
     "serve-static": "^1.13.2",
     "simple-analytics-vue": "^1.1.0",
     "stickybits": "^3.7.7",
-    "svg-pan-zoom": "^3.6.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.2",
     "vue-clipboard2": "^0.3.1",
@@ -48,6 +49,8 @@
     "vue2-leaflet-markercluster": "^3.1.0"
   },
   "devDependencies": {
+    "@types/d3-selection": "^1.4.1",
+    "@types/d3-zoom": "^1.7.4",
     "@types/chart.js": "^2.7.41",
     "@types/d3-force": "^1.1.1",
     "@types/d3-hierarchy": "^1.1.6",

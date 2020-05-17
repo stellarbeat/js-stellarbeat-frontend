@@ -28,7 +28,7 @@
     import "leaflet.markercluster/dist/MarkerCluster.css";
     import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-    import {Component, Watch} from 'vue-property-decorator';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
     import {Node} from '@stellarbeat/js-stellar-domain';
     //https://vue2-leaflet.netlify.com/quickstart/#marker-icons-are-missing
@@ -70,10 +70,22 @@
     export default class WorldMap extends Vue {
         protected url: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         protected attribution: string = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-        protected zoom: number = 1.5;
+        protected zoom: number = 2;
+
+        @Prop({default: false})
+        fullScreen!:boolean;
 
         get store(): Store {
             return this.$root.$data.store;
+        }
+
+        @Watch('fullScreen')
+        public fullScreenChanged(){
+            (this.$refs.myMap as any).mapObject.invalidateSize();
+            if(this.fullScreen)
+                this.zoom= 3;
+            else
+                this.zoom = 2;
         }
 
         @Watch('selectedNode')
