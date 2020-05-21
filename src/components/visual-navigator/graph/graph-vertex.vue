@@ -15,7 +15,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component, Prop} from 'vue-property-decorator';
-import truncate from 'vue-truncate-filter';
 
 @Component({})
 export default class GraphNode extends Vue {
