@@ -7,26 +7,21 @@
                  width="100%"
                  height="100%"
             >
-                <defs>
-                    <filter x="0" y="0" width="1" height="1" id="solid">
-                        <feFlood flood-color="white" flood-opacity="0.8"/>
-                        <feComposite in="SourceGraphic"/>
-                    </filter>
-                </defs>
                 <g ref="grid">
 
                     <g class="transitive-quorum-set">
                         <path
+                                id="transitive-path"
                                 class="transitive-path"
                                 v-bind:d="transitivePath"
                                 v-bind:transform="transitiveTransform"
                         />
                     </g>
-                    <GraphEdge v-for="edge in edgesViewData"
+                    <GraphEdge v-for="edge in regularEdges"
                                :key="edge.source.publicKey + edge.target.publicKey"
-                               :highlightAsOutgoing="edge.highlightAsOutgoing"
-                               :highlightAsIncoming="edge.highlightAsIncoming"
-                               :isPartOfStronglyConnectedComponent="edge.isPartOfStronglyConnectedComponent"
+                               :highlightAsOutgoing="false"
+                               :highlightAsIncoming="false"
+                               :isPartOfStronglyConnectedComponent="false"
                                :parentX="edge.source.x"
                                :parentY="edge.source.y"
                                :childX="edge.target.x"
@@ -34,6 +29,46 @@
                                :isFailing="edge.isFailing"
                                :hideRegular="!optionShowRegularEdges"
                     />
+                    <GraphEdge v-for="edge in stronglyConnectedEdges"
+                               :key="edge.source.publicKey + edge.target.publicKey"
+                               :highlightAsOutgoing="false"
+                               :highlightAsIncoming="false"
+                               :isPartOfStronglyConnectedComponent="true"
+                               :parentX="edge.source.x"
+                               :parentY="edge.source.y"
+                               :childX="edge.target.x"
+                               :childY="edge.target.y"
+                               :isFailing="edge.isFailing"
+                               :hideRegular="!optionShowRegularEdges"
+                    />
+                    <g v-if="selectedNode && optionHighlightTrustingNodes">
+                        <GraphEdge v-for="edge in trustingEdges"
+                                   :key="edge.source.publicKey + edge.target.publicKey"
+                                   :highlightAsOutgoing="false"
+                                   :highlightAsIncoming="true"
+                                   :isPartOfStronglyConnectedComponent="false"
+                                   :parentX="edge.source.x"
+                                   :parentY="edge.source.y"
+                                   :childX="edge.target.x"
+                                   :childY="edge.target.y"
+                                   :isFailing="edge.isFailing"
+                                   :hideRegular="!optionShowRegularEdges"
+                        />
+                    </g>
+                    <g v-if="selectedNode && optionHighlightTrustedNodes">
+                        <GraphEdge v-for="edge in trustedEdges"
+                                   :key="edge.source.publicKey + edge.target.publicKey"
+                                   :highlightAsOutgoing="true"
+                                   :highlightAsIncoming="false"
+                                   :isPartOfStronglyConnectedComponent="false"
+                                   :parentX="edge.source.x"
+                                   :parentY="edge.source.y"
+                                   :childX="edge.target.x"
+                                   :childY="edge.target.y"
+                                   :isFailing="edge.isFailing"
+                                   :hideRegular="!optionShowRegularEdges"
+                        />
+                    </g>
                     <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
                                  :publicKey="vertex.publicKey"
                                  :selected="vertex.selected"
@@ -56,10 +91,10 @@
     import {Network, Node, PublicKey, Vertex, QuorumSet} from '@stellarbeat/js-stellar-domain';
 
     import GraphVertex from './graph-vertex.vue';
-    import {line, curveLinearClosed} from 'd3-shape';
+    import {line, curveLinearClosed, curveCatmullRomClosed} from 'd3-shape';
     import {polygonHull, polygonCentroid} from 'd3-polygon';
 
-    import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!./../../../workers/compute-graphv6.worker';
+    import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../../workers/compute-graphv7.worker';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import GraphEdge from '@/components/visual-navigator/graph/graph-edge.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
@@ -193,7 +228,7 @@
 
         @Watch('fullScreen')
         public onFullScreenChanged(){
-            let transform = zoom.zoomIdentity.translate((this.width-(2*this.width))/2, (this.height-(2*this.height))/2).scale(2);
+            let transform = zoom.zoomIdentity.translate((this.width-(1*this.width))/2, (this.height-(1*this.height))/2).scale(1);
             if(this.fullScreen){
                 this.d3svg.call(this.graphZoom.transform, transform);
             } else {
@@ -204,6 +239,45 @@
                 }
             }
 
+        }
+
+        get regularEdges() {
+            return this.edgesViewData.filter(edge => {
+                if(this.selectedNode &&
+                    (this.optionHighlightTrustedNodes || this.optionHighlightTrustingNodes) &&
+                    (edge.source.publicKey === this.selectedNode.publicKey || edge.target.publicKey === this.selectedNode.publicKey)){
+                    return false;
+                }
+
+                if(edge.isPartOfStronglyConnectedComponent)
+                    return false;
+
+                return true;
+            })
+        }
+
+        get stronglyConnectedEdges() {
+            return this.edgesViewData.filter(edge => {
+                if(this.selectedNode &&
+                    (this.optionHighlightTrustedNodes || this.optionHighlightTrustingNodes) &&
+                    (edge.source.publicKey === this.selectedNode.publicKey || edge.target.publicKey === this.selectedNode.publicKey)){
+                    return false;
+                }
+
+                return edge.isPartOfStronglyConnectedComponent;
+            })
+        }
+
+        get trustingEdges() {
+            return this.edgesViewData.filter(edge => {
+                return edge.target.publicKey === this.selectedNode.publicKey;
+            })
+        }
+
+        get trustedEdges() {
+            return this.edgesViewData.filter(edge => {
+                return edge.source.publicKey === this.selectedNode.publicKey;
+            })
         }
 
         get store() {
@@ -247,14 +321,14 @@
                 vertex.highlightAsIncoming = this.highLightVertexAsTrusted(dataVertex);
             });
 
-            this.edgesViewData.forEach(edge => {
+            /*this.edgesViewData.forEach(edge => {
                 edge.highlightAsOutgoing =
                     this.selectedNode && this.optionHighlightTrustedNodes ? edge.source.publicKey === this.selectedNode.publicKey : false;
                 edge.highlightAsIncoming =
                     this.selectedNode && this.optionHighlightTrustingNodes ? edge.target.publicKey === this.selectedNode.publicKey : false;
-            });
+            });*/
 
-            this.edgesViewData.sort(this.sortEdges);
+//            this.edgesViewData.sort(this.sortEdges);
 
             this.delayedVisualizeCenterNode = false;
         }
@@ -289,7 +363,7 @@
                 const realNodeX = -centerVertexViewData!.x * 2 + this.width / 2;
                 const realNodeY = -centerVertexViewData!.y * 2 + this.height / 2;
 
-                let transform = zoom.zoomIdentity.translate(realNodeX, realNodeY).scale(2);
+                let transform = zoom.zoomIdentity.translate(realNodeX, realNodeY).scale(1);
                 this.d3svg.call(this.graphZoom.transform, transform);
                 this.delayedCenter = false;
             }
@@ -413,14 +487,14 @@
         }
 
         public mounted() {
-            let transform = zoom.zoomIdentity.translate((this.width-(2*this.width))/2, (this.height-(2*this.height))/2).scale(2);
+            //let transform = zoom.zoomIdentity.translate((this.width-(1*this.width))/2, (this.height-(1*this.height))/2).scale(1);
             this.d3Grid = select(this.$refs.grid as Element);
             this.graphZoom = zoom.zoom().on('zoom', () => {
                 this.d3Grid.attr('transform', d3Event.transform);
-            }).scaleExtent([2, 3]);
+            }).scaleExtent([1, 3]);
            this.d3svg = select(this.$refs.graphSvg as Element)
                 .call(this.graphZoom)
-                .call(this.graphZoom.transform, transform);
+               // .call(this.graphZoom.transform, transform);
 
             if (this.centerNode)
                 this.delayedCenter = true;
@@ -438,8 +512,6 @@
                         event.data.vertices.forEach(
                             vertex => this.verticesViewData.set(vertex.publicKey, vertex)
                         );
-
-                        event.data.edges.sort(this.sortEdges);
 
                         this.edgesViewData = event.data.edges;
 
@@ -474,9 +546,11 @@
 
     .transitive-path {
         fill-opacity: .15;
-        stroke-opacity: 0;
+        stroke-opacity: 0.5;
         fill: #1997c6;
         stroke: #1997c6;
+        stroke-width: 2px;
+
     }
 
     .progress {

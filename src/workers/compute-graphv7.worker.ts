@@ -10,16 +10,16 @@ ctx.addEventListener('message', (event) => {
 
     const simulation = forceSimulation(vertices)
         .force('charge', forceManyBody().strength((d) => {
-            return -60;
+            return -250;
         }))
         .force('link', forceLink(edges).strength( (edge: any) => {
             if (edge.isPartOfTransitiveQuorumSet) {
-                return 0.005;
+                return 0.004;
             }
             else if (edge.isPartOfStronglyConnectedComponent) {
-                return 0.05;
+                return 0.1;
             } else {
-                return 0.001;
+                return 0.000001;
             }
         }).id( (d: any) => {
             return d.publicKey;

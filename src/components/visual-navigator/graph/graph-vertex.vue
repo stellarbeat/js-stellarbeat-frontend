@@ -5,7 +5,10 @@
                 v-bind:class="classObject"
                 v-on:click="nodeSelected"
         ></circle>
-        <text filter="url(#solid)" y="5" dy="1em" text-anchor="middle" font-size="5px">{{ displayName | truncate(10)}}</text>
+        <g>
+        <rect style="fill: white; opacity: 0.8" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2"/>
+        <text y="5" dy="1.3em" text-anchor="middle" font-size="12px">{{ displayName | truncate(10)}}</text>
+        </g>
     </g>
 </template>
 
@@ -37,11 +40,24 @@ export default class GraphNode extends Vue {
     public label!: string;
 
     get circleRadius(): string {
-        return this.partOfTransitiveQuorumSet ? '3px' : '3px';
+        return this.partOfTransitiveQuorumSet ? '5px' : '5px';
     }
 
     get coordinateTransform(): string {
         return `translate(${this.x},${this.y})`;
+    }
+
+    get rectWidth() {
+        if(this.displayName.length > 10)
+            return 70
+        else return (this.displayName.length/10) * 70;
+    }
+    get rectWidthPx() {
+        return this.rectWidth + 'px';
+    }
+
+    get rectX() {
+        return '-' + this.rectWidth / 2 + 'px';
     }
 
     get classObject() {
@@ -80,6 +96,7 @@ export default class GraphNode extends Vue {
 
     circle.transitive {
         fill: #1997c6;
+        opacity: 0.7;
     }
 
     circle.selected {
@@ -104,9 +121,10 @@ export default class GraphNode extends Vue {
         stroke: white;
         fill: #ECEBE4;
         cursor: pointer;
-        stroke-width: 1px;
+        stroke-width: 1.5px;
     }
     text{
-        fill: #2364aa;
+        fill: #1997c6;
+        font-weight: 400;
     }
 </style>
