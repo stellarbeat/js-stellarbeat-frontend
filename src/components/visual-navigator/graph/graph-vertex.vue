@@ -15,6 +15,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import {Component, Prop} from 'vue-property-decorator';
+import truncate from 'vue-truncate-filter';
 
 @Component({})
 export default class GraphNode extends Vue {
@@ -48,9 +49,7 @@ export default class GraphNode extends Vue {
     }
 
     get rectWidth() {
-        if(this.displayName.length > 10)
-            return 70
-        else return (this.displayName.length/10) * 70;
+        return (this.$options!.filters!.truncate(this.displayName,10).length/10) * 70;
     }
     get rectWidthPx() {
         return this.rectWidth + 'px';
