@@ -360,8 +360,8 @@
             if (this.centerVertex() !== undefined) {
                 let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.publicKey);
 
-                const realNodeX = -centerVertexViewData!.x * 2 + this.width / 2;
-                const realNodeY = -centerVertexViewData!.y * 2 + this.height / 2;
+                const realNodeX = -centerVertexViewData!.x * 1 + this.width / 2;
+                const realNodeY = -centerVertexViewData!.y * 1 + this.height / 2;
 
                 let transform = zoom.zoomIdentity.translate(realNodeX, realNodeY).scale(1);
                 this.d3svg.call(this.graphZoom.transform, transform);
