@@ -77,7 +77,7 @@
                             </div>
                             <div class="col-lg-3 ml-auto">
                                 <form class="input-icon my-3 my-lg-0">
-                                    <search v-if="!store.isLoading"/>
+                                    <search v-if="!store.isLoading && !store.fetchingDataFailed"/>
                                 </form>
                             </div>
 
@@ -95,7 +95,7 @@
                         <div class="loader"></div>
                     </div>
                     <div v-else>
-                        <router-view v-if="!store.isLoading || isFullPreRenderRoute"
+                        <router-view v-if="!store.isLoading && !store.fetchingDataFailed"
                                      :network="network"
                                      :isLoading="store.isLoading"
                         />
@@ -178,7 +178,7 @@
     })
 
     export default class App extends Vue {
-        protected errorMessage = 'Could not connect to stellarbeat.io api';
+        protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
 
         async created() {
             await this.store.fetchData();
@@ -194,7 +194,7 @@
         }
 
         get showError() {
-            return this.store.fetchingNodeDataFailed;
+            return this.store.fetchingDataFailed;
         }
 
         get isFullPreRenderRoute() {

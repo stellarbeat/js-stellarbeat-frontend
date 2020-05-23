@@ -33,7 +33,7 @@ export type DayStatistic = {
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
     public isLoading: boolean = true;
-    public fetchingNodeDataFailed: boolean = false;
+    public fetchingDataFailed: boolean = false;
     public network!: Network;
     public changeQueue: ChangeQueue = new ChangeQueue();
     public networkUpdated: number = 0;
@@ -94,10 +94,10 @@ export default class Store {
 
                 return;
             } else {
-                this.fetchingNodeDataFailed = true;
+                this.fetchingDataFailed = true;
             }
         } catch (error) {
-            this.fetchingNodeDataFailed = true;
+            this.fetchingDataFailed = true;
         }
     }
 
