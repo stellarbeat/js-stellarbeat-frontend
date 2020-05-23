@@ -35,7 +35,7 @@
             >
 
                 <template v-slot:action-dropdown>
-                    <node-actions :node="validator" :supports-delete="true"/>
+                    <node-actions :node="validator" :supports-delete="true" :quorumSet="quorumSet"/>
                 </template>
             </nav-link>
             <quorum-set-dropdown :parentQuorumSet="quorumSet" v-for="(innerQuorumSet, index) in innerQuorumSets" :quorumSet="innerQuorumSet" :level="level+1" :key="index"/>
@@ -73,7 +73,6 @@
 
         @Watch("quorumSet", {deep: true})
         onQuorumSetChanged(){
-            console.log("change");
             this.showing = true;
         }
 

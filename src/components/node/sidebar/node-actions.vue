@@ -10,7 +10,7 @@
                 <b-icon-lightning scale="0.9"/>
                 {{node.isValidating ? 'Stop validating' : 'Try validating'}}
             </b-dropdown-item>
-            <b-dropdown-item v-if="supportsDelete" v-on:click="$emit('node-delete', node)" @click.prevent.stop>
+            <b-dropdown-item v-if="supportsDelete" v-on:click="store.deleteValidatorFromQuorumSet(quorumSet, node)" @click.prevent.stop>
                 <b-icon-x-circle scale="0.9"/>
                 Remove
             </b-dropdown-item>
@@ -33,7 +33,7 @@
     import {Component, Prop} from "vue-property-decorator";
     import {BDropdown, BDropdownItem, BIconThreeDotsVertical, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton} from 'bootstrap-vue';
 
-    import {Node} from "@stellarbeat/js-stellar-domain";
+    import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
 
     @Component({
@@ -44,6 +44,8 @@
         public node!: Node;
         @Prop({default: false})
         public supportsDelete!: Boolean;
+        @Prop()
+        public quorumSet!:QuorumSet;
 
         get store():Store {
             return this.$root.$data.store;
