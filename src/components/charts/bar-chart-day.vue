@@ -10,18 +10,20 @@
     import Chart from 'chart.js';
 
     interface BarChartDayData {
-        t: Date, y: number;
+        t: Date,
+        y: number;
     }
-    export type timeUnit = 'day'|'hour'
+
+    export type timeUnit = 'day' | 'hour'
 
     @Component({
         name: 'bar-chart-day'
     })
     export default class BarChartDay extends Vue {
         @Prop()
-        width!:string;
+        width!: string;
         @Prop()
-        data!:BarChartDayData[];
+        data!: BarChartDayData[];
         @Prop()
         unit!: timeUnit;
 
@@ -32,51 +34,56 @@
             return this.$root.$data.store;
         }
 
-        get timeFormat(){
-            if(this.unit === 'day')
+        get timeFormat() {
+            if (this.unit === 'day')
                 return 'D-M-YYYY';
             else
                 return 'HH:mm';
         }
 
         get displayFormat() {
-            if(this.unit === 'day')
+            if (this.unit === 'day')
                 return {day: this.timeFormat};
             else return {hour: this.timeFormat};
         }
 
         @Watch('data')
-        onDataChanged(){
+        onDataChanged() {
             this.barChart.data.datasets![0].data = this.data;
-            this.barChart.data.datasets![0].backgroundColor = this.data.map(data => data.y === 100 ? '#5eba00' : 'rgba(94, 186, 0, 0.5)')
-            this.barChart.data.datasets![1].data = this.data.map(data => {return {
-                t: data.t,
-                y: 100 - data.y
-            }});
+            this.barChart.data.datasets![0].backgroundColor = this.data.map(data => data.y === 100 ? '#5eba00' : 'rgba(94, 186, 0, 0.5)');
+            this.barChart.data.datasets![1].data = this.data.map(data => {
+                return {
+                    t: data.t,
+                    y: 100 - data.y
+                };
+            });
             this.barChart.update();
         }
 
-        mounted(){
+        mounted() {
             let chartId = 'lineChart' + this.id;
             let context = (this.$refs[chartId] as HTMLCanvasElement).getContext('2d');
             let that = this;
             this.barChart = new Chart(context as CanvasRenderingContext2D, {
                 type: 'bar',
                 data: {
-                    datasets: [{
-                        label: 'Validating',
-                        backgroundColor: this.data.map(data => data.y === 100 ? '#5eba00' : 'rgba(94, 186, 0, 0.5)'),
-                        borderWidth: 0,
-                        data: this.data
-                    },
+                    datasets: [
+                        {
+                            label: 'Validating',
+                            backgroundColor: this.data.map(data => data.y === 100 ? '#5eba00' : 'rgba(94, 186, 0, 0.5)'),
+                            borderWidth: 0,
+                            data: this.data
+                        },
                         {
                             label: 'Not Validating',
                             backgroundColor: '#cd201f',
                             borderColor: '#1997c6',
-                            data: this.data.map(data => {return {
-                                t: data.t,
-                                y: 100 - data.y
-                            }}),
+                            data: this.data.map(data => {
+                                return {
+                                    t: data.t,
+                                    y: 100 - data.y
+                                };
+                            }),
                             fill: 'origin'
                         }]
                 },
@@ -87,7 +94,7 @@
                         (event.target! as any).style.cursor = activeElements[0] ? 'pointer' : 'default';
                     },
                     onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
-                        if (activeElements && activeElements[0] && Number((activeElements[0] as any)._index) >=0) {
+                        if (activeElements && activeElements[0] && Number((activeElements[0] as any)._index) >= 0) {
                             that.$emit('click-date', that.data[Number((activeElements[0] as any)._index)].t);
                         }
                     },
@@ -174,6 +181,7 @@
                 }
             });
         }
+
         public beforeDestroy() {
             if (this.barChart) {
                 this.barChart.destroy();

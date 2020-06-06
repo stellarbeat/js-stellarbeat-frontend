@@ -42,16 +42,13 @@
 
         get overloadedBuckets() {
             const buckets: number[] = Array(3).fill(0);
-            const bucketReducer = (buckets: number[], currentOverLoadedPercentage: number) => {
+            const bucketReducer = (buckets: number[], overloaded: boolean) => {
                 switch (true) {
-                    case currentOverLoadedPercentage <= 40:
+                    case !overloaded:
                         buckets[0]++;
                         break;
-                    case currentOverLoadedPercentage <= 80:
+                    case overloaded:
                         buckets[1]++;
-                        break;
-                    case currentOverLoadedPercentage <= 100:
-                        buckets[2]++;
                         break;
                 }
 
@@ -59,7 +56,7 @@
             };
             return this.network.nodes
                 .filter((node) => node.active && node.isValidator)
-                .map((node) => node.statistics.overLoaded30DaysPercentage)
+                .map((node) => node.overLoaded)
                 .reduce(bucketReducer, buckets);
         }
 
@@ -70,16 +67,14 @@
                 // The data for our dataset
                 data: {
                     labels: [
-                        'low',
-                        'medium',
-                        'high',
+                        'low load',
+                        'high load',
                     ],
                     datasets: [{
                         label: 'nodes',
                         backgroundColor: [
                             '#1997c6', // success blue
-                            'rgba(228, 216, 54)', // warning yellow
-                            '#cd201f', // danger red
+                            this.overloadedBuckets[0] >= this.overloadedBuckets[1] ? 'rgba(228, 216, 54)' : '#cd201f',
                         ],
                         data: this.overloadedBuckets,
                     }],
