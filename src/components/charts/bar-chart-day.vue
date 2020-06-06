@@ -48,6 +48,7 @@
         @Watch('data')
         onDataChanged(){
             this.barChart.data.datasets![0].data = this.data;
+            this.barChart.data.datasets![0].backgroundColor = this.data.map(data => data.y === 100 ? '#5eba00' : 'rgba(94, 186, 0, 0.5)')
             this.barChart.data.datasets![1].data = this.data.map(data => {return {
                 t: data.t,
                 y: 100 - data.y
@@ -64,7 +65,7 @@
                 data: {
                     datasets: [{
                         label: 'Validating',
-                        backgroundColor: '#5eba00',
+                        backgroundColor: this.data.map(data => data.y === 100 ? '#5eba00' : 'rgba(94, 186, 0, 0.5)'),
                         borderWidth: 0,
                         data: this.data
                     },

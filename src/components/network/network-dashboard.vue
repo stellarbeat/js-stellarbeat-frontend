@@ -15,6 +15,9 @@
             <div class="col-lg-4 col-xl-4">
                 <ValidatorsServerLoad/>
             </div>
+            <!--div class="col-12">
+                <sum-of-parts/>
+            </div!-->
             <div class="col-lg-6 col-xl-6">
                 <network-organizations/>
             </div>
@@ -35,9 +38,11 @@
     import NetworkStatistics from '@/components/network/cards/network-statistics.vue';
     import NetworkNodes from '@/components/network/cards/network-nodes.vue';
     import NetworkOrganizations from '@/components/network/cards/network-organizations.vue';
+    import OrganizationNetworkAnalysis from '@/components/network/cards/organization-network-analysis.vue';
 
     @Component({
         components: {
+            OrganizationNetworkAnalysis,
             NetworkOrganizations,
             NetworkNodes,
             NetworkStatistics, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution
