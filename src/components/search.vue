@@ -64,7 +64,7 @@
         }
 
         get filteredList(): Match[] {
-            let match = (text: string) => text.toLowerCase().includes(this.searchString.toLowerCase());
+            let match = (text: string) => text.toLowerCase().includes(this.searchString.toLowerCase().trim());
 
             let matchedOrganizations = this.network.organizations.filter((organization) => {
                 return match(organization.name);
@@ -80,7 +80,7 @@
             );
 
             let matchedNodes = this.network.nodes.filter((node) => {
-                return match(node.displayName) || match(node.publicKey!);
+                return match(node.displayName) || match(node.publicKey!) || match(node.key);
             }).map(node => {
                     return {
                         name: node.displayName, type: node.isValidator ? 'validator node' : 'watcher node', route: {

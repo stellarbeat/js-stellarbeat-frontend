@@ -55,7 +55,7 @@
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
     import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
-    import Search from '@/components/node/search.vue';
+    import Search from '@/components/search.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
 
     import {BIconX, BModal, VBModal} from 'bootstrap-vue';
