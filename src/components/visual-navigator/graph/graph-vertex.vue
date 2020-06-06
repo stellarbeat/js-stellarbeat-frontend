@@ -6,7 +6,7 @@
                 v-on:click="nodeSelected"
         ></circle>
         <g>
-        <rect style="fill: white; opacity: 0.8" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2"/>
+        <rect style="fill: white;" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2" :class="{'rect-selected': selected, 'rect': !selected}"/>
         <text y="5" dy="1.3em" text-anchor="middle" font-size="12px">{{ displayName | truncate(10)}}</text>
         </g>
     </g>
@@ -124,5 +124,13 @@ export default class GraphNode extends Vue {
     text{
         fill: #1997c6;
         font-weight: 400;
+    }
+
+    .rect {
+        opacity: 0.8;
+    }
+    .rect-selected {
+        stroke: yellow;
+        stroke-width: 1.5;
     }
 </style>
