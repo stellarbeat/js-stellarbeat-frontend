@@ -64,7 +64,7 @@ Age = Time since discovery
                 <h3>Why is my validator 'overloaded'?</h3>
                 <p> When your validator disconnects from the crawler with an <a
                         target="_blank"
-                        href="https://github.com/stellar/stellar-core/blob/cc6208b268d3102381c4e2502fcbb6e3afd4249a/src/xdr/Stellar-overlay.x#L16">err_load</a> message, it is marked as overloaded. It indicates how easily new nodes can connect to your validator. A possible solution is to increase MAX_ADDITIONAL_PEER_CONNECTIONS (inbound connections)</p>
+                        href="https://github.com/stellar/stellar-core/blob/cc6208b268d3102381c4e2502fcbb6e3afd4249a/src/xdr/Stellar-overlay.x#L16">err_load</a> message, it is marked as overloaded. It indicates how easily new nodes can connect to your validator. A possible solution is to increase MAX_ADDITIONAL_PEER_CONNECTIONS (inbound connections). Another way a node is marked overloaded when it takes too long to send/process messages. In this case you will see a high cpu usage on your node.</p>
                 <h3>How can I add my organization?</h3>
                 <p>
                     Support <a
