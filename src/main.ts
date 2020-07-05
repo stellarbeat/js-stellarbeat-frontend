@@ -15,6 +15,8 @@ import VueClipboard from 'vue-clipboard2'
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from '@sentry/integrations';
+import AsyncComputedPlugin from 'vue-async-computed';
+
 const isProd = process.env.NODE_ENV === 'production';
 
 Vue.config.productionTip = false;
@@ -28,6 +30,7 @@ if (isProd) {
     //makeServer();
 }
 
+Vue.use(AsyncComputedPlugin)
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);

@@ -68,6 +68,17 @@ export default class Store {
         return this._haltingAnalysisPublicKey;
     }
 
+    async fetchNodeSnapshots(id:PublicKey, time:Date = new Date()):Promise<Object[]> {
+        let params:any = {};
+        params['at'] = time.toISOString();
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/nodes/' + id + '/snapshots', {params});
+        if (result.data) {
+            return result.data;
+        }
+
+        return [];
+    }
+
     async fetchData(time?:Date): Promise<void> {
         if(this.isSimulation)
             this.changeQueue.reset();

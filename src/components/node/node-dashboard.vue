@@ -78,8 +78,12 @@
             <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
                 <node-trusted-by :node="selectedNode"/>
             </div>
-
-            <div class="col-12" v-if="selectedNode.isValidator">
+        </div>
+        <div class="row row-cards">
+            <div class="col-lg-12 col-xl-4">
+                <node-latest-updates :node="selectedNode"/>
+            </div>
+            <div class="col-lg-12 col-xl-8" v-if="selectedNode.isValidator">
                 <node-quorum-set-validators :node="selectedNode"/>
             </div>
         </div>
@@ -89,7 +93,6 @@
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
     import HistoryCard from '@/components/charts/history-card.vue';
-    import {PublicKey} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import NodeInfo from '@/components/node/node-cards/node-info.vue';
     import NodeExtraInfo from '@/components/node/node-cards/node-extra-info.vue';
@@ -104,9 +107,11 @@
     import NodeIndex from '@/components/node/node-cards/statistics/node-index.vue';
     import NodeStatistics30DActive from '@/components/node/node-cards/statistics/node-statistics-30D-active.vue';
     import NodeTrustedBy from '@/components/node/node-cards/node-trusted-by.vue';
+    import NodeLatestUpdates from '@/components/node/node-cards/node-latest-updates.vue';
 
     @Component({
         components: {
+            NodeLatestUpdates,
             NodeTrustedBy,
             NodeStatistics30DActive,
             NodeIndex,
@@ -119,8 +124,6 @@
     })
 
     export default class NodeDashboard extends Vue {
-        protected showHaltingAnalysis: boolean = false;
-        protected haltingAnalysisPublicKey: PublicKey | null = null;
 
         get store(): Store {
             return this.$root.$data.store;

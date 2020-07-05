@@ -28,10 +28,10 @@ export default class NodeMeasurementStore {
     }
 
     async getDayMeasurements(id: string, from: Date, to: Date): Promise<NodeDayMeasurement[]> {
-        return await this.measurementStore.fetchDayMeasurements<NodeDayMeasurement>(id, from, to, '/v2/node-day-measurements');
+        return await this.measurementStore.fetchDayMeasurements<NodeDayMeasurement>(id, from, to, '/v1/nodes/' + id + '/day-measurements', false);
     }
 
     async getMeasurements(id: string, from: Date, to: Date): Promise<NodeMeasurement[]> {
-        return await this.measurementStore.fetchIndividualMeasurements<NodeMeasurement>(id, from, to, '/v2/node-measurements');
+        return await this.measurementStore.fetchIndividualMeasurements<NodeMeasurement>(id, from, to, '/v1/nodes/' + id + '/measurements', false);
     }
 }
