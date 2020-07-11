@@ -65,6 +65,12 @@
                                     <div v-else-if="update.key === 'archival'">
                                         Node {{update.value}}
                                     </div>
+                                    <div v-else-if="update.key === 'longitude'">
+                                        Longitude updated to {{update.value}}
+                                    </div>
+                                    <div v-else-if="update.key === 'latitude'">
+                                        Latitude updated to {{update.value}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -144,13 +150,13 @@
                 snapshots = await this.store.fetchNodeSnapshots(this.node.publicKey!);
                 snapshots.filter((snapshot: any) => !snapshot.quorumSet)
                     .forEach((snapshot: any) => snapshot.quorumSet = new QuorumSet('empty', 0));
-                snapshots.forEach((snapshot: any) => snapshot.quorumSet.innerQuorumSets.sort((a:QuorumSet, b:QuorumSet) => a.hashKey!.localeCompare(b.hashKey!)));
-
+                snapshots.forEach((snapshot: any) => snapshot.quorumSet.innerQuorumSets.sort((a:QuorumSet, b:QuorumSet) => a.hashKey!.localeCompare(b.hashKey!))); //for cleaner visual diffing
+                console.log(snapshots);
                 for (let i = snapshots.length - 2; i >= 0; i--) {
                     let updates: Update[] = [];
                     Object
                         .keys(snapshots[i])
-                        .filter(key => !['startDate', 'endDate', 'countryCode'].includes(key))
+                        .filter(key => !['startDate', 'endDate'].includes(key))
                         .filter(key => key !== 'quorumSet' ? snapshots[i][key] !== snapshots[i + 1][key] : snapshots[i].quorumSet.hashKey !== snapshots[i + 1].quorumSet.hashKey)
                         .forEach(changedKey => updates.push({key: changedKey, value: snapshots[i][changedKey]}));
 
