@@ -80,11 +80,11 @@
             </div>
         </div>
         <div class="row row-cards">
-            <div class="col-lg-12 col-xl-4">
-                <node-latest-updates :node="selectedNode"/>
-            </div>
             <div class="col-lg-12 col-xl-8" v-if="selectedNode.isValidator">
                 <node-quorum-set-validators :node="selectedNode"/>
+            </div>
+            <div class="col-lg-12 col-xl-4">
+                <node-latest-updates :node="selectedNode"/>
             </div>
         </div>
     </div>

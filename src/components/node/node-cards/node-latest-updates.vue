@@ -1,9 +1,9 @@
 <template>
-    <div class="card">
+    <div class="card this-card">
         <div class="card-header">
             <h4 class="card-title">Latest node updates</h4>
         </div>
-        <div class="card-body py-0 d-flex flex-column justify-content-center align-items-center">
+        <div class="card-body py-0 overflow-auto">
             <b-list-group flush class="w-100 mb-4">
                 <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
                                    class="px-0 pb-0">
@@ -74,6 +74,9 @@
                             </b-button>
                         </div>
                     </div>
+                </b-list-group-item>
+                <b-list-group-item v-if="updatesPerDate.length === 0">
+                    No recent updates...
                 </b-list-group-item>
             </b-list-group>
         </div>
@@ -184,5 +187,8 @@
 <style scoped>
     .changed {
         background: #5eba00;
+    }
+    .this-card {
+        max-height: 910px;
     }
 </style>
