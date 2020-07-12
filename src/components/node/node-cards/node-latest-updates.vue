@@ -50,7 +50,7 @@
                                     <div v-else-if="update.key === 'isp'">
                                         ISP changed to {{update.value || 'empty'}}
                                     </div>
-                                    <div v-else-if="update.key === 'versionStr'">
+                                    <div v-else-if="update.key === 'versionStr' && update.value">
                                         Stellar core updated to version {{update.value.replace('stellar-core ',
                                         '').replace('v',
                                         '').replace(/ \(.*$/, '').replace(/\-.*$/, '')}}
