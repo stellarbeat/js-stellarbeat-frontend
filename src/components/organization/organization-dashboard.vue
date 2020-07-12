@@ -19,8 +19,13 @@
                 >
                 </history-card>
             </div>
-            <div class="col-md-12 col-lg-12 col-xl-12">
+        </div>
+        <div class="row row-cards">
+            <div class="col-lg-12 col-xl-8">
                 <organization-validators :organization="organization"/>
+            </div>
+            <div class="col-lg-12 col-xl-4">
+                <organization-latest-updates :organization="organization"/>
             </div>
         </div>
     </div>
@@ -41,9 +46,12 @@
         from '@/components/organization/organization-cards/statistics/organization-statistics-subquorum-24h-availability.vue';
     import OrganizationStatisticsSubquorum30DAvailability
         from '@/components/organization/organization-cards/statistics/organization-statistics-subquorum-30D-availability.vue';
+    import OrganizationLatestUpdates
+        from '@/components/organization/organization-cards/organization-latest-updates.vue';
 
     @Component({
         components: {
+            OrganizationLatestUpdates,
             OrganizationStatisticsSubquorum30DAvailability,
             OrganizationStatisticsSubquorum24hAvailability,
             OrganizationValidators,

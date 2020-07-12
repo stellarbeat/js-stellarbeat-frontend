@@ -21,10 +21,10 @@ export default class OrganizationMeasurementStore {
 
 
     async getDayMeasurements(organizationId: string, from: Date, to: Date): Promise<OrganizationDayMeasurement[]> {
-        return await this.measurementStore.fetchDayMeasurements<OrganizationDayMeasurement>(organizationId, from, to, '/v2/organization-day-measurements');
+        return await this.measurementStore.fetchDayMeasurements<OrganizationDayMeasurement>(organizationId, from, to, '/v1/organizations/' + organizationId + '/day-measurements');
     }
 
     async getMeasurements(organizationId: string, from: Date, to: Date): Promise<OrganizationMeasurement[]> {
-        return await this.measurementStore.fetchIndividualMeasurements<OrganizationMeasurement>(organizationId, from, to, '/v2/organization-measurements');
+        return await this.measurementStore.fetchIndividualMeasurements<OrganizationMeasurement>(organizationId, from, to, '/v1/organizations/' + organizationId + '/measurements');
     }
 }

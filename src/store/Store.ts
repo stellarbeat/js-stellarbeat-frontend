@@ -68,10 +68,21 @@ export default class Store {
         return this._haltingAnalysisPublicKey;
     }
 
-    async fetchNodeSnapshots(id:PublicKey, time:Date = new Date()):Promise<Object[]> {
+    async fetchNodeSnapshots(id:PublicKey):Promise<Object[]> {
         let params:any = {};
-        params['at'] = time.toISOString();
+        params['at'] = this.network.crawlDate;
         let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/nodes/' + id + '/snapshots', {params});
+        if (result.data) {
+            return result.data;
+        }
+
+        return [];
+    }
+
+    async fetchOrganizationSnapshots(id:OrganizationId):Promise<Object[]> {
+        let params:any = {};
+        params['at'] = this.network.crawlDate;
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/organizations/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data;
         }

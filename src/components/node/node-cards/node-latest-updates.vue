@@ -15,40 +15,40 @@
                             <div class="mb-2">
                                 <div v-for="update in updatesOnDate.updates" :key="update.key">
                                     <div v-if="update.key === 'ip'">
-                                        IP changed to {{update.value}}
+                                        IP changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'port'">
-                                        Port changed to {{update.value}}
+                                        Port changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'quorumSet'">
                                         Quorumset updated
                                     </div>
                                     <div v-else-if="update.key === 'ledgerVersion'">
-                                        Ledger updated to version {{update.value}}
+                                        Ledger updated to version {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'overlayVersion'">
-                                        Overlay updated to version {{update.value}}
+                                        Overlay updated to version {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'overlayMinVersion'">
-                                        Minimum required overlay version is now {{update.value}}
+                                        Minimum required overlay version is now {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'name'">
-                                        Name changed to {{update.value}}
+                                        Name changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'host'">
-                                        Host changed to {{update.value}}
+                                        Host changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'homeDomain'">
-                                        Home domain changed to <a :href="update.value">{{update.value}}</a>
+                                        Home domain changed to <a :href="update.value">{{update.value || 'empty'}}</a>
                                     </div>
                                     <div v-else-if="update.key === 'historyUrl'">
-                                        History url changed to <a :href="update.value">{{update.value}}</a>
+                                        History url changed to <a :href="update.value">{{update.value || 'empty'}}</a>
                                     </div>
                                     <div v-else-if="update.key === 'alias'">
-                                        Alias changed to {{update.value}}
+                                        Alias changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'isp'">
-                                        ISP changed to {{update.value}}
+                                        ISP changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'versionStr'">
                                         Stellar core updated to version {{update.value.replace('stellar-core ',
@@ -56,20 +56,20 @@
                                         '').replace(/ \(.*$/, '').replace(/\-.*$/, '')}}
                                     </div>
                                     <div v-else-if="update.key === 'countryName'">
-                                        Geo location: country changed to {{update.value}}
+                                        Geo location: country changed to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'organizationId'">
                                         Organization changed to {{network.getOrganizationById(update.value) ?
                                         network.getOrganizationById(update.value).name : 'N/A'}}
                                     </div>
                                     <div v-else-if="update.key === 'archival'">
-                                        Node {{update.value}}
+                                        Node unarchived after period of inactivity
                                     </div>
                                     <div v-else-if="update.key === 'longitude'">
-                                        Longitude updated to {{update.value}}
+                                        Longitude updated to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'latitude'">
-                                        Latitude updated to {{update.value}}
+                                        Latitude updated to {{update.value  || 'empty'}}
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
 <script lang="ts">
     import {Component, Prop} from 'vue-property-decorator';
     import Vue from 'vue';
-    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Network, Node, PublicKey, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import AsyncComputed from 'vue-async-computed-decorator';
     import {Delta, formatters, create, DiffPatcher} from 'jsondiffpatch';
@@ -131,13 +131,23 @@
         protected node!: Node;
 
         showDiff(snapShot: any) {
-            formatters.html.showUnchanged(false);
+            formatters.html.showUnchanged(true);
             this.diffModalHtml = formatters.html.format(this.deltas.get(snapShot.startDate)!, snapShot);
             (this.$refs['modal-diff'] as BModal).show();
         }
 
         get store(): Store {
             return this.$root.$data.store;
+        }
+
+        mapValidatorsToNames(quorumSet: QuorumSet) {
+            quorumSet.validators = quorumSet.validators.map(
+                (validator:PublicKey) => this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator
+            ) as [];
+
+            quorumSet.innerQuorumSets = quorumSet.innerQuorumSets.map(quorumSet => this.mapValidatorsToNames(quorumSet));
+
+            return quorumSet;
         }
 
         @AsyncComputed()
@@ -148,20 +158,27 @@
                 this.deltas = new Map();
                 this.updatesPerDate = [];
                 snapshots = await this.store.fetchNodeSnapshots(this.node.publicKey!);
-                snapshots.filter((snapshot: any) => !snapshot.quorumSet)
-                    .forEach((snapshot: any) => snapshot.quorumSet = new QuorumSet('empty', 0));
-                snapshots.forEach((snapshot: any) => snapshot.quorumSet.innerQuorumSets.sort((a:QuorumSet, b:QuorumSet) => a.hashKey!.localeCompare(b.hashKey!))); //for cleaner visual diffing
-                console.log(snapshots);
+                snapshots.forEach((snapshot: any) => {
+                    if(snapshot.quorumSet === undefined)
+                        snapshot.quorumSet = new QuorumSet('empty', 0);
+                    else
+                        snapshot.quorumSet = this.mapValidatorsToNames(snapshot.quorumSet);
+                });
+
+                /*snapshots.forEach(
+                    (snapshot: any) => snapshot.quorumSet.innerQuorumSets.sort(
+                        (a:QuorumSet, b:QuorumSet) => JSON.stringify(a.validators)!.localeCompare(JSON.stringify(b.validators))
+                    )
+                );*/ //for cleaner visual diffing
+
                 for (let i = snapshots.length - 2; i >= 0; i--) {
                     let updates: Update[] = [];
-                    Object
-                        .keys(snapshots[i])
-                        .filter(key => !['startDate', 'endDate'].includes(key))
+                    ['latitude', 'longitude', 'quorumSet', 'ip', 'port', 'countryName', 'countryCode', 'host', 'name', 'homeDomain', 'historyUrl', 'alias', 'isp', 'ledgerVersion', 'overlayVersion', 'overlayMinVersion', 'versionStr', 'organizationId']
                         .filter(key => key !== 'quorumSet' ? snapshots[i][key] !== snapshots[i + 1][key] : snapshots[i].quorumSet.hashKey !== snapshots[i + 1].quorumSet.hashKey)
                         .forEach(changedKey => updates.push({key: changedKey, value: snapshots[i][changedKey]}));
 
-                    if (updates.length === 0){
-                        updates.push({key: 'archival', value: 'archived'})
+                    if (snapshots[i]['startDate'] !== snapshots[i + 1]['endDate']){
+                        updates.push({key: 'archival', value: 'unArchived'})
                     }
 
                     this.updatesPerDate.push({date: snapshots[i].startDate, updates: updates, snapshot: snapshots[i]});
@@ -178,9 +195,9 @@
 
         mounted() {
             this.differ = create({
-                propertyFilter: function (name: string, context: any) {
+                /*propertyFilter: function (name: string, context: any) {
                     return !['startDate', 'endDate'].includes(name);
-                },
+                },*/
             });
         }
 
