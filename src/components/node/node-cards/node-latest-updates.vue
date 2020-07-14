@@ -9,11 +9,12 @@
         </div>
         <div class="card-body py-0 overflow-auto">
             <b-list-group v-if="!isLoading" flush class="w-100 mb-4">
-                <b-list-group-item  v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
+                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
                                    class="px-0 pb-0 dimmer-content">
                     <div class="d-flex justify-content-between flex-wrap">
                         <div>
-                            <div class="text-muted mb-1" style="font-size: small">{{new Date(updatesOnDate.date).toLocaleString()}}
+                            <div class="text-muted mb-1" style="font-size: small">{{new
+                                Date(updatesOnDate.date).toLocaleString()}}
                             </div>
                             <div class="mb-2">
                                 <div v-for="update in updatesOnDate.updates" :key="update.key">
@@ -72,15 +73,24 @@
                                         Longitude updated to {{update.value || 'empty'}}
                                     </div>
                                     <div v-else-if="update.key === 'latitude'">
-                                        Latitude updated to {{update.value  || 'empty'}}
+                                        Latitude updated to {{update.value || 'empty'}}
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-2">
-                            <b-button size="sm" variant="primary" class="mr-2"
-                                      v-on:click="showDiff(updatesOnDate.snapshot)">View diff
-                            </b-button>
+                            <b-button-toolbar>
+                                <b-button-group size="sm" >
+                                    <b-button v-b-tooltip="'View diff'"
+                                              v-on:click="showDiff(updatesOnDate.snapshot)">
+                                        <b-icon-file-diff/>
+                                    </b-button>
+                                    <b-button v-on:click="timeTravel(updatesOnDate.snapshot)"
+                                              v-b-tooltip="'Travel to this point in time'">
+                                        <b-icon-clock/>
+                                    </b-button>
+                                </b-button-group>
+                            </b-button-toolbar>
                         </div>
                     </div>
                 </b-list-group-item>
@@ -115,7 +125,11 @@
         BButton,
         BBadge,
         BListGroup,
-        BListGroupItem
+        BListGroupItem,
+        BIconFileDiff,
+        BButtonGroup,
+        BIconClock,
+        BButtonToolbar
     } from 'bootstrap-vue';
 
     interface Update {
@@ -124,16 +138,27 @@
     }
 
     @Component({
-        components: {BTable, BModal, BButton, BListGroup, BListGroupItem, BBadge},
-        directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal}
+        components: {
+            BTable,
+            BModal,
+            BButton,
+            BListGroup,
+            BListGroupItem,
+            BBadge,
+            BIconFileDiff,
+            BButtonGroup,
+            BIconClock,
+            BButtonToolbar
+        },
+        directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal},
     })
     export default class NodeLatestUpdates extends Vue {
         protected differ!: DiffPatcher;
         protected diffModalHtml: string = '<p>No update selected</p>';
         protected deltas: Map<string, Delta | undefined> = new Map();
         protected updatesPerDate: { date: string, updates: Update[], snapshot: any }[] = [];
-        protected isLoading:boolean = true;
-        protected failed:boolean = false;
+        protected isLoading: boolean = true;
+        protected failed: boolean = false;
 
         @Prop()
         protected node!: Node;
@@ -150,7 +175,7 @@
 
         mapValidatorsToNames(quorumSet: QuorumSet) {
             quorumSet.validators = quorumSet.validators.map(
-                (validator:PublicKey) => this.network.getNodeByPublicKey(validator) && this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator
+                (validator: PublicKey) => this.network.getNodeByPublicKey(validator) && this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator
             ) as [];
 
             quorumSet.innerQuorumSets = quorumSet.innerQuorumSets.map(quorumSet => this.mapValidatorsToNames(quorumSet));
@@ -167,7 +192,7 @@
                 this.updatesPerDate = [];
                 snapshots = await this.store.fetchNodeSnapshots(this.node.publicKey!);
                 snapshots.forEach((snapshot: any) => {
-                    if(snapshot.quorumSet === undefined)
+                    if (snapshot.quorumSet === undefined)
                         snapshot.quorumSet = new QuorumSet('empty', 0);
                     else
                         snapshot.quorumSet = this.mapValidatorsToNames(snapshot.quorumSet);
@@ -185,8 +210,8 @@
                         .filter(key => key !== 'quorumSet' ? snapshots[i][key] !== snapshots[i + 1][key] : snapshots[i].quorumSet.hashKey !== snapshots[i + 1].quorumSet.hashKey)
                         .forEach(changedKey => updates.push({key: changedKey, value: snapshots[i][changedKey]}));
 
-                    if (snapshots[i]['startDate'] !== snapshots[i + 1]['endDate']){
-                        updates.push({key: 'archival', value: 'unArchived'})
+                    if (snapshots[i]['startDate'] !== snapshots[i + 1]['endDate']) {
+                        updates.push({key: 'archival', value: 'unArchived'});
                     }
 
                     this.updatesPerDate.push({date: snapshots[i].startDate, updates: updates, snapshot: snapshots[i]});
@@ -202,9 +227,15 @@
             return snapshots;
         }
 
+        async timeTravel(update: any) {
+            this.store.isLoading = true;
+            await this.store.fetchData(new Date(update.startDate));
+            this.store.isLoading = false;
+        }
+
         mounted() {
             this.differ = create({
-                objectHash(obj:any) {
+                objectHash(obj: any) {
                     if (obj && obj.hashKey) {
                         return obj.hashKey;
                     }
@@ -225,6 +256,7 @@
     .changed {
         background: #5eba00;
     }
+
     .this-card {
         min-height: 200px;
         max-height: 910px;

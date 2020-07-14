@@ -58,9 +58,18 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center mb-2">
-                            <b-button size="sm" variant="primary" class="mr-2"
-                                      v-on:click="showDiff(updatesOnDate.snapshot)">View diff
-                            </b-button>
+                            <b-button-toolbar>
+                                <b-button-group size="sm">
+                                    <b-button v-b-tooltip="'View diff'"
+                                              v-on:click="showDiff(updatesOnDate.snapshot)">
+                                        <b-icon-file-diff/>
+                                    </b-button>
+                                    <b-button v-on:click="timeTravel(updatesOnDate.snapshot)"
+                                              v-b-tooltip="'Travel to this point in time'">
+                                        <b-icon-clock/>
+                                    </b-button>
+                                </b-button-group>
+                            </b-button-toolbar>
                         </div>
                     </div>
                 </b-list-group-item>
@@ -95,7 +104,11 @@
         BButton,
         BBadge,
         BListGroup,
-        BListGroupItem
+        BListGroupItem,
+        BIconFileDiff,
+        BButtonGroup,
+        BIconClock,
+        BButtonToolbar
     } from 'bootstrap-vue';
 
     interface Update {
@@ -104,7 +117,12 @@
     }
 
     @Component({
-        components: {BTable, BModal, BButton, BListGroup, BListGroupItem, BBadge},
+        components: {
+            BTable, BModal, BButton, BListGroup, BListGroupItem, BBadge, BIconFileDiff,
+            BButtonGroup,
+            BIconClock,
+            BButtonToolbar
+        },
         directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal}
     })
     export default class NodeLatestUpdates extends Vue {
@@ -112,8 +130,8 @@
         protected diffModalHtml: string = '<p>No update selected</p>';
         protected deltas: Map<string, Delta | undefined> = new Map();
         protected updatesPerDate: { date: string, updates: Update[], snapshot: any }[] = [];
-        protected isLoading:boolean = true;
-        protected failed:boolean = false;
+        protected isLoading: boolean = true;
+        protected failed: boolean = false;
 
         @Prop()
         protected organization!: Organization;
@@ -143,7 +161,7 @@
                 let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
                 for (let i = snapshots.length - 2; i >= 0; i--) {
                     let updates: Update[] = [];
-                    ['validators','name','dba','url','officialEmail','phoneNumber','physicalAddress','twitter','github','description','keybase']
+                    ['validators', 'name', 'dba', 'url', 'officialEmail', 'phoneNumber', 'physicalAddress', 'twitter', 'github', 'description', 'keybase']
                         .filter(key => key === 'validators' ?
                             JSON.stringify(snapshots[i][key].sort(validatorSort)) !== JSON.stringify(snapshots[i + 1][key].sort(validatorSort))
                             : snapshots[i][key] !== snapshots[i + 1][key]
@@ -153,8 +171,8 @@
                     if (snapshots[i]['startDate'] !== snapshots[i + 1]['endDate']) {
                         updates.push({key: 'archival', value: 'unArchived'});
                     }
-                    if(updates.length === 0){
-                        console.log(snapshots[i], snapshots[i+1]);
+                    if (updates.length === 0) {
+                        console.log(snapshots[i], snapshots[i + 1]);
                     }
 
 
@@ -171,6 +189,12 @@
 
             this.isLoading = false;
             return snapshots;
+        }
+
+        async timeTravel(update: any) {
+            this.store.isLoading = true;
+            await this.store.fetchData(new Date(update.startDate));
+            this.store.isLoading = false;
         }
 
         mounted() {
