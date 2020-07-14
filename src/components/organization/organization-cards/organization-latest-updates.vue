@@ -156,7 +156,7 @@
                 snapshots = await this.store.fetchOrganizationSnapshots(this.organization.id);
                 snapshots.map((snapshot: any) =>
                     snapshot.validators = snapshot.validators.map(
-                        (validator: PublicKey) => this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator)
+                        (validator: PublicKey) => this.network.getNodeByPublicKey(validator) && this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator)
                 );
                 let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
                 for (let i = snapshots.length - 2; i >= 0; i--) {
