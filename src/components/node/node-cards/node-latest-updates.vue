@@ -3,14 +3,17 @@
         <div class="card-header">
             <h4 class="card-title">Latest node updates</h4>
         </div>
+        <div v-if="failed" class="card-alert alert alert-danger mb-0">
+            <b-icon-exclamation-triangle/>
+            Error fetching data
+        </div>
         <div class="card-body py-0 overflow-auto">
-            <b-list-group flush class="w-100 mb-4">
-                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
-                                   class="px-0 pb-0">
+            <b-list-group v-if="!isLoading" flush class="w-100 mb-4">
+                <b-list-group-item  v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
+                                   class="px-0 pb-0 dimmer-content">
                     <div class="d-flex justify-content-between flex-wrap">
                         <div>
-                            <div class="text-muted mb-1" style="font-size: small">{{new
-                                Date(updatesOnDate.date).toLocaleString()}}
+                            <div class="text-muted mb-1" style="font-size: small">{{new Date(updatesOnDate.date).toLocaleString()}}
                             </div>
                             <div class="mb-2">
                                 <div v-for="update in updatesOnDate.updates" :key="update.key">
@@ -81,10 +84,13 @@
                         </div>
                     </div>
                 </b-list-group-item>
-                <b-list-group-item v-if="updatesPerDate.length === 0">
+                <b-list-group-item v-if="updatesPerDate.length === 0 && !isLoading">
                     No recent updates...
                 </b-list-group-item>
             </b-list-group>
+            <div v-else class="d-flex justify-content-center mt-5">
+                <div class="loader"></div>
+            </div>
         </div>
         <b-modal ref="modal-diff" title="Diff" size="lg">
             <div v-html="diffModalHtml"></div>
@@ -126,6 +132,8 @@
         protected diffModalHtml: string = '<p>No update selected</p>';
         protected deltas: Map<string, Delta | undefined> = new Map();
         protected updatesPerDate: { date: string, updates: Update[], snapshot: any }[] = [];
+        protected isLoading:boolean = true;
+        protected failed:boolean = false;
 
         @Prop()
         protected node!: Node;
@@ -188,8 +196,9 @@
 
             } catch (e) {
                 console.log(e);
+                this.failed = true;
             }
-
+            this.isLoading = false;
             return snapshots;
         }
 
@@ -217,6 +226,7 @@
         background: #5eba00;
     }
     .this-card {
+        min-height: 200px;
         max-height: 910px;
     }
 </style>
