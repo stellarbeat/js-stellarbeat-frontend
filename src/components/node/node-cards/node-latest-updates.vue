@@ -142,7 +142,7 @@
 
         mapValidatorsToNames(quorumSet: QuorumSet) {
             quorumSet.validators = quorumSet.validators.map(
-                (validator:PublicKey) => this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator
+                (validator:PublicKey) => this.network.getNodeByPublicKey(validator) && this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator
             ) as [];
 
             quorumSet.innerQuorumSets = quorumSet.innerQuorumSets.map(quorumSet => this.mapValidatorsToNames(quorumSet));
@@ -195,6 +195,11 @@
 
         mounted() {
             this.differ = create({
+                objectHash(obj:any) {
+                    if (obj && obj.hashKey) {
+                        return obj.hashKey;
+                    }
+                },
                 /*propertyFilter: function (name: string, context: any) {
                     return !['startDate', 'endDate'].includes(name);
                 },*/
