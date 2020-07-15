@@ -90,7 +90,7 @@
     import {Component, Prop} from 'vue-property-decorator';
     import Github from '@/components/organization/logo/github.vue';
     import Twitter from '@/components/organization/logo/twitter.vue';
-    import {BAlert, BBadge, BIconExclamationCircle, BIconLink, BIconMap, BIconShield, VBTooltip} from 'bootstrap-vue';
+    import {BAlert, BBadge, BIconExclamationCircle, BIconLink, BIconMap, BIconShield, VBTooltip, BIconEnvelope} from 'bootstrap-vue';
 
 
     @Component({
@@ -102,7 +102,8 @@
             BBadge: BBadge,
             BIconLink: BIconLink,
             BIconShield: BIconShield,
-            BIconMap: BIconMap
+            BIconMap: BIconMap,
+            BIconEnvelope
         },
         directives: {'b-tooltip': VBTooltip}
     })

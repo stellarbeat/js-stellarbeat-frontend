@@ -110,11 +110,32 @@
         @Prop({default: 'graph'})
         public view!: string;
 
-        @Watch('$route')
-        public on$routeChanged(to: any) {
-            this.store.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
-            this.store.selectedOrganization = this.network.getOrganizationById(to.params.organizationId);
-            if (to.query.center === '1') {
+        @Watch('$route', {immediate: true})
+        public onRouteChanged(to: any) {
+            if(to.params.publicKey){
+                this.store.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
+                if (!this.store.selectedNode) {
+                    this.$router.push(
+                        {
+                            name: 'network-dashboard', query: {view: this.$route.query.view}
+                        },
+                    );
+                }
+            } else
+                this.store.selectedNode = undefined;
+            if(to.params.organizationId){
+                this.store.selectedOrganization = this.network.getOrganizationById(to.params.organizationId);
+                if (!this.store.selectedOrganization) {
+                    this.$router.push(
+                        {
+                            name: 'network-dashboard', query: {view: this.$route.query.view}
+                        },
+                    );
+                }
+            } else
+                this.store.selectedOrganization = undefined;
+
+            if (to.query.center === '1' || to.query.center === undefined) {
                 this.store.centerNode = this.store.selectedNode;
             }
         }
@@ -175,34 +196,6 @@
 
         get isSimulation(): boolean {
             return this.store.isSimulation;
-        }
-
-        public created() {
-            // fix centering and selection in graph
-            if (this.$route.params['publicKey']) {
-                this.store.selectedNode = this.network.getNodeByPublicKey(this.$route.params['publicKey']);
-                if (!this.store.selectedNode) {
-                    this.$router.push(
-                        {
-                            name: 'network-dashboard', query: {view: this.$route.query.view}
-                        },
-                    );
-                }
-            }
-
-            if (this.$route.params['organizationId']) {
-                this.store.selectedOrganization = this.network.getOrganizationById(this.$route.params['organizationId']);
-                if (!this.store.selectedOrganization) {
-                    this.$router.push(
-                        {
-                            name: 'network-dashboard', query: {view: this.$route.query.view}
-                        },
-                    );
-                }
-            }
-            if (this.$route.query['center'] === '1' || this.$route.query['center'] === undefined) {
-                this.store.centerNode = this.selectedNode;
-            }
         }
     }
 </script>

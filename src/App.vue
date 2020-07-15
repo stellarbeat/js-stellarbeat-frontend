@@ -197,10 +197,6 @@
             return this.store.fetchingDataFailed;
         }
 
-        get isFullPreRenderRoute() {
-            return this.$router.currentRoute.meta.fullPreRender;
-        }
-
         get isHeadlessRoute() {
             return this.$router.currentRoute.meta.isHeadlessRoute;
         }
