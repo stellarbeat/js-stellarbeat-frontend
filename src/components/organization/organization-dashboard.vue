@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="organization">
         <div class="row row-cards row-deck">
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <organization-profile :organization="organization"/>

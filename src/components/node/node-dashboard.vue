@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="selectedNode">
         <div class="row row-cards row-deck">
             <div class="col-sm-12 col-md-6 col-xl-3">
                 <node-index :node="selectedNode"/>

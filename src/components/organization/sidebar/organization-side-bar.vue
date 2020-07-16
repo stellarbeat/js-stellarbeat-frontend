@@ -1,5 +1,5 @@
 <template>
-    <side-bar :sticky-key="selectedOrganization.id" icon="building">
+    <side-bar v-if="selectedOrganization" :sticky-key="selectedOrganization.id" icon="building">
         <template v-slot:title>
             {{selectedOrganization.name}}
         </template>

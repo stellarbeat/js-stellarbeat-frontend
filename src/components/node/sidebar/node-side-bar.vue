@@ -1,5 +1,5 @@
 <template>
-    <side-bar :sticky-key="selectedNode.publicKey" icon="bullseye" :hasExploreSection="selectedNode.isValidator">
+    <side-bar v-if="selectedNode" :sticky-key="selectedNode.publicKey" icon="bullseye" :hasExploreSection="selectedNode.isValidator">
         <template v-slot:title>
             {{getDisplayName(selectedNode)}}
         </template>
@@ -106,12 +106,12 @@
         }
 
         get hasOrganization() {
-            return this.selectedNode!.organizationId && this.network.getOrganizationById(this.selectedNode!.organizationId);
+            return this.selectedNode && this.selectedNode.organizationId && this.network.getOrganizationById(this.selectedNode.organizationId);
         }
 
         get organization() {
-            if (this.hasOrganization)
-                return this.network.getOrganizationById(this.selectedNode!.organizationId!);
+            if (this.hasOrganization && this.selectedNode)
+                return this.network.getOrganizationById(this.selectedNode.organizationId!);
             else return null;
         }
 
