@@ -9,7 +9,7 @@
                     <b-tooltip target="activeNodesTooltip" placement="top">
                         Number of watcher nodes that were active in the latest crawl.
                     </b-tooltip>
-                    <div class="h1 m-2">{{numberOfActiveWatchers}}</div>
+                    <div class="h1 m-2">{{network.networkStatistics.nrOfActiveWatchers}}</div>
                     <div class="text-muted mb-1">Watcher nodes</div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                     <b-tooltip target="ActiveValidatorsTooltip" placement="top">
                         Number of active validators in the latest crawl.
                     </b-tooltip>
-                    <div class="h1 m-2">{{numberOfActiveValidators}}</div>
+                    <div class="h1 m-2">{{network.networkStatistics.nrOfActiveValidators}}</div>
                     <div class="text-muted mb-1">Validator nodes</div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                         Number of active Full Validators in the latest crawl.
                     </b-tooltip>
 
-                    <div class="h1 m-2">{{numberOfActiveFullValidators}}</div>
+                    <div class="h1 m-2">{{network.networkStatistics.nrOfActiveFullValidators}}</div>
                     <div class="text-muted mb-1">Full Validators</div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                     <b-tooltip target="FailingValidatorsTooltip" placement="top">
                         Number of detected organizations.
                     </b-tooltip>
-                    <div class="h1 m-2">{{numberOfOrganizations}}</div>
+                    <div class="h1 m-2">{{network.networkStatistics.nrOfActiveOrganizations}}</div>
                     <div class="text-muted mb-1">Organizations</div>
                 </div>
             </div>

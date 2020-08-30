@@ -15,9 +15,9 @@
             <div class="col-lg-4 col-xl-4">
                 <ValidatorsServerLoad/>
             </div>
-            <!--div class="col-12">
-                <sum-of-parts/>
-            </div!-->
+            <div class="col-lg6 col-xl-6">
+                <OrganizationNetworkAnalysis/>
+            </div>
             <div class="col-lg-6 col-xl-6">
                 <network-organizations/>
             </div>

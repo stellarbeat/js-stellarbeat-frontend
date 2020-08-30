@@ -31,9 +31,8 @@
         }
 
         public simulateNewNode() {
-            let node = new Node("localhost");
+            let node = new Node("localhost", 8080, this.makePublicKey());
             node.name = this.newNodeName === "" ? "MyNewNode" : this.newNodeName;
-            node.publicKey = this.makePublicKey();
             node.quorumSet.threshold = 1;
             node.active = true;
             node.isValidating = true;

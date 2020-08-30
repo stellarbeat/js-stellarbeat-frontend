@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export interface DayMeasurement {
+export interface AggregationMeasurement {
     day: Date
     crawlCount: number;
 }
@@ -38,7 +38,7 @@ export default class MeasurementStore {
         return result.data;
     }
 
-    async fetchDayMeasurements<a extends DayMeasurement>(id: string, from: Date, to: Date, route: string): Promise<a[]> {
+    async fetchAggregationMeasurement<a extends AggregationMeasurement>(id: string, from: Date, to: Date, route: string): Promise<a[]> {
         let measurements = await this.fetchMeasurements(id, from, to, route);
         measurements.forEach((measurement: any) => measurement.day = new Date(measurement.day));
 

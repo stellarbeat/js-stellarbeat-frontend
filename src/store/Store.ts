@@ -12,24 +12,6 @@ import MeasurementStore from '@/store/MeasurementStore';
 import NodeMeasurementStore from '@/store/NodeMeasurementStore';
 import OrganizationMeasurementStore from '@/store/OrganizationMeasurementStore';
 
-export type QuorumMonitorStore = {
-    centerNode: Node | undefined,
-    selectedNode: Node | undefined
-}
-
-export type ValidatingStatistic = {
-    publicKey: PublicKey,
-    crawlCount: number,
-    isValidatingCount: number,
-    day: Date
-}
-
-export type DayStatistic = {
-    crawlCount: number,
-    propertyCount: number,
-    day: Date
-}
-
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
     public isLoading: boolean = true;
@@ -71,7 +53,7 @@ export default class Store {
     async fetchNodeSnapshots(id:PublicKey):Promise<Object[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/nodes/' + id + '/snapshots', {params});
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/nodes/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data;
         }
@@ -82,7 +64,7 @@ export default class Store {
     async fetchOrganizationSnapshots(id:OrganizationId):Promise<Object[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/organizations/' + id + '/snapshots', {params});
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organizations/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data;
         }
@@ -102,17 +84,11 @@ export default class Store {
             else
                 this.isTimeTravel = false;
 
-            let result = await axios.get(process.env.VUE_APP_API_URL + '/v2/all', {params});
-            if (result.data.nodes) {
-                let nodes = result.data.nodes
-                    .map((node: any) => Node.fromJSON(node));
-
-                let organizations = [];
-                if (result.data.organizations) {
-                    organizations = result.data.organizations.map((organization: any) => Organization.fromJSON(organization));
-                }
-
-                Vue.set(this, 'network', new Network(nodes, organizations, new Date(result.data.time)));
+            let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public', {params});
+            if (result.data) {
+                let network = Network.fromJSON(result.data);
+                console.log(network.networkStatistics);
+                Vue.set(this, 'network', network);
 
                 return;
             } else {

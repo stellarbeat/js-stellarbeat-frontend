@@ -6,7 +6,7 @@
                 :showDropdownToggle="true"
                 :dropDownShowing="showing"
                 :show-sub-title="true"
-                :sub-title="'Transitive quorumset'"
+                :sub-title="'Top Tier'"
                 :has-warnings="hasGeneralValidatorsWarning"
                 warnings="Not all history archives up-to-date"
         />

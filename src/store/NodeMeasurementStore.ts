@@ -1,6 +1,6 @@
-import MeasurementStore, {DayMeasurement, Measurement} from '@/store/MeasurementStore';
+import MeasurementStore, {AggregationMeasurement, Measurement} from '@/store/MeasurementStore';
 
-export interface NodeDayMeasurement extends DayMeasurement {
+export interface NodeDayMeasurement extends AggregationMeasurement {
     day: Date
     isActiveCount: number;
     isValidatingCount: number;
@@ -28,10 +28,10 @@ export default class NodeMeasurementStore {
     }
 
     async getDayMeasurements(id: string, from: Date, to: Date): Promise<NodeDayMeasurement[]> {
-        return await this.measurementStore.fetchDayMeasurements<NodeDayMeasurement>(id, from, to, '/v1/nodes/' + id + '/day-measurements');
+        return await this.measurementStore.fetchAggregationMeasurement<NodeDayMeasurement>(id, from, to, '/v1/network/stellar-public/nodes/' + id + '/day-measurements');
     }
 
     async getMeasurements(id: string, from: Date, to: Date): Promise<NodeMeasurement[]> {
-        return await this.measurementStore.fetchIndividualMeasurements<NodeMeasurement>(id, from, to, '/v1/nodes/' + id + '/measurements');
+        return await this.measurementStore.fetchIndividualMeasurements<NodeMeasurement>(id, from, to, '/v1/network/stellar-public/nodes/' + id + '/measurements');
     }
 }

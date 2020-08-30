@@ -47,7 +47,7 @@
                         <b-form-checkbox v-model="optionTransitiveQuorumSetOnly"
                                          class="sb-nav-item sb-nav-toggle mt-1"
                                          switch>
-                            Transitive quorumset only
+                            Top tier only
                         </b-form-checkbox>
                     </div>
                 </div>

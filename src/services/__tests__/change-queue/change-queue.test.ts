@@ -13,13 +13,13 @@ describe("update manager", () => {
     beforeEach(() => {
         myNodeUpdateManager = new ChangeQueue();
 
-        update1 =  new EntityPropertyUpdate(new Node('localhost'), 'a', 'true');
+        update1 =  new EntityPropertyUpdate(new Node('localhost', 1, 'a'), 'a', 'true');
         update1.toString = jest.fn(()=> 'a');
 
-        update2 = new EntityPropertyUpdate(new Node('localhost'), 'b', 'true');
+        update2 = new EntityPropertyUpdate(new Node('localhost', 1, 'a'), 'b', 'true');
         update2.toString = jest.fn(()=> 'b');
 
-        update3 = new EntityPropertyUpdate(new Node('localhost'), 'c', 'true');
+        update3 = new EntityPropertyUpdate(new Node('localhost', 1, 'a'), 'c', 'true');
         update3.toString = jest.fn(()=> 'c');
     });
 

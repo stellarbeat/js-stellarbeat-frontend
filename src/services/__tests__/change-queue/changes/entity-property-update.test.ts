@@ -4,7 +4,7 @@ import {EntityPropertyUpdate} from "../../../change-queue/changes/entity-propert
 describe("entity property update", () => {
 
     test('Node property', () => {
-        let node = new Node('localhost');
+        let node = new Node('localhost', 1, 'a');
         node.active = false;
         let command = new EntityPropertyUpdate(node, 'active', true);
         command.execute();
