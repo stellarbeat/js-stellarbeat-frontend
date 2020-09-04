@@ -8,9 +8,10 @@ import {InnerQuorumSetAdd} from '@/services/change-queue/changes/inner-quorum-se
 import {QuorumSetValidatorsAdd} from '@/services/change-queue/changes/quorum-set-validators-add';
 import {NetworkAddNode} from '@/services/change-queue/changes/network-add-node';
 import Vue from 'vue';
-import MeasurementStore from '@/store/MeasurementStore';
-import NodeMeasurementStore from '@/store/NodeMeasurementStore';
-import OrganizationMeasurementStore from '@/store/OrganizationMeasurementStore';
+import StatisticsStore from '@/store/StatisticsStore';
+import NodeStatisticsStore from '@/store/NodeStatisticsStore';
+import OrganizationStatisticsStore from '@/store/OrganizationStatisticsStore';
+import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
 
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
@@ -22,9 +23,10 @@ export default class Store {
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
     public selectedOrganization?:Organization = undefined;
-    protected measurementStore: MeasurementStore = new MeasurementStore();
-    public nodeMeasurementStore: NodeMeasurementStore = new NodeMeasurementStore(this.measurementStore);
-    public organizationMeasurementStore: OrganizationMeasurementStore = new OrganizationMeasurementStore(this.measurementStore);
+    protected measurementStore: StatisticsStore = new StatisticsStore();
+    public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(this.measurementStore);
+    public networkMeasurementStore: NetworkStatisticsStore = new NetworkStatisticsStore(this.measurementStore);
+    public organizationMeasurementStore: OrganizationStatisticsStore = new OrganizationStatisticsStore(this.measurementStore);
     public isHaltingAnalysisVisible: boolean = false;
     public isTimeTravel: boolean = false;
 

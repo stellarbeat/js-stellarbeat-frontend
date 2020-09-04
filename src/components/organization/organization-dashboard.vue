@@ -12,8 +12,8 @@
                 <history-card
                         :subject="'Availability history'"
                         :entityId="organization.id"
-                        :fetchDayMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getDayMeasurements(organizationId, from, to)"
-                        :fetchMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getMeasurements(organizationId, from, to)"
+                        :fetchDayMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getDayStatistics(organizationId, from, to)"
+                        :fetchMeasurements="(organizationId, from, to) => store.organizationMeasurementStore.getStatistics(organizationId, from, to)"
                         :dayMeasurementProperty="'isSubQuorumAvailableCount'"
                         :measurementProperty="'isSubQuorumAvailable'"
                 >

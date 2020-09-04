@@ -73,7 +73,7 @@
     import DateNavigator from '@/components/date-navigator.vue';
     import BarChartDay from '@/components/charts/bar-chart-day.vue';
     import LineChartHour from '@/components/charts/line-chart-hour.vue';
-    import {AggregationMeasurement, Measurement} from '@/store/MeasurementStore';
+    import {StatisticsAggregation, Statistics} from '@/store/StatisticsStore';
 
     import {BButton, BButtonGroup, BIconExclamationCircle} from 'bootstrap-vue';
 
@@ -103,8 +103,8 @@
         @Prop({default: false})
         inverted!: boolean;
 
-        thirtyDayMeasurements: AggregationMeasurement[] = [];
-        twentyFourHourMeasurements: Measurement[] = [];
+        thirtyDayMeasurements: StatisticsAggregation[] = [];
+        twentyFourHourMeasurements: Statistics[] = [];
 
         isLoading: boolean = true;
         rendered: boolean = false;
@@ -252,12 +252,12 @@
             return this.thirtyDayMeasurements.map((measurement: any) => {
                 if (!this.inverted) {
                     return {
-                        t: measurement.day as Date,
+                        t: measurement.time as Date,
                         y: Number(((measurement[this.dayMeasurementProperty] / measurement.crawlCount) * 100).toFixed(2))
                     };
                 } else {
                     return {
-                        t: measurement.day as Date,
+                        t: measurement.time as Date,
                         y: Number((((measurement.crawlCount - measurement[this.dayMeasurementProperty]) / measurement.crawlCount) * 100).toFixed(2))
                     };
                 }

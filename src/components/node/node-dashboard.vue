@@ -23,8 +23,8 @@
                 <history-card
                         :subject="'Validating'"
                         :entityId="selectedNode.publicKey"
-                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getStatistics(publicKey, from, to)"
                         :dayMeasurementProperty="'isValidatingCount'"
                         :measurementProperty="'isValidating'"
                         :chartType="'bar'"
@@ -35,8 +35,8 @@
                 <history-card
                         :subject="'Active'"
                         :entityId="selectedNode.publicKey"
-                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getStatistics(publicKey, from, to)"
                         :dayMeasurementProperty="'isActiveCount'"
                         :measurementProperty="'isActive'"
                         :chartType="'bar'"
@@ -47,8 +47,8 @@
                 <history-card
                         :subject="'Full validator'"
                         :entityId="selectedNode.publicKey"
-                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getStatistics(publicKey, from, to)"
                         :dayMeasurementProperty="'isFullValidatorCount'"
                         :measurementProperty="'isFullValidator'"
                 >
@@ -60,8 +60,8 @@
                 <history-card
                         :subject="'Overloaded'"
                         :entityId="selectedNode.publicKey"
-                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayMeasurements(publicKey, from, to)"
-                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getMeasurements(publicKey, from, to)"
+                        :fetchDayMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)"
+                        :fetchMeasurements="(publicKey, from, to) => store.nodeMeasurementStore.getStatistics(publicKey, from, to)"
                         :dayMeasurementProperty="'isOverloadedCount'"
                         :measurementProperty="'isOverLoaded'"
                         :inverted="true"
