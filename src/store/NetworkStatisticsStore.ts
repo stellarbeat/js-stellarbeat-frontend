@@ -10,15 +10,18 @@ export default class NetworkStatisticsStore {
         this.statisticsStore = statisticsStore;
     }
 
-    async getMonthMeasurements(networkId: string, from: Date, to: Date): Promise<NetworkStatisticsAggregation[]> {
-        return await this.statisticsStore.fetchStatistics<NetworkStatisticsAggregation>(networkId, from, to, '/v1/network/' + networkId + '/month-statistics');
+    async getMonthStatistics(networkId: string, from: Date, to: Date): Promise<NetworkStatisticsAggregation[]> {
+        let stats = await this.statisticsStore.fetchStatistics<NetworkStatisticsAggregation>(networkId, from, to, '/v1/network/' + networkId + '/month-statistics');
+        return stats.map(stat => {
+            return NetworkStatisticsAggregation.fromJSON(JSON.stringify(stat))
+        })//todo handle better, but needs refactoring of node and organization stats
     }
 
-    async getDayMeasurements(networkId: string, from: Date, to: Date): Promise<NetworkStatisticsAggregation[]> {
+    async getDayStatistics(networkId: string, from: Date, to: Date): Promise<NetworkStatisticsAggregation[]> {
         return await this.statisticsStore.fetchStatistics<NetworkStatisticsAggregation>(networkId, from, to, '/v1/network/' + networkId + '/day-statistics');
     }
 
-    async getMeasurements(networkId: string, from: Date, to: Date): Promise<NetworkStatistics[]> {
+    async getStatistics(networkId: string, from: Date, to: Date): Promise<NetworkStatistics[]> {
         return await this.statisticsStore.fetchStatistics<NetworkStatistics>(networkId, from, to, '/v1/network/' + networkId + '/statistics');
     }
 }

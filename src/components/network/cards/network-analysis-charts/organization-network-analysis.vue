@@ -41,7 +41,7 @@
     export default class OrganizationNetworkAnalysis extends Vue {
         public chart: Chart | null = null;
         protected selectedDate!: Date;
-        protected yearMeasurements?: NetworkStatisticsAggregation[];
+        protected yearStatistics?: NetworkStatisticsAggregation[];
         protected loading: boolean = true;
 
         get store(): Store {
@@ -53,7 +53,7 @@
         }
 
         get barChartDataSets() {
-            if(!this.yearMeasurements)
+            if (!this.yearStatistics)
                 return [];
             return [
                 {
@@ -64,12 +64,11 @@
                     steppedLine: true,
                     fill: false,
                     type: 'line',
-                    data: this.yearMeasurements.map(measurement => {
-                        console.log(measurement.minBlockingSetOrgsFilteredMax);
+                    data: this.yearStatistics.map(stat => {
+                        console.log(stat.minBlockingSetOrgsFilteredAverage);
                         return {
-                            //@ts-ignore todo: fix in data model
-                            x: measurement.month,
-                            y: Math.round((measurement.minBlockingSetOrgsFilteredMax + measurement.minBlockingSetOrgsFilteredMin) / 2)
+                            x: stat.time,
+                            y: stat.minBlockingSetOrgsFilteredAverage
                         };
                     }),
                 },
@@ -81,11 +80,10 @@
                     steppedLine: true,
                     fill: '0', //relative to dataset with index zero
                     type: 'line',
-                    data: this.yearMeasurements.map(measurement => {
+                    data: this.yearStatistics.map(stat => {
                         return {
-                            //@ts-ignore todo: fix in data model
-                            x: measurement.month,
-                            y: measurement.minBlockingSetOrgsFilteredMin
+                            x: stat.time,
+                            y: stat.minBlockingSetOrgsFilteredMin
                         };
                     }),
                 },
@@ -97,11 +95,10 @@
                     steppedLine: true,
                     fill: '0',
                     type: 'line',
-                    data: this.yearMeasurements.map(measurement => {
+                    data: this.yearStatistics.map(stat => {
                         return {
-                            //@ts-ignore todo: fix in data model
-                            x: measurement.month,
-                            y: measurement.minBlockingSetOrgsFilteredMax
+                            x: stat.time,
+                            y: stat.minBlockingSetOrgsFilteredMax
                         };
                     }),
                 },
@@ -113,11 +110,10 @@
                     type: 'line',
                     borderColor: 'rgba(27, 201, 142, 1)', // success green
                     backgroundColor: 'rgba(27, 201, 142, 1)', // success green
-                    data: this.yearMeasurements.map(measurement => {
+                    data: this.yearStatistics.map(stats => {
                         return {
-                            //@ts-ignore todo: fix in data model
-                            x: measurement.month,
-                            y: Math.round((measurement.minBlockingSetFilteredMax + measurement.minBlockingSetFilteredMin) / 2)
+                            x: stats.time,
+                            y: stats.minBlockingSetFilteredAverage
                         };
                     }),
                 },
@@ -129,11 +125,11 @@
                     type: 'line',
                     borderColor: 'transparent', // success green
                     backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
-                    data: this.yearMeasurements.map(measurement => {
+                    data: this.yearStatistics.map(stats => {
                         return {
                             //@ts-ignore todo: fix in data model
-                            x: measurement.month,
-                            y: measurement.minBlockingSetOrgsFilteredMin
+                            x: stats.time,
+                            y: stats.minBlockingSetFilteredMin
                         };
                     }),
                 },
@@ -145,11 +141,11 @@
                     type: 'line',
                     borderColor: 'transparent', // success green
                     backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
-                    data: this.yearMeasurements.map(measurement => {
+                    data: this.yearStatistics.map(stat => {
                         return {
                             //@ts-ignore todo: fix in data model
-                            x: measurement.month,
-                            y: measurement.minBlockingSetOrgsFilteredMax
+                            x: stat.time,
+                            y: stat.minBlockingSetFilteredMax
                         };
                     }),
                 },
@@ -160,7 +156,7 @@
         public initializeBarChart() {
             const context = this.$refs.sumOfPartsChart;
             this.chart = new Chart(context as HTMLCanvasElement, {
-                type: 'bar',
+                type: 'line',
                 // The data for our dataset
                 data: {
                     datasets: this.barChartDataSets,
@@ -169,45 +165,48 @@
                 // Configuration options go here
                 options: {
                     tooltips: {
+                        intersect: false,
                         callbacks: {
                             //@ts-ignore
-                            /*label: function (tooltipItem, data) {
+                            label: function (tooltipItem, data) {
+                                //@ts-ignore
+                                let orgAvg = data.datasets![0]!.data![tooltipItem.index!]!.y;
+                                //@ts-ignore
+                                let minOrg = data.datasets![1]!.data![tooltipItem.index!]!.y;
+                                //@ts-ignore
+                                let maxOrg = data.datasets![2]!.data![tooltipItem.index!]!.y;
+                                //@ts-ignore
+                                let nodeAvg = data.datasets![3]!.data![tooltipItem.index!]!.y;
+                                //@ts-ignore
+                                let minNode = data.datasets![4]!.data![tooltipItem.index!]!.y;
+                                //@ts-ignore
+                                let maxNode = data.datasets![5]!.data![tooltipItem.index!]!.y;
+
+                                let nodesDescription = '';
+                                if(minNode === maxNode)
+                                    nodesDescription = nodeAvg;
+                                else
+                                    nodesDescription = `${minNode} to ${maxNode}`;
+
+                                let orgDescription = '';
+                                if(minOrg === maxOrg)
+                                    orgDescription = orgAvg;
+                                else
+                                    orgDescription = `${minOrg} to ${maxOrg}`;
+
+                                //callback is triggered for every datasetIndex that is hoovered
                                 if ([1, 2].includes(tooltipItem.datasetIndex!)) {
-                                    //@ts-ignore
-                                    if (data.datasets![1]!.data![tooltipItem.index!]!.y === data.datasets![2]!.data![tooltipItem.index!]!.y)
-                                        return false;
-                                    else
-                                        //@ts-ignore
-                                        return `set(s) of ${data.datasets![4]!.data![tooltipItem.index!]!.y} to ${data.datasets![5]!.data![tooltipItem.index!]!.y} nodes spread over ${data.datasets![1]!.data![tooltipItem.index!]!.y} to ${data.datasets![2]!.data![tooltipItem.index!]!.y} organizations found that could undermine liveness`;
+                                    //hit on minimum or maximum organization
+                                    if (minOrg === maxOrg)
+                                        return false; //we don't show the labels for min/max when they are the same
                                 }
                                 if ([4, 5].includes(tooltipItem.datasetIndex!)) {
-                                    //@ts-ignore
-                                    if (data.datasets![4]!.data![tooltipItem.index!]!.y === data.datasets![5]!.data![tooltipItem.index!]!.y)
-                                        return false;
-                                    else
-                                        //@ts-ignore
-                                        return `set(s) of ${data.datasets![4]!.data![tooltipItem.index!]!.y} to ${data.datasets![5]!.data![tooltipItem.index!]!.y} nodes spread over ${data.datasets![1]!.data![tooltipItem.index!]!.y} to ${data.datasets![2]!.data![tooltipItem.index!]!.y} organizations found that could undermine liveness`;
+                                    if (minNode === maxNode)
+                                        return false; //we don't show the labels for min/max when they are the same
                                 }
 
-                                if ([0].includes(tooltipItem.datasetIndex!)) {
-                                    //@ts-ignore
-                                    if (data.datasets![1]!.data![tooltipItem.index!]!.y === data.datasets![2]!.data![tooltipItem.index!]!.y)
-                                        //@ts-ignore
-                                        return `set(s) of ${data.datasets![3]!.data![tooltipItem.index!]!.y} nodes spread over ${data.datasets![0]!.data![tooltipItem.index!]!.y} organizations found that could undermine liveness`;
-                                    else
-                                        //@ts-ignore
-                                        return `set(s) of ${data.datasets![4]!.data![tooltipItem.index!]!.y} to ${data.datasets![5]!.data![tooltipItem.index!]!.y} nodes spread over ${data.datasets![1]!.data![tooltipItem.index!]!.y} to ${data.datasets![2]!.data![tooltipItem.index!]!.y} organizations found that could undermine liveness`;
-                                }
-                                if ([3].includes(tooltipItem.datasetIndex!)) {
-                                    //@ts-ignore
-                                    if (data.datasets![1]!.data![tooltipItem.index!]!.y === data.datasets![2]!.data![tooltipItem.index!]!.y)
-                                        //@ts-ignore
-                                        return `set(s) of ${data.datasets![3]!.data![tooltipItem.index!]!.y} nodes spread over ${data.datasets![0]!.data![tooltipItem.index!]!.y} organizations found that could undermine liveness`;
-                                    else
-                                        //@ts-ignore
-                                        return `set(s) of ${data.datasets![4]!.data![tooltipItem.index!]!.y} to ${data.datasets![5]!.data![tooltipItem.index!]!.y} nodes spread over ${data.datasets![1]!.data![tooltipItem.index!]!.y} to ${data.datasets![2]!.data![tooltipItem.index!]!.y} organizations found that could undermine liveness`;
-                                }
-                            }*/
+                                return `set(s) of ${nodesDescription} nodes across ${orgDescription} organizations found that could undermine liveness`;
+                            }
                         }
                     },
                     plugins: {
@@ -223,7 +222,6 @@
                         }
                     },
                     layout: {
-
                         padding: {
                             left: 20,
                             right: 20
@@ -257,7 +255,8 @@
                             type: 'time',
                             time: {
                                 unit: 'month',
-                                stepSize: 1
+                                stepSize: 1,
+                                tooltipFormat: 'MMM YYYY'
                             },
                             gridLines: {
                                 offsetGridLines: true,
@@ -274,10 +273,10 @@
         }
 
         public async mounted() {
-            let oneYearAgo = moment(this.selectedDate).subtract(1, 'y').toDate();
-            this.yearMeasurements = await this.store.networkMeasurementStore.getMonthMeasurements('stellar-public', oneYearAgo, new Date());
+            let oneYearAgo = moment(this.selectedDate).subtract(2, 'y').toDate();
+            this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, new Date());
             this.loading = false;
-            console.log(this.yearMeasurements);
+            console.log(this.yearStatistics);
             console.log(this.barChartDataSets);
             this.initializeBarChart();
         }
