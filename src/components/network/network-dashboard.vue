@@ -38,11 +38,11 @@
     import NetworkStatistics from '@/components/network/cards/network-statistics.vue';
     import NetworkNodes from '@/components/network/cards/network-nodes.vue';
     import NetworkOrganizations from '@/components/network/cards/network-organizations.vue';
-    import OrganizationNetworkAnalysis from '@/components/network/cards/network-analysis-charts/organization-network-analysis.vue';
+    import LivenessAnalysis from '@/components/network/cards/network-analysis-charts/liveness-analysis.vue';
 
     @Component({
         components: {
-            OrganizationNetworkAnalysis,
+            OrganizationNetworkAnalysis: LivenessAnalysis,
             NetworkOrganizations,
             NetworkNodes,
             NetworkStatistics, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution

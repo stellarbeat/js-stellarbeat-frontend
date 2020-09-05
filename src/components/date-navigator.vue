@@ -1,13 +1,13 @@
 <template>
     <div class="d-flex">
         <b-button-group>
-            <b-button size="sm" :disabled="!canGoBack()" class="left" v-on:click="$emit('goBack')">
+            <b-button size="sm" :disabled="!canGoBack()" class="left" v-on:click="goBack">
                 <b-icon-chevron-left/>
             </b-button>
             <div>
                 <b-form-datepicker size="sm"  v-if="!showTime" :dark="true" v-model="datePickerDate" class="date-picker p-0"
                               :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
-                              :min="minSelectedDate" :max="new Date()">
+                              :min="statisticsDateTimeNavigator.getMinSelectedDate(this.bucketSize)" :max="new Date()">
                     <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
                 </b-form-datepicker>
                 <b-form-timepicker size="sm" v-else v-model="time" class="time-picker p-0"
@@ -19,7 +19,7 @@
                       title="Travel to selected time">
                 <b-icon-clock/>
             </b-button>
-            <b-button size="sm" v-on:click="$emit('goForward')" class="right">
+            <b-button size="sm" v-on:click="goForward" class="right">
                 <b-icon-chevron-right/>
             </b-button>
         </b-button-group>
@@ -32,6 +32,8 @@
     import Store from '@/store/Store';
     import moment from 'moment';
     import {BButton, BIconChevronRight, BIconChevronLeft, BIconClock, BFormDatepicker, BFormTimepicker, VBTooltip, BIconCalendar, BButtonGroup} from 'bootstrap-vue';
+    import StatisticsDateTimeNavigator
+        from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
 
     @Component({
         name: 'date-navigator',
@@ -42,15 +44,38 @@
         @Prop()
         selectedDate!: Date;
         @Prop()
-        minSelectedDate!: Date;
+        bucketSize!: string;
         @Prop({default: false})
         showTime!: boolean;
+
+        protected statisticsDateTimeNavigator!:StatisticsDateTimeNavigator;
 
         datePickerDate: Date = this.selectedDate;
         time: string = moment(this.selectedDate).format('HH:mm');
 
-        @Watch('selectedDate')
-        onSelectedDateChanged() {
+        canGoBack() {
+            return this.statisticsDateTimeNavigator.canGoBack(this.bucketSize, this.datePickerDate);
+        }
+
+        goBack() {
+            this.$nextTick(() => {
+                this.datePickerDate = this.statisticsDateTimeNavigator.goBack(this.bucketSize, this.datePickerDate);
+                this.time = moment(this.datePickerDate).format('HH:mm');
+                this.$emit('dateChanged', this.datePickerDate);
+            });
+        }
+
+        goForward() {
+            this.$nextTick(() => {
+                this.datePickerDate = this.statisticsDateTimeNavigator.goForward(this.bucketSize, this.datePickerDate);
+                this.time = moment(this.datePickerDate).format('HH:mm');
+                this.$emit('dateChanged', this.datePickerDate);
+            });
+
+        }
+
+        @Watch('selectedDate', {})
+        async onSelectedDateChanged(to: string, from: string) {
             this.datePickerDate = this.selectedDate;
             this.time = moment(this.selectedDate).format('HH:mm');
         }
@@ -58,13 +83,17 @@
         @Watch('datePickerDate', {})
         async onDatePickerDateChanged(to: string, from: string) {
             if (this.datePickerDate && from !== null && this.selectedDate !== this.datePickerDate) {
+                this.time = moment(this.datePickerDate).format('HH:mm');
                 this.$emit('dateChanged', this.datePickerDate);
+                console.log("meuh");
             }
         }
 
         timeInputHandler() {
-            if (this.time !== moment(this.selectedDate).startOf('minutes').format('HH:mm:ss')) {
-                this.$emit('dateChanged', moment(this.selectedDate).hours(Number(this.time.substr(0, 2))).minutes(Number(this.time.substr(3, 2))).toDate());
+            if (this.time !== moment(this.datePickerDate).startOf('minutes').format('HH:mm:ss')) {
+                this.datePickerDate = moment(this.datePickerDate).hours(Number(this.time.substr(0, 2))).minutes(Number(this.time.substr(3, 2))).toDate();
+                this.time = moment(this.datePickerDate).format('HH:mm');
+                this.$emit('dateChanged', this.datePickerDate);
             }
         }
 
@@ -72,14 +101,14 @@
             return this.$root.$data.store;
         }
 
-        canGoBack() {
-            return this.selectedDate > this.minSelectedDate;
-        }
-
         async timeTravel() {
             this.store.isLoading = true;
-            await this.store.fetchData(this.selectedDate);
+            await this.store.fetchData(this.datePickerDate);
             this.store.isLoading = false;
+        }
+
+        public async created() {
+            this.statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(this.store.measurementsStartDate);
         }
     }
 </script>

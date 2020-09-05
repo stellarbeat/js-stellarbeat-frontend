@@ -1,24 +1,6 @@
 <template>
-    <div class="card ">
-        <div class="card-header pl-3 d-flex flex-wrap">
-            <!--b-button-group size="sm" class="mr-3">
-                <b-button :pressed="chartView === '1Y'" @click="select30DayView">1Y</b-button>
-                <b-button :pressed="chartView === '30D'" @click="select30DayView">30D</b-button>
-                <b-button :pressed="chartView === '24H'" @click="select24HView">24H</b-button>
-                <b-button :pressed="chartView === '1H'" @click="select1HView">1H</b-button>
-            </b-button-group!-->
-            <h1 class="card-title">Quorum availability - liveness analysis</h1>
-        </div>
-        <div class="card-body d-flex flex-column justify-content-center align-items-center h-100">
-            <div class="canvas-container">
-                <canvas id="sumOfPartsChart" ref="sumOfPartsChart"></canvas>
-            </div>
-            <date-navigator
-                    :selected-date="new Date()"
-                    class="mr-1 mb-1"
-            >
-            </date-navigator>
-        </div>
+    <div class="w-100 h-100">
+        <canvas id="charty" ref="charty"></canvas>
     </div>
 </template>
 
@@ -38,11 +20,11 @@
     @Component({
         components: {DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup}
     })
-    export default class OrganizationNetworkAnalysis extends Vue {
-        public chart: Chart | null = null;
-        protected selectedDate!: Date;
-        protected yearStatistics?: NetworkStatisticsAggregation[];
-        protected loading: boolean = true;
+    export default class LivenessAggregationLineChart extends Vue {
+        public chart!: Chart;
+
+        @Prop()
+        protected networkStatisticsAggregation!: NetworkStatisticsAggregation[];
 
         get store(): Store {
             return this.$root.$data.store;
@@ -52,8 +34,8 @@
             return this.store.network;
         }
 
-        get barChartDataSets() {
-            if (!this.yearStatistics)
+        get chartData() {
+            if (!this.networkStatisticsAggregation)
                 return [];
             return [
                 {
@@ -64,8 +46,7 @@
                     steppedLine: true,
                     fill: false,
                     type: 'line',
-                    data: this.yearStatistics.map(stat => {
-                        console.log(stat.minBlockingSetOrgsFilteredAverage);
+                    data: this.networkStatisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
                             y: stat.minBlockingSetOrgsFilteredAverage
@@ -80,7 +61,7 @@
                     steppedLine: true,
                     fill: '0', //relative to dataset with index zero
                     type: 'line',
-                    data: this.yearStatistics.map(stat => {
+                    data: this.networkStatisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
                             y: stat.minBlockingSetOrgsFilteredMin
@@ -95,7 +76,7 @@
                     steppedLine: true,
                     fill: '0',
                     type: 'line',
-                    data: this.yearStatistics.map(stat => {
+                    data: this.networkStatisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
                             y: stat.minBlockingSetOrgsFilteredMax
@@ -110,7 +91,7 @@
                     type: 'line',
                     borderColor: 'rgba(27, 201, 142, 1)', // success green
                     backgroundColor: 'rgba(27, 201, 142, 1)', // success green
-                    data: this.yearStatistics.map(stats => {
+                    data: this.networkStatisticsAggregation.map(stats => {
                         return {
                             x: stats.time,
                             y: stats.minBlockingSetFilteredAverage
@@ -125,9 +106,8 @@
                     type: 'line',
                     borderColor: 'transparent', // success green
                     backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
-                    data: this.yearStatistics.map(stats => {
+                    data: this.networkStatisticsAggregation.map(stats => {
                         return {
-                            //@ts-ignore todo: fix in data model
                             x: stats.time,
                             y: stats.minBlockingSetFilteredMin
                         };
@@ -141,9 +121,8 @@
                     type: 'line',
                     borderColor: 'transparent', // success green
                     backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
-                    data: this.yearStatistics.map(stat => {
+                    data: this.networkStatisticsAggregation.map(stat => {
                         return {
-                            //@ts-ignore todo: fix in data model
                             x: stat.time,
                             y: stat.minBlockingSetFilteredMax
                         };
@@ -152,18 +131,33 @@
             ];
         }
 
+        @Watch('networkStatisticsAggregation')
+        onNetworkStatisticsAggregationChanged() {
+            this.chart.data.datasets = this.chartData;
+            this.chart.update();
+        }
+
 
         public initializeBarChart() {
-            const context = this.$refs.sumOfPartsChart;
+            const context = this.$refs.charty;
+            let that = this;
             this.chart = new Chart(context as HTMLCanvasElement, {
                 type: 'line',
                 // The data for our dataset
                 data: {
-                    datasets: this.barChartDataSets,
+                    datasets: this.chartData,
                 },
 
                 // Configuration options go here
                 options: {
+                    onHover(event: MouseEvent, activeElements: Array<{}>): any {
+                        (event.target! as any).style.cursor = activeElements[0] ? 'pointer' : 'default';
+                    },
+                    /*onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
+                        if (activeElements && activeElements[0] && Number((activeElements[0] as any)._index) >= 0) {
+                            that.$emit('click-date', that.barChartDataSets[Number((activeElements[0] as any)._index)].t);
+                        }
+                    },*/
                     tooltips: {
                         intersect: false,
                         callbacks: {
@@ -228,9 +222,7 @@
                         }
                     },
                     title: {
-                        text: 'Sum of Parts',
-                        display: false,
-                        fontSize: 20
+                        display: false
                     },
                     responsive: true,
                     maintainAspectRatio: false,
@@ -240,8 +232,7 @@
                         labels: {
                             filter: (legendItem, chartData) => {
                                 if (legendItem.datasetIndex === 0 || legendItem.datasetIndex === 3)
-                                    return true;
-                                // return true or false based on legendItem's datasetIndex (legendItem.datasetIndex)
+                                    return true; //don't show labels for the min max as they are auxiliary lines
                             }
                         }
 
@@ -273,11 +264,6 @@
         }
 
         public async mounted() {
-            let oneYearAgo = moment(this.selectedDate).subtract(2, 'y').toDate();
-            this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, new Date());
-            this.loading = false;
-            console.log(this.yearStatistics);
-            console.log(this.barChartDataSets);
             this.initializeBarChart();
         }
 

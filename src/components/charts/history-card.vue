@@ -49,13 +49,11 @@
                     <div class="d-flex flex-wrap mt-1" :class="{'animated': animated}" @animationend="animated = false">
                         <date-navigator
                                 v-if="rendered"
-                                :minSelectedDate="minSelectedDate"
                                 :selectedDate="selectedDate"
                                 v-on:dateChanged="updateSelectedDate"
-                                v-on:goBack="goBack30Days"
-                                v-on:goForward="goForward30Days"
                                 :showTime="chartView === '1H'"
                                 class="mr-1 mb-1"
+                                :bucket-size="chartView"
                         >
                         </date-navigator>
                     </div>
@@ -67,7 +65,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import moment from 'moment';
     import DateNavigator from '@/components/date-navigator.vue';
@@ -76,6 +74,9 @@
     import {StatisticsAggregation, Statistics} from '@/store/StatisticsStore';
 
     import {BButton, BButtonGroup, BIconExclamationCircle} from 'bootstrap-vue';
+    import StatisticsDateTimeNavigator
+        from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
+    import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
 
     @Component({
         name: 'history-card',
@@ -87,7 +88,7 @@
             BButton, BButtonGroup, BIconExclamationCircle
         }
     })
-    export default class HistoryCard extends Vue {
+    export default class HistoryCard extends Mixins(IsLoadingMixin) {
         @Prop()
         subject!: string;
         @Prop()
@@ -105,8 +106,8 @@
 
         thirtyDayMeasurements: StatisticsAggregation[] = [];
         twentyFourHourMeasurements: Statistics[] = [];
+        statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(this.store.measurementsStartDate);
 
-        isLoading: boolean = true;
         rendered: boolean = false;
         selectedDate!: Date;
         failed: boolean = false;
@@ -151,7 +152,7 @@
         }
 
         async updateSelectedDateAndHighlight(newDate: string) {
-            this.updateSelectedDate(newDate);
+            await this.updateSelectedDate(newDate);
             this.animated = true;
         }
 
@@ -163,13 +164,6 @@
                 await this.update24HourHistoryChart();
         }
 
-        getInitialSelectedDate() {
-            if (moment(this.store.network.crawlDate).subtract(30, 'd') < moment(this.store.measurementsStartDate)) {
-                return moment(this.store.measurementsStartDate).add(30, 'd').startOf('day').toDate();
-            } else
-                return moment(this.store.network.crawlDate).startOf('day').toDate();
-        }
-
         get chartWidth() {
             return (this.$refs.chartContainer as HTMLDivElement).clientWidth;
         }
@@ -178,49 +172,21 @@
             return this.$root.$data.store;
         }
 
-        get dimmerClass() {
-            return {
-                dimmer: true,
-                active: this.isLoading,
-            };
+        async goBack() {
+            this.selectedDate = this.statisticsDateTimeNavigator.goBack(this.chartView, this.selectedDate);
+            await this.updateCharts();
         }
 
-        get minSelectedDate() {
-            return moment(this.store.measurementsStartDate).add(30, 'd').toDate();
+        async goForward() {
+            this.selectedDate = this.statisticsDateTimeNavigator.goForward(this.chartView, this.selectedDate);
+            await this.updateCharts();
         }
 
-        async goBack30Days() {
-            if (this.chartView === '30D')
-                this.selectedDate = moment(this.selectedDate).subtract(30, 'd').toDate();
-            else if (this.chartView === '24H')
-                this.selectedDate = moment(this.selectedDate).subtract(1, 'd').toDate();
-            else if (this.chartView === '1H')
-                this.selectedDate = moment(this.selectedDate).subtract(1, 'h').toDate();
-
-            if (this.selectedDate < this.minSelectedDate) {
-                this.selectedDate.setTime(this.minSelectedDate.getTime());
-            }
-
+        async updateCharts() {
             if (this.chartView === '30D')
                 await this.updateDayHistoryChart();
             else
                 await this.update24HourHistoryChart();
-
-        }
-
-        async goForward30Days() {
-            if (this.chartView === '30D')
-                this.selectedDate = moment(this.selectedDate).add(30, 'd').toDate();
-            else if (this.chartView === '24H')
-                this.selectedDate = moment(this.selectedDate).add(1, 'd').toDate();
-            else if (this.chartView === '1H')
-                this.selectedDate = moment(this.selectedDate).add(1, 'h').toDate();
-
-            if (this.chartView === '30D')
-                await this.updateDayHistoryChart();
-            else
-                await this.update24HourHistoryChart();
-
         }
 
         async updateDayHistoryChart() {
@@ -310,7 +276,7 @@
         }
 
         async mounted() {
-            this.selectedDate = this.getInitialSelectedDate();
+            this.selectedDate = this.statisticsDateTimeNavigator.getInitialSelectedDate(this.chartView, this.store.network.crawlDate);
             await this.updateDayHistoryChart();
             this.rendered = true;
         }

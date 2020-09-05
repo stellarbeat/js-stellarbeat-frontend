@@ -89,7 +89,6 @@ export default class Store {
             let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public', {params});
             if (result.data) {
                 let network = Network.fromJSON(result.data);
-                console.log(network.networkStatistics);
                 Vue.set(this, 'network', network);
 
                 return;
