@@ -15,8 +15,11 @@
             <div class="col-lg-4 col-xl-4">
                 <ValidatorsServerLoad/>
             </div>
-            <div class="col-lg6 col-xl-6">
-                <OrganizationNetworkAnalysis/>
+            <div class="col-lg-6 col-xl-6">
+                <LivenessAnalysis/>
+            </div>
+            <div class="col-lg-6 col-xl-6">
+                <LivenessAnalysis/>
             </div>
             <div class="col-lg-6 col-xl-6">
                 <network-organizations/>
@@ -42,7 +45,7 @@
 
     @Component({
         components: {
-            OrganizationNetworkAnalysis: LivenessAnalysis,
+            LivenessAnalysis,
             NetworkOrganizations,
             NetworkNodes,
             NetworkStatistics, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution

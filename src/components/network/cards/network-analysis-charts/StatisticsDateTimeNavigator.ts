@@ -12,6 +12,8 @@ export default class StatisticsDateTimeNavigator {
     protected subtractBucket(bucketSize:string, fromDate:Date){
         if (bucketSize === '30D')
             return moment(fromDate).subtract(30, 'd').toDate();
+        else if (bucketSize === '12H')
+            return moment(fromDate).subtract(12, 'h').toDate();
         else if (bucketSize === '24H')
             return moment(fromDate).subtract(1, 'd').toDate();
         else if (bucketSize === '1H')
@@ -35,9 +37,6 @@ export default class StatisticsDateTimeNavigator {
 
     canGoBack(bucketSize:string, fromDate:Date){
         let selectedDate:Date = this.subtractBucket(bucketSize, fromDate);
-        console.log(fromDate);
-        console.log(selectedDate);
-        console.log(this.statisticsTrackingStartDate);
         return selectedDate > this.statisticsTrackingStartDate;
     }
 
@@ -45,6 +44,8 @@ export default class StatisticsDateTimeNavigator {
         let selectedDate:Date;
         if (bucketSize === '30D')
             selectedDate = moment(fromDate).add(30, 'd').toDate();
+        else if (bucketSize === '12H')
+            selectedDate = moment(fromDate).add(12, 'h').toDate();
         else if (bucketSize === '24H')
             selectedDate = moment(fromDate).add(1, 'd').toDate();
         else if (bucketSize === '1H')
@@ -61,6 +62,8 @@ export default class StatisticsDateTimeNavigator {
     getMinSelectedDate(bucketSize:string) {
         if (bucketSize === '30D')
             return moment(this.statisticsTrackingStartDate).add(30, 'd').toDate();
+        else if (bucketSize === '12H')
+            return moment(this.statisticsTrackingStartDate).add(12, 'h').toDate();
         else if (bucketSize === '24H')
             return moment(this.statisticsTrackingStartDate).add(24, 'h').toDate();
         else if (bucketSize === '1H')
@@ -78,6 +81,12 @@ export default class StatisticsDateTimeNavigator {
                 return moment(this.statisticsTrackingStartDate).add(30, 'd').startOf('day').toDate();
             } else
                 return moment(crawlDate).startOf('day').toDate();
+        }
+        else if (bucketSize === '12H'){
+            if (moment(crawlDate).subtract(24, 'h') < moment(this.statisticsTrackingStartDate)) {
+                return moment(this.statisticsTrackingStartDate).add(12, 'h').toDate();
+            } else
+                return crawlDate;
         }
         else if (bucketSize === '24H'){
             if (moment(crawlDate).subtract(24, 'h') < moment(this.statisticsTrackingStartDate)) {

@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex">
-        <b-button-group>
+        <b-button-group size="sm">
             <b-button size="sm" :disabled="!canGoBack()" class="left" v-on:click="goBack">
                 <b-icon-chevron-left/>
             </b-button>
@@ -31,13 +31,32 @@
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import moment from 'moment';
-    import {BButton, BIconChevronRight, BIconChevronLeft, BIconClock, BFormDatepicker, BFormTimepicker, VBTooltip, BIconCalendar, BButtonGroup} from 'bootstrap-vue';
+    import {
+        BButton,
+        BIconChevronRight,
+        BIconChevronLeft,
+        BIconClock,
+        BFormDatepicker,
+        BFormTimepicker,
+        VBTooltip,
+        BIconCalendar,
+        BButtonGroup
+    } from 'bootstrap-vue';
     import StatisticsDateTimeNavigator
         from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
 
     @Component({
         name: 'date-navigator',
-        components: {BButton, BIconChevronRight, BIconClock, BFormDatepicker, BFormTimepicker, BIconChevronLeft, BIconCalendar, BButtonGroup},
+        components: {
+            BButton,
+            BIconChevronRight,
+            BIconClock,
+            BFormDatepicker,
+            BFormTimepicker,
+            BIconChevronLeft,
+            BIconCalendar,
+            BButtonGroup
+        },
         directives: {'b-tooltip': VBTooltip}
     })
     export default class DateNavigator extends Vue {
@@ -48,7 +67,7 @@
         @Prop({default: false})
         showTime!: boolean;
 
-        protected statisticsDateTimeNavigator!:StatisticsDateTimeNavigator;
+        protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
 
         datePickerDate: Date = this.selectedDate;
         time: string = moment(this.selectedDate).format('HH:mm');
@@ -85,7 +104,6 @@
             if (this.datePickerDate && from !== null && this.selectedDate !== this.datePickerDate) {
                 this.time = moment(this.datePickerDate).format('HH:mm');
                 this.$emit('dateChanged', this.datePickerDate);
-                console.log("meuh");
             }
         }
 
@@ -118,14 +136,16 @@
         color: #1997c6;
         border-radius: 0;
     }
+
     .time-picker {
         border-radius: 0;
-        border-left:0;
+        border-left: 0;
         width: 100px;
         animation: highlight 1s;
     }
+
     .date-picker {
         border-radius: 0;
-        border-left:0;
+        border-left: 0;
     }
 </style>
