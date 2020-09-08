@@ -20,27 +20,29 @@
                                                      :chartLabels="getAggregatedLabels" :unit="'month'" :tooltip-time-format="'MMM YYYY'"
                                                      :time-display-formats="{'month': 'MMM YYYY'}" :step-size="1"
                                                      :chartLabelFilter="aggregatedChartLabelFilter"
-                                                     :key="'1'"/>
+                                                     :key="'1'" @click-date="select30DayView"/>
                     <liveness-aggregation-line-chart v-if="bucketSize === '30D'" :chartDataSets="day30ChartDataSets"
                                                      :chartLabels="getAggregatedLabels" :unit="'day'" :tooltip-time-format="'D-M-YYYY'"
                                                      :time-display-formats="{'day': 'D-M-YYYY'}" :step-size="2"
                                                      :chartLabelFilter="aggregatedChartLabelFilter"
-                                                     :key="'2'"/>
+                                                     :key="'2'" @click-date="select24HView"/>
                     <liveness-aggregation-line-chart v-if="bucketSize === '24H'" :unit="'minute'" :tooltip-time-format="'HH:mm'"
                                                      :time-display-formats="{'minute': 'HH:mm'}" :step-size="4" point-radius="0"
                                                      :chart-data-sets="hour24ChartDataSets"
-                                                     :chartLabels="getLabels" :key="'3'"/>
+                                                     :chartLabels="getLabels" :key="'3'" @click-date="updateSelectedDateAndHighlight"/>
                 </div>
             </div>
-            <date-navigator
-                    v-if="initialDataLoaded"
-                    :minSelectedDate="statisticsDateTimeNavigator.getMinSelectedDate(bucketSize)"
-                    :selectedDate="selectedDate"
-                    v-on:dateChanged="updateSelectedDate"
-                    :bucket-size="bucketSize"
-                    :showTime="bucketSize === '1H'"
-                    class="mr-1 mb-0 mt-1"
-            />
+            <div class="d-flex flex-wrap mt-1" :class="{'animated': animated}" @animationend="animated = false">
+                <date-navigator
+                                v-if="initialDataLoaded"
+                                :minSelectedDate="statisticsDateTimeNavigator.getMinSelectedDate(bucketSize)"
+                                :selectedDate="selectedDate"
+                                v-on:dateChanged="updateSelectedDate"
+                                :bucket-size="bucketSize"
+                                :showTime="bucketSize === '24H'"
+                                class="mr-1 mb-0 mt-1"
+                />
+            </div>
         </div>
         <!--div class="card-footer">
             Powered by <a href="https://github.com/wiberlin/fbas_analyzer">@wiberlin/fbas_analyzer</a>
@@ -51,7 +53,7 @@
 <script lang="ts">
     import Chart, {ChartData, ChartDataSets, ChartLegendLabelItem, ChartTooltipItem} from 'chart.js';
     import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
-    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup} from 'bootstrap-vue';
+    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle} from 'bootstrap-vue';
     import DateNavigator from '@/components/date-navigator.vue';
     import moment from 'moment';
     import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
@@ -64,7 +66,7 @@
     import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
 
     @Component({
-        components: {LivenessAggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup}
+        components: {LivenessAggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle}
     })
     export default class LivenessAnalysis extends Mixins(IsLoadingMixin, StoreMixin) {
         protected selectedDate!: Date;
@@ -75,9 +77,10 @@
         protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
         protected bucketSize: string = '1Y';
         protected failed: boolean = false;
+        animated: boolean = false;
 
-        async updateSelectedDate(newDate: string) {
-            this.selectedDate = new Date(newDate);
+        async updateSelectedDate(newDate: Date) {
+            this.selectedDate = newDate;
             if (this.bucketSize === '1Y')
                 await this.updateYearChart();
             if (this.bucketSize === '30D')
@@ -290,14 +293,23 @@
         async select30DayView(time?: Date) {
             if (time instanceof Date)
                 this.selectedDate = time;
-
             await this.updateDays30Chart();
             this.bucketSize = '30D';
         }
 
         async select24HView(time?: Date) {
+            if (time instanceof Date)
+                this.selectedDate = time;
+
             await this.updateHours24Chart();
             this.bucketSize = '24H';
+        }
+
+        async updateSelectedDateAndHighlight(newDate: Date) {
+            console.log(newDate);
+            await this.updateSelectedDate(newDate);
+            console.log(this.animated);
+            this.animated = true;
         }
 
         async updateYearChart() {
@@ -314,10 +326,11 @@
 
         async updateDays30Chart() {
             this.isLoading = true;
-            let days30Ago = moment(this.selectedDate).subtract(30, 'd').toDate();
+            let startOfDay = moment(this.selectedDate).startOf('day').toDate();
+            let days30Ahead = moment(this.selectedDate).startOf('day').add(30, 'd').toDate();
             try {
                 this.failed = false;
-                this.days30Statistics = await this.store.networkMeasurementStore.getDayStatistics('stellar-public', days30Ago, this.selectedDate);
+                this.days30Statistics = await this.store.networkMeasurementStore.getDayStatistics('stellar-public', startOfDay, days30Ahead);
             } catch (e) {
                 this.failed = true;
             }
@@ -326,10 +339,11 @@
 
         async updateHours24Chart() {
             this.isLoading = true;
-            let hours24Ago = moment(this.selectedDate).subtract(24, 'h').toDate();
+            let startOfDay = moment(this.selectedDate).startOf('day').toDate();
+            let tomorrow = moment(this.selectedDate).startOf('day').add(1, 'd').toDate();
             try {
                 this.failed = false;
-                this.hour24Statistics = await this.store.networkMeasurementStore.getStatistics('stellar-public', hours24Ago, this.selectedDate);
+                this.hour24Statistics = await this.store.networkMeasurementStore.getStatistics('stellar-public', startOfDay, tomorrow);
             } catch (e) {
                 this.failed = true;
             }

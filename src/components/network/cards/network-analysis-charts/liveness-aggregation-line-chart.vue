@@ -22,19 +22,19 @@
         public chart!: Chart;
 
         @Prop({default: false})
-        protected isYearly!:boolean;
+        protected isYearly!: boolean;
 
         @Prop()
-        chartDataSets!:ChartDataSets[];
+        chartDataSets!: ChartDataSets[];
 
         @Prop()
-        chartLabels!:any;
+        chartLabels!: any;
 
         @Prop({default: false})
-        chartLabelFilter!:any;
+        chartLabelFilter!: any;
 
         @Prop({default: 'minute'})
-        unit!: "minute" | "millisecond" | "second" | "hour" | "day" | "week" | "month" | "quarter" | "year" | undefined;
+        unit!: 'minute' | 'millisecond' | 'second' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year' | undefined;
 
         @Prop({default: 2})
         stepSize!: number;
@@ -46,7 +46,7 @@
         tooltipTimeFormat!: string;
 
         @Prop({default: 2})
-        pointRadius!:number;
+        pointRadius!: number;
 
         id: number = this.store.getUniqueId();
 
@@ -60,7 +60,6 @@
 
         @Watch('chartDataSets')
         onChartDataSetsChanged() {
-            console.log(this.chartDataSets);
             this.chart.data.datasets = this.chartDataSets;
             this.chart.update();
         }
@@ -82,11 +81,17 @@
                     onHover(event: MouseEvent, activeElements: Array<{}>): any {
                         (event.target! as any).style.cursor = activeElements[0] ? 'pointer' : 'default';
                     },
-                    /*onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
-                        if (activeElements && activeElements[0] && Number((activeElements[0] as any)._index) >= 0) {
-                            that.$emit('click-date', that.barChartDataSets[Number((activeElements[0] as any)._index)].t);
-                        }
-                    },*/
+                    onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
+                        if (!activeElements || !activeElements[0])
+                            return;
+                        let index = Number((activeElements[0] as any)._index);
+                        let dataSetIndex = Number((activeElements[0] as any)._datasetIndex);
+                        let dataSet = that.chartDataSets[dataSetIndex];
+                        if(!dataSet)
+                            return;
+                        //@ts-ignore
+                        that.$emit('click-date', new Date(dataSet.data[index].x));
+                    },
                     tooltips: {
                         callbacks: {
                             //@ts-ignore

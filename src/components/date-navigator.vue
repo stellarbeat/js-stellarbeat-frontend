@@ -93,8 +93,9 @@
 
         }
 
-        @Watch('selectedDate', {})
+        @Watch('selectedDate', {deep: true})
         async onSelectedDateChanged(to: string, from: string) {
+            console.log(this.selectedDate);
             this.datePickerDate = this.selectedDate;
             this.time = moment(this.selectedDate).format('HH:mm');
         }
