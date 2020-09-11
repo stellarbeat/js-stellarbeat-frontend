@@ -38,7 +38,7 @@
     import ValidatorsServerLoad from '@/components/network/cards/validator-load.vue';
     import QuorumSetConnections from '@/components/network/cards/quorum-set-connections/quorum-set-connections.vue';
     import {Network} from '@stellarbeat/js-stellar-domain';
-    import NetworkStatistics from '@/components/network/cards/network-statistics.vue';
+    import NetworkStatistics from '@/components/network/cards/network-statistics/network-statistics.vue';
     import NetworkNodes from '@/components/network/cards/network-nodes.vue';
     import NetworkOrganizations from '@/components/network/cards/network-organizations.vue';
     import NetworkAnalysis from '@/components/network/cards/network-analysis-charts/network-analysis.vue';
