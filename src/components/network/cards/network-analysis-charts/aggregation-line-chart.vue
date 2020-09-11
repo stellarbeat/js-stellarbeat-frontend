@@ -18,7 +18,7 @@
     @Component({
         components: {DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup}
     })
-    export default class LivenessAggregationLineChart extends Vue {
+    export default class AggregationLineChart extends Vue {
         public chart!: Chart;
 
         @Prop({default: false})

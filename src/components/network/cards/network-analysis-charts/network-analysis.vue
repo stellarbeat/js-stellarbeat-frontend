@@ -6,7 +6,7 @@
                 <b-button :pressed="bucketSize === '30D'" @click="select30DayView">30D</b-button>
                 <b-button :pressed="bucketSize === '24H'" @click="select24HView">24H</b-button>
             </b-button-group>
-            <h1 class="card-title">Liveness analysis</h1>
+            <h1 class="card-title">{{capitalizeFirstLetter(analysisType)}} analysis</h1>
         </div>
         <div v-if="failed" class="card-alert alert alert-danger mb-0">
             <b-icon-exclamation-triangle/>
@@ -16,17 +16,17 @@
             <div class="w-100 h-100" :class="dimmerClass">
                 <div class="loader"></div>
                 <div v-if="initialDataLoaded" style="height: 240px" class="dimmer-content">
-                    <liveness-aggregation-line-chart v-if="bucketSize === '1Y'" :chartDataSets="yearChartDataSets"
+                    <aggregation-line-chart v-if="bucketSize === '1Y'" :chartDataSets="yearChartDataSets"
                                                      :chartLabels="getAggregatedLabels" :unit="'month'" :tooltip-time-format="'MMM YYYY'"
                                                      :time-display-formats="{'month': 'MMM YYYY'}" :step-size="1"
                                                      :chartLabelFilter="aggregatedChartLabelFilter"
                                                      :key="'1'" @click-date="select30DayView"/>
-                    <liveness-aggregation-line-chart v-if="bucketSize === '30D'" :chartDataSets="day30ChartDataSets"
+                    <aggregation-line-chart v-if="bucketSize === '30D'" :chartDataSets="day30ChartDataSets"
                                                      :chartLabels="getAggregatedLabels" :unit="'day'" :tooltip-time-format="'D-M-YYYY'"
                                                      :time-display-formats="{'day': 'D-M-YYYY'}" :step-size="2"
                                                      :chartLabelFilter="aggregatedChartLabelFilter"
                                                      :key="'2'" @click-date="select24HView"/>
-                    <liveness-aggregation-line-chart v-if="bucketSize === '24H'" :unit="'minute'" :tooltip-time-format="'D-M-YYYY HH:mm'"
+                    <aggregation-line-chart v-if="bucketSize === '24H'" :unit="'minute'" :tooltip-time-format="'D-M-YYYY HH:mm'"
                                                      :time-display-formats="{'minute': 'HH:mm'}" :step-size="4" point-radius="0"
                                                      :chart-data-sets="hour24ChartDataSets"
                                                      :chartLabels="getLabels" :key="'3'" @click-date="updateSelectedDateAndHighlight"/>
@@ -57,8 +57,8 @@
     import DateNavigator from '@/components/date-navigator.vue';
     import moment from 'moment';
     import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
-    import LivenessAggregationLineChart
-        from '@/components/network/cards/network-analysis-charts/liveness-aggregation-line-chart.vue';
+    import AggregationLineChart
+        from '@/components/network/cards/network-analysis-charts/aggregation-line-chart.vue';
     import StatisticsDateTimeNavigator
         from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
@@ -66,9 +66,9 @@
     import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
 
     @Component({
-        components: {LivenessAggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle}
+        components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle}
     })
-    export default class LivenessAnalysis extends Mixins(IsLoadingMixin, StoreMixin) {
+    export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) {
         protected selectedDate!: Date;
         protected yearStatistics: NetworkStatisticsAggregation[] = [];
         protected days30Statistics: NetworkStatisticsAggregation[] = [];
@@ -78,6 +78,13 @@
         protected bucketSize: string = '1Y';
         protected failed: boolean = false;
         animated: boolean = false;
+
+        @Prop()
+        analysisType!:string; //safety of liveness
+
+        get setType() {
+            return this.analysisType === 'safety' ? 'splitting' : 'blocking';
+        }
 
         async updateSelectedDate(newDate: Date) {
             this.selectedDate = newDate;
@@ -116,7 +123,8 @@
                     data: statisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
-                            y: stat.minBlockingSetOrgsFilteredAverage
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredAverage"]
                         };
                     }),
                 },
@@ -131,7 +139,8 @@
                     data: statisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
-                            y: stat.minBlockingSetOrgsFilteredMin
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredMin"]
                         };
                     }),
                 },
@@ -146,7 +155,8 @@
                     data: statisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
-                            y: stat.minBlockingSetOrgsFilteredMax
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredMax"]
                         };
                     }),
                 },
@@ -158,10 +168,11 @@
                     type: 'line',
                     borderColor: 'rgba(27, 201, 142, 1)', // success green
                     backgroundColor: 'rgba(27, 201, 142, 1)', // success green
-                    data: statisticsAggregation.map(stats => {
+                    data: statisticsAggregation.map(stat => {
                         return {
-                            x: stats.time,
-                            y: stats.minBlockingSetFilteredAverage
+                            x: stat.time,
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredAverage"]
                         };
                     }),
                 },
@@ -173,10 +184,11 @@
                     type: 'line',
                     borderColor: 'transparent', // success green
                     backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
-                    data: statisticsAggregation.map(stats => {
+                    data: statisticsAggregation.map(stat => {
                         return {
-                            x: stats.time,
-                            y: stats.minBlockingSetFilteredMin
+                            x: stat.time,
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredMin"]
                         };
                     }),
                 },
@@ -191,7 +203,8 @@
                     data: statisticsAggregation.map(stat => {
                         return {
                             x: stat.time,
-                            y: stat.minBlockingSetFilteredMax
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredMax"]
                         };
                     }),
                 },
@@ -219,7 +232,8 @@
                     data: this.hour24Statistics.map(stat => {
                         return {
                             x: stat.time,
-                            y: stat.minBlockingSetOrgsFilteredSize
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredSize"]
                         };
                     }),
                 },
@@ -234,7 +248,8 @@
                     data: this.hour24Statistics.map(stat => {
                         return {
                             x: stat.time,
-                            y: stat.minBlockingSetFilteredSize
+                            //@ts-ignore
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredSize"]
                         };
                     }),
                 },
@@ -278,7 +293,7 @@
                     return false; //we don't show the labels for min/max when they are the same
             }
 
-            return `set(s) of ${nodesDescription} nodes across ${orgDescription} organizations found that could undermine liveness`;
+            return `set(s) of ${nodesDescription} nodes across ${orgDescription} top tier organizations found that could undermine ${this.analysisType}`;
         }
 
         getLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
@@ -287,7 +302,7 @@
             //@ts-ignore
             let nodeSize = data.datasets![1]!.data![tooltipItem.index!]!.y;
 
-            return `set(s) of ${nodeSize} nodes across ${orgSize} organizations found that could undermine liveness`;
+            return `set(s) of ${nodeSize} nodes across ${orgSize} top tier organizations found that could undermine ${this.analysisType}`;
         }
 
         async select30DayView(time?: Date) {
@@ -358,6 +373,10 @@
             this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, new Date());
             this.isLoading = false;
             this.initialDataLoaded = true;
+        }
+
+        protected capitalizeFirstLetter(myString:string) {
+            return myString.charAt(0).toUpperCase() + myString.slice(1);
         }
     }
 </script>
