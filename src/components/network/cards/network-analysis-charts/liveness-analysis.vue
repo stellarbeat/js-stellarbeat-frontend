@@ -26,7 +26,7 @@
                                                      :time-display-formats="{'day': 'D-M-YYYY'}" :step-size="2"
                                                      :chartLabelFilter="aggregatedChartLabelFilter"
                                                      :key="'2'" @click-date="select24HView"/>
-                    <liveness-aggregation-line-chart v-if="bucketSize === '24H'" :unit="'minute'" :tooltip-time-format="'HH:mm'"
+                    <liveness-aggregation-line-chart v-if="bucketSize === '24H'" :unit="'minute'" :tooltip-time-format="'D-M-YYYY HH:mm'"
                                                      :time-display-formats="{'minute': 'HH:mm'}" :step-size="4" point-radius="0"
                                                      :chart-data-sets="hour24ChartDataSets"
                                                      :chartLabels="getLabels" :key="'3'" @click-date="updateSelectedDateAndHighlight"/>
