@@ -5,7 +5,7 @@
 
                 <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
                     <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
-                        <div polyfillclass="container-fluid">
+                        <div class="container">
                             <div class="d-flex">
                                 <router-link class="header-brand mt-2"
                                              :to="{ name: 'network-dashboard', query: { view: $route.query.view}}">
@@ -34,7 +34,7 @@
 
                 </b-navbar>
                 <b-collapse class="header collapse d-lg-flex p-0 pl-4 pr-4" is-nav id="nav_collapse">
-                    <div class="container-fluid collapser">
+                    <div class="container collapser">
                         <div class="row align-items-center">
                             <div class="col-lg order-lg-first">
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
@@ -89,7 +89,7 @@
             </div>
 
             <div class="mt-0 mt-md-2 pl-4 pr-4">
-                <div class="container-fluid">
+                <div class="container">
                     <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
                     <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
                         <div class="loader"></div>
@@ -105,7 +105,7 @@
             </div>
         </div>
         <footer class="footer">
-            <div class="pl-4 pr-6 container-fluid">
+            <div class="pl-4 pr-6 container">
                 <div class="row align-items-center flex-row-reverse">
                     <div class="col-auto ml-lg-auto">
                         <div class="row align-items-center">

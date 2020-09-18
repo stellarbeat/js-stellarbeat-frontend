@@ -1,10 +1,7 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-12">
-                <network-statistics :network="network"/>
-            </div>
-            <div class="col-12">
+            <!--div class="col-12">
                 <b-card>
                     <dl>
                         <dt>Quorum intersection: </dt>
@@ -28,7 +25,7 @@
                         <dd>Set(s) of {{network.networkStatistics.minBlockingSetFilteredSize}} nodes across {{network.networkStatistics.minBlockingSetOrgsFilteredSize}} organizations founds that could impact liveness</dd>
                     </dl>
                 </b-card>
-            </div>
+            </div!-->
         </div>
         <div class="row row-cards row-deck">
             <div class="col-lg-4 col-xl-4">
@@ -39,6 +36,9 @@
             </div>
             <div class="col-lg-4 col-xl-4">
                 <ValidatorsServerLoad/>
+            </div>
+            <div class="col-12">
+                <network-statistics :network="network"/>
             </div>
             <div class="col-lg-6 col-xl-6">
                 <NetworkAnalysis analysis-type="liveness"/>
