@@ -50,14 +50,16 @@
         BIconChevronDown,
         BIconLightning,
         BIconLightningFill,
-        BIconGearWide
+        BIconGearWide,
+        BIconGear,
+        BBadge
     } from 'bootstrap-vue';
 
     @Component({
         components: {
-            NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning,
+            NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning, BIconGear,
             BIconLightningFill,
-            BIconGearWide
+            BIconGearWide, BBadge
         }
     })
     export default class NavLink extends Vue {

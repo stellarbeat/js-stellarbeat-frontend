@@ -39,6 +39,15 @@
                 />
                 <simulate-new-node/>
             </li>
+            <li class="sb-nav-item">
+                <nav-link
+                        v-b-modal.network-analysis-modal
+                        title="Network analysis"
+                        :show-icon="true"
+                        icon="gear"
+                />
+                <network-analysis/>
+            </li>
         </template>
     </side-bar>
 </template>
@@ -59,9 +68,11 @@
     import SideBar from '@/components/side-bar/side-bar.vue';
 
     import {BIconX, BModal, VBModal} from 'bootstrap-vue';
+    import NetworkAnalysis from '@/components/network/network-analysis.vue';
 
     @Component({
         components: {
+            NetworkAnalysis,
             SideBar,
             OrganizationsDropdown,
             NavLink, SimulateNewNode, ValidatorsDropdown,
