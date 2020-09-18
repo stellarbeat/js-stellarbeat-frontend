@@ -6,7 +6,7 @@
                 <b-button :pressed="bucketSize === '30D'" @click="select30DayView">30D</b-button>
                 <b-button :pressed="bucketSize === '24H'" @click="select24HView">24H</b-button>
             </b-button-group>
-            <h1 class="card-title">{{capitalizeFirstLetter(analysisType)}} analysis</h1>
+            <h1 class="card-title">{{capitalizeFirstLetter(analysisType)}} risk analysis</h1>
         </div>
         <div v-if="failed" class="card-alert alert alert-danger mb-0">
             <b-icon-exclamation-triangle/>
@@ -58,9 +58,9 @@
     import moment from 'moment';
     import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
     import AggregationLineChart
-        from '@/components/network/cards/network-analysis-charts/aggregation-line-chart.vue';
+        from '@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue';
     import StatisticsDateTimeNavigator
-        from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
+        from '@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator';
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {StoreMixin} from '@/mixins/StoreMixin';
     import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
@@ -84,6 +84,10 @@
 
         get setType() {
             return this.analysisType === 'safety' ? 'splitting' : 'blocking';
+        }
+
+        get canBeFiltered() {
+            return this.setType === 'blocking';
         }
 
         async updateSelectedDate(newDate: Date) {
@@ -120,11 +124,14 @@
                     steppedLine: true,
                     fill: false,
                     type: 'line',
+                    radius: 2,
                     data: statisticsAggregation.map(stat => {
+                        if(stat.crawlCount === 0)
+                            return {};
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredAverage"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgs" + (this.canBeFiltered ? 'Filtered' : '') + "Average"]
                         };
                     }),
                 },
@@ -132,15 +139,18 @@
                     label: 'min(|organizations|)',
                     borderWidth: 4,
                     borderColor: 'transparent', // primary blue
-                    backgroundColor: 'rgba(25,151,198,0.4)',
+                    backgroundColor: 'rgba(25,151,198,0.1)',
                     steppedLine: true,
                     fill: '0', //relative to dataset with index zero
                     type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
                     data: statisticsAggregation.map(stat => {
+                        if(stat.crawlCount === 0)
+                            return {};
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredMin"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgs" + (this.canBeFiltered ? 'Filtered' : '') + "Min"]
                         };
                     }),
                 },
@@ -148,15 +158,18 @@
                     label: 'max(|organizations|)',
                     borderWidth: 4,
                     borderColor: 'transparent', // primary blue
-                    backgroundColor: 'rgba(25,151,198,0.4)',
+                    backgroundColor: 'rgba(25,151,198,0.1)',
                     steppedLine: true,
                     fill: '0',
                     type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
                     data: statisticsAggregation.map(stat => {
+                        if(stat.crawlCount === 0)
+                            return {};
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredMax"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgs" + (this.canBeFiltered ? 'Filtered' : '') + "Max"]
                         };
                     }),
                 },
@@ -166,13 +179,16 @@
                     borderWidth: 2,
                     steppedLine: true,
                     type: 'line',
+                    radius: 2,
                     borderColor: 'rgba(27, 201, 142, 1)', // success green
                     backgroundColor: 'rgba(27, 201, 142, 1)', // success green
                     data: statisticsAggregation.map(stat => {
+                        if(stat.crawlCount === 0)
+                            return {};
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredAverage"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "Set" + (this.canBeFiltered ? 'Filtered' : '') + "Average"]
                         };
                     }),
                 },
@@ -182,13 +198,16 @@
                     borderWidth: 4,
                     steppedLine: true,
                     type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
                     borderColor: 'transparent', // success green
-                    backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
+                    backgroundColor: 'rgba(27, 201, 142, 0.1)', // success green
                     data: statisticsAggregation.map(stat => {
+                        if(stat.crawlCount === 0)
+                            return {};
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredMin"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "Set" + (this.canBeFiltered ? 'Filtered' : '') + "Min"]
                         };
                     }),
                 },
@@ -198,13 +217,16 @@
                     borderWidth: 4,
                     steppedLine: true,
                     type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
                     borderColor: 'transparent', // success green
-                    backgroundColor: 'rgba(27, 201, 142, 0.6)', // success green
+                    backgroundColor: 'rgba(27, 201, 142, 0.1)', // success green
                     data: statisticsAggregation.map(stat => {
+                        if(stat.crawlCount === 0)
+                            return {};
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetFilteredMax"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "Set" + (this.canBeFiltered ? 'Filtered' : '') + "Max"]
                         };
                     }),
                 },
@@ -229,11 +251,12 @@
                     steppedLine: true,
                     fill: false,
                     type: 'line',
+                    radius: 0, hitRadius: 5,
                     data: this.hour24Statistics.map(stat => {
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgsFilteredSize"]
+                            y: stat["min" + this.capitalizeFirstLetter(this.setType) + "SetOrgs" + ((this.canBeFiltered ? 'Filtered' : '')) + "Size"]
                         };
                     }),
                 },
@@ -245,6 +268,7 @@
                     steppedLine: true,
                     fill: false,
                     type: 'line',
+                    radius: 0,hitRadius: 5,
                     data: this.hour24Statistics.map(stat => {
                         return {
                             x: stat.time,
@@ -269,7 +293,6 @@
             let minNode = data.datasets![4]!.data![tooltipItem.index!]!.y;
             //@ts-ignore
             let maxNode = data.datasets![5]!.data![tooltipItem.index!]!.y;
-
             let nodesDescription = '';
             if (minNode === maxNode)
                 nodesDescription = nodeAvg;
@@ -282,18 +305,7 @@
             else
                 orgDescription = `${minOrg} to ${maxOrg}`;
 
-            //callback is triggered for every datasetIndex that is hoovered
-            if ([1, 2].includes(tooltipItem.datasetIndex!)) {
-                //hit on minimum or maximum organization
-                if (minOrg === maxOrg)
-                    return false; //we don't show the labels for min/max when they are the same
-            }
-            if ([4, 5].includes(tooltipItem.datasetIndex!)) {
-                if (minNode === maxNode)
-                    return false; //we don't show the labels for min/max when they are the same
-            }
-
-            return `set(s) of ${nodesDescription} nodes across ${orgDescription} top tier organizations found that could undermine ${this.analysisType}`;
+            return `set(s) of ${nodesDescription} nodes across ${orgDescription} top tier organizations found that could impact ${this.analysisType}`;
         }
 
         getLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
@@ -302,7 +314,7 @@
             //@ts-ignore
             let nodeSize = data.datasets![1]!.data![tooltipItem.index!]!.y;
 
-            return `set(s) of ${nodeSize} nodes across ${orgSize} top tier organizations found that could undermine ${this.analysisType}`;
+            return `set(s) of ${nodeSize} nodes across ${orgSize} top tier organizations found that could impact ${this.analysisType}`;
         }
 
         async select30DayView(time?: Date) {
@@ -321,9 +333,7 @@
         }
 
         async updateSelectedDateAndHighlight(newDate: Date) {
-            console.log(newDate);
             await this.updateSelectedDate(newDate);
-            console.log(this.animated);
             this.animated = true;
         }
 

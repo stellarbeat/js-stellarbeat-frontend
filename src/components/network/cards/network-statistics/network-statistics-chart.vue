@@ -39,11 +39,12 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
         return [
             {
                 borderColor:  'rgba(25, 151, 198,1)',
-                backgroundColor: 'rgba(25, 151, 198,0.6)', // primary blue
+                backgroundColor: 'rgba(25, 151, 198,0.3)', // primary blue
                 borderWidth: 2,
                 steppedLine: false,
                 data: statisticsAggregation.map(stat => {
-
+                    if(stat.crawlCount === 0)
+                        return {};
                     return {
                         x: stat.time,
                         //@ts-ignore
@@ -73,7 +74,17 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
                 tooltips: {
                     mode: 'index',
                     intersect: false,
-                    caretSize: 0
+                    caretSize: 0,
+                    displayColors: false,
+                    callbacks: {
+                        title: function (tooltipItems, data) {
+                            //Return value for title
+                            return '';
+                        },
+                        label: function (tooltipItems, data) {
+                            return tooltipItems.label + ': ' + tooltipItems.value;
+                        }
+                    }
                 },
                 elements: {
                     point: {
@@ -84,8 +95,8 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
                     padding: {
                         left: 0,
                         right: 0,
-                        top: 5,
-                        bottom: 5
+                        top: 2,
+                        bottom: 2
                     }
                 },
                 title: {
@@ -114,7 +125,7 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
                     yAxes: [{
                         display: false,
                         ticks: {
-                            beginAtZero: true
+                            beginAtZero: false
                         }
                     }]
                 }

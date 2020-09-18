@@ -4,6 +4,31 @@
             <div class="col-12">
                 <network-statistics :network="network"/>
             </div>
+            <div class="col-12">
+                <b-card>
+                    <dl>
+                        <dt>Quorum intersection: </dt>
+                        <dd>
+                            <b-badge v-if="network.networkStatistics.hasQuorumIntersection" pill variant="success">Yes</b-badge>
+                            <b-badge v-else pill variant="danger">No</b-badge>
+                        </dd>
+                        <dt>Safety risk analysis: </dt>
+                        <dd>Set(s) of {{network.networkStatistics.minSplittingSetSize}} nodes across {{network.networkStatistics.minSplittingSetOrgsSize}} organizations founds that could impact safety</dd>
+                        <dt>Quorum availability: </dt>
+                        <dd>
+                            <b-badge v-if="network.networkStatistics.minBlockingSetFilteredSize > 0" pill variant="success">Yes</b-badge>
+                            <b-badge v-else pill variant="danger">No</b-badge>
+                        </dd>
+                        <dt>Transitive quorumset availability: </dt>
+                        <dd>
+                            <b-badge v-if="network.networkStatistics.transitiveQuorumSetSize > 0" pill variant="success">Yes</b-badge>
+                            <b-badge v-else pill variant="danger">No</b-badge>
+                        </dd>
+                        <dt>Liveness risk analysis: </dt>
+                        <dd>Set(s) of {{network.networkStatistics.minBlockingSetFilteredSize}} nodes across {{network.networkStatistics.minBlockingSetOrgsFilteredSize}} organizations founds that could impact liveness</dd>
+                    </dl>
+                </b-card>
+            </div>
         </div>
         <div class="row row-cards row-deck">
             <div class="col-lg-4 col-xl-4">
@@ -41,14 +66,23 @@
     import NetworkStatistics from '@/components/network/cards/network-statistics/network-statistics.vue';
     import NetworkNodes from '@/components/network/cards/network-nodes.vue';
     import NetworkOrganizations from '@/components/network/cards/network-organizations.vue';
-    import NetworkAnalysis from '@/components/network/cards/network-analysis-charts/network-analysis.vue';
+    import NetworkAnalysis from '@/components/network/cards/network-risk-analysis-charts/network-analysis.vue';
+    import {BCard, BListGroup, BListGroupItem, BBadge} from 'bootstrap-vue';
 
     @Component({
         components: {
             NetworkAnalysis,
             NetworkOrganizations,
             NetworkNodes,
-            NetworkStatistics, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution
+            NetworkStatistics,
+            QuorumSetConnections,
+            ValidatorsServerLoad,
+            NodesVersions,
+            NodesCountryDistribution,
+            BCard,
+            BListGroup,
+            BListGroupItem,
+            BBadge
         }
     })
 

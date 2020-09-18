@@ -1,36 +1,36 @@
 <template>
     <div class="row row-cards row-deck">
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3 col-xl-2">
             <network-statistics-card :value="network.networkStatistics.nrOfActiveWatchers" :is-loading="isLoading"
                                      title="Watcher nodes" tooltip="Number of active watcher nodes">
                 <network-statistics-chart v-if="initialDataLoaded" stats-property="nrOfActiveWatchersAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3 col-xl-2">
             <network-statistics-card :value="network.networkStatistics.nrOfActiveValidators" :is-loading="isLoading"
                                      title="Validator nodes" tooltip="Number of active validators">
                 <network-statistics-chart v-if="initialDataLoaded" stats-property="nrOfActiveValidatorsAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3 col-xl-2">
             <network-statistics-card :value="network.networkStatistics.nrOfActiveFullValidators" :is-loading="isLoading"
                                      title="Full validators" tooltip="Number of active full validators">
                 <network-statistics-chart v-if="initialDataLoaded" stats-property="nrOfActiveFullValidatorsAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3 col-xl-2">
             <network-statistics-card :value="network.networkStatistics.nrOfActiveOrganizations" :is-loading="isLoading"
                                      title="Organizations" tooltip="Number of active organizations">
                 <network-statistics-chart v-if="initialDataLoaded" stats-property="nrOfActiveOrganizationsAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3 col-xl-2">
             <network-statistics-card :value="network.networkStatistics.topTierFilteredSize" :is-loading="isLoading"
                                      title="Top tier validators" tooltip="Number of active validators in the top tier">
                 <network-statistics-chart v-if="initialDataLoaded" stats-property="topTierFilteredAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-3 col-xl-2">
             <network-statistics-card :value="network.networkStatistics.topTierOrgsFilteredSize" :is-loading="isLoading"
                                      title="Top tier organizations" tooltip="Number of active organizations in the top tier">
                 <network-statistics-chart v-if="initialDataLoaded" stats-property="topTierOrgsFilteredAverage" :year-statistics="yearStatistics"/>

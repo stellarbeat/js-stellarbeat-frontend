@@ -45,9 +45,6 @@
         @Prop({})
         tooltipTimeFormat!: string;
 
-        @Prop({default: 2})
-        pointRadius!: number;
-
         id: number = this.store.getUniqueId();
 
         get store(): Store {
@@ -96,22 +93,21 @@
                         callbacks: {
                             //@ts-ignore
                             label: this.chartLabels
-                        }
+                        },
+                    },
+                    hover: {
+                        mode: "nearest",
+                        intersect: true
                     },
                     plugins: {
                         filler: {
                             propagate: true
                         }
                     },
-                    elements: {
-                        point: {
-                            radius: this.pointRadius,
-                        }
-                    },
                     layout: {
                         padding: {
                             left: 20,
-                            right: 20
+                            right: 20,
                         }
                     },
                     title: {
@@ -149,7 +145,8 @@
                         }],
                         yAxes: [{
                             ticks: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                stepSize: 1
                             }
                         }]
                     }

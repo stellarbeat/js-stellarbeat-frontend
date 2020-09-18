@@ -17,7 +17,7 @@
             </div>
             <div :class="dimmerClass">
                 <div class="loader"></div>
-                <div style="height: 60px" class="dimmer-content">
+                <div style="height: 40px" class="dimmer-content">
                     <slot></slot>
                 </div>
             </div>

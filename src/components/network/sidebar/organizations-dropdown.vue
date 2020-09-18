@@ -8,7 +8,7 @@
                 :dropDownShowing="showing"
                 :showIcon="true"
                 :show-sub-title="true"
-                :sub-title="'Top tier'"
+                :sub-title="'Top Tier'"
         />
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link

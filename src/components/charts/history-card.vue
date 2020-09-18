@@ -75,7 +75,7 @@
 
     import {BButton, BButtonGroup, BIconExclamationCircle} from 'bootstrap-vue';
     import StatisticsDateTimeNavigator
-        from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
+        from '@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator';
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
 
     @Component({

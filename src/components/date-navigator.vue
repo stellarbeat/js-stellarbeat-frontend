@@ -43,7 +43,7 @@
         BButtonGroup
     } from 'bootstrap-vue';
     import StatisticsDateTimeNavigator
-        from '@/components/network/cards/network-analysis-charts/StatisticsDateTimeNavigator';
+        from '@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator';
 
     @Component({
         name: 'date-navigator',
