@@ -8,7 +8,7 @@
                         <b-icon-info-circle v-b-tooltip:hover.top="tooltip"/>
                 </div>
                 <div class="d-flex">
-                    <div class="h3 mb-0 mr-0">
+                    <div class="h4 mb-0 mr-0">
                         {{value}}
                     </div>
 

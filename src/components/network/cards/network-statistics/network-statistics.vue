@@ -37,15 +37,15 @@
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
-            <network-statistics-card :value="network.networkStatistics.hasQuorumIntersectionFiltered ? 'Yes' : 'No'" :is-loading="isLoading"
-                                     title="Quorum intersection" tooltip="Number of active watcher nodes">
-                <network-statistics-chart v-if="initialDataLoaded" stats-property="nrOfActiveWatchersAverage" :year-statistics="yearStatistics"/>
+            <network-statistics-card :value="network.networkStatistics.transitiveQuorumSetSize" :is-loading="isLoading"
+                                     title="Transitive quorumset" tooltip="Transitive quorumset size">
+                <network-statistics-chart v-if="initialDataLoaded" stats-property="transitiveQuorumSetSizeAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.hasQuorumIntersectionFiltered ? 'Yes' : 'No'" :is-loading="isLoading"
-                                     title="Quorum intersection" tooltip="Number of active watcher nodes">
-                <network-statistics-chart v-if="initialDataLoaded" stats-property="nrOfActiveWatchersAverage" :year-statistics="yearStatistics"/>
+                                     title="Quorum intersection" tooltip="Does the network have quorum intersection">
+                <network-statistics-chart v-if="initialDataLoaded" stats-property="hasQuorumIntersectionCountAverage" :year-statistics="yearStatistics"/>
             </network-statistics-card>
         </div>
     </div>

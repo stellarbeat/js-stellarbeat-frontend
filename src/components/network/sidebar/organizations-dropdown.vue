@@ -8,7 +8,7 @@
                 :dropDownShowing="showing"
                 :showIcon="true"
                 :show-sub-title="true"
-                :sub-title="'Top Tier'"
+                :sub-title="'Transitive quorumset'"
         />
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link

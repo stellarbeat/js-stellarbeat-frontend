@@ -16,7 +16,7 @@
                                     <h6 class="text-muted">stellar network visibility</h6>
                                 </div>
                                 <div class="d-flex ml-auto">
-                                    <div class="nav-item d-none d-lg-flex">
+                                    <div class="nav-item d-none d-lg-flex pr-0">
                                         <a href="https://github.com/stellarbeat"
                                            class="btn btn-sm bt btn-outline-primary" target="_blank">
                                             <github/>

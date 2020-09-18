@@ -1,6 +1,9 @@
 <template>
     <div class="card h-100">
-        <div class="card-body d-flex flex-row justify-content-center">
+        <div class="text-muted mx-3 mt-3">
+            Versions
+        </div>
+        <div class="card-body d-flex flex-row justify-content-center p-1">
             <div class="canvas-container">
                 <canvas id="versionGraph" ref="versionGraph"/>
             </div>
@@ -86,10 +89,16 @@
                     datasets: [{
                         label: 'Node versions',
                         backgroundColor: [
-                            '#1997c6', // primary blue
+                            'rgba(25, 151, 198,0.7)', // primary blue
+                            'rgba(27, 201, 141,0.7)', // success green
+                            'rgba(228, 216, 54,0.7)' // warning yellow
+                        ],
+                        borderColor: [
+                            'rgba(25, 151, 198,1)', // primary blue
                             '#1bc98e', // success green
                             '#e4d836' // warning yellow
                         ],
+                        borderWidth: 0,
                         data: this.chartData
                     }]
                 },
@@ -104,12 +113,12 @@
                     },
                     title: {
                         text: 'Node versions',
-                        display: true,
+                        display: false,
                         fontSize: 20
                     },
                     responsive: true,
-                    maintainAspectRatio: false,
-                    cutoutPercentage: 70,
+                    maintainAspectRatio: true,
+                    cutoutPercentage: 50,
                     legend: {
                         display: true,
                         position: 'bottom',
@@ -135,6 +144,5 @@
 
 <style scoped>
     .canvas-container {
-        height: 250px;
     }
 </style>

@@ -1,5 +1,8 @@
 <template>
     <div class="card ">
+        <div class="text-muted mx-3 mt-3">
+            Validator load
+        </div>
         <!--div class="card-header">
             <h3 class="card-title">Validator loads </h3>
             <b-icon-info-circle class="ml-2 mt-0 text-muted" id="overLoadedTooltip"/>
@@ -7,7 +10,7 @@
                 A validator has a high load when it disconnects due to 'high load' most of the time during the last 30 days.
             </b-tooltip>
         </div!-->
-        <div class="card-body d-flex flex-row justify-content-center h-100">
+        <div class="card-body d-flex flex-row justify-content-center h-75 p-1">
             <div class="canvas-container">
                 <canvas id="overLoadedBarChart" ref="overLoadedBarChart"></canvas>
             </div>
@@ -73,9 +76,10 @@
                     datasets: [{
                         label: 'nodes',
                         backgroundColor: [
-                            '#1997c6', // success blue
-                            this.overloadedBuckets[0] >= this.overloadedBuckets[1] ? 'rgba(228, 216, 54)' : '#cd201f',
+                            'rgba(25, 151, 198,0.7)', // success blue
+                            this.overloadedBuckets[0] >= this.overloadedBuckets[1] ? 'rgba(228, 216, 54, 0.7)' : 'rgba(205, 32, 31, 0.7)',
                         ],
+                        borderWidth: 0,
                         data: this.overloadedBuckets,
                     }],
                 },
@@ -85,17 +89,18 @@
                     layout: {
                         padding: {
                             left: 20,
-                            right: 20
+                            right: 20,
+                            bottom: 22
                         }
                     },
                     title: {
                         text: 'Validator loads',
-                        display: true,
+                        display: false,
                         fontSize: 20
                     },
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutoutPercentage: 70,
+                    responsive: false,
+                    maintainAspectRatio: true,
+                    cutoutPercentage: 50,
                     legend: {
                         display: true,
                         position: 'bottom',
@@ -121,6 +126,5 @@
 
 <style scoped>
     .canvas-container {
-        height: 250px;
     }
 </style>
