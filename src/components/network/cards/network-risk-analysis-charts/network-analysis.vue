@@ -69,18 +69,21 @@
         components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle}
     })
     export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) {
+        @Prop()
+        analysisType!:string; //safety of liveness
+
+        @Prop({default: '1Y'})
+        defaultBucketSize!:string;
+
         protected selectedDate!: Date;
         protected yearStatistics: NetworkStatisticsAggregation[] = [];
         protected days30Statistics: NetworkStatisticsAggregation[] = [];
         protected hour24Statistics: NetworkStatistics[] = [];
         protected initialDataLoaded: boolean = false;
         protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
-        protected bucketSize: string = '1Y';
+        protected bucketSize: string = this.defaultBucketSize;
         protected failed: boolean = false;
         animated: boolean = false;
-
-        @Prop()
-        analysisType!:string; //safety of liveness
 
         get setType() {
             return this.analysisType === 'safety' ? 'splitting' : 'blocking';
@@ -377,11 +380,11 @@
 
         public async mounted() {
             this.statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(this.store.measurementsStartDate);
-            this.selectedDate = new Date();
-            this.selectedDate.setTime(this.statisticsDateTimeNavigator.getInitialSelectedDate(this.bucketSize, this.network.crawlDate).getTime());
-            let oneYearAgo = moment(this.selectedDate).subtract(1, 'y').toDate();
-            this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, new Date());
-            this.isLoading = false;
+            if(this.defaultBucketSize === '30D')
+                await this.updateSelectedDate(moment(this.network.crawlDate).subtract(29, 'd').toDate());
+            else
+                await this.updateSelectedDate(this.network.crawlDate);
+
             this.initialDataLoaded = true;
         }
 

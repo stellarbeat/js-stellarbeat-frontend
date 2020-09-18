@@ -14,7 +14,7 @@
                 <ValidatorsServerLoad/>
             </div>
             <div class="col-lg-6 col-xl-6">
-                <NetworkAnalysis analysis-type="liveness"/>
+                <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D"/>
             </div>
             <div class="col-lg-6 col-xl-6">
                 <NetworkAnalysis analysis-type="safety"/>

@@ -9,7 +9,9 @@
                 </div>
                 <div class="d-flex">
                     <div class="h4 mb-0 mr-0">
-                        {{value}}
+                        <slot name="value">
+                            {{value}}
+                        </slot>
                     </div>
 
                 </div>
@@ -18,7 +20,7 @@
             <div :class="dimmerClass">
                 <div class="loader"></div>
                 <div style="height: 40px" class="dimmer-content">
-                    <slot></slot>
+                    <slot name="spark"></slot>
                 </div>
             </div>
 
