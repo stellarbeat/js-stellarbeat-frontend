@@ -1,0 +1,16 @@
+{
+  "name": "@stellarbeat/stellar_analysis_temp",
+  "description": "temporary until official package is added",
+  "collaborators": [
+    "Charmaine Ndolo <Charmaine.Ndolo@hu-berlin.de>"
+  ],
+  "version": "0.0.1",
+  "files": [
+    "stellar_analysis_bg.wasm",
+    "stellar_analysis.js",
+    "stellar_analysis.d.ts"
+  ],
+  "module": "stellar_analysis.js",
+  "types": "stellar_analysis.d.ts",
+  "sideEffects": false
+}

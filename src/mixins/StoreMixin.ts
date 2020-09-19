@@ -5,7 +5,6 @@ import Store from '../store/Store';
 
 @Component({})
 export class StoreMixin extends Vue {
-    protected isLoading: boolean = true;
 
     get store(): Store {
         return this.$root.$data.store;
