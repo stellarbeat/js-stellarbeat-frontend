@@ -7,6 +7,7 @@
             <div v-bind:class="dimmerClass">
                 <div class="loader mt-2"></div>
                 <div class="dimmer-content">
+                    <b-button variant="primary" v-on:click="performAnalysis">Perform analysis</b-button>
                     <div v-if="hasResult">
                         <dl class="mb-0">
                             <dt>Quorum Intersection</dt>
@@ -45,7 +46,6 @@
                     </div>
                 </div>
             </div>
-            <b-button v-if="!hasResult" variant="primary" v-on:click="performAnalysis">Perform analysis</b-button>
         </b-modal>
     </div>
 </template>
@@ -82,7 +82,6 @@
         protected currentPage: number = 1;
 
         get rows() {
-            console.log(this.minimalQuorums.length);
             return this.minimalQuorums.length
         }
         performAnalysis() {
