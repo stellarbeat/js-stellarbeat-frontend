@@ -55,7 +55,7 @@
             OrganizationStatisticsSubquorum24hAvailability,
             OrganizationValidators,
             OrganizationProfile,
-            HistoryCard, QuorumSetConnections, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution}
+            HistoryCard, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution}
     })
 
     export default class OrganizationDashboard extends Vue {

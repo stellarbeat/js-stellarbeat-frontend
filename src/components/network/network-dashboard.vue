@@ -53,7 +53,6 @@
             NetworkOrganizations,
             NetworkNodes,
             NetworkStatistics,
-            QuorumSetConnections,
             ValidatorsServerLoad,
             NodesVersions,
             NodesCountryDistribution,
