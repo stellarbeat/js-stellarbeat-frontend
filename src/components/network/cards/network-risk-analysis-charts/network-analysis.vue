@@ -87,6 +87,8 @@
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {StoreMixin} from '@/mixins/StoreMixin';
     import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
+    import {DomEvent} from 'leaflet';
+    import on = DomEvent.on;
 
     @Component({
         components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle, BModal},
@@ -368,6 +370,11 @@
         async updateYearChart() {
             this.isLoading = true;
             let oneYearAgo = moment(this.selectedDate).subtract(1, 'y').toDate();
+            if(oneYearAgo < this.store.measurementsStartDate){
+                oneYearAgo.setTime(this.store.measurementsStartDate.getTime());
+                this.selectedDate = moment(this.store.measurementsStartDate).add(1, 'y').toDate();
+            }
+
             try {
                 this.failed = false;
                 this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, this.selectedDate);
