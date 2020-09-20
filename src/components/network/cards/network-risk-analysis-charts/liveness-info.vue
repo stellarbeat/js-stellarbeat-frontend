@@ -2,7 +2,7 @@
     <div>
 
         <h3>What does this chart show?</h3>
-        <p class="my-4">This chart shows the liveness risks for the network. The network is scanned for sets of
+        <p class="my-4">The network is scanned for sets of
             validating nodes that intersect every quorum (network blocking sets). The chart shows the smallest sizes of
             these sets and, if available, the minimum and maximum for each time window.</p>
         <h3>What does it mean?</h3>

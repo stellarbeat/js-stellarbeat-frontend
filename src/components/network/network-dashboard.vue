@@ -21,7 +21,11 @@
                 </NetworkAnalysis>
             </div>
             <div class="col-lg-6 col-xl-6">
-                <NetworkAnalysis analysis-type="safety"/>
+                <NetworkAnalysis analysis-type="safety">
+                    <template v-slot:info>
+                        <safety-info/>
+                    </template>
+                </NetworkAnalysis>
             </div>
             <div class="col-lg-6 col-xl-6">
                 <network-organizations/>
@@ -45,9 +49,11 @@
     import NetworkAnalysis from '@/components/network/cards/network-risk-analysis-charts/network-analysis.vue';
     import {BCard, BListGroup, BListGroupItem, BBadge} from 'bootstrap-vue';
     import LivenessInfo from '@/components/network/cards/network-risk-analysis-charts/liveness-info.vue';
+    import SafetyInfo from '@/components/network/cards/network-risk-analysis-charts/safety-info.vue';
 
     @Component({
         components: {
+            SafetyInfo,
             LivenessInfo,
             NetworkAnalysis,
             NetworkOrganizations,
