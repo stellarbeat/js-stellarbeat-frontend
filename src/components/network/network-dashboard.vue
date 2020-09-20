@@ -38,7 +38,6 @@
     import NodesCountryDistribution from '@/components/network/cards/nodes-country-distribution.vue';
     import NodesVersions from '@/components/network/cards/nodes-versions.vue';
     import ValidatorsServerLoad from '@/components/network/cards/validator-load.vue';
-    import QuorumSetConnections from '@/components/network/cards/quorum-set-connections/quorum-set-connections.vue';
     import {Network} from '@stellarbeat/js-stellar-domain';
     import NetworkStatistics from '@/components/network/cards/network-statistics/network-statistics.vue';
     import NetworkNodes from '@/components/network/cards/network-nodes.vue';
