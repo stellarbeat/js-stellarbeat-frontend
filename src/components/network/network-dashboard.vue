@@ -14,7 +14,11 @@
                 <ValidatorsServerLoad/>
             </div>
             <div class="col-lg-6 col-xl-6">
-                <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D"/>
+                <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
+                    <template v-slot:info>
+                        <liveness-info/>
+                    </template>
+                </NetworkAnalysis>
             </div>
             <div class="col-lg-6 col-xl-6">
                 <NetworkAnalysis analysis-type="safety"/>
@@ -41,9 +45,11 @@
     import NetworkOrganizations from '@/components/network/cards/network-organizations.vue';
     import NetworkAnalysis from '@/components/network/cards/network-risk-analysis-charts/network-analysis.vue';
     import {BCard, BListGroup, BListGroupItem, BBadge} from 'bootstrap-vue';
+    import LivenessInfo from '@/components/network/cards/network-risk-analysis-charts/liveness-info.vue';
 
     @Component({
         components: {
+            LivenessInfo,
             NetworkAnalysis,
             NetworkOrganizations,
             NetworkNodes,

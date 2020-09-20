@@ -1,12 +1,35 @@
 <template>
     <div class="card ">
-        <div class="card-header pl-3 d-flex flex-wrap">
+        <div class="card-header px-3 d-flex flex-wrap justify-content-between">
+            <div class="d-flex flex-wrap">
             <b-button-group size="sm" class="mr-3">
                 <b-button :pressed="bucketSize === '1Y'" @click="select1YView">1Y</b-button>
                 <b-button :pressed="bucketSize === '30D'" @click="select30DayView">30D</b-button>
                 <b-button :pressed="bucketSize === '24H'" @click="select24HView">24H</b-button>
             </b-button-group>
-            <h1 class="card-title">{{capitalizeFirstLetter(analysisType)}} risk analysis</h1>
+            <h1 class="card-title">{{capitalizeFirstLetter(analysisType)}} risk analysis
+            </h1>
+            </div>
+            <b-button size="sm" @click="showModal=true">
+                <b-icon-info-circle v-b-modal="'modal-info-' + setType" v-b-tooltip:hover.top="'Info'" class="text-muted"/>
+            </b-button>
+            <b-modal title="Info" ok-only hide-header v-model="showModal">
+                <slot name="info"></slot>
+                <template v-slot:modal-footer>
+                    <div class="w-100">
+                        <p class="float-left">Powered by <a target="_blank" href="https://github.com/wiberlin/fbas_analyzer">wiberlin/fbas_analyzer</a>
+                        </p>
+                        <b-button
+                                variant="primary"
+                                size="sm"
+                                class="float-right"
+                                @click="showModal=false"
+                        >
+                            Close
+                        </b-button>
+                    </div>
+                </template>
+            </b-modal>
         </div>
         <div v-if="failed" class="card-alert alert alert-danger mb-0">
             <b-icon-exclamation-triangle/>
@@ -53,7 +76,7 @@
 <script lang="ts">
     import Chart, {ChartData, ChartDataSets, ChartLegendLabelItem, ChartTooltipItem} from 'chart.js';
     import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
-    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle} from 'bootstrap-vue';
+    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle, VBTooltip, BModal, VBModal} from 'bootstrap-vue';
     import DateNavigator from '@/components/date-navigator.vue';
     import moment from 'moment';
     import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
@@ -66,7 +89,8 @@
     import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
 
     @Component({
-        components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle}
+        components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle, BModal},
+        directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal}
     })
     export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) {
         @Prop()
@@ -84,6 +108,7 @@
         protected bucketSize: string = this.defaultBucketSize;
         protected failed: boolean = false;
         animated: boolean = false;
+        protected showModal:boolean = false;
 
         get setType() {
             return this.analysisType === 'safety' ? 'splitting' : 'blocking';
