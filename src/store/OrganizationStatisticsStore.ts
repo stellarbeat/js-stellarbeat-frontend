@@ -21,10 +21,10 @@ export default class OrganizationStatisticsStore {
 
 
     async getDayStatistics(organizationId: string, from: Date, to: Date): Promise<OrganizationDayStatistics[]> {
-        return await this.statisticsStore.fetchStatistics<OrganizationDayStatistics>(organizationId, from, to, '/v1/network/stellar-public/organizations/' + organizationId + '/day-statistics');
+        return await this.statisticsStore.fetchStatistics<OrganizationDayStatistics>(organizationId, from, to, '/v1/network/stellar-public/organization/' + organizationId + '/day-statistics');
     }
 
     async getStatistics(organizationId: string, from: Date, to: Date): Promise<OrganizationStatistic[]> {
-        return await this.statisticsStore.fetchStatistics<OrganizationStatistic>(organizationId, from, to, '/v1/network/stellar-public/organizations/' + organizationId + '/statistics');
+        return await this.statisticsStore.fetchStatistics<OrganizationStatistic>(organizationId, from, to, '/v1/network/stellar-public/organization/' + organizationId + '/statistics');
     }
 }

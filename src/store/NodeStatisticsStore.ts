@@ -28,10 +28,10 @@ export default class NodeStatisticsStore {
     }
 
     async getDayStatistics(id: string, from: Date, to: Date): Promise<NodeDayStatistics[]> {
-        return await this.statisticsStore.fetchStatistics<NodeDayStatistics>(id, from, to, '/v1/network/stellar-public/nodes/' + id + '/day-statistics');
+        return await this.statisticsStore.fetchStatistics<NodeDayStatistics>(id, from, to, '/v1/network/stellar-public/node/' + id + '/day-statistics');
     }
 
     async getStatistics(id: string, from: Date, to: Date): Promise<NodeStatistics[]> {
-        return await this.statisticsStore.fetchStatistics<NodeStatistics>(id, from, to, '/v1/network/stellar-public/nodes/' + id + '/statistics');
+        return await this.statisticsStore.fetchStatistics<NodeStatistics>(id, from, to, '/v1/network/stellar-public/node/' + id + '/statistics');
     }
 }

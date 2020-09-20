@@ -55,7 +55,7 @@ export default class Store {
     async fetchNodeSnapshots(id:PublicKey):Promise<Object[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/nodes/' + id + '/snapshots', {params});
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/node/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data;
         }
@@ -66,7 +66,7 @@ export default class Store {
     async fetchOrganizationSnapshots(id:OrganizationId):Promise<Object[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organizations/' + id + '/snapshots', {params});
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organization/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data;
         }
