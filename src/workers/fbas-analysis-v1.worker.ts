@@ -7,7 +7,6 @@ let initialized: boolean = false;
 ctx.addEventListener('message', (event) => {
     const nodes = event.data.nodes;
     const organizations = event.data.organizations;
-    const merge = event.data.merge;
 
     if(!initialized){
         init('stellar_analysis_bg.wasm').then(instance => {
