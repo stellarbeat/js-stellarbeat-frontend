@@ -57,15 +57,23 @@
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.transitiveQuorumSetSize" :is-loading="isLoading"
-                                     title="Transitive quorumset" tooltip="Transitive quorumset size">
+                                     title="Transitive quorumset" tooltip="Does the network have a transitive quorumset">
+                <template v-slot:value>
+                    <b-badge v-if="network.networkStatistics.hasTransitiveQuorumSet" variant="success">
+                        yes
+                    </b-badge>
+                    <b-badge v-else variant="danger">
+                        no
+                    </b-badge>
+                </template>
                 <template v-slot:spark>
-                    <network-statistics-chart v-if="initialDataLoaded" stats-property="transitiveQuorumSetSizeAverage"
+                    <network-statistics-chart v-if="initialDataLoaded" stats-property="hasTransitiveQuorumSetAverage"
                                               :year-statistics="yearStatistics"/>
                 </template>
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
-            <network-statistics-card :value="network.networkStatistics.hasQuorumIntersectionFiltered ? 'Yes' : 'No'"
+            <network-statistics-card :value="network.networkStatistics.hasQuorumIntersection ? 'Yes' : 'No'"
                                      :is-loading="isLoading"
                                      title="Quorum intersection" tooltip="Does the network have quorum intersection">
                 <template v-slot:value>
@@ -78,7 +86,7 @@
                 </template>
                 <template v-slot:spark>
                     <network-statistics-chart v-if="initialDataLoaded"
-                                              stats-property="hasQuorumIntersectionCountAverage"
+                                              stats-property="hasQuorumIntersectionAverage"
                                               :year-statistics="yearStatistics"/>
                 </template>
             </network-statistics-card>

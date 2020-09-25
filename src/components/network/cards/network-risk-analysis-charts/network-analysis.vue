@@ -76,7 +76,7 @@
 <script lang="ts">
     import Chart, {ChartData, ChartDataSets, ChartLegendLabelItem, ChartTooltipItem} from 'chart.js';
     import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
-    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle, VBTooltip, BModal, VBModal} from 'bootstrap-vue';
+    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationTriangle, BIconExclamationCircle, VBTooltip, BModal, VBModal} from 'bootstrap-vue';
     import DateNavigator from '@/components/date-navigator.vue';
     import moment from 'moment';
     import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
@@ -87,11 +87,9 @@
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {StoreMixin} from '@/mixins/StoreMixin';
     import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
-    import {DomEvent} from 'leaflet';
-    import on = DomEvent.on;
 
     @Component({
-        components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle, BModal},
+        components: {AggregationLineChart, DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationCircle, BModal, BIconExclamationTriangle},
         directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal}
     })
     export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) {
