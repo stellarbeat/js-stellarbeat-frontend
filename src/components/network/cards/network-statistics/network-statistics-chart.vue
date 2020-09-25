@@ -67,11 +67,19 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
 
             // Configuration options go here
             options: {
+                onHover(event: MouseEvent, activeElements: Array<any>): any {
+                    (event.target! as any).style.cursor = 'pointer';
+                    if(activeElements.length === 1)
+                        that.$emit('hover', that.yearStatistics[activeElements[0]._index]);
+                    else
+                        that.$emit('hover', null);
+                },
                 hover: {
                     mode: 'nearest',
-                    intersect: true
+                    intersect: false
                 },
                 tooltips: {
+                    enabled: false,
                     mode: 'index',
                     intersect: false,
                     caretSize: 0,
@@ -95,8 +103,8 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
                     padding: {
                         left: 0,
                         right: 0,
-                        top: 2,
-                        bottom: 2
+                        top: 4,
+                        bottom: 0
                     }
                 },
                 title: {
