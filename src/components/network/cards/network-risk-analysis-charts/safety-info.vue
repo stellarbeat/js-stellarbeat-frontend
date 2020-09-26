@@ -21,7 +21,9 @@
         </p>
         <h3>Limitations of the analysis</h3>
         <p class="my-4">
-            TODO: what if the network contains multiple fbas?
+            If quorum intersection is failing, additional analysis is needed. Safety could still be present for the majority of the network.<br/>
+            Because quorum intersection is calculated for the entire network, it could be that badly configured nodes on the edge of the network can cause quorum intersection to fail.<br/>
+            To mitigate this, stellarbeat filters out 'badly configured' nodes. At the moment these are nodes that have only themselves in their quorumset.
         </p>
         <h3>More information</h3>
         <p class="my-4">
