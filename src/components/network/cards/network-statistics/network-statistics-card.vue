@@ -1,7 +1,8 @@
 <template>
 
-    <div class="card">
-        <div class="card-body p-0 d-flex flex-column justify-content-between">
+    <div class="card" :class="dimmerClass">
+        <div class="loader"></div>
+        <div class="card-body p-0 d-flex flex-column justify-content-between dimmer-content">
             <div class="d-flex justify-content-between align-items-start pt-3 px-3">
                 <div class="">
                     <div class="text-muted">
@@ -28,18 +29,14 @@
                     <b-icon-info-circle v-b-tooltip:hover.top="'Click for info'" class="text-muted"/>
                 </b-button>
             </div>
-
-            <div :class="dimmerClass">
-                <div class="loader"></div>
-                <div style="height: 35px" class="dimmer-content">
-                    <network-statistics-chart v-if="initialDataLoaded" :stats-property="statsProperty"
-                                              :year-statistics="yearStatistics" v-on:hover="onHover"/>
-                </div>
+            <div style="height: 35px">
+                <network-statistics-chart v-if="initialDataLoaded" :stats-property="statsProperty"
+                                          :year-statistics="yearStatistics" v-on:hover="onHover"/>
             </div>
-            <b-modal lazy title="Info" ok-only hide-header v-model="showModal">
-                <slot name="info"></slot>
-            </b-modal>
         </div>
+        <b-modal lazy title="Info" ok-only hide-header v-model="showModal">
+            <slot name="info"></slot>
+        </b-modal>
     </div>
 </template>
 
@@ -71,20 +68,20 @@
         @Prop()
         statsProperty!: string;
         @Prop({default: false})
-        isBool!:boolean;
+        isBool!: boolean;
 
-        activeElement:NetworkStatisticsAggregation|null = null;
+        activeElement: NetworkStatisticsAggregation | null = null;
         showModal: boolean = false;
 
         get hasActiveElement() {
             return this.activeElement !== null;
         }
 
-        onHover(stat: NetworkStatisticsAggregation){
+        onHover(stat: NetworkStatisticsAggregation) {
             this.activeElement = stat;
         }
 
-        formatTime(date:Date){
+        formatTime(date: Date) {
             return moment(date).format('MMM YYYY');
         }
 
@@ -103,20 +100,24 @@
         padding-bottom: 1px;
         opacity: 0.5;
     }
+
     .value {
         font-size: 18px;
         font-weight: bold;
         line-height: 20px;
-        padding-bottom: 2px;
+        padding-bottom: 0px;
     }
+
     .active-element-time {
         font-size: 12px;
         line-height: 17px;
         align-self: flex-start;
     }
+
     .active-element-value {
         font-size: 18px;
         font-weight: bold;
         line-height: 20px;
+        padding-bottom: 0px;
     }
 </style>
