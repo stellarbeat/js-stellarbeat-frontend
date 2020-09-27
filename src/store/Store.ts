@@ -28,7 +28,7 @@ export default class Store {
     public networkMeasurementStore: NetworkStatisticsStore = new NetworkStatisticsStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationStatisticsStore = new OrganizationStatisticsStore(this.measurementStore);
     public isHaltingAnalysisVisible: boolean = false;
-    public isNetworkAnalysisVisible: boolean = true;
+    public isNetworkAnalysisVisible: boolean = false;
     public isTimeTravel: boolean = false;
 
     public includeWatcherNodes: boolean = true;
