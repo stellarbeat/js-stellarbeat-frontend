@@ -73,7 +73,7 @@
 
     import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import AddValidatorsTable
-        from '@/components/node/simulation/add-validators-table.vue';
+        from '@/components/node/tools/simulation/add-validators-table.vue';
     import Store from '@/store/Store';
     import {
         BButton,

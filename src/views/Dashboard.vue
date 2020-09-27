@@ -81,7 +81,7 @@
     import Vue from 'vue';
     import Search from '../components/search.vue';
     import NetworkStatistics from '../components/network/cards/network-statistics/network-statistics.vue';
-    import HaltingAnalysis from '@/components/node/halting-analysis/halting-analysis.vue';
+    import HaltingAnalysis from '@/components/node/tools/halting-analysis/halting-analysis.vue';
     import {Node, Network, QuorumSet, PublicKey} from '@stellarbeat/js-stellar-domain';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';

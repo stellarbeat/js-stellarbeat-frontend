@@ -71,7 +71,7 @@
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
     import QuorumSetDropdown from '@/components/node/sidebar/quorum-set-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
-    import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
+    import SimulateNewNode from '@/components/node/tools/simulation/simulate-new-node.vue';
     import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
     import OrganizationValidatorsDropdown from '@/components/node/sidebar/organization-validators-dropdown.vue';

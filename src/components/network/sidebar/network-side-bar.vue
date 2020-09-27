@@ -58,11 +58,11 @@
     import Store from '@/store/Store';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
-    import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
+    import SimulateNewNode from '@/components/node/tools/simulation/simulate-new-node.vue';
     import ValidatorsDropdown from '@/components/network/sidebar/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
-    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
+    import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
     import Search from '@/components/search.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';

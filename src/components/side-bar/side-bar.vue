@@ -59,7 +59,7 @@
     import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
-    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
+    import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';
     import {BIcon, BFormCheckbox, BIconHouse, BIconBullseye, BIconBuilding} from 'bootstrap-vue';
 

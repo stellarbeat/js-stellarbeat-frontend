@@ -133,7 +133,7 @@
     import {Component} from 'vue-property-decorator';
     import CrawlTime from '@/components/crawl-time.vue';
     import Search from '@/components/search.vue';
-    import UndoRedo from '@/components/node/simulation/UndoRedo.vue';
+    import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
     import Github from '@/components/organization/logo/github.vue';
     import {
         BNavbar,

@@ -51,7 +51,7 @@
     import OrganizationValidatorsDropdown
         from '@/components/organization/sidebar/organization-validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
-    import SimulateNewNode from '@/components/node/simulation/simulate-new-node.vue';
+    import SimulateNewNode from '@/components/node/tools/simulation/simulate-new-node.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
     import {BModal, VBModal, BBadge, VBTooltip} from 'bootstrap-vue';
 
