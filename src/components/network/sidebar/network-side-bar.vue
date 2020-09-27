@@ -41,12 +41,11 @@
             </li>
             <li class="sb-nav-item">
                 <nav-link
-                        v-b-modal.network-analysis-modal
                         title="Network analysis"
                         :show-icon="true"
                         icon="gear"
+                        v-on:click="store.isNetworkAnalysisVisible = true"
                 />
-                <network-analysis/>
             </li>
         </template>
     </side-bar>
@@ -62,9 +61,6 @@
     import ValidatorsDropdown from '@/components/network/sidebar/validators-dropdown.vue';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
-    import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
-    import stickybits from 'stickybits';
-    import Search from '@/components/search.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
 
     import {BIconX, BModal, VBModal} from 'bootstrap-vue';

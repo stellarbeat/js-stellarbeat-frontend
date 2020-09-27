@@ -1,63 +1,54 @@
 <template>
-    <div class="">
-        <b-modal lazy ok-title="Close" ok-variant="light"
-                 ok-only size="xl" id="network-analysis-modal"
-                 title="Network analysis (beta)"
-        >
+    <b-card no-body>
+        <b-card-header class="p-3">
+            <h3 class="card-title">Network analysis</h3>
+            <div class="card-options">
+                <a href="#" v-on:click.prevent.stop="store.isNetworkAnalysisVisible = false" class="card-options-remove"
+                   data-toggle="card-remove">
+                    <b-icon-x class="mr-2"/>
+                </a>
+            </div>
+        </b-card-header>
+        <b-card-body class="px-3 pt-4 pb-2">
             <div v-bind:class="dimmerClass">
                 <div class="loader mt-2"></div>
                 <div class="dimmer-content">
-                    <div class="mb-2">
-                        <b-button variant="primary" v-on:click="performAnalysis">Perform analysis</b-button>
-                    </div>
                     <div v-if="hasResult">
                         <div class="accordion" role="tablist">
                             <b-card no-body class="mb-1 border-0">
-                                <b-card-header header-tag="header" class="p-1" role="tab">
-                                    <b-button block v-b-toggle.accordion-quorum variant="outline-primary">Quorum intersection
+                                <b-card-header header-tag="header" class="p-0" role="tab">
+                                    <b-button block v-b-toggle.accordion-liveness variant="outline-primary">Liveness risk
                                     </b-button>
                                 </b-card-header>
-                                <b-collapse id="accordion-quorum" visible accordion="my-accordion" role="tabpanel">
-                                    <b-card-body>
-                                        <analysis :fields="minimalQuorumFields" :merged-items="minimalQuorumsMerged"
-                                                  :items="minimalQuorums">
-                                            <template v-slot:title>
-                                                <h3>
-                                                    <b-badge :variant="hasQuorumIntersection ? 'success' : 'danger'">
-                                                        {{hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection'}}
-                                                    </b-badge>
-                                                </h3>
-
-                                            </template>
-                                        </analysis>
-                                    </b-card-body>
-                                </b-collapse>
-                            </b-card>
-                            <b-card no-body class="mb-1 border-0">
-                                <b-card-header header-tag="header" class="p-1" role="tab">
-                                    <b-button block v-b-toggle.accordion-liveness variant="outline-primary">Liveness</b-button>
-                                </b-card-header>
                                 <b-collapse id="accordion-liveness" visible accordion="my-accordion" role="tabpanel">
-                                    <b-card-body>
+                                    <b-card-body class="px-0 pb-0">
                                         <analysis :fields="blockingSetsFields" :merged-items="blockingSetsMerged"
                                                   :items="blockingSets">
                                             <template v-slot:title>
-                                                <h3>
-                                                    Found set(s) of {{blockingSetsMinLength}} nodes across
-                                                    {{blockingSetsMergedMinLength}} organizations that could
-                                                    impact liveness.
-                                                </h3>
+                                                <div class="d-flex justify-content-between">
+                                                    <h3>
+                                                        Found set(s) of {{blockingSetsMinLength}} nodes across
+                                                        {{blockingSetsMergedMinLength}} organizations that could
+                                                        impact liveness.
+                                                    </h3>
+
+                                                </div>
+
+                                                <b-alert show variant="info">
+                                                    Analysis solely based on quorumset configurations. Non validating nodes not yet filtered out. Work in progress.
+                                                </b-alert>
                                             </template>
                                         </analysis>
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
                             <b-card no-body class="mb-1 border-0">
-                                <b-card-header header-tag="header" class="p-1" role="tab">
-                                    <b-button block v-b-toggle.accordion-safety variant="outline-primary">Safety</b-button>
+                                <b-card-header header-tag="header" class="p-0" role="tab">
+                                    <b-button block v-b-toggle.accordion-safety variant="outline-primary">Safety risk
+                                    </b-button>
                                 </b-card-header>
                                 <b-collapse id="accordion-safety" visible accordion="my-accordion" role="tabpanel">
-                                    <b-card-body>
+                                    <b-card-body class="px-0 pb-0">
                                         <analysis :fields="splittingSetsFields" :merged-items="splittingSetsMerged"
                                                   :items="splittingSets">
                                             <template v-slot:title>
@@ -71,34 +62,49 @@
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
+                            <b-card no-body class="mb-1 border-0">
+                                <b-card-header header-tag="header" class="p-0" role="tab">
+                                    <b-button block v-b-toggle.accordion-quorum variant="outline-primary">Quorum intersection
+                                    </b-button>
+                                </b-card-header>
+                                <b-collapse id="accordion-quorum" visible accordion="my-accordion" role="tabpanel">
+                                    <b-card-body class="px-0 pb-0">
+                                        <analysis :fields="minimalQuorumFields" :merged-items="minimalQuorumsMerged"
+                                                  :items="minimalQuorums">
+                                            <template v-slot:title>
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <h3>
+                                                        <b-badge :variant="hasQuorumIntersection ? 'success' : 'danger'">
+                                                            {{hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection'}}
+                                                        </b-badge>
+                                                    </h3>
+                                                    <b-button size="sm" @click="showModal=true">
+                                                        <b-icon-info-circle v-b-modal="'network-analysis-qi-info'" v-b-tooltip:hover.top="'Info'" class="text-muted"/>
+                                                    </b-button>
+                                                    <quorum-intersection-info/>
+                                                </div>
+                                            </template>
+                                        </analysis>
+                                    </b-card-body>
+                                </b-collapse>
+                            </b-card>
                         </div>
                     </div>
                 </div>
-            </div>
-            <template v-slot:modal-footer>
-                <div class="w-100">
-                    <p class="float-left">Powered by <a target="_blank"
-                                                        href="https://github.com/wiberlin/fbas_analyzer">wiberlin/fbas_analyzer</a>
-                    </p>
-                    <b-button
-                            variant="primary"
-                            size="sm"
-                            class="float-right"
-                            @click="showModal=false"
-                    >
-                        Close
-                    </b-button>
+                <div class="mb-2">
+                    <b-button variant="primary" v-on:click="performAnalysis">Perform analysis</b-button>
                 </div>
-            </template>
-        </b-modal>
-    </div>
+            </div>
+        </b-card-body>
+    </b-card>
 </template>
 
 <script lang="ts">
     import {Component, Mixins} from 'vue-property-decorator';
     import {
+        BIconX,
         BFormInput,
-        BModal,
+        BAlert,
         BButton,
         BFormCheckbox,
         BFormSelect,
@@ -107,10 +113,12 @@
         BBadge,
         BCard,
         BCardBody,
+        BCardFooter,
         BCardText,
         BCollapse,
         VBToggle,
-        BCardHeader
+        BCardHeader,
+        BIconInfoCircle, VBModal, VBTooltip
     } from 'bootstrap-vue';
     import {StoreMixin} from '@/mixins/StoreMixin';
     import FbasAnalysisWorker
@@ -118,15 +126,18 @@
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
     import Analysis from '@/components/network/tools/network-analysis/analysis.vue';
+    import QuorumIntersectionInfo from '@/components/network/tools/network-analysis/quorum-intersection-info.vue';
 
     const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
     @Component({
         components: {
+            QuorumIntersectionInfo,
+            BIconX,
             Analysis,
             BFormInput,
-            BModal,
             BButton,
+            BAlert,
             BFormCheckbox,
             BFormSelect,
             BTable,
@@ -134,11 +145,13 @@
             BBadge,
             BCard,
             BCardBody,
+            BCardFooter,
             BCardText,
             BCollapse,
-            BCardHeader
+            BCardHeader,
+            BIconInfoCircle
         },
-        directives: {'b-toggle': VBToggle}
+        directives: {'b-toggle': VBToggle, 'b-modal': VBModal, 'b-tooltip': VBTooltip}
     })
     export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
         protected fbasAnalysisWorker = new _FbasAnalysisWorker();
@@ -180,6 +193,9 @@
 
         async mounted() {
             this.isLoading = false;
+            this.$nextTick(() => {
+                this.$scrollTo('#network-analysis-card');
+            });
             this.fbasAnalysisWorker.onmessage = (
                 event: { data: { type: string, result: any } }
             ) => {

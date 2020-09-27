@@ -5,7 +5,7 @@
             <b-form-checkbox v-model="merge"
                              class="sb-nav-item sb-nav-toggle mt-1"
                              switch>
-                Merge by organization
+                Organizations
             </b-form-checkbox>
             <b-table id="network-analysis-table" striped hover :fields="fields"
                      :items="merge ? mergedItems : items"
@@ -88,9 +88,10 @@
         text-transform: none;
         font-size: 0.9375rem;
         font-weight: 700;
+        padding-left: 0!important;
     }
 
     .my-tbody tr td {
-
+        padding-left: 0!important;
     }
 </style>

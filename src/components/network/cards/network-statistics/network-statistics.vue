@@ -11,7 +11,7 @@
                         Watcher nodes are configured to watch the activity from the network. They do not actively vote on the network.
                     </p>
 
-                    <h4>What if your node not showing up?</h4>
+                    <h4>What if your node is missing?</h4>
                     <p>
                         A common issue is a closed port (default: 11625). Send us an <a
                             href="mailto:stellarbeatio@gmail.com"
@@ -156,7 +156,7 @@
                 <template v-slot:info>
                     <h3>Network transitive quorumset</h3>
                     <p class="my-4">
-                        The network transitive quorumset is a heuristic for a correctly configured network.
+                        The network transitive quorumset is a heuristic for a correctly configured network.<br/>
                         It is the most important strongly connected component that has no outgoing edges. <br/>In the main graph above, it is marked with a light blue background.
                     </p>
                 </template>

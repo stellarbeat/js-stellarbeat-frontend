@@ -34,43 +34,16 @@
                         <network-visual-navigator :view="view"/>
                     </div>
                 </div>
-                <!--div class="row">
-                    <div class="col">
-                        <div class="card border" id="map">
-                            <div class="card-body border-0 pt-3 px-3 pb-0">
-                                <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
-                                     class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
-                                </div>
-                                <world-map/>
-                            </div>
-                            <div class="card-footer border-0 px-3 py-1">
-                                <div class="pl-0 sb-bread-crumbs-container">
-                                    <transition
-                                            name="fade"
-                                            mode="out-in"
-                                    >
-                                        <b-breadcrumb class="sb-bread-crumbs p-0 mb-0" :items="breadCrumbs">
-                                        </b-breadcrumb>
-                                    </transition>
-                                </div>
-                            </div>
-                        </div>
+                <div class="row" v-if="store.isNetworkAnalysisVisible" id="network-analysis-card">
+                    <div class="col-12">
+                        <network-analysis></network-analysis>
                     </div>
-                </div!-->
+                </div>
                 <div class="row">
                     <div class="col-12">
                         <router-view name="dashboard"/>
                     </div>
                 </div>
-                <!--div class="row">
-                    <div class="col">
-                        <div class="card border" id="graph">
-                            <div class="card-body border-0 p-3">
-                                <network-graph-card/>
-                            </div>
-                        </div>
-                    </div>
-                </div!-->
             </div>
         </div>
     </div>
@@ -91,10 +64,12 @@
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
     import {BBreadcrumb} from 'bootstrap-vue';
+    import NetworkAnalysis from '@/components/network/tools/network-analysis/network-analysis.vue';
 
     @Component({
         name: 'dashboard',
         components: {
+            NetworkAnalysis,
             TimeTravelBadge,
             SimulationBadge,
             CrawlTime,
