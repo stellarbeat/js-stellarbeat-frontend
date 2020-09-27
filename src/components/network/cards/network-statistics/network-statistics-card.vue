@@ -8,21 +8,26 @@
                     <div class="text-muted">
                         {{title}}
                     </div>
-                    <div v-if="hasActiveElement" class="d-flex">
-                        <div class="active-element-value mr-1">
-                            {{isBool ? activeElement[statsProperty] * 100 + '%' : activeElement[statsProperty]}}
+                    <div v-if="!(isSimulationSensitive && store.isSimulation)">
+                        <div v-if="hasActiveElement" class="d-flex">
+                            <div class="active-element-value mr-1">
+                                {{isBool ? activeElement[statsProperty] * 100 + '%' : activeElement[statsProperty]}}
+                            </div>
+                            <div class="active-element-time align-self-start text-muted">
+                                {{formatTime(activeElement.time)}}
+                            </div>
                         </div>
-                        <div class="active-element-time align-self-start text-muted">
-                            {{formatTime(activeElement.time)}}
+                        <div v-else>
+                            <div v-if="isBool" class="value" style="color: #5eba00">
+                                <b-badge :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
+                            </div>
+                            <div v-else class="value">
+                                {{value}}
+                            </div>
                         </div>
                     </div>
-                    <div v-else>
-                        <div v-if="isBool" class="value" style="color: #5eba00">
-                            <b-badge :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
-                        </div>
-                        <div v-else class="value">
-                            {{value}}
-                        </div>
+                    <div v-else class="value">
+                        <b-badge variant="info">Simulation</b-badge>
                     </div>
                 </div>
                 <b-button size="sm" @click="showModal=true" style="border: none; box-shadow: none">
@@ -41,18 +46,18 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
     import moment from 'moment';
-    import {Component, Prop} from 'vue-property-decorator';
+    import {Component, Mixins, Prop} from 'vue-property-decorator';
     import {BTooltip, BIconInfoCircle, VBTooltip, BButton, BModal, BBadge} from 'bootstrap-vue';
     import NetworkStatisticsChart from '@/components/network/cards/network-statistics/network-statistics-chart.vue';
     import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
+    import {StoreMixin} from '@/mixins/StoreMixin';
 
     @Component({
         components: {NetworkStatisticsChart, BTooltip, BIconInfoCircle, BButton, BModal, BBadge},
         directives: {'b-tooltip': VBTooltip}
     })
-    export default class NetworkStatisticsCard extends Vue {
+    export default class NetworkStatisticsCard extends Mixins(StoreMixin) {
         @Prop({default: true})
         isLoading!: boolean;
         @Prop()
@@ -69,6 +74,8 @@
         statsProperty!: string;
         @Prop({default: false})
         isBool!: boolean;
+        @Prop({default: false})
+        isSimulationSensitive!: boolean;
 
         activeElement: NetworkStatisticsAggregation | null = null;
         showModal: boolean = false;

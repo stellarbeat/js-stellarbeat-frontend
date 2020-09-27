@@ -113,7 +113,7 @@
             <network-statistics-card :value="network.networkStatistics.topTierFilteredSize" :is-loading="isLoading"
                                      title="Top tier validators" tooltip="Number of active validators in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierFilteredAverage"
-                                     :year-statistics="yearStatistics">
+                                     :year-statistics="yearStatistics" :is-simulation-sensitive="true">
                 <template v-slot:info>
                     <h3>Top tier active validators</h3>
                     <p class="my-4">
@@ -132,7 +132,7 @@
                                      title="Top tier organizations"
                                      tooltip="Number of active organizations in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierOrgsFilteredAverage"
-                                     :year-statistics="yearStatistics">
+                                     :year-statistics="yearStatistics"  :is-simulation-sensitive="true">
                 <template v-slot:info>
                     <h3>Top tier active organizations</h3>
                     <p class="my-4">
@@ -169,7 +169,7 @@
                                      title="Quorum intersection" tooltip="Does the network have quorum intersection"
                                      :initialDataLoaded="initialDataLoaded"
                                      stats-property="hasQuorumIntersectionAverage"
-                                     :year-statistics="yearStatistics">
+                                     :year-statistics="yearStatistics"  :is-simulation-sensitive="true">
                 <template v-slot:info>
                     <h3>Quorum intersection</h3>
                     <p class="my-4">
