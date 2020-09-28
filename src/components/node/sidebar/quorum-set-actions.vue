@@ -170,7 +170,7 @@
             this.inputState = null;
             this.editingThreshold = false;
             (this.$refs.dropdown as any).hide(true);
-            this.store.editQuorumSetThreshold(this.quorumSet, this.newThreshold);
+            this.store.editQuorumSetThreshold(this.quorumSet, Number(this.newThreshold));
         }
 
         onValidatorsSelected(validators: Node[]) {
