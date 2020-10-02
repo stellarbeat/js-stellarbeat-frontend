@@ -112,6 +112,35 @@
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
+                            <b-card no-body class="mb-1 border-0">
+                                <b-card-header header-tag="header" class="p-0" role="tab">
+                                    <b-button block v-b-toggle.accordion-top-tier variant="outline-primary">Top tier
+                                    </b-button>
+                                </b-card-header>
+                                <b-collapse id="accordion-top-tier" visible accordion="my-accordion" role="tabpanel">
+                                    <b-card-body class="px-0 pb-0">
+                                        <analysis :fields="topTierFields" :merged-items="topTier"
+                                                  :items="topTier" :merged="resultIsMerged">
+                                            <template v-slot:title>
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <h3 class="mb-0">
+                                                        Top tier has size {{topTier.length}}
+                                                    </h3>
+
+
+                                                    <b-button size="sm" @click="showModal=true">
+                                                        <b-icon-info-circle v-b-modal="'network-analysis-top-tier-info'"
+                                                                            v-b-tooltip:hover.top="'Info'"
+                                                                            class="text-muted"/>
+                                                    </b-button>
+                                                    <top-tier-info/>
+                                                </div>
+                                                <b-badge variant="info">{{topTierIsSymmetric ? 'Symmetric' : 'Not symmetric'}}</b-badge>
+                                            </template>
+                                        </analysis>
+                                    </b-card-body>
+                                </b-collapse>
+                            </b-card>
                         </div>
                     </div>
                 </div>
@@ -159,14 +188,16 @@
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
     import Analysis from '@/components/network/tools/network-analysis/analysis.vue';
-    import QuorumIntersectionInfo from '@/components/network/tools/network-analysis/quorum-intersection-info.vue';
-    import SafetyInfo from '@/components/network/tools/network-analysis/safety-info.vue';
-    import LivenessInfo from '@/components/network/tools/network-analysis/liveness-info.vue';
+    import QuorumIntersectionInfo from '@/components/network/tools/network-analysis/info/quorum-intersection-info.vue';
+    import SafetyInfo from '@/components/network/tools/network-analysis/info/safety-info.vue';
+    import LivenessInfo from '@/components/network/tools/network-analysis/info/liveness-info.vue';
+    import TopTierInfo from '@/components/network/tools/network-analysis/info/top-tier-info.vue';
 
     const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
     @Component({
         components: {
+            TopTierInfo,
             LivenessInfo,
             SafetyInfo,
             QuorumIntersectionInfo,
@@ -222,6 +253,16 @@
             {key: 'splittingSets', label: 'Minimal splitting sets'}
         ];
 
+        protected topTier: string[] = [];
+        protected topTierIsSymmetric: boolean = false;
+
+        get topTierFields() {
+            return [
+                // A column that needs custom formatting
+                {key: 'topTier', label: this.resultIsMerged ? 'Organizations' : 'Validators'}
+            ];
+        }
+
         performAnalysis() {
             this.isLoading = true;
             this.fbasAnalysisWorker.postMessage({
@@ -276,6 +317,14 @@
                                         };
                                     });
                             }
+
+                            this.topTier = event.data.result.organizationAnalysis.top_tier.map((top:string) => {
+                                return {
+                                    'topTier': top
+                                }
+                            });
+                            this.topTierIsSymmetric = event.data.result.organizationAnalysis.symmetric_top_tier_exists;
+
                             if (!event.data.result.merged) {
                                 this.resultIsMerged = false;
                                 this.hasQuorumIntersection = event.data.result.nodesAnalysis.has_intersection; //quorum intersection based on nodesAnalysis is more accurate
@@ -312,6 +361,16 @@
                                             };
                                         });
                                 }
+
+                                this.topTier = event.data.result.nodesAnalysis.top_tier
+                                    .map((top:string) => this.network.getNodeByPublicKey(top)!.displayName)
+                                    .sort()
+                                    .map((top:string) => {
+                                    return {
+                                        'topTier': top
+                                    }
+                                })
+                                this.topTierIsSymmetric = event.data.result.nodesAnalysis.symmetric_top_tier_exists;
                             }
 
                         }

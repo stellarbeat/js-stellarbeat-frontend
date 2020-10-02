@@ -85,10 +85,10 @@
         text-transform: none;
         font-size: 0.9375rem;
         font-weight: 700;
-        padding-left: 0!important;
+
     }
 
     .my-tbody tr td {
-        padding-left: 0!important;
+
     }
 </style>
