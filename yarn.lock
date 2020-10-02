@@ -9774,6 +9774,11 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
+stellar_analysis@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.1.0.tgz#503340190b02230bba263e542b482335899d19e9"
+  integrity sha512-AY1F92o7GXig7StMhzZHXhbXscv+fHQp6uuMK/CSeJd9RQ27DWukxS4sFUHGcANUYRNj2J7moMEF8IVg8FbEgA==
+
 stickybits@^3.7.7:
   version "3.7.7"
   resolved "https://registry.yarnpkg.com/stickybits/-/stickybits-3.7.7.tgz#4e644022e7e7ce924d34fbbf7eff7d2f5d8c5dd3"

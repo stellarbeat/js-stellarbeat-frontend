@@ -2,13 +2,8 @@
     <div class="">
         <slot name="title"></slot>
         <div>
-            <b-form-checkbox v-model="merge"
-                             class="sb-nav-item sb-nav-toggle mt-1"
-                             switch>
-                Organizations
-            </b-form-checkbox>
             <b-table id="network-analysis-table" striped hover :fields="fields"
-                     :items="merge ? mergedItems : items"
+                     :items="merged ? mergedItems : items"
                      :per-page="perPage" thead-class="my-thead"
                      tbody-class="my-tbody" :current-page="currentPage">
                 <template v-slot:head(minimalQuorums)="data">
@@ -68,6 +63,8 @@
         protected merge: boolean = false;
 
         @Prop()
+        merged!:boolean;
+        @Prop()
         items!: any;
         @Prop()
         mergedItems!: any;
@@ -78,7 +75,7 @@
         protected currentPage: number = 1;
 
         get rows() {
-            return this.merge ? this.mergedItems.length : this.items.length;
+            return this.merged ? this.mergedItems.length : this.items.length;
         }
     }
 </script>
