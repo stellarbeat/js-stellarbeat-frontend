@@ -26,18 +26,24 @@
                                         <analysis :fields="blockingSetsFields" :merged-items="blockingSetsMerged"
                                                   :items="blockingSets" :merged="resultIsMerged">
                                             <template v-slot:title>
-                                                <div class="d-flex justify-content-between">
-                                                    <h3 v-if="!resultIsMerged">
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                <h3 v-if="!resultIsMerged">
                                                         Found set(s) of {{blockingSetsMinLength}} nodes across
                                                         {{blockingSetsMergedMinLength}} organizations that could
                                                         impact liveness.
                                                     </h3>
                                                     <h3 v-else>
-                                                        Found set(s) of {{blockingSetsMergedMinLength}} organizations that could
+                                                        Found set(s) of {{blockingSetsMergedMinLength}} organizations
+                                                        that could
                                                         impact liveness.
                                                     </h3>
-
+                                                    <b-button size="sm" @click="showModal=true">
+                                                        <b-icon-info-circle v-b-modal="'network-analysis-liveness-info'"
+                                                                            v-b-tooltip:hover.top="'Info'"
+                                                                            class="text-muted"/>
+                                                    </b-button>
                                                 </div>
+                                                <liveness-info/>
                                             </template>
                                         </analysis>
                                     </b-card-body>
@@ -53,15 +59,24 @@
                                         <analysis :fields="splittingSetsFields" :merged-items="splittingSetsMerged"
                                                   :items="splittingSets" :merged="resultIsMerged">
                                             <template v-slot:title>
-                                                <h3 v-if="!resultIsMerged">
-                                                    Found set(s) of {{splittingSetsMinLength}} nodes across
-                                                    {{splittingSetsMergedMinLength}} organizations that could
-                                                    impact safety.
-                                                </h3>
-                                                <h3 v-else>
-                                                    Found set(s) of {{splittingSetsMergedMinLength}} organizations that could
-                                                    impact safety.
-                                                </h3>
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <h3 v-if="!resultIsMerged">
+                                                        Found set(s) of {{splittingSetsMinLength}} nodes across
+                                                        {{splittingSetsMergedMinLength}} organizations that could
+                                                        impact safety.
+                                                    </h3>
+                                                    <h3 v-else>
+                                                        Found set(s) of {{splittingSetsMergedMinLength}} organizations
+                                                        that could
+                                                        impact safety.
+                                                    </h3>
+                                                    <b-button size="sm" @click="showModal=true">
+                                                        <b-icon-info-circle v-b-modal="'network-analysis-safety-info'"
+                                                                            v-b-tooltip:hover.top="'Info'"
+                                                                            class="text-muted"/>
+                                                    </b-button>
+                                                </div>
+                                                <safety-info/>
                                             </template>
                                         </analysis>
                                     </b-card-body>
@@ -145,11 +160,15 @@
     import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
     import Analysis from '@/components/network/tools/network-analysis/analysis.vue';
     import QuorumIntersectionInfo from '@/components/network/tools/network-analysis/quorum-intersection-info.vue';
+    import SafetyInfo from '@/components/network/tools/network-analysis/safety-info.vue';
+    import LivenessInfo from '@/components/network/tools/network-analysis/liveness-info.vue';
 
     const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
     @Component({
         components: {
+            LivenessInfo,
+            SafetyInfo,
             QuorumIntersectionInfo,
             BIconX,
             Analysis,
@@ -209,6 +228,7 @@
                 nodes: this.network.nodes,
                 organizations: this.network.organizations,
                 mergeByOrganizations: this.mergeByOrganizations,
+                failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey)
             });
         }
 
