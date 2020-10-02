@@ -2,7 +2,8 @@
     <div>
         <div class="row row-cards row-deck">
             <div class="col-12">
-                <network-statistics :network="network"/>
+                <!--network-statistics :network="network"/!-->
+                <network-statistics-migration/>
             </div>
             <div class="col-lg-4 col-xl-4">
                 <NodesCountryDistribution/>
@@ -13,7 +14,7 @@
             <div class="col-lg-4 col-xl-4">
                 <ValidatorsServerLoad/>
             </div>
-            <div class="col-lg-6 col-xl-6">
+            <!--div class="col-lg-6 col-xl-6">
                 <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
                     <template v-slot:info>
                         <liveness-info/>
@@ -26,7 +27,7 @@
                         <safety-info/>
                     </template>
                 </NetworkAnalysis>
-            </div>
+            </div!-->
             <div class="col-lg-6 col-xl-6">
                 <network-organizations/>
             </div>
@@ -50,9 +51,12 @@
     import {BCard, BListGroup, BListGroupItem, BBadge} from 'bootstrap-vue';
     import LivenessInfo from '@/components/network/cards/network-risk-analysis-charts/liveness-info.vue';
     import SafetyInfo from '@/components/network/cards/network-risk-analysis-charts/safety-info.vue';
+    import NetworkStatisticsMigration
+        from '@/components/network/cards/network-statistics/network-statistics-migration.vue';
 
     @Component({
         components: {
+            NetworkStatisticsMigration,
             SafetyInfo,
             LivenessInfo,
             NetworkAnalysis,
