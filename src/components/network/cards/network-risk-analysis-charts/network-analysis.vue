@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-    import Chart, {ChartData, ChartDataSets, ChartLegendLabelItem, ChartTooltipItem} from 'chart.js';
+    import {ChartData, ChartDataSets, ChartLegendLabelItem, ChartTooltipItem} from 'chart.js';
     import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
     import {BTooltip, BIconInfoCircle, BButton, BButtonGroup, BIconExclamationTriangle, BIconExclamationCircle, VBTooltip, BModal, VBModal} from 'bootstrap-vue';
     import DateNavigator from '@/components/date-navigator.vue';
@@ -377,6 +377,7 @@
                 this.failed = false;
                 this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, this.selectedDate);
             } catch (e) {
+                console.log(e);
                 this.failed = true;
             }
             this.isLoading = false;
@@ -397,11 +398,12 @@
 
         async updateHours24Chart() {
             this.isLoading = true;
-            let startOfDay = moment(this.selectedDate).startOf('day').toDate();
-            let tomorrow = moment(this.selectedDate).startOf('day').add(1, 'd').toDate();
+            let startOfDay = moment(this.selectedDate).utc().startOf('day').toDate();
+            let tomorrow = moment(this.selectedDate).utc().startOf('day').add(1, 'd').toDate();
             try {
                 this.failed = false;
-                this.hour24Statistics = await this.store.networkMeasurementStore.getStatistics('stellar-public', startOfDay, tomorrow);
+                let stats = await this.store.networkMeasurementStore.getStatistics('stellar-public', startOfDay, tomorrow);
+                this.hour24Statistics = stats;
             } catch (e) {
                 this.failed = true;
             }

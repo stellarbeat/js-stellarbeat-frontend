@@ -39,7 +39,6 @@
 @keyframes highlight {
     0% {
         background: #cacacd;
-        border: 1px solid #cacacd;
     }
     100% {
         background: white;

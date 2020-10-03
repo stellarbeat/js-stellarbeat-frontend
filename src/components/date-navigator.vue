@@ -11,7 +11,7 @@
                     <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
                 </b-form-datepicker>
                 <b-form-timepicker size="sm" v-else v-model="time" class="time-picker p-0"
-                              @hidden="timeInputHandler" :key="time">
+                              @hidden="timeInputHandler" :key="timeKey">
                     <template v-slot:button-content></template>
                 </b-form-timepicker>
             </div>
@@ -71,6 +71,7 @@
 
         datePickerDate: Date = this.selectedDate;
         time: string = moment(this.selectedDate).format('HH:mm');
+        timeKey: string = this.time; //needed for animation trigger
 
         canGoBack() {
             return this.statisticsDateTimeNavigator.canGoBack(this.bucketSize, this.datePickerDate);
@@ -80,6 +81,7 @@
             this.$nextTick(() => {
                 this.datePickerDate = this.statisticsDateTimeNavigator.goBack(this.bucketSize, this.datePickerDate);
                 this.time = moment(this.datePickerDate).format('HH:mm');
+                this.timeKey = this.time;
                 this.$emit('dateChanged', this.datePickerDate);
             });
         }
@@ -88,6 +90,7 @@
             this.$nextTick(() => {
                 this.datePickerDate = this.statisticsDateTimeNavigator.goForward(this.bucketSize, this.datePickerDate);
                 this.time = moment(this.datePickerDate).format('HH:mm');
+                this.timeKey = this.time;
                 this.$emit('dateChanged', this.datePickerDate);
             });
 
@@ -95,16 +98,17 @@
 
         @Watch('selectedDate', {deep: true})
         async onSelectedDateChanged(to: string, from: string) {
-            console.log(this.selectedDate);
             this.datePickerDate = this.selectedDate;
             this.time = moment(this.selectedDate).format('HH:mm');
+            this.timeKey = this.time;
         }
 
         @Watch('datePickerDate', {})
         async onDatePickerDateChanged(to: string, from: string) {
             if (this.datePickerDate && from !== null && this.selectedDate !== this.datePickerDate) {
                 this.time = moment(this.datePickerDate).format('HH:mm');
-                this.$emit('dateChanged', this.datePickerDate);
+                this.timeKey = this.time;
+                this.$emit('dateChanged', new Date(this.datePickerDate));
             }
         }
 
@@ -112,6 +116,7 @@
             if (this.time !== moment(this.datePickerDate).startOf('minutes').format('HH:mm:ss')) {
                 this.datePickerDate = moment(this.datePickerDate).hours(Number(this.time.substr(0, 2))).minutes(Number(this.time.substr(3, 2))).toDate();
                 this.time = moment(this.datePickerDate).format('HH:mm');
+                this.timeKey = this.time;
                 this.$emit('dateChanged', this.datePickerDate);
             }
         }
