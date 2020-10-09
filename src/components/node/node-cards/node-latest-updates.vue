@@ -80,7 +80,7 @@
                         </div>
                         <div class="d-flex align-items-center mb-2">
                             <b-button-toolbar>
-                                <b-button-group size="sm" >
+                                <b-button-group size="sm">
                                     <b-button v-b-tooltip="'View diff'"
                                               v-on:click="showDiff(updatesOnDate.snapshot)">
                                         <b-icon-file-diff/>
@@ -191,43 +191,37 @@
                 this.deltas = new Map();
                 this.updatesPerDate = [];
                 snapshots = await this.store.fetchNodeSnapshotsByPublicKey(this.node.publicKey!);
-                snapshots = snapshots.map((snapshot:any) => {
-                        return {
-                            startDate: snapshot.startDate,
-                            endDate: snapshot.endDate,
-                            publicKey: snapshot.node.publicKey,
-                            ip: snapshot.node.ip,
-                            port: snapshot.node.port,
-                            host: snapshot.node.host,
-                            name: snapshot.node.name,
-                            homeDomain: snapshot.node.homeDomain,
-                            historyUrl: snapshot.node.historyUrl,
-                            alias: snapshot.node.alias,
-                            isp: snapshot.node.isp,
-                            ledgerVersion: snapshot.node.ledgerVersion,
-                            overlayVersion: snapshot.node.overlayVersion,
-                            overlayMinVersion: snapshot.node.overlayMinVersion,
-                            versionStr: snapshot.node.versionStr,
-                            countryCode: snapshot.node.geoData.countryCode,
-                            countryName: snapshot.node.geoData.countryName,
-                            longitude: snapshot.node.geoData.longitude,
-                            latitude: snapshot.node.geoData.latitude,
-                            organizationId: snapshot.node.organizationId,
-                            quorumSet: snapshot.node.quorumSet
-                        }
-                })
-                snapshots.forEach((snapshot: any) => {
-                    if (snapshot.quorumSet === undefined)
-                        snapshot.quorumSet = new QuorumSet('empty', 0);
+                snapshots = snapshots.map((snapshot: any) => {
+                    let quorumSet:QuorumSet;
+                    if (snapshot.node.quorumSet === undefined)
+                        quorumSet = new QuorumSet('empty', 0);
                     else
-                        snapshot.quorumSet = this.mapValidatorsToNames(snapshot.quorumSet);
-                });
+                        quorumSet = this.mapValidatorsToNames(snapshot.node.quorumSet);
 
-                /*snapshots.forEach(
-                    (snapshot: any) => snapshot.quorumSet.innerQuorumSets.sort(
-                        (a:QuorumSet, b:QuorumSet) => JSON.stringify(a.validators)!.localeCompare(JSON.stringify(b.validators))
-                    )
-                );*/ //for cleaner visual diffing
+                    return {
+                        startDate: snapshot.startDate,
+                        endDate: snapshot.endDate,
+                        publicKey: snapshot.node.publicKey,
+                        ip: snapshot.node.ip,
+                        port: snapshot.node.port,
+                        host: snapshot.node.host,
+                        name: snapshot.node.name,
+                        homeDomain: snapshot.node.homeDomain,
+                        historyUrl: snapshot.node.historyUrl,
+                        alias: snapshot.node.alias,
+                        isp: snapshot.node.isp,
+                        ledgerVersion: snapshot.node.ledgerVersion,
+                        overlayVersion: snapshot.node.overlayVersion,
+                        overlayMinVersion: snapshot.node.overlayMinVersion,
+                        versionStr: snapshot.node.versionStr,
+                        countryCode: snapshot.node.geoData.countryCode,
+                        countryName: snapshot.node.geoData.countryName,
+                        longitude: snapshot.node.geoData.longitude,
+                        latitude: snapshot.node.geoData.latitude,
+                        organizationId: snapshot.node.organizationId,
+                        quorumSet: quorumSet
+                    };
+                });
 
                 for (let i = snapshots.length - 2; i >= 0; i--) {
                     let updates: Update[] = [];
