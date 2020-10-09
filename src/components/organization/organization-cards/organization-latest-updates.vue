@@ -9,10 +9,10 @@
         </div>
         <div class="card-body py-0 overflow-auto">
             <b-list-group v-if="!isLoading" flush class="w-100 mb-4">
-                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
+                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date.getTime()"
                                    class="px-0 pb-0">
                     <div class="d-flex justify-content-between flex-wrap">
-                        <div>
+                        <div class="w-75">
                             <div class="text-muted mb-1" style="font-size: small">{{new
                                 Date(updatesOnDate.date).toLocaleString()}}
                             </div>
@@ -89,7 +89,14 @@
 <script lang="ts">
     import {Component, Prop} from 'vue-property-decorator';
     import Vue from 'vue';
-    import {Network, Node, Organization, PublicKey, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {
+        Network,
+        Node,
+        Organization,
+        OrganizationSnapShot,
+        PublicKey,
+        QuorumSet
+    } from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import AsyncComputed from 'vue-async-computed-decorator';
     import {Delta, formatters, create, DiffPatcher} from 'jsondiffpatch';
@@ -153,11 +160,26 @@
 
                 this.deltas = new Map();
                 this.updatesPerDate = [];
-                snapshots = await this.store.fetchOrganizationSnapshots(this.organization.id);
-                snapshots.map((snapshot: any) =>
-                    snapshot.validators = snapshot.validators.map(
-                        (validator: PublicKey) => this.network.getNodeByPublicKey(validator) && this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator)
-                );
+                snapshots = await this.store.fetchOrganizationSnapshotsById(this.organization.id);
+                snapshots = snapshots.map((snapshot: OrganizationSnapShot) =>{
+                    return {
+                        validators: snapshot.organization.validators.map(
+                            (validator: PublicKey) => this.network.getNodeByPublicKey(validator) && this.network.getNodeByPublicKey(validator)!.name ? this.network.getNodeByPublicKey(validator)!.name : validator),
+                        startDate: snapshot.startDate,
+                        endDate: snapshot.endDate,
+                        id: snapshot.organization.id,
+                        name: snapshot.organization.name,
+                        dba: snapshot.organization.dba,
+                        url: snapshot.organization.url,
+                        officialEmail: snapshot.organization.officialEmail,
+                        phoneNumber: snapshot.organization.phoneNumber,
+                        physicalAddress: snapshot.organization.physicalAddress,
+                        twitter: snapshot.organization.twitter,
+                        github: snapshot.organization.github,
+                        description: snapshot.organization.description,
+                        keybase: snapshot.organization.keybase
+                    }
+                });
                 let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
                 for (let i = snapshots.length - 2; i >= 0; i--) {
                     let updates: Update[] = [];

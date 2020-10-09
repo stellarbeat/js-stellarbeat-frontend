@@ -33,6 +33,12 @@
             <div class="col-lg-6 col-xl-6">
                 <network-nodes/>
             </div>
+            <div class="col-lg-6 col-xl-6">
+                <network-organization-updates/>
+            </div>
+            <div class="col-lg-6 col-xl-6">
+                <network-validator-updates/>
+            </div>
         </div>
     </div>
 </template>
@@ -50,9 +56,13 @@
     import {BCard, BListGroup, BListGroupItem, BBadge} from 'bootstrap-vue';
     import LivenessInfo from '@/components/network/cards/network-risk-analysis-charts/liveness-info.vue';
     import SafetyInfo from '@/components/network/cards/network-risk-analysis-charts/safety-info.vue';
+    import NetworkValidatorUpdates from '@/components/network/cards/network-validator-updates.vue';
+    import NetworkOrganizationUpdates from '@/components/network/cards/network-organization-updates.vue';
 
     @Component({
         components: {
+            NetworkOrganizationUpdates,
+            NetworkValidatorUpdates,
             SafetyInfo,
             LivenessInfo,
             NetworkAnalysis,

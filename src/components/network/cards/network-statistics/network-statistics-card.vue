@@ -18,11 +18,13 @@
                             </div>
                         </div>
                         <div v-else>
-                            <div v-if="isBool" class="value" style="color: #5eba00">
-                                <b-badge :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
-                            </div>
-                            <div v-else class="value">
-                                {{value}}
+                            <div v-if="value !== undefined">
+                                <div v-if="isBool" class="value" style="color: #5eba00">
+                                    <b-badge :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
+                                </div>
+                                <div v-else class="value">
+                                    {{value}}
+                                </div>
                             </div>
                         </div>
                     </div>

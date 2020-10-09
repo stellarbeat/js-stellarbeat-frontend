@@ -8,11 +8,11 @@
             Error fetching data
         </div>
         <div class="card-body py-0 overflow-auto">
-            <b-list-group v-if="!isLoading" flush class="w-100 mb-4">
-                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
+            <b-list-group v-if="!isLoading" flush class="w-100 mb-4 list-group-striped">
+                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date.getTime()"
                                    class="px-0 pb-0 dimmer-content">
                     <div class="d-flex justify-content-between flex-wrap">
-                        <div>
+                        <div class="w-75">
                             <div class="text-muted mb-1" style="font-size: small">{{new
                                 Date(updatesOnDate.date).toLocaleString()}}
                             </div>
@@ -190,7 +190,32 @@
 
                 this.deltas = new Map();
                 this.updatesPerDate = [];
-                snapshots = await this.store.fetchNodeSnapshots(this.node.publicKey!);
+                snapshots = await this.store.fetchNodeSnapshotsByPublicKey(this.node.publicKey!);
+                snapshots = snapshots.map((snapshot:any) => {
+                        return {
+                            startDate: snapshot.startDate,
+                            endDate: snapshot.endDate,
+                            publicKey: snapshot.node.publicKey,
+                            ip: snapshot.node.ip,
+                            port: snapshot.node.port,
+                            host: snapshot.node.host,
+                            name: snapshot.node.name,
+                            homeDomain: snapshot.node.homeDomain,
+                            historyUrl: snapshot.node.historyUrl,
+                            alias: snapshot.node.alias,
+                            isp: snapshot.node.isp,
+                            ledgerVersion: snapshot.node.ledgerVersion,
+                            overlayVersion: snapshot.node.overlayVersion,
+                            overlayMinVersion: snapshot.node.overlayMinVersion,
+                            versionStr: snapshot.node.versionStr,
+                            countryCode: snapshot.node.geoData.countryCode,
+                            countryName: snapshot.node.geoData.countryName,
+                            longitude: snapshot.node.geoData.longitude,
+                            latitude: snapshot.node.geoData.latitude,
+                            organizationId: snapshot.node.organizationId,
+                            quorumSet: snapshot.node.quorumSet
+                        }
+                })
                 snapshots.forEach((snapshot: any) => {
                     if (snapshot.quorumSet === undefined)
                         snapshot.quorumSet = new QuorumSet('empty', 0);

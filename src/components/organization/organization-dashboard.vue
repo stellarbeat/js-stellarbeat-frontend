@@ -21,10 +21,10 @@
             </div>
         </div>
         <div class="row row-cards">
-            <div class="col-lg-12 col-xl-8">
+            <div class="col-lg-12 col-xl-12">
                 <organization-validators :organization="organization"/>
             </div>
-            <div class="col-lg-12 col-xl-4">
+            <div class="col-lg-12 col-xl-12">
                 <organization-latest-updates :organization="organization"/>
             </div>
         </div>

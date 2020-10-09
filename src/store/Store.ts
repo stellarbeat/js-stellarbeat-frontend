@@ -1,5 +1,13 @@
 import axios from 'axios';
-import {Network, Node, Organization, OrganizationId, PublicKey, QuorumSet} from '@stellarbeat/js-stellar-domain';
+import {
+    Network,
+    Node,
+    Organization,
+    OrganizationId,
+    OrganizationSnapShot,
+    PublicKey,
+    QuorumSet
+} from '@stellarbeat/js-stellar-domain';
 import {Change, ChangeQueue} from '@/services/change-queue/change-queue';
 import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
 import {QuorumSetValidatorDelete} from '@/services/change-queue/changes/quorum-set-validator-delete';
@@ -12,6 +20,7 @@ import StatisticsStore from '@/store/StatisticsStore';
 import NodeStatisticsStore from '@/store/NodeStatisticsStore';
 import OrganizationStatisticsStore from '@/store/OrganizationStatisticsStore';
 import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
+import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
@@ -53,23 +62,45 @@ export default class Store {
         return this._haltingAnalysisPublicKey;
     }
 
-    async fetchNodeSnapshots(id:PublicKey):Promise<Object[]> {
+    async fetchNodeSnapshotsByPublicKey(id:PublicKey):Promise<NodeSnapShot[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
         let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/node/' + id + '/snapshots', {params});
         if (result.data) {
-            return result.data;
+            return result.data.map((item:object) => NodeSnapShot.fromJSON(item));
         }
 
         return [];
     }
 
-    async fetchOrganizationSnapshots(id:OrganizationId):Promise<Object[]> {
+    async fetchNodeSnapshots():Promise<NodeSnapShot[]> {
+        let params:any = {};
+        params['at'] = this.network.crawlDate;
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/node-snapshots', {params});
+        if (result.data) {
+            return result.data.map((item:object) => NodeSnapShot.fromJSON(item));
+        }
+
+        return [];
+    }
+
+    async fetchOrganizationSnapshotsById(id:OrganizationId):Promise<Object[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
         let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organization/' + id + '/snapshots', {params});
         if (result.data) {
-            return result.data;
+            return result.data.map((item:object) => OrganizationSnapShot.fromJSON(item));
+        }
+
+        return [];
+    }
+
+    async fetchOrganizationSnapshots():Promise<OrganizationSnapShot[]> {
+        let params:any = {};
+        params['at'] = this.network.crawlDate;
+        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organization-snapshots', {params});
+        if (result.data) {
+            return result.data.map((item:object) => OrganizationSnapShot.fromJSON(item));
         }
 
         return [];

@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-header">
+        <div class="card-header pl-3">
             <h1 class="card-title"><b-badge variant="success">{{numberOfActiveOrganizations}}</b-badge> available organizations</h1>
             <div class="card-options">
                 <form>
@@ -13,7 +13,7 @@
                 </form>
             </div>
         </div>
-        <organizations-table :filter="filter" :organizations="organizations" :fields="fields" per-page="10"/>
+        <organizations-table :filter="filter" :organizations="organizations" :fields="fields" per-page="5"/>
     </div>
 </template>
 <script lang="ts">

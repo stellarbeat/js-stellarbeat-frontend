@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-header">
+        <div class="card-header pl-3">
             <h1 class="card-title"><b-badge variant="success">{{numberOfActiveNodes}}</b-badge> active {{store.includeWatcherNodes ? 'nodes' : 'validators'}}</h1>
             <div class="card-options">
                 <form>
@@ -13,7 +13,7 @@
                 </form>
             </div>
         </div>
-        <nodes-table :filter="filter" :nodes="validators" :fields="fields" per-page="10"/>
+        <nodes-table :filter="filter" :nodes="validators" :fields="fields" per-page="5"/>
     </div>
 </template>
 <script lang="ts">

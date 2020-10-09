@@ -13,7 +13,7 @@
                 </form>
             </div>
         </div>
-        <nodes-table :filter="filter" :nodes="validators" :fields="fields" per-page="10"/>
+        <nodes-table :filter="filter" :nodes="validators" :fields="fields" per-page="5"/>
     </div>
 </template>
 <script lang="ts">
