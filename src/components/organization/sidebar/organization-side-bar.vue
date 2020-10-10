@@ -14,6 +14,10 @@
                 <organization-validators-dropdown :organization="selectedOrganization"
                                                   :expand="true"/>
             </li>
+            <li class="sb-nav-item">
+                <trusted-organizations-dropdown :organization="selectedOrganization"
+                                                  :expand="true"/>
+            </li>
         </template>
         <template v-slot:tool-list-items>
             <li class="sb-nav-item">
@@ -54,9 +58,11 @@
     import SimulateNewNode from '@/components/node/tools/simulation/simulate-new-node.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
     import {BModal, VBModal, BBadge, VBTooltip} from 'bootstrap-vue';
+    import TrustedOrganizationsDropdown from '@/components/organization/sidebar/trusted-organizations-dropdown.vue';
 
     @Component({
         components: {
+            TrustedOrganizationsDropdown,
             SideBar,
             SimulateNewNode,
             NavLink,

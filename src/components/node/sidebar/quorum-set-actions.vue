@@ -157,33 +157,10 @@
         }
 
         public get possibleOrganizationsToAdd() {
-            let trustedOrganizations = this.quorumSet.innerQuorumSets
-                .map(quorumSet => this.getOrganizationSubQuorum(quorumSet))
-                .filter(organization => organization !== null)
-                .map(organization => organization!.id);
+            let trustedOrganizations = this.network.getTrustedOrganizations(this.quorumSet).map(org => org.id);
 
             return this.store.network.organizations
                 .filter((organization) => trustedOrganizations.indexOf(organization.id) < 0);
-        }
-
-        public getOrganizationSubQuorum(quorumSet: QuorumSet): Organization|null {
-            if (quorumSet.validators.length === 0) {
-                return null;
-            }
-
-            let organizationId = this.network.getNodeByPublicKey(quorumSet.validators[0])!.organizationId;
-            if ( organizationId === undefined || this.network.getOrganizationById(organizationId) === undefined) {
-                return null;
-            }
-
-            if(quorumSet.validators
-                .map(validator => this.network.getNodeByPublicKey(validator)!)
-                .every((validator, index, validators) => validator.organizationId === validators[0].organizationId)
-            ){
-                return this.network.getOrganizationById(organizationId)!;
-            }
-
-            return null;
         }
 
         public get possibleValidatorsToAdd() {
