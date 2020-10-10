@@ -50,7 +50,10 @@
             let trustedOrganizations = new Set<Organization>();
             this.organization.validators.forEach(publicKey => {
                 let validator = this.network.getNodeByPublicKey(publicKey)!;
-                this.network.getTrustedOrganizations(validator.quorumSet).forEach(org => trustedOrganizations.add(org));
+                this.network.getTrustedOrganizations(validator.quorumSet).forEach(org => {
+                    if(org.id !== this.organization.id)
+                        trustedOrganizations.add(org)
+                });
             })
             return Array.from(trustedOrganizations);
         }
