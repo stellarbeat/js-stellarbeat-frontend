@@ -94,7 +94,7 @@
         }
     })
     export default class NodeSideBar extends Vue {
-        public quorumSetExpanded: boolean = !this.hasOrganization;
+        public quorumSetExpanded: boolean = true;
         protected tomlNodesExport: string = '';
 
         get store(): Store {

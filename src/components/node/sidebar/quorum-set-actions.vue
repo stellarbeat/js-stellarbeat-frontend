@@ -8,6 +8,10 @@
             <b-dropdown-header id="dropdown-header-label" v-on:click.prevent.stop="'#'">
                 Simulation options
             </b-dropdown-header>
+            <b-dropdown-item v-if="level === 0" v-b-modal="'add-organization-modal-' + id" v-on:click.prevent.stop>
+                <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>
+                Add organization
+            </b-dropdown-item>
             <b-dropdown-item v-b-modal="'add-validators-modal-' + id" v-on:click.prevent.stop>
                 <b-icon-plus-circle class="dropdown-icon" scale="0.9"/>
                 Add Validators
@@ -58,6 +62,15 @@
                                     v-on:validators-selected="onValidatorsSelected"/>
             </template>
         </b-modal>
+        <b-modal lazy size="lg" :id="'add-organization-modal-' + id"
+                 title="Select organization to add"
+                 ok-title="Add"
+                 v-on:ok="organizationsToAddModalOk">
+            <template slot="default" slot-scope="{ visible }">
+                <AddOrganizationsTable v-if="visible" :organizations="possibleOrganizationsToAdd"
+                                    v-on:organizations-selected="onOrganizationsSelected"/>
+            </template>
+        </b-modal>
         <b-modal lazy size="lg" :id="'quorumSetTomlExportModal'+id"
                  title="Stellar Core Configuration" ok-only ok-title="Close"
                  v-on:show="loadTomlExport(id)"
@@ -71,7 +84,7 @@
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
 
-    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Network, Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import AddValidatorsTable
         from '@/components/node/tools/simulation/add-validators-table.vue';
     import Store from '@/store/Store';
@@ -87,9 +100,11 @@
     } from 'bootstrap-vue';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
+    import AddOrganizationsTable from '@/components/node/tools/simulation/add-organizations-table.vue';
 
     @Component({
         components: {
+            AddOrganizationsTable,
             AddValidatorsTable,
             BModal: BModal,
             BIconSearch: BIconSearch,
@@ -121,6 +136,7 @@
         public newThreshold: number = this.quorumSet.threshold;
         public id: number = Math.ceil(Math.random() * 1000);
         public validatorsToAdd: string[] = [];
+        public organizationsToAdd: Organization[] = [];
         public inputState: boolean | null = null;
         protected tomlNodesExport:string = '';
 
@@ -140,6 +156,36 @@
             this.store.deleteInnerQuorumSet(this.quorumSet, this.parentQuorumSet);
         }
 
+        public get possibleOrganizationsToAdd() {
+            let trustedOrganizations = this.quorumSet.innerQuorumSets
+                .map(quorumSet => this.getOrganizationSubQuorum(quorumSet))
+                .filter(organization => organization !== null)
+                .map(organization => organization!.id);
+
+            return this.store.network.organizations
+                .filter((organization) => trustedOrganizations.indexOf(organization.id) < 0);
+        }
+
+        public getOrganizationSubQuorum(quorumSet: QuorumSet): Organization|null {
+            if (quorumSet.validators.length === 0) {
+                return null;
+            }
+
+            let organizationId = this.network.getNodeByPublicKey(quorumSet.validators[0])!.organizationId;
+            if ( organizationId === undefined || this.network.getOrganizationById(organizationId) === undefined) {
+                return null;
+            }
+
+            if(quorumSet.validators
+                .map(validator => this.network.getNodeByPublicKey(validator)!)
+                .every((validator, index, validators) => validator.organizationId === validators[0].organizationId)
+            ){
+                return this.network.getOrganizationById(organizationId)!;
+            }
+
+            return null;
+        }
+
         public get possibleValidatorsToAdd() {
             return this.store.network.nodes.filter((node: Node) =>
                 node.isValidator
@@ -150,15 +196,13 @@
             this.store.addValidators(toQuorumSet, validators);
         }
 
-        public addQuorumSet() {
-            this.store.addInnerQuorumSet(this.quorumSet);
+        public addOrganizationsToQuorumSet(toQuorumSet: QuorumSet, organizations: Organization[]) {
+            this.store.addOrganizations(toQuorumSet, organizations);
         }
 
-        public enableThresholdEditMode() {
-            this.editingThreshold = true;
-            this.$nextTick(() => {
-                (this.$refs['editThresholdInput' + this.id] as HTMLInputElement).focus();
-            });
+        public addQuorumSet() {
+            this.store.addInnerQuorumSet(this.quorumSet);
+            this.$emit('expand');
         }
 
         public saveThresholdFromInput() {
@@ -177,11 +221,25 @@
             this.validatorsToAdd = validators.map((validator: Node) => validator.publicKey!);
         }
 
+        onOrganizationsSelected(organizations:Organization[]){
+            this.organizationsToAdd = organizations;
+        }
+
         validatorsToAddModalOk(bvEvent: any, modalId: string) {
             if (this.validatorsToAdd.length > 0) {
                 this.addValidatorsToQuorumSet(
                     this.quorumSet,
                     this.validatorsToAdd
+                );
+                this.$emit('expand');
+            }
+        }
+
+        organizationsToAddModalOk(bvEvent: any, modalId: string) {
+            if (this.organizationsToAdd.length > 0) {
+                this.addOrganizationsToQuorumSet(
+                    this.quorumSet,
+                    this.organizationsToAdd
                 );
             }
         }

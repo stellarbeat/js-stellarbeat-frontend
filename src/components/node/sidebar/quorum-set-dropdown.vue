@@ -18,6 +18,7 @@
                 <quorum-set-actions
                         :level="level"
                         :quorum-set="quorumSet" :parentQuorumSet="parentQuorumSet"
+                        v-on:expand="showing = true"
                 />
             </template>
         </nav-link>
@@ -38,7 +39,7 @@
                     <node-actions :node="validator" :supports-delete="true" :quorumSet="quorumSet"/>
                 </template>
             </nav-link>
-            <quorum-set-dropdown :parentQuorumSet="quorumSet" v-for="(innerQuorumSet, index) in innerQuorumSets" :quorumSet="innerQuorumSet" :level="level+1" :key="index"/>
+            <quorum-set-dropdown :parentQuorumSet="quorumSet" v-for="(innerQuorumSet, index) in innerQuorumSets" :quorumSet="innerQuorumSet" :level="level+1" :key="index" :expand="false"/>
         </div>
     </div>
 </template>
@@ -70,11 +71,6 @@
 
         @Prop({default: 0})
         protected level!: number;
-
-        @Watch("quorumSet", {deep: true})
-        onQuorumSetChanged(){
-            this.showing = true;
-        }
 
         get hasWarnings() {
             return this.quorumSet.validators
@@ -146,13 +142,6 @@
             }
 
             return quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator)!).every((validator, index, validators) => validator.organizationId === validators[0].organizationId);
-        }
-
-        subQuorumOrganizationIsTierOne(quorumSet: QuorumSet): boolean {
-            if (this.isOrganizationSubQuorum && quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator)!)[0].organizationId) {
-                return this.network.getOrganizationById(quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator)!)[0].organizationId!)!.isTierOneOrganization;
-            }
-            return false;
         }
 
         public subQuorumOrganizationName(quorumSet: QuorumSet): string {

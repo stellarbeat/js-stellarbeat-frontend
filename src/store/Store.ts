@@ -21,6 +21,7 @@ import NodeStatisticsStore from '@/store/NodeStatisticsStore';
 import OrganizationStatisticsStore from '@/store/OrganizationStatisticsStore';
 import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
 import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
+import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-set-organizations-add';
 
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
@@ -173,6 +174,10 @@ export default class Store {
 
     public addValidators(toQuorumSet: QuorumSet, validators: string[]) {
         this.processChange(new QuorumSetValidatorsAdd(toQuorumSet, validators));
+    }
+
+    public addOrganizations(toQuorumSet: QuorumSet, organizations: Organization[]) {
+        this.processChange(new QuorumSetOrganizationsAdd(toQuorumSet, organizations));
     }
 
     protected processChange(change: Change) {
