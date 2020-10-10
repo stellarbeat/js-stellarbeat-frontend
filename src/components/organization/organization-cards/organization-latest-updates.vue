@@ -190,7 +190,7 @@
                         )
                         .forEach(changedKey => updates.push({key: changedKey, value: snapshots[i][changedKey]}));
 
-                    if (snapshots[i]['startDate'] !== snapshots[i + 1]['endDate']) {
+                    if (snapshots[i]['startDate'].getTime() !== snapshots[i + 1]['endDate'].getTime()) {
                         updates.push({key: 'archival', value: 'unArchived'});
                     }
                     if (updates.length === 0) {
