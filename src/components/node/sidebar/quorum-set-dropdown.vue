@@ -6,13 +6,13 @@
                 :showDropdownToggle="true"
                 :showIcon="isRoot"
                 :show-sub-title="true"
-                :sub-title="'with threshold ' + quorumSet.threshold"
+                :sub-title="quorumSet.hasValidators() ? 'with threshold ' + quorumSet.threshold : 'not yet detected'"
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
                 :has-warnings="hasWarnings"
                 :warnings="'Not all history archives up-to-date'"
                 :has-danger="network.isQuorumSetFailing(store.selectedNode, quorumSet)"
-                :dangers="'Quorumset not reaching threshold'"
+                :dangers="quorumSet.hasValidators() ? 'Quorumset not reaching threshold' : 'Quorumset not yet detected by crawler'"
         >
             <template v-slot:action-dropdown>
                 <quorum-set-actions
