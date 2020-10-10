@@ -102,7 +102,7 @@
 <style scoped>
     .overflow {
         overflow-y: auto;
-        max-height: calc(100vh - 20rem);
+        max-height: calc(100vh - 22rem);
     }
 
     .success {
