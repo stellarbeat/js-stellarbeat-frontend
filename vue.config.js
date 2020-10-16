@@ -13,7 +13,7 @@ module.exports = {
             new MomentLocalesPlugin(),
             new CopyPlugin({
                 patterns: [
-                    {from: 'node_modules/@stellarbeat/stellar_analysis_temp/stellar_analysis_bg.wasm', to: 'dist/stellar_analysis_bg.wasm'},
+                    {from: 'node_modules/stellar_analysis/stellar_analysis_bg.wasm', to: 'dist/stellar_analysis_bg.wasm'},
                 ],
             }),
         ],
@@ -43,7 +43,7 @@ module.exports = {
                 {
                     test: /\.js$/,
                     // Exclude transpiling `node_modules`, except `fbas-analysis`
-                    exclude: /node_modules\/(?!@stellarbeat\/stellar_analysis_temp\/)/,
+                    exclude: /node_modules\/(?!stellar_analysis\/)/,
                     use: {
                         loader: require.resolve('@open-wc/webpack-import-meta-loader'),
                     }

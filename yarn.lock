@@ -1238,11 +1238,6 @@
     semver-compare "^1.0.0"
     to-semver "^2.0.0"
 
-"@stellarbeat/stellar_analysis_temp@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/stellar_analysis_temp/-/stellar_analysis_temp-0.0.2.tgz#791d6f04a05c212cd3f979a9925f058b0d20afc5"
-  integrity sha512-x5fLgSOBSfjo3F5O5R6raUWHviOR40iSF9Jmh1S0991bkcdh2MIwMGOwSt3wwCMi/NuTJTP3lmU8TNfICz8nQA==
-
 "@types/anymatch@*":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
@@ -9774,10 +9769,10 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-stellar_analysis@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.1.0.tgz#503340190b02230bba263e542b482335899d19e9"
-  integrity sha512-AY1F92o7GXig7StMhzZHXhbXscv+fHQp6uuMK/CSeJd9RQ27DWukxS4sFUHGcANUYRNj2J7moMEF8IVg8FbEgA==
+stellar_analysis@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.2.0.tgz#254ff27b8a94ccb72569905e02af40144fefb796"
+  integrity sha512-FGL9X1PopS3jmHj/APhuDi/TPIjK8k/Q82W6hNLu+VaopRdKoVeANFHXBOb/apW52fuz00vsjm0HQtb4n3v0tw==
 
 stickybits@^3.7.7:
   version "3.7.7"

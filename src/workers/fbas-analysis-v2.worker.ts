@@ -1,4 +1,4 @@
-import init, {fbas_analysis, init_panic_hook}  from "@stellarbeat/stellar_analysis_temp";
+import init, {fbas_analysis, init_panic_hook}  from "stellar_analysis";
 import {Node, Organization, PublicKey} from '@stellarbeat/js-stellar-domain';
 
 const ctx: Worker = self as any;

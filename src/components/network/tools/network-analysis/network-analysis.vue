@@ -184,7 +184,7 @@
     } from 'bootstrap-vue';
     import {StoreMixin} from '@/mixins/StoreMixin';
     import FbasAnalysisWorker
-        from 'worker-loader?name=dist/[name].js!./../../../../workers/fbas-analysis-v1.worker.ts';
+        from 'worker-loader?name=dist/[name].js!./../../../../workers/fbas-analysis-v2.worker.ts';
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
     import Analysis from '@/components/network/tools/network-analysis/analysis.vue';
