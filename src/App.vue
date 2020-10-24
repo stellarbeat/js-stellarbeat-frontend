@@ -8,7 +8,7 @@
                         <div class="container">
                             <div class="d-flex">
                                 <router-link class="header-brand mt-2"
-                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view}}">
+                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view}, params: { networkId: store.networkId } }">
                                     <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
                                 </router-link>
                                 <div class="d-flex flex-column ml-auto">
@@ -41,21 +41,21 @@
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
                                                      exact
-                                                     :to="{name: 'network-dashboard'}" :class="homeActiveClass">
+                                                     :to="{name: 'network-dashboard', params: { networkId: store.networkId }}" :class="homeActiveClass">
                                             <b-icon-house class="mr-1" scale="0.9"/>
                                             Home
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
-                                                     :to="{ name: 'nodes'}" exact>
+                                                     :to="{ name: 'nodes', params: {networkId: store.networkId}}" exact>
                                             <b-icon-bullseye class="mr-1" scale="0.9"/>
                                             Nodes
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'organizations'}" exact>
+                                                     :to="{ name: 'organizations', params: {networkId: store.networkId}}" exact>
                                             <b-icon-building class="mr-1" scale="0.9"/>
                                             Organizations
                                         </router-link>

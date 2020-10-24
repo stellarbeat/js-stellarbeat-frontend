@@ -11,7 +11,7 @@
             <div class="loader mt-2"></div>
             <div class="dimmer-content">
                 <b-list-group v-if="!isLoading" flush class="w-100 mb-4  card-columns">
-                    <b-list-group-item v-for="snapshot in snapshots" :key="snapshot.organization.id" class="px-3 py-2">
+                    <b-list-group-item v-for="snapshot in snapshots" :key="snapshot.organization.id + snapshot.startDate" class="px-3 py-2">
                         <div class="text-muted mb-0" style="font-size: small">{{snapshot.startDate.toLocaleString()}}
                             <b-badge v-if="snapshot.startDate.getTime() === network.crawlDate.getTime()" variant="info">current crawl</b-badge>
                         </div>

@@ -11,12 +11,26 @@ export default new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
-        {path: '/', component: Dashboard, alias: ['/quorum-monitor/:view?'], props: (route) => ({ view: route.query.view }),
+        {
+            path: '/', redirect: '/network/stellar-public', alias: ['/quorum-monitor']
+        },
+        {
+            path: '/nodes/:publicKey', redirect: '/network/stellar-public/nodes/:publicKey', alias: '/quorum-monitor/:publicKey'
+        },
+        {
+            path: '/organizations/:organizationId', redirect: '/network/stellar-public/organizations/:organizationId'
+        },
+        {
+            path: '/nodes', redirect: '/network/stellar-public/nodes'
+        },
+        {
+            path: '/organizations', redirect: '/network/stellar-public/organizations'
+        },
+        {path: '/network/:networkId', component: Dashboard, alias: ['/quorum-monitor/:view?'], props: (route) => ({ view: route.query.view }),
             children: [
                 {
                     name: 'network-dashboard',
                     path: '/',
-                    alias: ['/network/stellar-public', 'quorum-monitor'],
                     components: {
                         dashboard: () => import(/* webpackChunkName: "network-dashboard" */ '@/components/network/network-dashboard.vue') as any,
                         sideBar: () => import(/* webpackChunkName: "network-dashboard" */ '@/components/network/sidebar/network-side-bar.vue') as any
@@ -47,8 +61,8 @@ export default new Router({
                 },
             ],
         },
-        {name: 'nodes', path: '/nodes', component: () => import(/* webpackChunkName: "nodes" */ '@/views/Nodes.vue') as any},
-        {name: 'organizations', path: '/organizations', component: () => import(/* webpackChunkName: "organizations" */ '@/views/Organizations.vue') as any},
+        {name: 'nodes', path: '/network/:networkId/nodes', component: () => import(/* webpackChunkName: "nodes" */ '@/views/Nodes.vue') as any},
+        {name: 'organizations', path: '/network/:networkId/organizations', component: () => import(/* webpackChunkName: "organizations" */ '@/views/Organizations.vue') as any},
 
         {name: 'faq', path: '/faq', component: FAQ, meta: {fullPreRender: true}},
         {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},

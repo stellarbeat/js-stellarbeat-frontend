@@ -72,7 +72,7 @@ Age = Time since discovery
 
 <script lang="ts">
     import Vue from "vue";
-    import {Component, Prop} from "vue-property-decorator";
+    import {Component, Prop, Watch} from 'vue-property-decorator';
     import {Network, Node} from "@stellarbeat/js-stellar-domain";
     import CrawlTime from '@/components/crawl-time.vue';
     import Store from '@/store/Store';
@@ -102,6 +102,13 @@ Age = Time since discovery
 
         get store():Store {
             return this.$root.$data.store;
+        }
+
+        @Watch('$route', {immediate: true})
+        public onRouteChanged(to: any) {
+            if (to.params.networkId) {
+                this.store.networkId = to.params.networkId;
+            }
         }
 
         public fields = [

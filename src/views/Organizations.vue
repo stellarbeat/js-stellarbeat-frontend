@@ -29,7 +29,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop} from 'vue-property-decorator';
+    import {Component, Prop, Watch} from 'vue-property-decorator';
     import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
     import Store from '@/store/Store';
@@ -77,6 +77,13 @@
         public network!: Network;
         @Prop()
         public isLoading!: boolean;
+
+        @Watch('$route', {immediate: true})
+        public onRouteChanged(to: any) {
+            if (to.params.networkId) {
+                this.store.networkId = to.params.networkId;
+            }
+        }
 
         get store(): Store {
             return this.$root.$data.store;

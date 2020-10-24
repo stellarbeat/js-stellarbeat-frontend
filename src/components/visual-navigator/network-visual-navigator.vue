@@ -155,7 +155,7 @@
             let crumbs = [];
             crumbs.push({
                 text: 'Stellar Public Network',
-                to: {name: 'network-dashboard', query: {view: this.$route.query.view}}
+                to: {name: 'network-dashboard', query: {view: this.$route.query.view}, params: { networkId: this.$route.params.networkId }}
             });
 
             if (this.selectedNode) {
