@@ -38,6 +38,14 @@
                 />
                 <simulate-new-node/>
             </li>
+            <li class="sb-nav-item">
+                <nav-link
+                        :title="'Quorum slices'"
+                        v-b-modal.quorumSlicesModal
+                        :show-icon="true"
+                        icon="search"
+                />
+            </li>
             <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
                         title="Halting analysis"
@@ -46,6 +54,7 @@
                         v-on:click="store.showHaltingAnalysis(selectedNode)"
                 />
             </li>
+            <quorum-slices :selected-node="selectedNode"/>
             <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
                         :title="'Export configuration'"
@@ -77,9 +86,11 @@
     import OrganizationValidatorsDropdown from '@/components/node/sidebar/organization-validators-dropdown.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
     import {BBadge, BModal, VBModal} from 'bootstrap-vue';
+    import QuorumSlices from '@/components/node/tools/quorum-slices.vue';
 
     @Component({
         components: {
+            QuorumSlices,
             SideBar,
             OrganizationValidatorsDropdown,
             OrganizationsDropdown,

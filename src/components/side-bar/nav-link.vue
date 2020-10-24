@@ -52,12 +52,13 @@
         BIconLightningFill,
         BIconGearWide,
         BIconGear,
+        BIconSearch,
         BBadge
     } from 'bootstrap-vue';
 
     @Component({
         components: {
-            NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning, BIconGear,
+            NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning, BIconGear, BIconSearch,
             BIconLightningFill,
             BIconGearWide, BBadge
         }
