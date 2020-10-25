@@ -35,7 +35,6 @@
     "leaflet-sleep": "^0.5.2",
     "moment": "^2.24.0",
     "regenerator-runtime": "^0.13.3",
-    "serve-static": "^1.14.1",
     "simple-analytics-vue": "^1.1.0",
     "stellar_analysis": "^0.2.0",
     "stickybits": "^3.7.7",

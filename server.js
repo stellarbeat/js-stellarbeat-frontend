@@ -1,17 +1,17 @@
 const express = require('express');
 const app = express();
-const serveStatic = require('serve-static');
 const history = require('connect-history-api-fallback');
 
 
 let port = process.env.PORT || 3000;
 
 app.use(history({
+    index: '/app.html', //because of the root redirect in router, index.html is not generated anymore
     rewrites: [
-        { from: /\/about/, to: '/about.html'},
+        { from: /\/faq/, to: '/faq.html'},
         { from: /\/api/, to: '/api.html'},
-        { from: /\/quorum-set-connections-graph/, to: '/quorum-set-connections-graph.html'}, //to avoid rendering the navbar in index.html
-    ]
+        { from: /\/terms-and-conditions/, to: '/terms-and-conditions.html'}
+        ]
 }));
 let cacheTime = 86400000*7; //7 day cache for assets
 app.use(function (req, res, next) {
@@ -24,14 +24,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(function (req, res, next) {
-    if (req.url.match(/^\/nodes\/raw/)
-    ) {
-        res.redirect(301,'https://api.stellarbeat.io/v1/nodes');
-    }
-    next();
-});
-
-app.use("/", serveStatic ('./dist') );
+app.use(express.static('dist'));
 
 app.listen(port, () => console.log('app listening on port: ' + port));

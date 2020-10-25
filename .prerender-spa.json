@@ -1,1 +1,1 @@
-{"renderRoutes":["/", "/nodes", "/organizations", "/about", "/api", "/quorum-set-connections-graph"],"useRenderEvent":true,"onlyProduction":true}
+{"renderRoutes":["/", "/faq", "/api", "/terms-and-conditions"],"useRenderEvent":true,"onlyProduction":true}
