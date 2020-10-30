@@ -7,7 +7,7 @@
                 Network
         </template>
         <template v-slot:explore-list-items>
-            <li class="sb-nav-item">
+            <li v-if="networkTransitiveQuorumSetOrganizations.length > 0" class="sb-nav-item">
                 <organizations-dropdown :organizations="networkTransitiveQuorumSetOrganizations"
                                         :expand="organizationsExpanded"/>
             </li>
@@ -78,7 +78,7 @@
         directives: {'b-modal': VBModal}
     })
     export default class NetworkSideBar extends Vue {
-        protected validatorsExpanded: boolean = false;
+        protected validatorsExpanded: boolean = this.networkTransitiveQuorumSetOrganizations.length === 0;
         protected organizationsExpanded: boolean = true;
 
         get store(): Store {

@@ -27,13 +27,13 @@
                     </template>
                 </NetworkAnalysis>
             </div>
-            <div class="col-lg-6 col-xl-6">
+            <div v-if="network.organizations.length > 0" class="col-lg-6 col-xl-6">
                 <network-organizations/>
             </div>
             <div class="col-lg-6 col-xl-6">
                 <network-nodes/>
             </div>
-            <div class="col-lg-6 col-xl-6">
+            <div v-if="network.organizations.length > 0" class="col-lg-6 col-xl-6">
                 <network-organization-updates/>
             </div>
             <div class="col-lg-6 col-xl-6">
