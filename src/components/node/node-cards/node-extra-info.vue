@@ -11,7 +11,7 @@
                     <td class="px-0" style="font-weight: 600;font-size: 0.875rem;">Organization</td>
                     <td v-if="node.organizationId && network.getOrganizationById(node.organizationId)" class="px-0 text-right">
                         <router-link
-                                :to="{ name: 'organization-dashboard', params: { 'organizationId': node.organizationId, 'view': $route.query.view }}">
+                                :to="{ name: 'organization-dashboard', params: { 'organizationId': node.organizationId, 'view': $route.query.view, 'network': $route.query.network }}">
                             {{network.getOrganizationById(node.organizationId).name}}
                         </router-link>
                     </td>

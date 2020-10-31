@@ -6,7 +6,6 @@ const history = require('connect-history-api-fallback');
 let port = process.env.PORT || 3000;
 
 app.use(history({
-    index: '/app.html', //because of the root redirect in router, index.html is not generated anymore
     rewrites: [
         { from: /\/faq/, to: '/faq.html'},
         { from: /\/api/, to: '/api.html'},

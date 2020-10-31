@@ -63,7 +63,7 @@
             this.$router.push({
                 name: "organization-dashboard",
                 params: {organizationId: organization.id},
-                query: {view: this.$route.query.view, 'no-scroll': '0'}
+                query: {view: this.$route.query.view, 'no-scroll': '0', 'network': this.$route.query.network}
             });
         }
 

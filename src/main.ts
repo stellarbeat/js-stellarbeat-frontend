@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import SimpleAnalytics from "simple-analytics-vue";
 import VueTruncate from 'vue-truncate-filter';
 import './assets/tabler-ui-light.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
@@ -34,7 +33,6 @@ Vue.use(AsyncComputedPlugin)
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);
-Vue.use(SimpleAnalytics, { skip: !isProd });
 Vue.use(VueScrollTo);
 
 new Vue({

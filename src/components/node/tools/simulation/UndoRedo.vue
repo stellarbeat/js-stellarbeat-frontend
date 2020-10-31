@@ -59,8 +59,7 @@
                 this.$router.push(
                     {
                         name: 'network-dashboard',
-                        query: {'no-scroll': '1'},
-                        params: {networkId: this.$route.params.networkId}
+                        query: {'no-scroll': '1', 'network': this.$route.query.network, 'view': this.$route.query.view}
                     },
                 );
             }

@@ -73,7 +73,7 @@
                         name: organization.name, type: 'organization', route: {
                             name: 'organization-dashboard',
                             params: {organizationId: organization.id},
-                            query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view}
+                            query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view, 'network': this.$route.query.network}
                         } as RawLocation
                     };
                 }
@@ -86,7 +86,7 @@
                         name: node.displayName, type: node.isValidator ? 'validator node' : 'watcher node', route: {
                             name: 'node-dashboard',
                             params: {publicKey: node.publicKey!},
-                            query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view}
+                            query: {'center': '1', 'no-scroll': '1', 'view': this.$route.query.view, 'network': this.$route.query.network}
                         } as RawLocation
                     };
                 }

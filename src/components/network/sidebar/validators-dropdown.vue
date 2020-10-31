@@ -74,7 +74,7 @@
             this.$router.push({
                 name: 'node-dashboard',
                 params: {publicKey: node.publicKey!},
-                query: {'center': '1', 'no-scroll': '0', 'view': this.$route.query.view},
+                query: {'center': '1', 'no-scroll': '0', 'view': this.$route.query.view, 'network': this.$route.query.network},
             });
         }
 

@@ -4,14 +4,14 @@
             <div v-if="!isHeadlessRoute">
 
                 <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
-                    <div class="header pt-2 pb-0 pl-4 pr-4 my-header">
+                    <div class="header pt-2 pb-0 my-header">
                         <div class="container">
                             <div class="d-flex">
                                 <router-link class="header-brand mt-2"
-                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view}, params: { networkId: store.networkId } }">
+                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }">
                                     <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
                                 </router-link>
-                                <div class="d-flex flex-column ml-auto">
+                                <div class="d-flex flex-column">
                                     <h2 class="brand-title mb-0">stellarbeat.io</h2>
                                     <h6 class="text-muted">stellar network visibility</h6>
                                 </div>
@@ -27,13 +27,27 @@
                                             Mail</a>
                                     </div>
                                 </div>
-                                <b-navbar-toggle class="my-navbar-toggle mb-2" target="nav_collapse"></b-navbar-toggle>
+                                <div class="d-flex mr-0">
+                                    <div class="nav-item pr-0">
+                                    <b-form-select
+                                            size="sm"
+                                            v-model="store.networkId"
+                                            :options="availableNetworks"
+                                            value-field="item"
+                                            text-field="name"
+                                            class=""
+                                            disabled-field="notEnabled"
+                                            @change="navigateToNetwork"
+                                    ></b-form-select>
+                                    </div>
+                                </div>
+                                <b-navbar-toggle class="my-navbar-toggle" target="nav_collapse"></b-navbar-toggle>
                             </div>
                         </div>
                     </div>
 
                 </b-navbar>
-                <b-collapse class="header collapse d-lg-flex p-0 pl-4 pr-4" is-nav id="nav_collapse">
+                <b-collapse class="header collapse d-lg-flex p-0" is-nav id="nav_collapse">
                     <div class="container collapser">
                         <div class="row align-items-center">
                             <div class="col-lg order-lg-first">
@@ -41,33 +55,35 @@
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
                                                      exact
-                                                     :to="{name: 'network-dashboard', params: { networkId: store.networkId }}" :class="homeActiveClass">
+                                                     :to="{name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }"
+                                                     :class="homeActiveClass">
                                             <b-icon-house class="mr-1" scale="0.9"/>
                                             Home
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
-                                                     :to="{ name: 'nodes', params: {networkId: store.networkId}}" exact>
+                                                     :to="{ name: 'nodes', query: { view: $route.query.view, network: $route.query.network} }" exact>
                                             <b-icon-bullseye class="mr-1" scale="0.9"/>
                                             Nodes
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'organizations', params: {networkId: store.networkId}}" exact>
+                                                     :to="{ name: 'organizations', query: { view: $route.query.view, network: $route.query.network} }"
+                                                     exact>
                                             <b-icon-building class="mr-1" scale="0.9"/>
                                             Organizations
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link active-class="active" class="nav-link" :to="{ name: 'api'}">
+                                        <router-link active-class="active" class="nav-link" :to="{ name: 'api', query: { view: $route.query.view, network: $route.query.network} }">
                                             <b-icon-code class="mr-1" scale="0.9"/>
                                             API
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link active-class="active" class="nav-link" :to="{ name: 'faq'}">
+                                        <router-link active-class="active" class="nav-link" :to="{ name: 'faq', query: { view: $route.query.view, network: $route.query.network} }">
                                             <b-icon-question-circle class="mr-1" scale="0.9"/>
                                             FAQ
                                         </router-link>
@@ -81,14 +97,13 @@
                                 </form>
                             </div>
 
-
                         </div>
                     </div>
 
                 </b-collapse>
             </div>
 
-            <div class="mt-0 mt-md-2 pl-4 pr-4">
+            <div class="mt-0 mt-md-2">
                 <div class="container">
                     <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
                     <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
@@ -105,7 +120,7 @@
             </div>
         </div>
         <footer class="footer">
-            <div class="pl-4 pr-6 container">
+            <div class="pr-2 container">
                 <div class="row align-items-center flex-row-reverse">
                     <div class="col-auto ml-lg-auto">
                         <div class="row align-items-center">
@@ -113,7 +128,7 @@
                                 <ul class="list-inline list-inline-dots mb-0">
                                     <li class="list-inline-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'terms-and-conditions'}" exact> Terms and Conditions
+                                                     :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network} }" exact> Terms and Conditions
                                         </router-link>
                                     </li>
                                 </ul>
@@ -130,7 +145,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component} from 'vue-property-decorator';
+    import {Component, Watch} from 'vue-property-decorator';
     import CrawlTime from '@/components/crawl-time.vue';
     import Search from '@/components/search.vue';
     import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
@@ -145,7 +160,8 @@
         BIconCode,
         BIconQuestionCircle,
         BIconEnvelope,
-        BNavbarToggle
+        BNavbarToggle,
+        BFormSelect
     } from 'bootstrap-vue';
 
     @Component({
@@ -164,7 +180,8 @@
             BIconCode,
             BIconQuestionCircle,
             BIconEnvelope,
-            BNavbarToggle
+            BNavbarToggle,
+            BFormSelect
         },
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
@@ -179,6 +196,14 @@
 
     export default class App extends Vue {
         protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
+        protected availableNetworks = [{item: 'public', name: 'pubnet'}, {item: 'test', name: 'testnet'}];
+
+        @Watch('$route', {immediate: true})
+        public onRouteChanged(to: any) {
+            if(to.query.network){
+                this.store.networkId = to.query.network;
+            }
+        }
 
         async created() {
             await this.store.fetchData();
@@ -205,6 +230,18 @@
             return {
                 'active': this.$route.name === 'network-dashboard' || this.$route.name === 'node-dashboard' || this.$route.name === 'organization-dashboard'
             };
+        }
+
+        navigateToNetwork() {
+            this.$router.push(
+                {
+                    name: this.$route.name ? this.$route.name : undefined,
+                    params: this.$route.params,
+                    query: {'view': this.$route.query.view, 'no-scroll': '1', 'network': this.store.networkId},
+                },
+            ).catch(e => {
+                //this triggers a navigation guard error that we can safely ignore. See router beforeEach
+            });
         }
     }
 </script>

@@ -32,7 +32,7 @@ export default class Store {
     public networkUpdated: number = 0;
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
-    public networkId?:string = 'stellar-public';
+    public networkId:'public'|'test' = 'public';
     public selectedOrganization?:Organization = undefined;
     protected measurementStore: StatisticsStore = new StatisticsStore();
     public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(this.measurementStore);

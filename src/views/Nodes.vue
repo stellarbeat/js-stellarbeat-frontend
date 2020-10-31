@@ -106,8 +106,8 @@ Age = Time since discovery
 
         @Watch('$route', {immediate: true})
         public onRouteChanged(to: any) {
-            if (to.params.networkId) {
-                this.store.networkId = to.params.networkId;
+            if (to.query.network) {
+                this.store.networkId = to.query.network;
             }
         }
 

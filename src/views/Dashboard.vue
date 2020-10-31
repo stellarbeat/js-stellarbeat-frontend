@@ -87,15 +87,12 @@
 
         @Watch('$route', {immediate: true})
         public onRouteChanged(to: any) {
-            if(to.params.networkId){
-                this.store.networkId = to.params.networkId;
-            }
             if(to.params.publicKey){
                 this.store.selectedNode = this.network.getNodeByPublicKey(to.params.publicKey);
                 if (!this.store.selectedNode) {
                     this.$router.push(
                         {
-                            name: 'network-dashboard', query: {view: this.$route.query.view}, params: {networkId: this.$route.params.networkId}
+                            name: 'network-dashboard', query: { view: this.$route.query.view, network: this.$route.query.network}
                         },
                     );
                 }
@@ -106,7 +103,7 @@
                 if (!this.store.selectedOrganization) {
                     this.$router.push(
                         {
-                            name: 'network-dashboard', query: {view: this.$route.query.view}, params: {networkId: this.$route.params.networkId}
+                            name: 'network-dashboard', query: { view: this.$route.query.view, network: this.$route.query.network}
                         },
                     );
                 }
@@ -130,7 +127,7 @@
             let crumbs = [];
             crumbs.push({
                 text: 'Stellar Public Network',
-                to: {name: 'network-dashboard', params: {networkId: this.$route.params.networkId}}
+                to: {name: 'network-dashboard', query: { view: this.$route.query.view, network: this.$route.query.network}}
             });
 
             if (this.selectedNode) {

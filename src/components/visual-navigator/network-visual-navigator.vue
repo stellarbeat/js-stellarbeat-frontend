@@ -9,13 +9,13 @@
                     <h6 class="sb-navbar-heading mt-3 ml-0 pl-0">View</h6>
                     <div class="mt-3">
                         <ul style="list-style: none" class="pl-0">
-                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1'}}"
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1', 'network': $route.query.network}}"
                                          :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
                                          class="pl-3 mb-1 view-link"
                                          v-on:click.native="menuVisible = false">
                                 Graph
                             </router-link>
-                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1'}}"
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1', 'network': $route.query.network}}"
                                          v-on:click.native="menuVisible = false"
                                          class="pl-3 mb-1 view-link"
                                          :class="$route.query.view === 'map' && 'router-link-exact-active'">Map
@@ -155,7 +155,7 @@
             let crumbs = [];
             crumbs.push({
                 text: 'Stellar Public Network',
-                to: {name: 'network-dashboard', query: {view: this.$route.query.view}, params: { networkId: this.$route.params.networkId }}
+                to: {name: 'network-dashboard', query: {view: this.$route.query.view, 'network': this.$route.query.network}}
             });
 
             if (this.selectedNode) {
@@ -165,7 +165,7 @@
                         to: {
                             name: 'organization-dashboard',
                             params: {'organizationId': this.selectedNode.organizationId},
-                            query: {'view': this.$route.query.view}
+                            query: {'view': this.$route.query.view, 'network': this.$route.query.network}
                         },
                         active: false
                     });
@@ -187,7 +187,7 @@
                 {
                     name: this.$route.name ? this.$route.name : undefined,
                     params: this.$route.params,
-                    query: {'view': toView, 'no-scroll': '1'},
+                    query: {'view': toView, 'no-scroll': '1', 'network': this.$route.query.network},
                 },
             );
         }
