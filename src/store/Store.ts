@@ -23,6 +23,8 @@ import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
 import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-set-organizations-add';
 
+type NetworkId = 'public'|'test';
+
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
     public isLoading: boolean = true;
@@ -32,9 +34,9 @@ export default class Store {
     public networkUpdated: number = 0;
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
-    public networkId:'public'|'test' = 'public';
+    public networkId: NetworkId = 'public';
     public selectedOrganization?:Organization = undefined;
-    protected measurementStore: StatisticsStore = new StatisticsStore();
+    protected measurementStore: StatisticsStore = new StatisticsStore(this);
     public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(this.measurementStore);
     public networkMeasurementStore: NetworkStatisticsStore = new NetworkStatisticsStore(this.measurementStore);
     public organizationMeasurementStore: OrganizationStatisticsStore = new OrganizationStatisticsStore(this.measurementStore);
@@ -64,10 +66,19 @@ export default class Store {
         return this._haltingAnalysisPublicKey;
     }
 
+    getApiUrl(): string{
+        let key = "VUE_APP_" + this.networkId.toUpperCase() + "_API_URL";
+        let url = process.env[key];
+        if(!url)
+            return '';
+
+        return url;
+    }
+
     async fetchNodeSnapshotsByPublicKey(id:PublicKey):Promise<NodeSnapShot[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/node/' + id + '/snapshots', {params});
+        let result = await axios.get(this.getApiUrl() + '/v1/node/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data.map((item:object) => NodeSnapShot.fromJSON(item));
         }
@@ -78,7 +89,7 @@ export default class Store {
     async fetchNodeSnapshots():Promise<NodeSnapShot[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/node-snapshots', {params});
+        let result = await axios.get(this.getApiUrl() + '/v1/node-snapshots', {params});
         if (result.data) {
             return result.data.map((item:object) => NodeSnapShot.fromJSON(item));
         }
@@ -89,7 +100,7 @@ export default class Store {
     async fetchOrganizationSnapshotsById(id:OrganizationId):Promise<Object[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organization/' + id + '/snapshots', {params});
+        let result = await axios.get(this.getApiUrl() + '/v1/organization/' + id + '/snapshots', {params});
         if (result.data) {
             return result.data.map((item:object) => OrganizationSnapShot.fromJSON(item));
         }
@@ -100,7 +111,7 @@ export default class Store {
     async fetchOrganizationSnapshots():Promise<OrganizationSnapShot[]> {
         let params:any = {};
         params['at'] = this.network.crawlDate;
-        let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public/organization-snapshots', {params});
+        let result = await axios.get(this.getApiUrl() + '/v1/organization-snapshots', {params});
         if (result.data) {
             return result.data.map((item:object) => OrganizationSnapShot.fromJSON(item));
         }
@@ -119,18 +130,20 @@ export default class Store {
             }
             else
                 this.isTimeTravel = false;
-
-            let result = await axios.get(process.env.VUE_APP_API_URL + '/v1/network/stellar-public', {params});
+            this.isLoading = true;
+            let result = await axios.get(this.getApiUrl() + '/v1', {params});
             if (result.data) {
                 let network = Network.fromJSON(result.data);
                 Vue.set(this, 'network', network);
-
+                this.isLoading = false;
                 return;
             } else {
                 this.fetchingDataFailed = true;
+                this.isLoading = false;
             }
         } catch (error) {
             this.fetchingDataFailed = true;
+            this.isLoading = false;
         }
     }
 

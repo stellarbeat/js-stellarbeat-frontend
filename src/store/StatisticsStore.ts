@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Store from '@/store/Store';
 
 export interface StatisticsAggregation {
     crawlCount: number;
@@ -12,12 +13,17 @@ type route = string;
 type parametersKey = string
 export default class StatisticsStore {
     protected statisticsCache: Map<route, Map<parametersKey, Promise<any>>> = new Map();
+    protected store: Store;
+
+    public constructor(store: Store) {
+        this.store = store;
+    }
 
     protected async fetchStatisticsCached(id: string, from: Date, to: Date, route: string) {
-        let statisticsCache = this.statisticsCache.get(route);
+        let statisticsCache = this.statisticsCache.get(this.store.getApiUrl() + route);
         if(!statisticsCache) {
             statisticsCache = new Map();
-            this.statisticsCache.set(route, statisticsCache);
+            this.statisticsCache.set(this.store.getApiUrl() + route, statisticsCache);
         }
 
         let params: any = {};
@@ -27,7 +33,7 @@ export default class StatisticsStore {
         if (statisticsCache.get(id + params.from + params.to))
             result = await statisticsCache.get(id + params.from + params.to); //multiple charts can request the same endpoint at the same time.
         else {
-            let promise = axios.get(process.env.VUE_APP_API_URL + route, {
+            let promise = axios.get(this.store.getApiUrl() + route, {
                 params
             });
             statisticsCache.set(id + params.from + params.to, promise);

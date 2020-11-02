@@ -2,7 +2,7 @@
     <div>
         <div class="page-header d-flex justify-content-between">
             <div class="d-flex align-items-center">
-                <h2 class="page-title"> Dashboard</h2>
+                <h2 class="page-title">Network explorer</h2>
                 <simulation-badge class="mr-2"/>
                 <time-travel-badge/>
             </div>

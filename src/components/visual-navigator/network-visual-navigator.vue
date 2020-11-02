@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-header m-0 p-0 d-flex">
+        <div class="card-header m-0 p-0 d-flex border-0">
             <div class="menu-button ml-3 text-gray" v-on:click="menuVisible = true">
                 <b-icon-list font-scale="2"/>
             </div>

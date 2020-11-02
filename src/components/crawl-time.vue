@@ -42,11 +42,6 @@
             );
             this.store.isLoading = false;
         }
-
-        created(){
-            console.log(this.store.network);
-        }
-
     }
 </script>
 
