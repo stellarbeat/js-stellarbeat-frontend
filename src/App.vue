@@ -130,6 +130,7 @@
             </div>
         </div>
         <footer class="footer">
+            <div class="container">
             <div class="d-flex justify-content-between mx-4">
                 <router-link active-class="active" class="nav-link"
                              :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network} }"
@@ -145,6 +146,7 @@
                         <b-icon-envelope/>
                         Mail</a>
                 </div>
+            </div>
             </div>
         </footer>
     </div>

@@ -104,13 +104,6 @@ Age = Time since discovery
             return this.$root.$data.store;
         }
 
-        @Watch('$route', {immediate: true})
-        public onRouteChanged(to: any) {
-            if (to.query.network) {
-                this.store.networkId = to.query.network;
-            }
-        }
-
         get fields(): any {
             if (this.store.isSimulation) {
                 return [{key: 'name', sortable: true},

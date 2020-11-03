@@ -88,13 +88,6 @@
         @Prop()
         public isLoading!: boolean;
 
-        @Watch('$route', {immediate: true})
-        public onRouteChanged(to: any) {
-            if (to.query.network) {
-                this.store.networkId = to.query.network;
-            }
-        }
-
         get store(): Store {
             return this.$root.$data.store;
         }
