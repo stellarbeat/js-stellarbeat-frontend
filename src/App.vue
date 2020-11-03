@@ -126,7 +126,6 @@
                                  :network="network"
                                  :isLoading="store.isLoading"
                     />
-
                 </div>
             </div>
         </div>
@@ -210,12 +209,15 @@
 
     export default class App extends Vue {
         protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
-        protected availableNetworks = [{item: 'public', name: 'Public'}, {item: 'test', name: 'Test'}];
         protected navCollapsed = false;
 
         @Watch('$route', {immediate: false})
         async onRouteChanged(to: any) {
-            let networkId = to.query.network === undefined ? 'public' : to.query.network;
+            let networkId = to.query.network;
+
+            if (!this.store.availableNetworks.includes(to.query.network))
+                networkId = 'public';
+
             if (networkId !== this.store.networkId) {
                 this.store.networkId = to.query.network;
                 await this.store.fetchData(); //the created hook does not have a filled up route object, so we need to handle it here...
@@ -223,6 +225,7 @@
 
             if (!this.network)
                 await this.store.fetchData();
+
         }
 
         get store() {

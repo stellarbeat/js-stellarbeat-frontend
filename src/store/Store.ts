@@ -34,6 +34,7 @@ export default class Store {
     public networkUpdated: number = 0;
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
+    public availableNetworks = ['public', 'test', 'fbas', 'fbas2'];
     public networkId: NetworkId = 'public';
     public isLocalNetwork: boolean = false;
     public selectedOrganization?:Organization = undefined;
@@ -121,9 +122,23 @@ export default class Store {
     }
 
     async fetchData(time?:Date): Promise<void> {
+        this.fetchingDataFailed = false;
         if(this.isSimulation)
             this.changeQueue.reset();
 
+        if(this.networkId === 'fbas'){
+            this.loadFbas();
+            this.isLocalNetwork = true;
+            return;
+        }
+
+        if(this.networkId === 'fbas2'){
+            //this.loadFbas2();
+            this.isLocalNetwork = true;
+            return;
+        }
+
+        this.isLocalNetwork = false;
         try {
             let params:any = {};
             if(time){
@@ -245,5 +260,224 @@ export default class Store {
         this.changeQueue.reset();
         this.network.updateNetwork();
         this.networkUpdated++;
+    }
+
+    public loadFbas() {
+        let organizations = [{
+            id: 'sp',
+            name: 'Satoshipay',
+            validators: ['sp1', 'sp2']
+        }, {
+            id: 'lb',
+            name: 'LOBSTR',
+            validators: ['lb1', 'lb2']
+        }, {
+            id: 'sdf',
+            name: 'SDF',
+            validators: ['sdf1', 'sdf2']
+        }].map(organization => Organization.fromJSON(organization)!);
+        let nodes = [
+            {
+                "ip": "localhost",
+                "port": 11625,
+                "publicKey": "sdf1",
+                "name": "SDF1",
+                "active": true,
+                "overLoaded": false,
+                "organizationId": 'sdf',
+                "quorumSet": {
+                    "threshold": 2,
+                    "validators": [],
+                    "innerQuorumSets": [
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "lb1",
+                                "lb2"
+                            ],
+                            "innerQuorumSets": []
+                        },
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sp1",
+                                "sp2"
+                            ],
+                            "innerQuorumSets": []
+                        }
+                    ]
+                },
+                "isValidator": true,
+                "isValidating": true
+            },
+            {
+                "ip": "localhost",
+                "port": 11625,
+                "publicKey": "sdf2",
+                "name": "SDF2",
+                "active": true,
+                "overLoaded": false,
+                "organizationId": 'sdf',
+                "quorumSet": {
+                    "threshold": 2,
+                    "validators": [],
+                    "innerQuorumSets": [
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "lb1",
+                                "lb2"
+                            ],
+                            "innerQuorumSets": []
+                        },
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sp1",
+                                "sp2"
+                            ],
+                            "innerQuorumSets": []
+                        }
+                    ]
+                },
+                "isValidator": true,
+                "isValidating": true
+            },
+            {
+                "ip": "localhost",
+                "port": 11625,
+                "publicKey": "lb1",
+                "name": "LOBSTR1",
+                "active": true,
+                "overLoaded": false,
+                "organizationId": 'lb',
+                "quorumSet": {
+                    "threshold": 2,
+                    "validators": [],
+                    "innerQuorumSets": [
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sdf1",
+                                "sdf2"
+                            ],
+                            "innerQuorumSets": []
+                        },
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sp1",
+                                "sp2"
+                            ],
+                            "innerQuorumSets": []
+                        }
+                    ]
+                },
+                "isValidator": true,
+                "isValidating": true
+            },
+            {
+                "ip": "localhost",
+                "port": 11625,
+                "publicKey": "lb2",
+                "name": "LOBSTR2",
+                "active": true,
+                "overLoaded": false,
+                "organizationId": 'lb',
+                "quorumSet": {
+                    "threshold": 2,
+                    "validators": [],
+                    "innerQuorumSets": [
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sdf1",
+                                "sdf2"
+                            ],
+                            "innerQuorumSets": []
+                        },
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sp1",
+                                "sp2"
+                            ],
+                            "innerQuorumSets": []
+                        }
+                    ]
+                },
+                "isValidator": true,
+                "isValidating": true
+            },
+            {
+                "ip": "localhost",
+                "port": 11625,
+                "publicKey": "sp1",
+                "name": "SatoshiPay1",
+                "organizationId": 'sp',
+                "active": true,
+                "overLoaded": false,
+                "quorumSet": {
+                    "threshold": 2,
+                    "validators": [],
+                    "innerQuorumSets": [
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sdf1",
+                                "sdf2"
+                            ],
+                            "innerQuorumSets": []
+                        },
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "lb1",
+                                "lb2"
+                            ],
+                            "innerQuorumSets": []
+                        }
+                    ]
+                },
+                "isValidator": true,
+                "isValidating": true
+            },
+            {
+                "ip": "localhost",
+                "port": 11625,
+                "publicKey": "sp2",
+                "name": "SatoshiPay2",
+                "active": true,
+                "overLoaded": false,
+                "organizationId": 'sp',
+                "quorumSet": {
+                    "threshold": 2,
+                    "validators": [],
+                    "innerQuorumSets": [
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "sdf1",
+                                "sdf2"
+                            ],
+                            "innerQuorumSets": []
+                        },
+                        {
+                            "threshold": 1,
+                            "validators": [
+                                "lb1",
+                                "lb2"
+                            ],
+                            "innerQuorumSets": []
+                        }
+                    ]
+                },
+                "isValidator": true,
+                "isValidating": true
+            }
+        ].map(node => Node.fromJSON(node));
+        let network = new Network(nodes, organizations);
+        Vue.set(this, 'network', network);
+        this.isLoading = false;
     }
 }

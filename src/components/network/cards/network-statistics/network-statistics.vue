@@ -207,8 +207,10 @@
         protected yearStatistics: NetworkStatisticsAggregation[] = [];
 
         public async mounted() {
-            let oneYearAgo = moment(this.network.crawlDate).subtract(1, 'y').toDate();
-            this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, this.network.crawlDate);
+            if(!this.store.isSimulation) {
+                let oneYearAgo = moment(this.network.crawlDate).subtract(1, 'y').toDate();
+                this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, this.network.crawlDate);
+            }
             this.isLoading = false;
             this.initialDataLoaded = true;
         }

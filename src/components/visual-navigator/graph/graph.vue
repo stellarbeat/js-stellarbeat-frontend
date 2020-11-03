@@ -91,7 +91,14 @@
     import {Network, Node, PublicKey, Vertex, QuorumSet} from '@stellarbeat/js-stellar-domain';
 
     import GraphVertex from './graph-vertex.vue';
-    import {line, curveLinearClosed, curveCatmullRomClosed} from 'd3-shape';
+    import {
+        line,
+        curveLinearClosed,
+        curveCatmullRomClosed,
+        curveLinear,
+        curveCatmullRom,
+        curveCatmullRomOpen
+    } from 'd3-shape';
     import {polygonHull, polygonCentroid} from 'd3-polygon';
 
     import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../../workers/compute-graphv7.worker';
@@ -377,7 +384,7 @@
                 .y(function (d) {
                     return d[1];
                 })
-                .curve(curveLinearClosed);
+                .curve(curveCatmullRomClosed);
             let transitiveQSetHull = polygonHull(
                 simulationNodes
                     .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
@@ -549,7 +556,7 @@
         stroke-opacity: 0.5;
         fill: #1997c6;
         stroke: #1997c6;
-        stroke-width: 2px;
+        stroke-width: 0px;
 
     }
 
