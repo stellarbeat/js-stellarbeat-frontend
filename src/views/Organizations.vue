@@ -63,15 +63,25 @@
     })
     export default class Organizations extends Vue {
         public filter: string = '';
-        public fields = [
-            {key: 'name', sortable: true},
-            {key: 'validators', sortable: false},
-            {key: 'subQuorum24HAvailability', label: '24H Availability', sortable: true},
-            {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true},
-            {key: 'url', sortable: true},
-            {key: 'keybase', sortable: true},
-            {key: 'email', sortable: true}
-        ];
+
+        get fields():any {
+            if(this.store.isSimulation){
+                return [
+                    {key: 'name', sortable: true},
+                    {key: 'validators', sortable: false}
+                ];
+            } else {
+                return [
+                    {key: 'name', sortable: true},
+                    {key: 'validators', sortable: false},
+                    {key: 'subQuorum24HAvailability', label: '24H Availability', sortable: true},
+                    {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true},
+                    {key: 'url', sortable: true},
+                    {key: 'keybase', sortable: true},
+                    {key: 'email', sortable: true}
+                ]
+            }
+        }
 
         @Prop()
         public network!: Network;

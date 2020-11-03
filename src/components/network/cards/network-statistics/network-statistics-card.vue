@@ -36,9 +36,12 @@
                     <b-icon-info-circle v-b-tooltip:hover.top="'Click for info'" class="text-muted"/>
                 </b-button>
             </div>
-            <div style="height: 35px">
+            <div style="height: 35px" v-if="!store.isSimulation">
                 <network-statistics-chart v-if="initialDataLoaded" :stats-property="statsProperty"
                                           :year-statistics="yearStatistics" v-on:hover="onHover"/>
+            </div>
+            <div v-else class="mb-4">
+
             </div>
         </div>
         <b-modal lazy title="Info" ok-only hide-header v-model="showModal">

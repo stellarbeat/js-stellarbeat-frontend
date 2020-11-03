@@ -1,14 +1,14 @@
 <template>
-    <div v-if="organization">
-        <div class="row row-cards row-deck">
+    <div v-if="organization &&!store.isSimulation">
+        <div class="row row-cards row-deck" v-if="!store.isSimulation">
             <div class="col-md-12 col-lg-6 col-xl-4">
                 <organization-profile :organization="organization"/>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-4">
+            <div class="col-md-12 col-lg-6 col-xl-4" >
                 <organization-statistics-subquorum-24h-availability :organization="organization"/>
                 <organization-statistics-subquorum-30-d-availability :organization="organization"/>
             </div>
-            <div class="col-md-12 col-lg-12 col-xl-4">
+            <div class="col-md-12 col-lg-12 col-xl-4" v-if="!store.isSimulation">
                 <history-card
                         :subject="'Availability history'"
                         :entityId="organization.id"
@@ -24,7 +24,7 @@
             <div class="col-lg-12 col-xl-12">
                 <organization-validators :organization="organization"/>
             </div>
-            <div class="col-lg-12 col-xl-12">
+            <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
                 <organization-latest-updates :organization="organization"/>
             </div>
         </div>

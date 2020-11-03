@@ -1,6 +1,6 @@
 <template>
-    <span v-if="store.isSimulation" class="tag">Simulation
-        <a href="#"
+    <span v-if="store.isSimulation" class="tag">Simulation mode
+        <a href="#" v-if="!store.isLocalNetwork"
            v-on:click.stop.prevent="store.resetUpdates()"
            class="tag-addon"><b-icon-x/>
         </a>

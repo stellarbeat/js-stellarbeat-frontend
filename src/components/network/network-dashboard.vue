@@ -4,23 +4,23 @@
             <div class="col-12">
                 <network-statistics :network="network"/>
             </div>
-            <div class="col-lg-4 col-xl-4">
+            <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
                 <NodesCountryDistribution/>
             </div>
-            <div class="col-lg-4 col-xl-4">
+            <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
                 <NodesVersions/>
             </div>
-            <div class="col-lg-4 col-xl-4">
+            <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
                 <ValidatorsServerLoad/>
             </div>
-            <div class="col-lg-6 col-xl-6">
+            <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
                 <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
                     <template v-slot:info>
                         <liveness-info/>
                     </template>
                 </NetworkAnalysis>
             </div>
-            <div class="col-lg-6 col-xl-6">
+            <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
                 <NetworkAnalysis analysis-type="safety">
                     <template v-slot:info>
                         <safety-info/>
@@ -33,10 +33,10 @@
             <div class="col-lg-6 col-xl-6">
                 <network-nodes/>
             </div>
-            <div v-if="network.organizations.length > 0" class="col-lg-6 col-xl-6">
+            <div v-if="network.organizations.length > 0 && !store.isSimulation" class="col-lg-6 col-xl-6">
                 <network-organization-updates/>
             </div>
-            <div class="col-lg-6 col-xl-6">
+            <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
                 <network-validator-updates/>
             </div>
         </div>
@@ -58,6 +58,7 @@
     import SafetyInfo from '@/components/network/cards/network-risk-analysis-charts/safety-info.vue';
     import NetworkValidatorUpdates from '@/components/network/cards/network-validator-updates.vue';
     import NetworkOrganizationUpdates from '@/components/network/cards/network-organization-updates.vue';
+    import Store from '@/store/Store';
 
     @Component({
         components: {
@@ -82,6 +83,10 @@
     export default class NetworkDashboard extends Vue {
         get network(): Network {
             return this.$root.$data.store.network;
+        }
+
+        get store(): Store {
+            return this.$root.$data.store;
         }
     }
 </script>

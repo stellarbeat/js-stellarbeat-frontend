@@ -33,16 +33,22 @@
 
         protected filter:string="";
 
-        fields:any[] = [
-            {key: 'name', label: 'Quorumset validator', sortable: true},
-            {key: 'index', label: 'index', sortable: true},
-            {key: 'validating24Hour', label: '24H validating', sortable: true},
-            {key: 'validating30Days', label: '30D validating', sortable: true},
-            {key: 'version', label: 'version', sortable: true},
-            {key: 'country', label: 'country', sortable: true},
-            {key: 'isp', label: 'isp', sortable: true}
+        get fields(): any {
+            if(!this.store.isSimulation){
+                return [
+                    {key: 'name', label: 'Quorumset validator', sortable: true},
+                    {key: 'index', label: 'index', sortable: true},
+                    {key: 'validating24Hour', label: '24H validating', sortable: true},
+                    {key: 'validating30Days', label: '30D validating', sortable: true},
+                    {key: 'version', label: 'version', sortable: true},
+                    {key: 'country', label: 'country', sortable: true},
+                    {key: 'isp', label: 'isp', sortable: true}
+                ];
+            } else {
+                return [{key: 'name', label: 'Quorumset validator', sortable: true}];
+            }
 
-        ];
+        }
 
         get store(): Store {
             return this.$root.$data.store;

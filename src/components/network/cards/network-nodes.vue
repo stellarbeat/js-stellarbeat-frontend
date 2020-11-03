@@ -33,10 +33,16 @@
 
         protected filter:string="";
 
-        fields:any[] = [
-            {key: 'name', label: 'Node', sortable: true},
-            {key: 'index', label: 'Index', sortable: true},
-        ];
+        get fields(): any {
+            if(this.store.isSimulation){
+                return [{key: 'name', label: 'Node', sortable: true}];
+            } else {
+                return [
+                    {key: 'name', label: 'Node', sortable: true},
+                    {key: 'index', label: 'Index', sortable: true},
+                ];
+            }
+        }
 
         get store(): Store {
             return this.$root.$data.store;

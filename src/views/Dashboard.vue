@@ -6,7 +6,7 @@
                 <simulation-badge class="mr-2"/>
                 <time-travel-badge/>
             </div>
-            <crawl-time class=""/>
+            <crawl-time v-if="!store.isSimulation"/>
         </div>
         <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
             <div class="col-12">
@@ -17,7 +17,7 @@
                 </HaltingAnalysis>
             </div>
         </div>
-        <div class="row">
+        <div class="row h-100" >
             <aside class="side-bar col-xs-12 col-sm-5 col-lg-3 col-xl-auto mb-5">
                 <div class="card pt-0 sidebar-card h-100">
                     <transition

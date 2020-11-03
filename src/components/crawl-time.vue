@@ -1,14 +1,17 @@
 <template>
     <div class="crawl-time-component">
         <b-form-datepicker size="sm" v-model="crawlDate" class="date-picker p-0"
-                      :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
-                      :min="minSelectedDate" :max="new Date()">
-            <template v-slot:button-content><b-icon-calendar class="text-gray"/></template>
+                           :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit'}"
+                           :min="minSelectedDate" :max="new Date()">
+            <template v-slot:button-content>
+                <b-icon-calendar class="text-gray"/>
+            </template>
         </b-form-datepicker>
         <b-form-timepicker size="sm" v-model="crawlTime" class="time-picker p-0" dropleft>
             <template v-slot:button-content></template>
         </b-form-timepicker>
-        <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn" @click="timeTravel">
+        <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn"
+                @click="timeTravel">
             <b-icon-clock/>
         </button>
     </div>
@@ -27,8 +30,8 @@
         directives: {'b-tooltip': VBTooltip}
     })
     export default class CrawlTime extends Vue {
-        protected crawlDate:Date = new Date(this.store.network.crawlDate.getTime());
-        protected crawlTime:string = moment(this.crawlDate).format('HH:mm:ss');
+        protected crawlDate: Date = new Date(this.store.network.crawlDate.getTime());
+        protected crawlTime: string = moment(this.crawlDate).format('HH:mm:ss');
         protected minSelectedDate: Date = this.store.measurementsStartDate;
 
         get store(): Store {
@@ -50,15 +53,18 @@
         width: auto;
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
-        border-right:0;
+        border-right: 0;
     }
+
     .crawl-time-component {
         display: flex;
     }
+
     .time-travel-btn {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
+
     .time-picker {
         width: 100px;
         border-radius: 0;

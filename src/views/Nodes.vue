@@ -49,7 +49,7 @@
                 </div>
 
             </div>
-            <div class="card mb-2">
+            <div class="card mb-2" v-if="!store.isSimulation">
                 <div class="card-body">
                     <div class="text-wrap">
                         <h2 class="mt-0 mb-4">Index formula</h2>
@@ -71,9 +71,9 @@ Age = Time since discovery
 </template>
 
 <script lang="ts">
-    import Vue from "vue";
+    import Vue from 'vue';
     import {Component, Prop, Watch} from 'vue-property-decorator';
-    import {Network, Node} from "@stellarbeat/js-stellar-domain";
+    import {Network, Node} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
     import Store from '@/store/Store';
     import SimulationBadge from '@/components/simulation-badge.vue';
@@ -84,9 +84,9 @@ Age = Time since discovery
     @Component({
         components: {TimeTravelBadge, NodesTable, SimulationBadge, CrawlTime, BFormInput: BFormInput},
         metaInfo: {
-            title: "Nodes overview - Stellarbeat.io",
+            title: 'Nodes overview - Stellarbeat.io',
             meta: [
-                {name: "description", content: "Search through all available nodes"},
+                {name: 'description', content: 'Search through all available nodes'},
             ],
         },
     })
@@ -98,9 +98,9 @@ Age = Time since discovery
 
         public optionShowInactive: boolean = false;
         public optionShowWatchers: boolean = false;
-        public filter: string = "";
+        public filter: string = '';
 
-        get store():Store {
+        get store(): Store {
             return this.$root.$data.store;
         }
 
@@ -111,24 +111,35 @@ Age = Time since discovery
             }
         }
 
-        public fields = [
-            {key: 'name', sortable: true},
-            {key: 'organization', sortable: true},
-            {key: 'type', label: 'type', sortable: true},
-            // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-            {key: 'active24Hour', label: '24H active', sortable: true},
-            {key: 'active30Days', label: '30D active', sortable: true},
-            {key: 'validating24Hour', label: '24H validating', sortable: true},
-            {key: 'validating30Days', label: '30D validating', sortable: true},
-            {key: 'overLoaded24Hour', label: '24H overloaded', sortable: true},
-            {key: 'index', label: 'index', sortable: true},
-            {key: 'validating', sortable: true},
-            {key: 'version', sortable: true},
-            {key: 'country', sortable: true},
-            {key: 'ip', sortable: true},
+        get fields(): any {
+            if (this.store.isSimulation) {
+                return [{key: 'name', sortable: true},
+                    {key: 'organization', sortable: true},
+                    {key: 'type', label: 'type', sortable: true}];
+            } else {
+                return [
+                    {key: 'name', sortable: true},
+                    {key: 'organization', sortable: true},
+                    {key: 'type', label: 'type', sortable: true},
+                    // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
+                    {key: 'active24Hour', label: '24H active', sortable: true},
+                    {key: 'active30Days', label: '30D active', sortable: true},
+                    {key: 'validating24Hour', label: '24H validating', sortable: true},
+                    {key: 'validating30Days', label: '30D validating', sortable: true},
+                    {key: 'overLoaded24Hour', label: '24H overloaded', sortable: true},
+                    {key: 'index', label: 'index', sortable: true},
+                    {key: 'validating', sortable: true},
+                    {key: 'version', sortable: true},
+                    {key: 'country', sortable: true},
+                    {key: 'ip', sortable: true},
 
-            {key: 'actions', label: ''},
-        ];
+                    {key: 'actions', label: ''},
+                ];
+            }
+
+
+        }
+
         get nodes(): any[] {
             return this.network.nodes
                 .filter((node) => node.active || this.optionShowInactive)
@@ -155,6 +166,7 @@ Age = Time since discovery
                     };
                 });
         }
+
         getOrganization(node: Node): string {
             if (!node.organizationId) {
                 return '-';

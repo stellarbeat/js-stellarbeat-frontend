@@ -20,10 +20,17 @@
     export default class NodeTrustedBy extends Vue{
         @Prop()
         node!: Node;
-        fields:any[] = [
-            {key: 'name', label: 'Node', sortable: true},
-            {key: 'index', label: 'index', sortable: true},
-        ];
+
+        get fields():any {
+            let fields = [
+                {key: 'name', label: 'Node', sortable: true}
+            ];
+
+            if(!this.store.isSimulation)
+                fields.push( {key: 'index', label: 'index', sortable: true});
+
+            return fields;
+        }
 
         get store(): Store {
             return this.$root.$data.store;

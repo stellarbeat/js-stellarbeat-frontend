@@ -23,7 +23,7 @@ import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
 import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-set-organizations-add';
 
-type NetworkId = 'public'|'test';
+type NetworkId = string;
 
 export default class Store {
     public measurementsStartDate: Date = new Date('2019-06-01');
@@ -35,6 +35,7 @@ export default class Store {
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
     public networkId: NetworkId = 'public';
+    public isLocalNetwork: boolean = false;
     public selectedOrganization?:Organization = undefined;
     protected measurementStore: StatisticsStore = new StatisticsStore(this);
     public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(this.measurementStore);
@@ -122,6 +123,7 @@ export default class Store {
     async fetchData(time?:Date): Promise<void> {
         if(this.isSimulation)
             this.changeQueue.reset();
+
         try {
             let params:any = {};
             if(time){
@@ -201,7 +203,7 @@ export default class Store {
     }
 
     get isSimulation(): boolean {
-        return this.changeQueue.hasUndo();
+        return this.changeQueue.hasUndo() || this.isLocalNetwork;
     }
 
     get hasUndo(): boolean {

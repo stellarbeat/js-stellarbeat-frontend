@@ -1,6 +1,6 @@
 <template>
     <div v-if="selectedNode">
-        <div class="row row-cards row-deck">
+        <div class="row row-cards row-deck"  v-if="!store.isSimulation">
             <div class="col-sm-12 col-md-6 col-xl-3">
                 <node-index :node="selectedNode"/>
             </div>
@@ -54,8 +54,6 @@
                 >
                 </history-card>
             </div>
-
-
             <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
                 <history-card
                         :subject="'Overloaded'"
@@ -83,8 +81,11 @@
             <div class="col-lg-12 col-xl-12" v-if="selectedNode.isValidator">
                 <node-quorum-set-validators :node="selectedNode"/>
             </div>
-            <div class="col-lg-12 col-xl-12">
+            <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
                 <node-latest-updates :node="selectedNode"/>
+            </div>
+            <div v-else class="col-lg-12 col-xl-12">
+                <node-trusted-by :node="selectedNode"/>
             </div>
         </div>
     </div>

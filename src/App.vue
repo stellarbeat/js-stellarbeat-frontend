@@ -7,10 +7,10 @@
                         <div class="container">
                             <div class="d-flex justify-content-between w-100">
                                 <div class="d-flex">
-                                <router-link class="header-brand mr-0 mt-2"
-                                             :to="{ name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }">
-                                    <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
-                                </router-link>
+                                    <router-link class="header-brand mr-0 mt-2"
+                                                 :to="{ name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }">
+                                        <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
+                                    </router-link>
                                     <div class="d-none d-lg-flex" style="width: 264px"></div>
                                 </div>
                                 <div class="d-flex flex-column mr-0">
@@ -18,26 +18,30 @@
                                     <h6 class="text-muted">stellar network visibility</h6>
                                 </div>
                                 <div class="d-none d-lg-flex">
-                                <div class="d-flex">
-                                    <div class="nav-item pr-0">
-                                        <b-nav-item-dropdown style="width:137px" toggle-class="gray" class="text-gray nav-link px-0" v-if="!store.isLoading">
-                                            <template #button-content>
-                                                {{capitalize(store.networkId)}} network
-                                            </template>
-                                            <b-dropdown-item @click="navigateToNetwork('public')">Public network</b-dropdown-item>
-                                            <b-dropdown-item @click="navigateToNetwork('test')">Test network</b-dropdown-item>
-                                        </b-nav-item-dropdown>
-                                        <div v-else style="width:137px"></div>
-                                        <a href="https://github.com/stellarbeat"
-                                           class="btn btn-sm bt btn-outline-primary" target="_blank">
-                                            <github/>
-                                            Github</a>
-                                        <a href="mailto:stellarbeatio@gmail.com"
-                                           class="btn btn-sm bt btn-outline-primary ml-2" target="_blank">
-                                            <b-icon-envelope/>
-                                            Mail</a>
+                                    <div class="d-flex">
+                                        <div class="nav-item pr-0">
+                                            <b-nav-item-dropdown style="width:137px" toggle-class="gray"
+                                                                 class="text-gray nav-link px-0"
+                                                                 v-if="!store.isLoading">
+                                                <template #button-content>
+                                                    {{capitalize(store.networkId)}} network
+                                                </template>
+                                                <b-dropdown-item @click="navigateToNetwork('public')">Public network
+                                                </b-dropdown-item>
+                                                <b-dropdown-item @click="navigateToNetwork('test')">Test network
+                                                </b-dropdown-item>
+                                            </b-nav-item-dropdown>
+                                            <div v-else style="width:137px"></div>
+                                            <a href="https://github.com/stellarbeat"
+                                               class="btn btn-sm bt btn-outline-primary" target="_blank">
+                                                <github/>
+                                                Github</a>
+                                            <a href="mailto:stellarbeatio@gmail.com"
+                                               class="btn btn-sm bt btn-outline-primary ml-2" target="_blank">
+                                                <b-icon-envelope/>
+                                                Mail</a>
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                                 <b-navbar-toggle class="my-navbar-toggle" target="nav_collapse"></b-navbar-toggle>
                             </div>
@@ -48,7 +52,8 @@
                 <b-collapse class="header collapse d-lg-flex p-0" is-nav id="nav_collapse">
                     <div class="container collapser">
                         <div class="row align-items-center">
-                            <b-nav-item-dropdown variant="primary" toggle-class="gray" class="ml-0 pl-0 mt-3 d-lg-none" v-if="!store.isLoading">
+                            <b-nav-item-dropdown variant="primary" toggle-class="gray" class="ml-0 pl-0 mt-3 d-lg-none"
+                                                 v-if="!store.isLoading">
                                 <template #button-content>
                                     {{capitalize(store.networkId)}} network
                                 </template>
@@ -111,19 +116,17 @@
                 </b-collapse>
             </div>
 
-            <div class="mt-0 mt-md-2">
-                <div class="container">
-                    <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
-                    <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
-                        <div class="loader"></div>
-                    </div>
-                    <div v-else>
-                        <router-view v-if="!store.isLoading && !store.fetchingDataFailed"
-                                     :network="network"
-                                     :isLoading="store.isLoading"
-                        />
+            <div class="container h-100 mt-0 mt-md-2">
+                <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
+                <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
+                    <div class="loader"></div>
+                </div>
+                <div v-else>
+                    <router-view v-if="!store.isLoading && !store.fetchingDataFailed"
+                                 :network="network"
+                                 :isLoading="store.isLoading"
+                    />
 
-                    </div>
                 </div>
             </div>
         </div>
@@ -153,7 +156,6 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Watch} from 'vue-property-decorator';
-    import CrawlTime from '@/components/crawl-time.vue';
     import Search from '@/components/search.vue';
     import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
     import Github from '@/components/organization/logo/github.vue';
@@ -180,7 +182,6 @@
             Github,
             UndoRedo,
             Search,
-            CrawlTime,
             BNavbar,
             BNavItemDropdown,
             BDropdownItem,
@@ -220,7 +221,7 @@
                 await this.store.fetchData(); //the created hook does not have a filled up route object, so we need to handle it here...
             }
 
-            if(!this.network)
+            if (!this.network)
                 await this.store.fetchData();
         }
 
@@ -242,13 +243,13 @@
             };
         }
 
-        capitalize = (word:string) => {
-            if (typeof word !== 'string') return ''
-            return word.charAt(0).toUpperCase() + word.slice(1)
-        }
+        capitalize = (word: string) => {
+            if (typeof word !== 'string') return '';
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        };
 
         navigateToNetwork(networkId: string) {
-            if(networkId === this.store.networkId)
+            if (networkId === this.store.networkId)
                 return;
 
             this.$router.push(
@@ -295,6 +296,6 @@
 
 <style>
     .gray {
-        color: #80858a!important;
+        color: #80858a !important;
     }
 </style>

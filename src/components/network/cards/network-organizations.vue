@@ -1,11 +1,15 @@
 <template>
     <div class="card">
         <div class="card-header pl-3">
-            <h1 class="card-title"><b-badge variant="success">{{numberOfActiveOrganizations}}</b-badge> available organizations</h1>
+            <h1 class="card-title">
+                <b-badge variant="success">{{numberOfActiveOrganizations}}</b-badge>
+                available organizations
+            </h1>
             <div class="card-options">
                 <form>
                     <div class="input-group">
-                        <input type="text" class="form-control form-control-sm" placeholder="Search" name="s" v-model="filter">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search" name="s"
+                               v-model="filter">
                         <div class="input-icon-addon">
                             <b-icon-search/>
                         </div>
@@ -26,18 +30,24 @@
     import OrganizationsTable from '@/components/organization/organizations-table.vue';
 
     @Component({
-        components: {OrganizationsTable, NodesTable, BIconSearch: BIconSearch, BBadge:BBadge}
+        components: {OrganizationsTable, NodesTable, BIconSearch: BIconSearch, BBadge: BBadge}
     })
-    export default class NetworkNodes extends Vue{
+    export default class NetworkNodes extends Vue {
         @Prop()
         node!: Node;
 
-        protected filter:string="";
+        protected filter: string = '';
 
-        fields:any[] = [
-            {key: 'name', label: 'Node', sortable: true},
-            {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true}
-        ];
+        get fields(): any {
+            if (this.store.isSimulation) {
+                return [{key: 'name', label: 'Node', sortable: true}];
+            } else {
+                return [
+                    {key: 'name', label: 'Node', sortable: true},
+                    {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true}
+                ];
+            }
+        }
 
         get store(): Store {
             return this.$root.$data.store;
@@ -57,7 +67,7 @@
         }
 
         get numberOfActiveOrganizations() {
-            return this.network.organizations.filter(organization => this.getFailAt(organization) >=1).length;
+            return this.network.organizations.filter(organization => this.getFailAt(organization) >= 1).length;
         }
 
         get organizations(): any[] {
