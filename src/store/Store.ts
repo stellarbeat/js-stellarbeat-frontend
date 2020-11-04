@@ -22,6 +22,7 @@ import OrganizationStatisticsStore from '@/store/OrganizationStatisticsStore';
 import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
 import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-set-organizations-add';
+import LocalNetworks from '@/store/LocalNetworks';
 
 type NetworkId = string;
 
@@ -127,13 +128,13 @@ export default class Store {
             this.changeQueue.reset();
 
         if(this.networkId === 'fbas'){
-            this.loadFbas();
+            this.loadFBAS2();
             this.isLocalNetwork = true;
             return;
         }
 
         if(this.networkId === 'fbas2'){
-            //this.loadFbas2();
+            this.loadFBAS2();
             this.isLocalNetwork = true;
             return;
         }
@@ -262,221 +263,14 @@ export default class Store {
         this.networkUpdated++;
     }
 
-    public loadFbas() {
-        let organizations = [{
-            id: 'sp',
-            name: 'Satoshipay',
-            validators: ['sp1', 'sp2']
-        }, {
-            id: 'lb',
-            name: 'LOBSTR',
-            validators: ['lb1', 'lb2']
-        }, {
-            id: 'sdf',
-            name: 'SDF',
-            validators: ['sdf1', 'sdf2']
-        }].map(organization => Organization.fromJSON(organization)!);
-        let nodes = [
-            {
-                "ip": "localhost",
-                "port": 11625,
-                "publicKey": "sdf1",
-                "name": "SDF1",
-                "active": true,
-                "overLoaded": false,
-                "organizationId": 'sdf',
-                "quorumSet": {
-                    "threshold": 2,
-                    "validators": [],
-                    "innerQuorumSets": [
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "lb1",
-                                "lb2"
-                            ],
-                            "innerQuorumSets": []
-                        },
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sp1",
-                                "sp2"
-                            ],
-                            "innerQuorumSets": []
-                        }
-                    ]
-                },
-                "isValidator": true,
-                "isValidating": true
-            },
-            {
-                "ip": "localhost",
-                "port": 11625,
-                "publicKey": "sdf2",
-                "name": "SDF2",
-                "active": true,
-                "overLoaded": false,
-                "organizationId": 'sdf',
-                "quorumSet": {
-                    "threshold": 2,
-                    "validators": [],
-                    "innerQuorumSets": [
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "lb1",
-                                "lb2"
-                            ],
-                            "innerQuorumSets": []
-                        },
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sp1",
-                                "sp2"
-                            ],
-                            "innerQuorumSets": []
-                        }
-                    ]
-                },
-                "isValidator": true,
-                "isValidating": true
-            },
-            {
-                "ip": "localhost",
-                "port": 11625,
-                "publicKey": "lb1",
-                "name": "LOBSTR1",
-                "active": true,
-                "overLoaded": false,
-                "organizationId": 'lb',
-                "quorumSet": {
-                    "threshold": 2,
-                    "validators": [],
-                    "innerQuorumSets": [
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sdf1",
-                                "sdf2"
-                            ],
-                            "innerQuorumSets": []
-                        },
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sp1",
-                                "sp2"
-                            ],
-                            "innerQuorumSets": []
-                        }
-                    ]
-                },
-                "isValidator": true,
-                "isValidating": true
-            },
-            {
-                "ip": "localhost",
-                "port": 11625,
-                "publicKey": "lb2",
-                "name": "LOBSTR2",
-                "active": true,
-                "overLoaded": false,
-                "organizationId": 'lb',
-                "quorumSet": {
-                    "threshold": 2,
-                    "validators": [],
-                    "innerQuorumSets": [
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sdf1",
-                                "sdf2"
-                            ],
-                            "innerQuorumSets": []
-                        },
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sp1",
-                                "sp2"
-                            ],
-                            "innerQuorumSets": []
-                        }
-                    ]
-                },
-                "isValidator": true,
-                "isValidating": true
-            },
-            {
-                "ip": "localhost",
-                "port": 11625,
-                "publicKey": "sp1",
-                "name": "SatoshiPay1",
-                "organizationId": 'sp',
-                "active": true,
-                "overLoaded": false,
-                "quorumSet": {
-                    "threshold": 2,
-                    "validators": [],
-                    "innerQuorumSets": [
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sdf1",
-                                "sdf2"
-                            ],
-                            "innerQuorumSets": []
-                        },
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "lb1",
-                                "lb2"
-                            ],
-                            "innerQuorumSets": []
-                        }
-                    ]
-                },
-                "isValidator": true,
-                "isValidating": true
-            },
-            {
-                "ip": "localhost",
-                "port": 11625,
-                "publicKey": "sp2",
-                "name": "SatoshiPay2",
-                "active": true,
-                "overLoaded": false,
-                "organizationId": 'sp',
-                "quorumSet": {
-                    "threshold": 2,
-                    "validators": [],
-                    "innerQuorumSets": [
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "sdf1",
-                                "sdf2"
-                            ],
-                            "innerQuorumSets": []
-                        },
-                        {
-                            "threshold": 1,
-                            "validators": [
-                                "lb1",
-                                "lb2"
-                            ],
-                            "innerQuorumSets": []
-                        }
-                    ]
-                },
-                "isValidator": true,
-                "isValidating": true
-            }
-        ].map(node => Node.fromJSON(node));
-        let network = new Network(nodes, organizations);
+    public loadFBAS() {
+        let network = LocalNetworks.getFBASNetwork();
+        Vue.set(this, 'network', network);
+        this.isLoading = false;
+    }
+
+    public loadFBAS2() {
+        let network = LocalNetworks.getFBAS2Network();
         Vue.set(this, 'network', network);
         this.isLoading = false;
     }

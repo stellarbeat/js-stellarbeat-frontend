@@ -17,6 +17,36 @@
                         <div class="accordion" role="tablist">
                             <b-card no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
+                                    <b-button block v-b-toggle.accordion-quorum variant="outline-primary">Quorum
+                                        intersection
+                                    </b-button>
+                                </b-card-header>
+                                <b-collapse id="accordion-quorum" visible accordion="my-accordion" role="tabpanel">
+                                    <b-card-body class="px-0 pb-0">
+                                        <analysis :fields="minimalQuorumFields" :merged-items="minimalQuorumsMerged"
+                                                  :items="minimalQuorums" :merged="resultIsMerged">
+                                            <template v-slot:title>
+                                                <div class="d-flex justify-content-between align-items-baseline">
+                                                    <h3>
+                                                        <b-badge
+                                                                :variant="hasQuorumIntersection ? 'success' : 'danger'">
+                                                            {{hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection'}}
+                                                        </b-badge>
+                                                    </h3>
+                                                    <b-button size="sm" @click="showModal=true">
+                                                        <b-icon-info-circle v-b-modal="'network-analysis-qi-info'"
+                                                                            v-b-tooltip:hover.top="'Info'"
+                                                                            class="text-muted"/>
+                                                    </b-button>
+                                                    <quorum-intersection-info/>
+                                                </div>
+                                            </template>
+                                        </analysis>
+                                    </b-card-body>
+                                </b-collapse>
+                            </b-card>
+                            <b-card no-body class="mb-1 border-0">
+                                <b-card-header header-tag="header" class="p-0" role="tab">
                                     <b-button block v-b-toggle.accordion-liveness variant="outline-primary">Liveness
                                         risk
                                     </b-button>
@@ -82,36 +112,7 @@
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
-                            <b-card no-body class="mb-1 border-0">
-                                <b-card-header header-tag="header" class="p-0" role="tab">
-                                    <b-button block v-b-toggle.accordion-quorum variant="outline-primary">Quorum
-                                        intersection
-                                    </b-button>
-                                </b-card-header>
-                                <b-collapse id="accordion-quorum" visible accordion="my-accordion" role="tabpanel">
-                                    <b-card-body class="px-0 pb-0">
-                                        <analysis :fields="minimalQuorumFields" :merged-items="minimalQuorumsMerged"
-                                                  :items="minimalQuorums" :merged="resultIsMerged">
-                                            <template v-slot:title>
-                                                <div class="d-flex justify-content-between align-items-baseline">
-                                                    <h3>
-                                                        <b-badge
-                                                                :variant="hasQuorumIntersection ? 'success' : 'danger'">
-                                                            {{hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection'}}
-                                                        </b-badge>
-                                                    </h3>
-                                                    <b-button size="sm" @click="showModal=true">
-                                                        <b-icon-info-circle v-b-modal="'network-analysis-qi-info'"
-                                                                            v-b-tooltip:hover.top="'Info'"
-                                                                            class="text-muted"/>
-                                                    </b-button>
-                                                    <quorum-intersection-info/>
-                                                </div>
-                                            </template>
-                                        </analysis>
-                                    </b-card-body>
-                                </b-collapse>
-                            </b-card>
+
                             <b-card no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
                                     <b-button block v-b-toggle.accordion-top-tier variant="outline-primary">Top tier
@@ -146,7 +147,7 @@
                 </div>
                 <div class="mb-2">
 
-                    <b-alert show variant="warning" v-if="!mergeByOrganizations">
+                    <b-alert show variant="warning" v-if="!mergeByOrganizations && network.nodes.length > 20">
                         Warning: computing node results will be slow when simulating non symmetric top tiers.
                     </b-alert>
                     <b-form-checkbox v-model="mergeByOrganizations"
@@ -223,8 +224,7 @@
     })
     export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
         protected fbasAnalysisWorker = new _FbasAnalysisWorker();
-
-        protected mergeByOrganizations: boolean = true;
+        protected mergeByOrganizations: boolean = this.$root.$data.store.network.nodes.length > 20;
         protected hasResult: boolean = false;
         protected resultIsMerged: boolean = true;
         protected hasQuorumIntersection: boolean = false;
