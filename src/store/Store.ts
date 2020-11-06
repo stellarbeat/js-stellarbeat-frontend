@@ -128,7 +128,7 @@ export default class Store {
             this.changeQueue.reset();
 
         if(this.networkId === 'fbas'){
-            this.loadFBAS2();
+            this.loadFBAS();
             this.isLocalNetwork = true;
             return;
         }
