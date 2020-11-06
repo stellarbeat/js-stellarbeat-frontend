@@ -126,7 +126,7 @@
         get breadCrumbs() {
             let crumbs = [];
             crumbs.push({
-                text: 'Stellar Public Network',
+                text: this.store.getNetworkIdPretty(),
                 to: {name: 'network-dashboard', query: { view: this.$route.query.view, network: this.$route.query.network}}
             });
 

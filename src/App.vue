@@ -24,11 +24,11 @@
                                                                  class="text-gray nav-link px-0"
                                                                  v-if="!store.isLoading">
                                                 <template #button-content>
-                                                    {{capitalize(store.networkId)}} network
+                                                    {{store.getNetworkIdPretty()}}
                                                 </template>
-                                                <b-dropdown-item @click="navigateToNetwork('public')">Public network
+                                                <b-dropdown-item @click="navigateToNetwork('public')">{{store.getNetworkIdPretty('public')}}
                                                 </b-dropdown-item>
-                                                <b-dropdown-item @click="navigateToNetwork('test')">Test network
+                                                <b-dropdown-item @click="navigateToNetwork('test')">{{store.getNetworkIdPretty('test')}}
                                                 </b-dropdown-item>
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
@@ -55,10 +55,10 @@
                             <b-nav-item-dropdown variant="primary" toggle-class="gray" class="ml-0 pl-0 mt-3 d-lg-none"
                                                  v-if="!store.isLoading">
                                 <template #button-content>
-                                    {{capitalize(store.networkId)}} network
+                                    {{store.getNetworkIdPretty()}}
                                 </template>
-                                <b-dropdown-item @click="navigateToNetwork('public')">Public network</b-dropdown-item>
-                                <b-dropdown-item @click="navigateToNetwork('test')">Test network</b-dropdown-item>
+                                <b-dropdown-item @click="navigateToNetwork('public')">{{store.getNetworkIdPretty('public')}}</b-dropdown-item>
+                                <b-dropdown-item @click="navigateToNetwork('test')">{{store.getNetworkIdPretty('test')}}</b-dropdown-item>
                             </b-nav-item-dropdown>
                             <div class="col-lg order-lg-first">
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
@@ -203,7 +203,7 @@
             meta: [
                 {
                     name: 'description',
-                    content: 'Giving insight into the Stellar public network through various tools & visualizations.'
+                    content: 'Giving insight into the Stellar network through various tools & visualizations.'
                 }
             ]
         }
@@ -247,11 +247,6 @@
                 'active': this.$route.name === 'network-dashboard' || this.$route.name === 'node-dashboard' || this.$route.name === 'organization-dashboard'
             };
         }
-
-        capitalize = (word: string) => {
-            if (typeof word !== 'string') return '';
-            return word.charAt(0).toUpperCase() + word.slice(1);
-        };
 
         navigateToNetwork(networkId: string) {
             if (networkId === this.store.networkId)

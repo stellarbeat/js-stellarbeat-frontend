@@ -1,7 +1,7 @@
 <template>
     <side-bar :sticky-key="'stellar-public'" icon="house">
         <template v-slot:title>
-            Stellar Public
+          {{ store.getNetworkIdPretty() }}
         </template>
         <template v-slot:sub-title>
                 Network

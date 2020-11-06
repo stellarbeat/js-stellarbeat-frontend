@@ -1,7 +1,7 @@
 <template>
     <b-modal id="quorumSlicesModal" lazy v-on:show="loadSlices" size="xl" hide-header>
         <div>
-            <b-alert variant="info" show>{{items.length}} slices found!</b-alert>
+            <b-alert variant="info" show>The node itself is added to every slice</b-alert>
             <b-table id="network-analysis-table" striped hover
                      :fields="fields"
                      :items="items"
@@ -40,7 +40,7 @@
         BCardHeader,
         BAlert
     } from 'bootstrap-vue';
-    import {Node, QuorumSlicesGenerator} from '@stellarbeat/js-stellar-domain';
+    import {Node, QuorumSet, QuorumSlicesGenerator} from '@stellarbeat/js-stellar-domain';
     import {StoreMixin} from '@/mixins/StoreMixin';
 
     @Component({
@@ -81,7 +81,8 @@
 
         loadSlices() {
             let generator = new QuorumSlicesGenerator(false);
-            this.items = generator.getSlices(this.selectedNode.quorumSet).map(slice => { return {"slice": slice}});
+            let quorumSetWithSelf = new QuorumSet('temp', 2, [this.selectedNode.publicKey], [this.selectedNode.quorumSet]) ;
+            this.items = generator.getSlices(quorumSetWithSelf).map(slice => { return {"slice": Array.from(new Set(slice))}});
         }
     }
 </script>

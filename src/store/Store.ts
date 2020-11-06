@@ -36,6 +36,7 @@ export default class Store {
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
     public availableNetworks = ['public', 'test', 'fbas', 'fbas2'];
+    public availableNetworksPretty!:Map<string, string>;
     public networkId: NetworkId = 'public';
     public isLocalNetwork: boolean = false;
     public selectedOrganization?:Organization = undefined;
@@ -55,6 +56,19 @@ export default class Store {
     protected _haltingAnalysisPublicKey?: string = undefined;
 
     protected _uniqueId = 0;
+
+    constructor() {
+        this.availableNetworksPretty = new Map();
+        this.availableNetworksPretty.set('public', 'Public network');
+        this.availableNetworksPretty.set('test', 'Testnet');
+        this.availableNetworksPretty.set('fbas', 'FBAS demo');
+        this.availableNetworksPretty.set('fbas2', 'FBAS QI demo');
+    }
+    public getNetworkIdPretty(networkId?:string): string|undefined {
+        if(!networkId)
+            networkId = this.networkId;
+        return this.availableNetworksPretty.get(networkId);
+    }
 
     getUniqueId(){
         return this._uniqueId ++;
@@ -274,4 +288,9 @@ export default class Store {
         Vue.set(this, 'network', network);
         this.isLoading = false;
     }
+
+    public capitalize(word: string) {
+        if (typeof word !== 'string') return '';
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    };
 }
