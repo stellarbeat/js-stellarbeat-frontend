@@ -87,6 +87,12 @@
                                             Organizations
                                         </router-link>
                                     </li>
+                                  <li class="nav-item">
+                                    <a class="nav-link" target="_blank" href="https://medium.com/stellarbeatio">
+                                      <b-icon-newspaper class="mr-1" scale="0.9"/>
+                                      Blog
+                                    </a>
+                                  </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
                                                      :to="{ name: 'api', query: { view: $route.query.view, network: $route.query.network} }">
@@ -174,7 +180,8 @@
         BFormSelect,
         BIconGlobe2,
         BNavItemDropdown,
-        BDropdownItem
+        BDropdownItem,
+        BIconNewspaper
     } from 'bootstrap-vue';
 
     @Component({
@@ -196,7 +203,8 @@
             BIconEnvelope,
             BNavbarToggle,
             BFormSelect,
-            BIconGlobe2
+            BIconGlobe2,
+            BIconNewspaper
         },
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',

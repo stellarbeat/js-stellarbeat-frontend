@@ -149,14 +149,14 @@
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.hasTransitiveQuorumSet" :is-loading="isLoading"
                                      :is-bool="true"
-                                     title="Transitive quorumset" tooltip="Does the network have a transitive quorumset"
+                                     title="Transitive quorum set" tooltip="Does the network have a transitive quorum set"
                                      :initialDataLoaded="initialDataLoaded"
                                      stats-property="hasTransitiveQuorumSetAverage"
                                      :year-statistics="yearStatistics">
                 <template v-slot:info>
-                    <h3>Network transitive quorumset</h3>
+                    <h3>Network transitive quorum set</h3>
                     <p class="my-4">
-                        The network transitive quorumset is a heuristic for a correctly configured network.<br/>
+                        The network transitive quorum set is a heuristic for a correctly configured network.<br/>
                         It is the most important strongly connected component that has no outgoing edges. <br/>In the main graph above, it is marked with a light blue background.
                     </p>
                 </template>

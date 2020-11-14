@@ -18,7 +18,7 @@
                         <div class="d-flex align-items-center ml-2">
                             <div class="mr-1">
                                 <router-link
-                                        :to="{ name: 'node-dashboard', params: { publicKey: snapshot.node.publicKey }}">
+                                        :to="{ name: 'node-dashboard', params: { publicKey: snapshot.node.publicKey }, query: {network: $route.query.network}}">
                                     {{snapshot.node.displayName}}
                                 </router-link>
                             </div>

@@ -8,7 +8,7 @@
                 :dropDownShowing="showing"
                 :showIcon="true"
                 :show-sub-title="true"
-                :sub-title="'Transitive quorumset'"
+                :sub-title="'Transitive quorum set'"
         />
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
