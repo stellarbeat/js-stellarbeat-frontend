@@ -11,8 +11,8 @@
         </template>
         <div class="row">
             <div class="col-12">
-                <b-alert :show="!vertex.isValidating" variant="warning">{{vertex.label}} is failing.</b-alert>
-                <div v-if="vertex.isValidating">
+                <b-alert :show="!vertex.available" variant="warning">{{vertex.label}} is failing.</b-alert>
+                <div v-if="vertex.available">
                     <b-form inline>
                         <b-form-group
                                 label-size="sm"
