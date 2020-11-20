@@ -7,7 +7,7 @@
         ></circle>
         <g>
         <rect style="fill: white;" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2" :class="{'rect-selected': selected, 'rect': !selected}"/>
-        <text y="5" dy="1.3em" text-anchor="middle" font-size="12px">{{ displayName | truncate(10)}}</text>
+        <text y="5" :class="textClass" dy="1.3em" text-anchor="middle" font-size="12px">{{ displayName | truncate(10)}}</text>
         </g>
     </g>
 </template>
@@ -58,6 +58,12 @@ export default class GraphNode extends Vue {
         return '-' + this.rectWidth / 2 + 'px';
     }
 
+    get textClass() {
+      return {
+        active: this.isValidating,
+        failing: !this.isValidating
+      }
+    }
     get classObject() {
         return {
             active: this.isValidating,
@@ -124,6 +130,11 @@ export default class GraphNode extends Vue {
     text{
         fill: #1997c6;
         font-weight: 400;
+    }
+
+    .failing {
+      fill: #cd201f;
+      opacity: 0.7;
     }
 
     .rect {

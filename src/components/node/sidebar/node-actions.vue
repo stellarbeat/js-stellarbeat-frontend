@@ -8,7 +8,7 @@
             </b-dropdown-header>
             <b-dropdown-item v-on:click.prevent.stop="store.toggleValidating(node)">
                 <b-icon-lightning scale="0.9"/>
-                {{node.isValidating ? 'Stop validating' : 'Try validating'}}
+                {{node.isValidating ? 'Halt this node' : 'Try validating'}}
             </b-dropdown-item>
             <b-dropdown-item v-if="supportsDelete" v-on:click="store.deleteValidatorFromQuorumSet(quorumSet, node)" @click.prevent.stop>
                 <b-icon-x-circle scale="0.9"/>

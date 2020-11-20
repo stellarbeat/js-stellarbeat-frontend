@@ -72,7 +72,7 @@
             </a>
         </div>
         <div class="card-body p-0">
-            <div v-if="network.graph.networkTransitiveQuorumSet.size === 0"
+            <div v-if="network.nodesTrustGraph.networkTransitiveQuorumSet.size === 0"
                  class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
             </div>
             <div v-if="view==='map'" style="height: 100%">

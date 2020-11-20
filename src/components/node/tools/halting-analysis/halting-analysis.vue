@@ -83,7 +83,7 @@
         NetworkGraphNode,
         QuorumSet as NetworkQuorumSet
     } from '@stellar/halting-analysis/src';
-    import {GraphQuorumSet, Network, PublicKey, Vertex} from '@stellarbeat/js-stellar-domain';
+    import {Network, PublicKey, QuorumSet, Vertex} from '@stellarbeat/js-stellar-domain';
     import HaltingAnalysisWorker
         from 'worker-loader?name=dist/[name].js!./../../../../workers/halting-analysisv1.worker.ts';
     import Store from '@/store/Store';
@@ -140,11 +140,11 @@
         }
 
         get vertex() {
-            return this.network.graph.getVertex(this.publicKey);
+            return this.network.nodesTrustGraph.getVertex(this.publicKey);
         }
 
         getNetworkGraphNodes() {
-            return Array.from(this.network.graph.vertices.values()) //todo only nodes in transitive quorum set
+            return Array.from(this.network.nodesTrustGraph.vertices.values()) //todo only nodes in transitive quorum set
                 .map(vertex => this.mapVertexToNetworkGraphNode(vertex, vertex === this.vertex));
         }
 
@@ -181,20 +181,20 @@
         mapVertexToNetworkGraphNode(vertex: Vertex, isRoot: boolean) {
             return {
                 'distance': isRoot ? 0 : 1,
-                'node': vertex.publicKey,
-                'status': vertex.isValidating ? 'tracking' : 'missing',
-                'qset': vertex.isValidating ? this.mapGraphQuorumSetToNetworkQuorumSet(vertex.graphQuorumSet) : undefined
+                'node': vertex.key,
+                'status': vertex.available ? 'tracking' : 'missing',
+                'qset': vertex.available ? this.mapQuorumSetToNetworkQuorumSet(this.network.getNodeByPublicKey(vertex.key)!.quorumSet) : undefined
             } as NetworkGraphNode;
         }
 
-        mapGraphQuorumSetToNetworkQuorumSet(graphQuorumSet: GraphQuorumSet): NetworkQuorumSet {
+        mapQuorumSetToNetworkQuorumSet(quorumSet: QuorumSet): NetworkQuorumSet {
             let innerQSets =
-                graphQuorumSet.innerGraphQuorumSets.map(innerQSet => this.mapGraphQuorumSetToNetworkQuorumSet(innerQSet));
+                quorumSet.innerQuorumSets.map(innerQSet => this.mapQuorumSetToNetworkQuorumSet(innerQSet));
             let v = [];
-            v.push(...graphQuorumSet.validators);
+            v.push(...quorumSet.validators);
             innerQSets.forEach(innerQSet => v.push(innerQSet));
             return {
-                't': graphQuorumSet.threshold,
+                't': quorumSet.threshold,
                 'v': v
             };
         }

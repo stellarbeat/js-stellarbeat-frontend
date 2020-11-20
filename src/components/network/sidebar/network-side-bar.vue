@@ -91,7 +91,7 @@
 
         //todo: move to domain
         get networkTransitiveQuorumSetNodes() {
-            return Array.from(this.network.graph.networkTransitiveQuorumSet)
+            return Array.from(this.network.nodesTrustGraph.networkTransitiveQuorumSet)
                 .map(publicKey => this.network.getNodeByPublicKey(publicKey)!);
         }
 

@@ -23,7 +23,7 @@
         <template v-slot:tool-list-items>
             <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
-                        :title="selectedNode.isValidating ? 'Stop validating' : 'Try validating'"
+                        :title="selectedNode.isValidating ? 'Halt this node' : 'Try validating'"
                         :show-icon="true"
                         :icon="selectedNode.isValidating ? 'lightning-fill' : 'lightning'"
                         v-on:click="store.toggleValidating(selectedNode)"

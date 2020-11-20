@@ -22,7 +22,7 @@ ctx.addEventListener('message', (event) => {
                 return 0.000001;
             }
         }).id( (d: any) => {
-            return d.publicKey;
+            return d.key;
         }))
         .force('x', forceX(width / 2))
         .force('y', forceY(height/2))

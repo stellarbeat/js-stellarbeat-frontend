@@ -17,8 +17,8 @@
                                 v-bind:transform="transitiveTransform"
                         />
                     </g>
-                    <GraphEdge v-for="edge in regularEdges"
-                               :key="edge.source.publicKey + edge.target.publicKey"
+                    <GraphEdge v-for="edge in regularEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                               :key="edge.source.key + edge.target.key"
                                :highlightAsOutgoing="false"
                                :highlightAsIncoming="false"
                                :isPartOfStronglyConnectedComponent="false"
@@ -29,8 +29,8 @@
                                :isFailing="edge.isFailing"
                                :hideRegular="!optionShowRegularEdges"
                     />
-                    <GraphEdge v-for="edge in stronglyConnectedEdges"
-                               :key="edge.source.publicKey + edge.target.publicKey"
+                    <GraphEdge v-for="edge in stronglyConnectedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                               :key="edge.source.key + edge.target.key"
                                :highlightAsOutgoing="false"
                                :highlightAsIncoming="false"
                                :isPartOfStronglyConnectedComponent="true"
@@ -43,7 +43,7 @@
                     />
                     <g v-if="selectedNode && optionHighlightTrustingNodes">
                         <GraphEdge v-for="edge in trustingEdges"
-                                   :key="edge.source.publicKey + edge.target.publicKey"
+                                   :key="edge.source.key + edge.target.key"
                                    :highlightAsOutgoing="false"
                                    :highlightAsIncoming="true"
                                    :isPartOfStronglyConnectedComponent="false"
@@ -57,7 +57,7 @@
                     </g>
                     <g v-if="selectedNode && optionHighlightTrustedNodes">
                         <GraphEdge v-for="edge in trustedEdges"
-                                   :key="edge.source.publicKey + edge.target.publicKey"
+                                   :key="edge.source.key + edge.target.key"
                                    :highlightAsOutgoing="true"
                                    :highlightAsIncoming="false"
                                    :isPartOfStronglyConnectedComponent="false"
@@ -69,8 +69,8 @@
                                    :hideRegular="!optionShowRegularEdges"
                         />
                     </g>
-                    <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.publicKey"
-                                 :publicKey="vertex.publicKey"
+                    <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.key"
+                                 :publicKey="vertex.key"
                                  :selected="vertex.selected"
                                  :highlightAsOutgoing="vertex.highlightAsOutgoing"
                                  :highlightAsIncoming="vertex.highlightAsIncoming"
@@ -93,15 +93,11 @@
     import GraphVertex from './graph-vertex.vue';
     import {
         line,
-        curveLinearClosed,
-        curveCatmullRomClosed,
-        curveLinear,
-        curveCatmullRom,
-        curveCatmullRomOpen
+        curveCatmullRomClosed
     } from 'd3-shape';
     import {polygonHull, polygonCentroid} from 'd3-polygon';
 
-    import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../../workers/compute-graphv7.worker';
+    import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../../workers/compute-graphv8.worker';
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import GraphEdge from '@/components/visual-navigator/graph/graph-edge.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
@@ -110,7 +106,7 @@
     import {select, event as d3Event, Selection} from 'd3-selection';
 
     type VertexViewData = {
-        publicKey: PublicKey,
+        key: PublicKey,
         label: string,
         x: number,
         y: number,
@@ -252,7 +248,7 @@
             return this.edgesViewData.filter(edge => {
                 if(this.selectedNode &&
                     (this.optionHighlightTrustedNodes || this.optionHighlightTrustingNodes) &&
-                    (edge.source.publicKey === this.selectedNode.publicKey || edge.target.publicKey === this.selectedNode.publicKey)){
+                    (edge.source.key === this.selectedNode.publicKey || edge.target.key === this.selectedNode.publicKey)){
                     return false;
                 }
 
@@ -267,7 +263,7 @@
             return this.edgesViewData.filter(edge => {
                 if(this.selectedNode &&
                     (this.optionHighlightTrustedNodes || this.optionHighlightTrustingNodes) &&
-                    (edge.source.publicKey === this.selectedNode.publicKey || edge.target.publicKey === this.selectedNode.publicKey)){
+                    (edge.source.key === this.selectedNode.publicKey || edge.target.key === this.selectedNode.publicKey)){
                     return false;
                 }
 
@@ -277,13 +273,13 @@
 
         get trustingEdges() {
             return this.edgesViewData.filter(edge => {
-                return edge.target.publicKey === this.selectedNode.publicKey;
+                return edge.target.key === this.selectedNode.publicKey;
             })
         }
 
         get trustedEdges() {
             return this.edgesViewData.filter(edge => {
-                return edge.source.publicKey === this.selectedNode.publicKey;
+                return edge.source.key === this.selectedNode.publicKey;
             })
         }
 
@@ -317,12 +313,12 @@
 
         protected visualizeSelectedNodes() {
             this.verticesViewData.forEach(vertex => {
-                let dataVertex = this.network.graph.getVertex(vertex.publicKey)!;
+                let dataVertex = this.network.nodesTrustGraph.getVertex(vertex.key)!;
                 vertex.selected = false;
                 if (this.selectedNode)
-                    vertex.selected = this.selectedNode.publicKey === vertex.publicKey;
+                    vertex.selected = this.selectedNode.publicKey === vertex.key;
                 if (this.selectedOrganization) {
-                    vertex.selected = this.selectedOrganization.validators.includes(vertex.publicKey);
+                    vertex.selected = this.selectedOrganization.validators.includes(vertex.key);
                 }
                 vertex.highlightAsOutgoing = this.highlightVertexAsTrusting(dataVertex);
                 vertex.highlightAsIncoming = this.highLightVertexAsTrusted(dataVertex);
@@ -365,7 +361,7 @@
 
         public centerCorrectNode() {
             if (this.centerVertex() !== undefined) {
-                let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.publicKey);
+                let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.key);
 
                 const realNodeX = -centerVertexViewData!.x * 1 + this.width / 2;
                 const realNodeY = -centerVertexViewData!.y * 1 + this.height / 2;
@@ -410,15 +406,15 @@
                 return false;
             if (!this.selectedNode)
                 return false;
-            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey!);
+            let selectedVertex = this.network.nodesTrustGraph.getVertex(this.selectedNode.publicKey!);
             if (selectedVertex === undefined) {
                 return false;
             }
-            return vertex.isValidating &&
-                selectedVertex.isValidating
-                && this.selectedNode.publicKey !== vertex.publicKey
-                && this.network.graph.getChildren(vertex).has(selectedVertex)
-                && (!this.network.graph.getChildren(selectedVertex).has(vertex) || !this.optionHighlightTrustedNodes);
+            return vertex.available &&
+                selectedVertex.available
+                && this.selectedNode.publicKey !== vertex.key
+                && this.network.nodesTrustGraph.getChildren(vertex).has(selectedVertex)
+                && (!this.network.nodesTrustGraph.getChildren(selectedVertex).has(vertex) || !this.optionHighlightTrustedNodes);
         }
 
         highLightVertexAsTrusted(vertex: Vertex): boolean {
@@ -426,19 +422,19 @@
                 return false;
             if (!this.selectedNode)
                 return false;
-            let selectedVertex = this.network.graph.getVertex(this.selectedNode.publicKey!);
+            let selectedVertex = this.network.nodesTrustGraph.getVertex(this.selectedNode.publicKey!);
             if (selectedVertex === undefined) {
                 return false;
             }
-            return vertex.isValidating
-                && selectedVertex.isValidating
-                && this.selectedNode.publicKey !== vertex.publicKey
-                && this.network.graph.getChildren(selectedVertex).has(vertex);
+            return vertex.available
+                && selectedVertex.available
+                && this.selectedNode.publicKey !== vertex.key
+                && this.network.nodesTrustGraph.getChildren(selectedVertex).has(vertex);
         }
 
         centerVertex(): Vertex | undefined {
             if (this.centerNode)
-                return this.network.graph.getVertex(this.centerNode.publicKey!);
+                return this.network.nodesTrustGraph.getVertex(this.centerNode.publicKey!);
 
             return undefined;
         }
@@ -446,41 +442,41 @@
 
         public computeGraph() {
             this.isLoading = true;
-            const simulationVertices: Array<VertexViewData> = Array.from(this.network.graph.vertices.values())
-                .filter((vertex) => !this.optionTransitiveQuorumSetOnly || this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey))
+            const simulationVertices: Array<VertexViewData> = Array.from(this.network.nodesTrustGraph.vertices.values())
+                .filter((vertex) => !this.optionTransitiveQuorumSetOnly || this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key))
                 .map((vertex) => {
                     return {
-                        publicKey: vertex.publicKey,
+                        key: vertex.key,
                         label: vertex.label,
-                        x: this.verticesViewData.get(vertex.publicKey) ?
-                            this.verticesViewData.get(vertex.publicKey)!.x : 0,
-                        y: this.verticesViewData.get(vertex.publicKey) ?
-                            this.verticesViewData.get(vertex.publicKey)!.y : 0,
-                        isPartOfTransitiveQuorumSet: this.network.graph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.publicKey),
+                        x: this.verticesViewData.get(vertex.key) ?
+                            this.verticesViewData.get(vertex.key)!.x : 0,
+                        y: this.verticesViewData.get(vertex.key) ?
+                            this.verticesViewData.get(vertex.key)!.y : 0,
+                        isPartOfTransitiveQuorumSet: this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key),
                         selected: this.selectedNode ?
-                            this.selectedNode.publicKey === vertex.publicKey :
-                            this.selectedOrganization ? this.selectedOrganization.validators.includes(vertex.publicKey) : false,
+                            this.selectedNode.publicKey === vertex.key :
+                            this.selectedOrganization ? this.selectedOrganization.validators.includes(vertex.key) : false,
                         highlightAsIncoming:
                             this.highLightVertexAsTrusted(vertex),
                         highlightAsOutgoing:
                             this.highlightVertexAsTrusting(vertex),
-                        isValidating: vertex.isValidating
+                        isValidating: vertex.available
                     };
                 });
 
-            const simulationEdges: Array<EdgeViewData> = Array.from(this.network.graph.edges.values())
-                .filter(edge => this.network.graph.isEdgePartOfNetworkTransitiveQuorumSet(edge) || !this.optionTransitiveQuorumSetOnly)
-                .filter((edge) => edge.isActive || this.optionShowFailingEdges)
+            const simulationEdges: Array<EdgeViewData> = Array.from(this.network.nodesTrustGraph.edges.values())
+                .filter(edge => this.network.nodesTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge) || !this.optionTransitiveQuorumSetOnly)
+                .filter((edge) => edge.isActive || this.network.nodesTrustGraph.isEdgePartOfStronglyConnectedComponent(edge))
                 .map((edge) => {
                     return {
-                        source: edge.parent.publicKey,
-                        target: edge.child.publicKey,
-                        isPartOfTransitiveQuorumSet: this.network.graph.isEdgePartOfNetworkTransitiveQuorumSet(edge),
-                        isPartOfStronglyConnectedComponent: this.network.graph.isEdgePartOfStronglyConnectedComponent(edge),
+                        source: edge.parent.key,
+                        target: edge.child.key,
+                        isPartOfTransitiveQuorumSet: this.network.nodesTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge),
+                        isPartOfStronglyConnectedComponent: this.network.nodesTrustGraph.isEdgePartOfStronglyConnectedComponent(edge),
                         highlightAsOutgoing:
-                            this.selectedNode && this.optionHighlightTrustedNodes ? edge.parent.publicKey === this.selectedNode.publicKey : false,
+                            this.selectedNode && this.optionHighlightTrustedNodes ? edge.parent.key === this.selectedNode.publicKey : false,
                         highlightAsIncoming:
-                            this.selectedNode && this.optionHighlightTrustingNodes ? edge.child.publicKey === this.selectedNode.publicKey : false,
+                            this.selectedNode && this.optionHighlightTrustingNodes ? edge.child.key === this.selectedNode.publicKey : false,
                         isFailing: !edge.isActive
                     };
                 });
@@ -517,7 +513,7 @@
                     case 'end': {
                         this.verticesViewData = new Map<PublicKey, VertexViewData>();
                         event.data.vertices.forEach(
-                            vertex => this.verticesViewData.set(vertex.publicKey, vertex)
+                            vertex => this.verticesViewData.set(vertex.key, vertex)
                         );
 
                         this.edgesViewData = event.data.edges;
