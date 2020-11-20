@@ -26,10 +26,8 @@
                                                 <template #button-content>
                                                     {{store.getNetworkIdPretty()}}
                                                 </template>
-                                                <b-dropdown-item @click="navigateToNetwork('public')">{{store.getNetworkIdPretty('public')}}
-                                                </b-dropdown-item>
-                                                <b-dropdown-item @click="navigateToNetwork('test')">{{store.getNetworkIdPretty('test')}}
-                                                </b-dropdown-item>
+                                              <b-dropdown-item v-for="network in Array.from(store.availableNetworks)" :key="network" @click="navigateToNetwork(network)">
+                                                {{store.getNetworkIdPretty(network)}}</b-dropdown-item>
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
                                             <a href="https://github.com/stellarbeat"
@@ -57,8 +55,8 @@
                                 <template #button-content>
                                     {{store.getNetworkIdPretty()}}
                                 </template>
-                                <b-dropdown-item @click="navigateToNetwork('public')">{{store.getNetworkIdPretty('public')}}</b-dropdown-item>
-                                <b-dropdown-item @click="navigateToNetwork('test')">{{store.getNetworkIdPretty('test')}}</b-dropdown-item>
+                              <b-dropdown-item v-for="network in Array.from(store.availableNetworks)" :key="network" @click="navigateToNetwork(network)">
+                                {{store.getNetworkIdPretty(network)}}</b-dropdown-item>
                             </b-nav-item-dropdown>
                             <div class="col-lg order-lg-first">
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">

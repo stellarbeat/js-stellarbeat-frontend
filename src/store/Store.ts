@@ -280,12 +280,14 @@ export default class Store {
     public loadFBAS() {
         let network = LocalNetworks.getFBASNetwork();
         Vue.set(this, 'network', network);
+        this.networkUpdated++;
         this.isLoading = false;
     }
 
     public loadFBAS2() {
         let network = LocalNetworks.getFBAS2Network();
         Vue.set(this, 'network', network);
+        this.networkUpdated++;
         this.isLoading = false;
     }
 
