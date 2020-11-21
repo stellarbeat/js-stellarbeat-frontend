@@ -358,32 +358,11 @@
         }
 
         public getTransitiveQuorumSetHull(simulationNodes: Array<VertexViewData>) {
-            let valueLine = line()
-                .x(function (d) {
-                    return d[0];
-                })
-                .y(function (d) {
-                    return d[1];
-                })
-                .curve(curveCatmullRomClosed.alpha(1));
-            let transitiveQSetHull = polygonHull(
-                simulationNodes
-                    .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
-                    .map(vertex => [vertex.x, vertex.y]));
-            if (!transitiveQSetHull)
-                return '';
-            this.transitiveCentroid = polygonCentroid(transitiveQSetHull);
-            let hull = valueLine(
-                transitiveQSetHull.map(point => {
-                    return [point[0] - this.transitiveCentroid[0], point[1] - this.transitiveCentroid[1]];
-                })
-            );
+            let transitiveQuorumSetPoints: [number, number][] = simulationNodes
+                .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
+                .map(vertex => [vertex.x, vertex.y]);
 
-            if (hull) {
-                return hull;
-            }
-
-            return '';
+            return this.getHullLine(transitiveQuorumSetPoints);
         }
 
         get stronglyConnectedComponentHullLines(){
@@ -570,14 +549,10 @@
                         if (this.delayedVisualizeCenterNode) {
                             this.visualizeSelectedNodes();
                         }
-                        /*let hull = this.getTransitiveQuorumSetHull(event.data.vertices);
-                        let hullLine = null;
-                        if(hull)
-                            hullLine = this.getHullLine(hull);
-                        if(hullLine)
-                          this.transitivePath = hullLine;*/
 
-                        this.transitivePath = this.getTransitiveQuorumSetHull(event.data.vertices);
+                        let transitivePath = this.getTransitiveQuorumSetHull(event.data.vertices);
+                        if(transitivePath)
+                          this.transitivePath = transitivePath
                     }
                         break;
                 }
