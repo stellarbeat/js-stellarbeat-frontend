@@ -61,7 +61,7 @@ export default class GraphLink extends Vue {
 
     path.strongly-connected {
         stroke: #1997c6;
-        stroke-width:1px;
+        stroke-width:0.7px;
         stroke-opacity: 0.25;
     }
 

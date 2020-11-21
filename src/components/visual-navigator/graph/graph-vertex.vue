@@ -4,9 +4,11 @@
                 :r="circleRadius"
                 v-bind:class="classObject"
                 v-on:click="nodeSelected"
-        ></circle>
+        >
+          <title>{{ displayName }}</title>
+        </circle>
         <g>
-        <rect style="fill: white;" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2" :class="{'rect-selected': selected, 'rect': !selected}"/>
+        <rect style="fill: white; opacity: 0.7; text-transform: lowercase" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2" :class="{'rect-selected': selected, 'rect': !selected}"/>
         <text y="5" :class="textClass" dy="1.3em" text-anchor="middle" font-size="12px">{{ displayName | truncate(10)}}</text>
         </g>
     </g>
