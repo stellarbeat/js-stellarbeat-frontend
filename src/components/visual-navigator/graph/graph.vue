@@ -8,20 +8,14 @@
                  height="100%"
             >
                 <g ref="grid">
-                    <g class="transitive-quorum-set">
-                      <path v-for="sccHullLine in stronglyConnectedComponentHullLines"
-                          class="scc-path"
-                          v-bind:d="sccHullLine"
-                      />
-                    </g>
-                    <g class="transitive-quorum-set">
-                        <path
-                                id="transitive-path"
-                                class="transitive-path"
-                                v-bind:d="transitivePath"
-                                v-bind:transform="transitiveTransform"
-                        />
-                    </g>
+                    <g v-if="dataInitialized">
+                    <graph-strongly-connected-component
+                        :greatest="true"
+                        :vertex-coordinates="transitiveQuorumSetCoordinates"
+                    />
+                    <graph-strongly-connected-component :key="index"
+                        v-for="(sccCoordinates, index) in stronglyConnectedComponentCoordinates"
+                        :vertex-coordinates="sccCoordinates"/>
                     <GraphEdge v-for="edge in regularEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
                                :key="edge.source.key + edge.target.key"
                                :highlightAsOutgoing="false"
@@ -86,7 +80,7 @@
                                  :label="vertex.label"
                     ></GraphVertex>
                 </g>
-            </svg>
+                </g></svg>
         </div>
     </div>
 </template>
@@ -111,6 +105,8 @@
     import * as zoom from 'd3-zoom';
     import {select, event as d3Event, Selection} from 'd3-selection';
     import {VBTooltip} from 'bootstrap-vue';
+    import GraphStronglyConnectedComponent
+      from '@/components/visual-navigator/graph/graph-strongly-connected-component.vue';
 
     type VertexViewData = {
         key: PublicKey,
@@ -137,6 +133,7 @@
 
     @Component({
         components: {
+          GraphStronglyConnectedComponent,
             GraphLegend,
             GraphEdge,
             GraphVertex
@@ -178,16 +175,24 @@
         public computeGraphWorker = new _ComputeGraphWorker();
         public delayedCenter: boolean = false;
         public delayedVisualizeCenterNode: boolean = false;
-        public transitivePath: string = '';
-        public transitiveCentroid: { 0: number, 1: number } = {0: 0, 1: 0};
+        public networkId = this.store.networkId;
+        public dataInitialized = false;
+
+        //computed data
         public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
         public edgesViewData: EdgeViewData[] = [];
         public stronglyConnectedComponents: [VertexViewData][] = [];
-        public networkId = this.store.networkId;
+
 
         @Watch('networkUpdated')
         public onNetworkUpdated() {
-            this.restartSimulation();
+            if(this.networkId !== this.store.networkId){
+                this.verticesViewData = new Map();
+                this.stronglyConnectedComponents = [];
+                this.edgesViewData = [];
+                this.dataInitialized = false;
+            }
+            this.computeGraph();
         }
 
         @Watch('centerNode')
@@ -336,14 +341,6 @@
             };
         }
 
-        get transitiveTransform() {
-            return 'translate(' + this.transitiveCentroid[0] + ',' + (this.transitiveCentroid[1]) + ') scale(1)';
-        }
-
-        public restartSimulation() {
-            this.computeGraph();
-        }
-
         public centerCorrectNode() {
             if (this.centerVertex() !== undefined) {
                 let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.key);
@@ -357,15 +354,16 @@
             }
         }
 
-        public getTransitiveQuorumSetHull(simulationNodes: Array<VertexViewData>) {
-            let transitiveQuorumSetPoints: [number, number][] = simulationNodes
-                .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
-                .map(vertex => [vertex.x, vertex.y]);
+        get transitiveQuorumSetCoordinates() {
+          console.log('calculate');
+            let transitiveQuorumSetPoints: [number, number][] = Array.from(this.verticesViewData.values())
+              .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
+              .map(vertex => [vertex.x, vertex.y]);
 
-            return this.getHullLine(transitiveQuorumSetPoints);
+            return transitiveQuorumSetPoints;
         }
 
-        get stronglyConnectedComponentHullLines(){
+      get stronglyConnectedComponentCoordinates(){
             let sccPointsArray:[number, number][][] = this.stronglyConnectedComponents.map(scc => {
                 return scc.map(vertex => [vertex.x, vertex.y])
             })
@@ -373,7 +371,7 @@
             //add dummy point because hull needs minimum 3 points
             sccPointsArray.filter(sccPoints => sccPoints.length === 2 ).forEach(sccPoints => sccPoints.push([sccPoints[0][0], sccPoints[0][1] + 0.0001]))
 
-            return sccPointsArray.map(sccPoints => this.getHullLine(sccPoints));
+            return sccPointsArray;
         }
 
         getHullLine(points: [number, number][]) {
@@ -540,7 +538,7 @@
                         );
 
                         this.edgesViewData = event.data.edges;
-
+                        this.dataInitialized = true;
                         this.isLoading = false;
 
                         if (this.delayedCenter) {
@@ -549,10 +547,6 @@
                         if (this.delayedVisualizeCenterNode) {
                             this.visualizeSelectedNodes();
                         }
-
-                        let transitivePath = this.getTransitiveQuorumSetHull(event.data.vertices);
-                        if(transitivePath)
-                          this.transitivePath = transitivePath
                     }
                         break;
                 }
@@ -571,34 +565,6 @@
         height: inherit;
         width: 100%;
         cursor: grab;
-    }
-
-    .transitive-path {
-        opacity: .1;
-        fill: #1997c6;
-        stroke: #1997c6;
-        stroke-width: 20px;
-    }
-
-    .scc-path {
-      opacity: 0.1;
-      fill: transparent;
-      stroke: #1997c6;
-      stroke-width: 10px;
-    }
-
-    .progress {
-        height: 20px;
-        margin-top: 10%;
-        margin-left: 20%;
-        margin-right: 20%
-    }
-
-    .progress-bar {
-        -webkit-transition: none !important;
-        transition: none !important;
-        background-color: #1997c6;
-        opacity: 0.6;
     }
 
     .dimmer.active .dimmer-content {
