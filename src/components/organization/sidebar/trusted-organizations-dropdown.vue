@@ -14,7 +14,7 @@
                     v-on:click="selectOrganization(organization)"
                     :title="organization.name"
                     :is-link-in-dropdown="true"
-                    :has-danger="network.isOrganizationFailing(organization)"
+                    :has-danger="!organization.subQuorumAvailable"
                     :dangers="'Not available'"
                     :has-warnings="false"
                     warnings=""

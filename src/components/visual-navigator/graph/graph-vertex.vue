@@ -1,9 +1,8 @@
 <template>
-    <g :transform="coordinateTransform">
+    <g :transform="coordinateTransform" style="cursor: pointer;" v-on:click="nodeSelected">
         <circle
                 :r="circleRadius"
                 v-bind:class="classObject"
-                v-on:click="nodeSelected"
         >
           <title>{{ displayName }}</title>
         </circle>
@@ -37,7 +36,7 @@ export default class GraphNode extends Vue {
     @Prop()
     public y!: number;
     @Prop()
-    public isValidating!: boolean;
+    public isFailing!: boolean;
     @Prop()
     public label!: string;
 
@@ -62,17 +61,17 @@ export default class GraphNode extends Vue {
 
     get textClass() {
       return {
-        active: this.isValidating,
-        failing: !this.isValidating
+        active: !this.isFailing,
+        failing: this.isFailing
       }
     }
     get classObject() {
         return {
-            active: this.isValidating,
+            active: !this.isFailing,
             selected: this.selected,
-            failing: !this.isValidating,
-            target: this.highlightAsIncoming,
-            source : this.highlightAsOutgoing,
+            failing: this.isFailing,
+            target: this.highlightAsIncoming && !this.selected,
+            source : this.highlightAsOutgoing && !this.selected,
             transitive: this.partOfTransitiveQuorumSet
         };
     }

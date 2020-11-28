@@ -182,8 +182,8 @@
             return {
                 'distance': isRoot ? 0 : 1,
                 'node': vertex.key,
-                'status': vertex.available ? 'tracking' : 'missing',
-                'qset': vertex.available ? this.mapQuorumSetToNetworkQuorumSet(this.network.getNodeByPublicKey(vertex.key)!.quorumSet) : undefined
+                'status': !this.network.isNodeFailing(this.network.getNodeByPublicKey(vertex.key)) ? 'tracking' : 'missing',
+                'qset': !this.network.isNodeFailing(this.network.getNodeByPublicKey(vertex.key)) ? this.mapQuorumSetToNetworkQuorumSet(this.network.getNodeByPublicKey(vertex.key)!.quorumSet) : undefined
             } as NetworkGraphNode;
         }
 

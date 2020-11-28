@@ -4,8 +4,8 @@ import {NetworkAddNode} from '@/services/change-queue/changes/network-add-node';
 describe("network add node", () => {
 
     test('network add node', () => {
-        let node = new Node('localhost', 1, 'a');
-        let newNode = new Node('localhost', 1, 'b');
+        let node = new Node('a');
+        let newNode = new Node('b');
         let network = new Network([node]);
 
         let change = new NetworkAddNode(network, newNode);

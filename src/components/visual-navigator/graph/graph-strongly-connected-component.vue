@@ -61,6 +61,6 @@ export default class GraphStronglyConnectedComponent extends Vue {
     opacity: .1;
     fill: #1997c6;
     stroke: #1997c6;
-    stroke-width: 20px;
+    stroke-width: 10px;
 }
 </style>

@@ -8,16 +8,16 @@
                  height="100%"
             >
                 <g ref="grid">
-                    <g v-if="dataInitialized">
+                    <g v-if="graphComputed && !isLoading">
                         <graph-strongly-connected-component
                             :greatest="true"
-                            :vertex-coordinates="transitiveQuorumSetCoordinates"
+                            :vertex-coordinates="viewGraph.transitiveQuorumSetCoordinates"
                         />
                         <graph-strongly-connected-component :key="index"
-                                                            v-for="(sccCoordinates, index) in stronglyConnectedComponentCoordinates"
+                                                            v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
                                                             :vertex-coordinates="sccCoordinates"/>
                         <GraphEdge
-                            v-for="edge in regularEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                            v-for="edge in viewGraph.regularEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
                             :key="edge.source.key + edge.target.key"
                             :highlightAsOutgoing="false"
                             :highlightAsIncoming="false"
@@ -30,7 +30,7 @@
                             :hideRegular="!optionShowRegularEdges"
                         />
                         <GraphEdge
-                            v-for="edge in stronglyConnectedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                            v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
                             :key="edge.source.key + edge.target.key"
                             :highlightAsOutgoing="false"
                             :highlightAsIncoming="false"
@@ -44,7 +44,7 @@
                         />
                         <g v-if="selectedNode && optionHighlightTrustingNodes">
                             <GraphEdge
-                                v-for="edge in trustingEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                                v-for="edge in viewGraph.trustingEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
                                 :key="edge.source.key + edge.target.key"
                                 :highlightAsOutgoing="false"
                                 :highlightAsIncoming="true"
@@ -59,7 +59,7 @@
                         </g>
                         <g v-if="selectedNode && optionHighlightTrustedNodes">
                             <GraphEdge
-                                v-for="edge in trustedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                                v-for="edge in viewGraph.trustedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
                                 :key="edge.source.key + edge.target.key"
                                 :highlightAsOutgoing="true"
                                 :highlightAsIncoming="false"
@@ -72,15 +72,15 @@
                                 :hideRegular="!optionShowRegularEdges"
                             />
                         </g>
-                        <GraphVertex v-for="vertex in verticesViewData.values()" :key="vertex.key"
+                        <GraphVertex v-for="vertex in viewGraph.viewVertices.values()" :key="vertex.key"
                                      :publicKey="vertex.key"
                                      :selected="vertex.selected"
-                                     :highlightAsOutgoing="vertex.highlightAsOutgoing"
-                                     :highlightAsIncoming="vertex.highlightAsIncoming"
+                                     :highlightAsOutgoing="vertex.highlightAsTrusted"
+                                     :highlightAsIncoming="vertex.highlightAsTrusting"
                                      :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
                                      :x="vertex.x"
                                      :y="vertex.y"
-                                     :isValidating="vertex.isValidating"
+                                     :isFailing="vertex.isFailing"
                                      :label="vertex.label"
                         ></GraphVertex>
                     </g>
@@ -92,15 +92,15 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {Network, Node, PublicKey, Vertex, QuorumSet} from '@stellarbeat/js-stellar-domain';
+import {Network, Node, PublicKey, Vertex} from '@stellarbeat/js-stellar-domain';
 
 import GraphVertex from './graph-vertex.vue';
 import {
     line,
-    curveCatmullRomClosed, curveBasis, curveCatmullRom, curveCatmullRomOpen
+    curveCatmullRomClosed
 } from 'd3-shape';
 
-import {polygonHull, polygonCentroid} from 'd3-polygon';
+import {polygonHull} from 'd3-polygon';
 
 import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../../workers/compute-graphv8.worker';
 import {Component, Prop, Watch} from 'vue-property-decorator';
@@ -109,30 +109,9 @@ import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
 import * as zoom from 'd3-zoom';
 import {select, event as d3Event, Selection} from 'd3-selection';
-import {VBTooltip} from 'bootstrap-vue';
 import GraphStronglyConnectedComponent
     from '@/components/visual-navigator/graph/graph-strongly-connected-component.vue';
-
-type VertexViewData = {
-    key: PublicKey,
-    label: string,
-    x: number,
-    y: number,
-    isPartOfTransitiveQuorumSet: boolean,
-    highlightAsOutgoing: boolean,
-    highlightAsIncoming: boolean,
-    selected: boolean,
-    isValidating: boolean
-};
-
-type EdgeViewData = {
-    source: any, //publicKey is replaced by object in d3
-    target: any,//publicKey is replaced by object in d3
-    isPartOfStronglyConnectedComponent: boolean,
-    highlightAsOutgoing: boolean,
-    highlightAsIncoming: boolean,
-    isFailing: boolean
-}
+import {ViewEdge, ViewGraph, ViewVertex} from '@/components/visual-navigator/graph/graph-view';
 
 const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
 
@@ -142,8 +121,7 @@ const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescrip
         GraphLegend,
         GraphEdge,
         GraphVertex
-    },
-    directives: {'b-tooltip': VBTooltip}
+    }
 })
 export default class Graph extends Vue {
     @Prop()
@@ -181,23 +159,17 @@ export default class Graph extends Vue {
     public delayedCenter: boolean = false;
     public delayedVisualizeCenterNode: boolean = false;
     public networkId = this.store.networkId;
-    public dataInitialized = false;
+    public graphComputed = false;
 
-    //computed data
-    public verticesViewData: Map<PublicKey, VertexViewData> = new Map();
-    public edgesViewData: EdgeViewData[] = [];
-    public stronglyConnectedComponents: [VertexViewData][] = [];
-
+    public viewGraph!: ViewGraph;
 
     @Watch('networkUpdated')
     public onNetworkUpdated() {
         if (this.networkId !== this.store.networkId) {
-            this.verticesViewData = new Map();
-            this.stronglyConnectedComponents = [];
-            this.edgesViewData = [];
-            this.dataInitialized = false;
+            this.viewGraph.reset();
+            this.graphComputed = false;
         }
-        this.computeGraph();
+        this.updateGraph(true);
     }
 
     @Watch('centerNode')
@@ -213,22 +185,22 @@ export default class Graph extends Vue {
 
     @Watch('optionShowFailingEdges')
     public onOptionShowFailingEdgesChanged() {
-        this.computeGraph();
+        //this.updateGraph();
     }
 
     @Watch('optionHighlightTrustingNodes')
     public onOptionHighlightTrustingNodesChanged() {
-        this.computeGraph();
+        //this.updateGraph();
     }
 
     @Watch('optionHighlightTrustedNodes')
     public onOptionHighlightTrustedNodesChanged() {
-        this.computeGraph();
+        //this.updateGraph();
     }
 
     @Watch('optionTransitiveQuorumSetOnly')
     public onOptionTransitiveQuorumSetOnlyChanged() {
-        this.computeGraph();
+        //this.updateGraph();
     }
 
     @Watch('selectedNode')
@@ -264,45 +236,6 @@ export default class Graph extends Vue {
 
     }
 
-    get regularEdges() {
-        return this.edgesViewData.filter(edge => {
-            if (this.selectedNode &&
-                (this.optionHighlightTrustedNodes || this.optionHighlightTrustingNodes) &&
-                (edge.source.key === this.selectedNode.publicKey || edge.target.key === this.selectedNode.publicKey)) {
-                return false;
-            }
-
-            if (edge.isPartOfStronglyConnectedComponent)
-                return false;
-
-            return true;
-        });
-    }
-
-    get stronglyConnectedEdges() {
-        return this.edgesViewData.filter(edge => {
-            if (this.selectedNode &&
-                (this.optionHighlightTrustedNodes || this.optionHighlightTrustingNodes) &&
-                (edge.source.key === this.selectedNode.publicKey || edge.target.key === this.selectedNode.publicKey)) {
-                return false;
-            }
-
-            return edge.isPartOfStronglyConnectedComponent;
-        });
-    }
-
-    get trustingEdges() {
-        return this.edgesViewData.filter(edge => {
-            return edge.target.key === this.selectedNode.publicKey;
-        });
-    }
-
-    get trustedEdges() {
-        return this.edgesViewData.filter(edge => {
-            return edge.source.key === this.selectedNode.publicKey;
-        });
-    }
-
     get store() {
         return this.$root.$data.store;
     }
@@ -316,18 +249,11 @@ export default class Graph extends Vue {
     }
 
     protected visualizeSelectedNodes() {
-        this.verticesViewData.forEach(vertex => {
-            let dataVertex = this.network.nodesTrustGraph.getVertex(vertex.key)!;
-            vertex.selected = false;
-            if (this.selectedNode)
-                vertex.selected = this.selectedNode.publicKey === vertex.key;
-            if (this.selectedOrganization) {
-                vertex.selected = this.selectedOrganization.validators.includes(vertex.key);
-            }
-            vertex.highlightAsOutgoing = this.highlightVertexAsTrusting(dataVertex);
-            vertex.highlightAsIncoming = this.highLightVertexAsTrusted(dataVertex);
-        });
-
+        let selectedKey = undefined;
+        if (this.selectedNode)
+            selectedKey = this.selectedNode.publicKey;
+        this.viewGraph.reClassifyEdges(selectedKey);
+        this.viewGraph.reClassifyVertices(selectedKey);
         this.delayedVisualizeCenterNode = false;
     }
 
@@ -348,7 +274,7 @@ export default class Graph extends Vue {
 
     public centerCorrectNode() {
         if (this.centerVertex() !== undefined) {
-            let centerVertexViewData = this.verticesViewData.get(this.centerVertex()!.key);
+            let centerVertexViewData = this.viewGraph.viewVertices.get(this.centerVertex()!.key);
 
             const realNodeX = -centerVertexViewData!.x * 1 + this.width / 2;
             const realNodeY = -centerVertexViewData!.y * 1 + this.height / 2;
@@ -359,79 +285,6 @@ export default class Graph extends Vue {
         }
     }
 
-    get transitiveQuorumSetCoordinates() {
-        let transitiveQuorumSetPoints: [number, number][] = Array.from(this.verticesViewData.values())
-            .filter(vertex => vertex.isPartOfTransitiveQuorumSet)
-            .map(vertex => [vertex.x, vertex.y]);
-
-        return transitiveQuorumSetPoints;
-    }
-
-    get stronglyConnectedComponentCoordinates() {
-        let sccPointsArray: [number, number][][] = this.stronglyConnectedComponents.map(scc => {
-            return scc.map(vertex => [vertex.x, vertex.y]);
-        });
-
-        //add dummy point because hull needs minimum 3 points
-        sccPointsArray.filter(sccPoints => sccPoints.length === 2).forEach(sccPoints => sccPoints.push([sccPoints[0][0], sccPoints[0][1] + 0.0001]));
-
-        return sccPointsArray;
-    }
-
-    getHullLine(points: [number, number][]) {
-        let hull = polygonHull(points);
-        if (!hull)
-            return null;
-
-        let valueLine = line()
-            .x(function (d) {
-                return d[0];
-            })
-            .y(function (d) {
-                return d[1];
-            })
-            .curve(curveCatmullRomClosed); //we want a smooth line
-
-        let hullLine = valueLine(hull);
-
-        if (hullLine) {
-            return hullLine;
-        }
-
-        return null;
-    }
-
-    highlightVertexAsTrusting(vertex: Vertex) {
-        if (!this.optionHighlightTrustingNodes)
-            return false;
-        if (!this.selectedNode)
-            return false;
-        let selectedVertex = this.network.nodesTrustGraph.getVertex(this.selectedNode.publicKey!);
-        if (selectedVertex === undefined) {
-            return false;
-        }
-        return vertex.available &&
-            selectedVertex.available
-            && this.selectedNode.publicKey !== vertex.key
-            && this.network.nodesTrustGraph.getChildren(vertex).has(selectedVertex)
-            && (!this.network.nodesTrustGraph.getChildren(selectedVertex).has(vertex) || !this.optionHighlightTrustedNodes);
-    }
-
-    highLightVertexAsTrusted(vertex: Vertex): boolean {
-        if (!this.optionHighlightTrustedNodes)
-            return false;
-        if (!this.selectedNode)
-            return false;
-        let selectedVertex = this.network.nodesTrustGraph.getVertex(this.selectedNode.publicKey!);
-        if (selectedVertex === undefined) {
-            return false;
-        }
-        return vertex.available
-            && selectedVertex.available
-            && this.selectedNode.publicKey !== vertex.key
-            && this.network.nodesTrustGraph.getChildren(selectedVertex).has(vertex);
-    }
-
     centerVertex(): Vertex | undefined {
         if (this.centerNode)
             return this.network.nodesTrustGraph.getVertex(this.centerNode.publicKey!);
@@ -440,70 +293,13 @@ export default class Graph extends Vue {
     }
 
 
-    public computeGraph() {
+    public updateGraph(mergeWithPreviousGraph: boolean = false) {
         this.isLoading = true;
-        const simulationVertices: Array<VertexViewData> = [];
-        let newVerticesViewData = new Map();
-        this.stronglyConnectedComponents = []; //group in initialize
-        Array.from(this.network.nodesTrustGraph.vertices.values())
-            .filter((vertex) => !this.optionTransitiveQuorumSetOnly || this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key))
-            .forEach((vertex) => {
-                let vertexViewData = {
-                    key: vertex.key,
-                    label: vertex.label,
-                    x: this.verticesViewData.get(vertex.key) ?
-                        this.verticesViewData.get(vertex.key)!.x : 0,
-                    y: this.verticesViewData.get(vertex.key) ?
-                        this.verticesViewData.get(vertex.key)!.y : 0,
-                    isPartOfTransitiveQuorumSet: this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key),
-                    selected: this.selectedNode ?
-                        this.selectedNode.publicKey === vertex.key :
-                        this.selectedOrganization ? this.selectedOrganization.validators.includes(vertex.key) : false,
-                    highlightAsIncoming:
-                        this.highLightVertexAsTrusted(vertex),
-                    highlightAsOutgoing:
-                        this.highlightVertexAsTrusting(vertex),
-                    isValidating: vertex.available
-                };
-                simulationVertices.push(vertexViewData);
-                newVerticesViewData.set(vertexViewData.key, vertexViewData);
-
-                let sccIndex = this.network.nodesTrustGraph.getStronglyConnectedComponent(vertexViewData.key);
-                if (sccIndex) {
-                    if (!this.stronglyConnectedComponents[sccIndex])
-                        this.stronglyConnectedComponents[sccIndex] = [vertexViewData];
-                    else
-                        this.stronglyConnectedComponents[sccIndex].push(vertexViewData);
-                }
-            });
-
-        this.stronglyConnectedComponents = this.stronglyConnectedComponents.filter(scc => scc.length > 1);
-
-        const simulationEdges: Array<EdgeViewData> = Array.from(this.network.nodesTrustGraph.edges.values())
-            .filter(edge => this.network.nodesTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge) || !this.optionTransitiveQuorumSetOnly)
-            .filter((edge) =>
-                edge.isActive
-                || this.network.nodesTrustGraph.isEdgePartOfStronglyConnectedComponent(edge) //we keep the failing nodes aligned in scp's
-                || this.optionShowFailingEdges)
-            .map((edge) => {
-                return {
-                    source: edge.parent.key,
-                    target: edge.child.key,
-                    isPartOfTransitiveQuorumSet: this.network.nodesTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge),
-                    isPartOfStronglyConnectedComponent: this.network.nodesTrustGraph.isEdgePartOfStronglyConnectedComponent(edge),
-                    highlightAsOutgoing:
-                        this.selectedNode && this.optionHighlightTrustedNodes ? edge.parent.key === this.selectedNode.publicKey : false,
-                    highlightAsIncoming:
-                        this.selectedNode && this.optionHighlightTrustingNodes ? edge.child.key === this.selectedNode.publicKey : false,
-                    isFailing: !edge.isActive
-                };
-            });
-
-        this.verticesViewData = newVerticesViewData;
+        this.viewGraph = ViewGraph.fromNodes(this.network, mergeWithPreviousGraph ? this.viewGraph : undefined, this.selectedNode ? this.selectedNode.publicKey : undefined);
 
         this.computeGraphWorker.postMessage({
-            vertices: simulationVertices,
-            edges: simulationEdges,
+            vertices: Array.from(this.viewGraph.viewVertices.values()),
+            edges: Array.from(this.viewGraph.viewEdges.values()),
             width: this.width,
             height: this.height
         });
@@ -523,7 +319,7 @@ export default class Graph extends Vue {
             this.delayedCenter = true;
 
         this.computeGraphWorker.onmessage = (
-            event: { data: { type: string, vertices: VertexViewData[], edges: EdgeViewData[] } }
+            event: { data: { type: string, vertices: ViewVertex[], edges: ViewEdge[] } }
         ) => {
             switch (event.data.type) {
                 case 'tick': {
@@ -533,7 +329,7 @@ export default class Graph extends Vue {
                 case 'end': {
                     event.data.vertices.forEach(
                         updatedVertex => {
-                            let vertex = this.verticesViewData.get(updatedVertex.key);
+                            let vertex = this.viewGraph.viewVertices.get(updatedVertex.key);
                             if (!vertex)
                                 return;
                             vertex.x = updatedVertex.x;
@@ -541,8 +337,15 @@ export default class Graph extends Vue {
                         }
                     );
 
-                    this.edgesViewData = event.data.edges;
-                    this.dataInitialized = true;
+                    event.data.edges.forEach(updatedEdge => {
+                            let edge = this.viewGraph.viewEdges.get(updatedEdge.key);
+                            if (!edge)
+                                return;
+                            edge.source = updatedEdge.source;
+                            edge.target = updatedEdge.target;
+                        }
+                    );
+                    this.graphComputed = true;
                     this.isLoading = false;
 
                     if (this.delayedCenter) {
@@ -555,7 +358,8 @@ export default class Graph extends Vue {
                     break;
             }
         };
-        this.computeGraph();
+        //this.viewGraph = ViewGraph.fromNodes(this.network,  undefined, this.selectedNode ? this.selectedNode.publicKey : undefined);
+        this.updateGraph(false);
     }
 
     public beforeDestroy() {

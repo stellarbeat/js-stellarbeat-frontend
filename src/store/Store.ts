@@ -194,7 +194,7 @@ export default class Store {
             let node = this.network.getNodeByPublicKey(update.publicKey);
             this.changeQueue.execute(new EntityPropertyUpdate(node, 'isValidating', update.validating));
         });
-        this.network.updateNetwork();
+        this.network.modifyNetwork();
         this.networkUpdated++;
     }
 
@@ -228,7 +228,7 @@ export default class Store {
 
     protected processChange(change: Change) {
         this.changeQueue.execute(change);
-        this.network.updateNetwork();
+        this.network.modifyNetwork();
         this.networkUpdated++;
     }
 
@@ -249,7 +249,7 @@ export default class Store {
             return;
         }
         this.changeQueue.undo();
-        this.network.updateNetwork();
+        this.network.modifyNetwork();
         this.networkUpdated++;
     }
 
@@ -258,13 +258,13 @@ export default class Store {
             return;
         }
         this.changeQueue.redo();
-        this.network.updateNetwork();
+        this.network.modifyNetwork();
         this.networkUpdated++;
     }
 
     public addNodeToNetwork(node: Node) {
         this.changeQueue.execute(new NetworkAddNode(this.network, node));
-        this.network.updateNetwork(this.network.nodes); //needs better solution
+        this.network.modifyNetwork(this.network.nodes); //needs better solution
         this.networkUpdated++;
     }
 
@@ -273,7 +273,7 @@ export default class Store {
             return;
         }
         this.changeQueue.reset();
-        this.network.updateNetwork();
+        this.network.modifyNetwork();
         this.networkUpdated++;
     }
 

@@ -7,6 +7,8 @@ ctx.addEventListener('message', (event) => {
     const edges = event.data.edges;
     const width = event.data.width;
     const height = event.data.height;
+    //@ts-ignore
+    const transEdgesSize = event.data.vertices.filter(edge => edge.isPartOfTransitiveQuorumSet).length;
 
     const simulation = forceSimulation(vertices)
         .force('charge', forceManyBody().strength((d) => {
@@ -14,7 +16,7 @@ ctx.addEventListener('message', (event) => {
         }))
         .force('link', forceLink(edges).strength( (edge: any) => {
             if (edge.isPartOfTransitiveQuorumSet) {
-                return 0.004;
+                return 1/transEdgesSize * 0.2;
             }
             else if (edge.isPartOfStronglyConnectedComponent) {
                 return 0.1;

@@ -193,10 +193,6 @@
                     if (snapshots[i]['startDate'].getTime() !== snapshots[i + 1]['endDate'].getTime()) {
                         updates.push({key: 'archival', value: 'unArchived'});
                     }
-                    if (updates.length === 0) {
-                        console.log(snapshots[i], snapshots[i + 1]);
-                    }
-
 
                     this.updatesPerDate.push({date: snapshots[i].startDate, updates: updates, snapshot: snapshots[i]});
 

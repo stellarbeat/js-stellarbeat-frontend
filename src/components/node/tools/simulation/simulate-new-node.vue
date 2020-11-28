@@ -31,12 +31,11 @@
         }
 
         public simulateNewNode() {
-            let node = new Node("localhost", 8080, this.makePublicKey());
+            let node = new Node(this.makePublicKey());
             node.name = this.newNodeName === "" ? "MyNewNode" : this.newNodeName;
             node.quorumSet.threshold = 1;
             node.active = true;
             node.isValidating = true;
-            node.isValidator = true;
             this.$set(node, "x", 0); //doesn't belong here, needs better solution
             this.$set(node, "y", 0);
             this.store.addNodeToNetwork(node);
