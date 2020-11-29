@@ -3,6 +3,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     configureWebpack: {
+        entry: './src/entry-client.ts',
         optimization: {
             splitChunks: {
                 chunks: 'all'

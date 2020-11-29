@@ -7,13 +7,13 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Meta from 'vue-meta';
 import * as Sentry from '@sentry/browser';
 // Importing the global css file
-import "@/assets/global.css"
+import '@/assets/global.css';
 import VueScrollTo from 'vue-scrollto';
 import Store from '@/store/Store';
-import VueClipboard from 'vue-clipboard2'
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-import { Vue as VueIntegration } from '@sentry/integrations';
+import VueClipboard from 'vue-clipboard2';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import {Vue as VueIntegration} from '@sentry/integrations';
 import AsyncComputedPlugin from 'vue-async-computed';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -29,21 +29,26 @@ if (isProd) {
     //makeServer();
 }
 
-Vue.use(AsyncComputedPlugin)
+Vue.use(AsyncComputedPlugin);
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);
 Vue.use(VueScrollTo);
 
-new Vue({
-    router,
-    data() {
-        return {
-            'store': new Store()
-        }
-    },
-    render: h => h(App),
-    mounted() {
-        document.dispatchEvent(new Event('x-app-rendered'));
-    },
-}).$mount('#app');
+let createApp = () => {
+    return new Vue({
+        router,
+        data() {
+            return {
+                'store': new Store()
+            };
+        },
+        render: h => h(App),
+        mounted() {
+            document.dispatchEvent(new Event('x-app-rendered'));
+        },
+    });
+};
+
+export default createApp;
+
