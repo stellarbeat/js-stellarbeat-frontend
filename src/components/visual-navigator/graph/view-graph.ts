@@ -1,14 +1,11 @@
 import {
-    Edge,
     Network,
-    Node,
-    Organization,
-    PublicKey,
-    TrustGraph,
-    TrustGraphBuilder, Vertex
+    TrustGraphBuilder
 } from '@stellarbeat/js-stellar-domain';
+import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
+import ViewEdge from '@/components/visual-navigator/graph/view-edge';
 
-export class ViewGraph {
+export default class ViewGraph {
     public viewVertices: Map<string, ViewVertex> = new Map<string, ViewVertex>();
     public viewEdges: Map<string, ViewEdge> = new Map<string, ViewEdge>();
     public stronglyConnectedComponents: ViewVertex[][] = [];
@@ -146,87 +143,4 @@ export class ViewGraph {
         this.stronglyConnectedEdges = [];
         this.viewEdges.forEach(viewEdge => this.classifyEdge(viewEdge, selectedVertexKey))
     }
-}
-
-export class ViewVertex {
-    key: string;
-    label: string;
-    x: number = 0;
-    y: number = 0;
-    isPartOfTransitiveQuorumSet: boolean;
-    highlightAsTrusting: boolean = false;
-    highlightAsTrusted: boolean = false;
-    selected: boolean = false;
-    isFailing: boolean = false;
-
-    constructor(key: string, label: string, isPartOfTransitiveQuorumSet: boolean) {
-        this.key = key;
-        this.label = label;
-        this.isPartOfTransitiveQuorumSet = isPartOfTransitiveQuorumSet;
-    }
-
-    static fromVertex(vertex: Vertex, network: Network) {
-        let viewVertex = new ViewVertex(vertex.key, vertex.label, network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
-        let node = network.getNodeByPublicKey(vertex.key);
-        viewVertex.isFailing = network.isNodeFailing(node);
-
-        return viewVertex;
-    }
-
-    static fromOrganization(organization: Organization, organizationTrustGraph: TrustGraph, network: Network) {
-        let vertex = organizationTrustGraph.getVertex(organization.id);
-        if (!vertex)
-            throw new Error('No vertex found for organization: ' + organization.id);
-
-        let viewVertex = new ViewVertex(vertex.key, vertex.label, organizationTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
-        viewVertex.isFailing = !organization.subQuorumAvailable;
-
-        return viewVertex;
-    }
-}
-
-export class ViewEdge {
-    key: string;
-    source: any; //key is replaced by object in d3
-    target: any;//key is replaced by object in d3
-    parent: string;
-    child: string;
-    isPartOfStronglyConnectedComponent: boolean = false;
-    isPartOfTransitiveQuorumSet: boolean = false;
-    highlightAsTrusting: boolean = false;
-    highlightAsTrusted: boolean = false;
-    isFailing: boolean = false;
-
-    constructor(source: PublicKey, target: PublicKey) {
-        this.source = source;
-        this.target = target;
-        this.parent = source;
-        this.child = target;
-        this.key = source + ':' + target;
-    }
-
-    static fromNodeEdge(edge: Edge, network: Network) {
-        let viewEdge = new ViewEdge(edge.parent.key, edge.child.key);
-        let source = network.getNodeByPublicKey(edge.parent.key)!;
-        let target = network.getNodeByPublicKey(edge.child.key)!;
-        viewEdge.isPartOfStronglyConnectedComponent = network.nodesTrustGraph.isEdgePartOfStronglyConnectedComponent(edge);
-        viewEdge.isPartOfTransitiveQuorumSet = network.nodesTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge);
-        if (network.isNodeFailing(source) || network.isNodeFailing(target))
-            viewEdge.isFailing = true;
-
-        return viewEdge;
-    }
-
-    static fromOrganizationEdge(edge: Edge, organizationTrustGraph: TrustGraph, network: Network) {
-        let viewEdge = new ViewEdge(edge.parent.key, edge.child.key);
-        let source = network.getOrganizationById(edge.parent.key)!;
-        let target = network.getOrganizationById(edge.child.key)!;
-        viewEdge.isPartOfStronglyConnectedComponent = organizationTrustGraph.isEdgePartOfStronglyConnectedComponent(edge);
-        viewEdge.isPartOfTransitiveQuorumSet = organizationTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge);
-        if (!(source.subQuorumAvailable && target.subQuorumAvailable))
-            viewEdge.isFailing = true;
-
-        return viewEdge;
-    }
-
 }

@@ -101,8 +101,9 @@ import * as zoom from 'd3-zoom';
 import {select, event as d3Event} from 'd3-selection';
 import GraphStronglyConnectedComponent
     from '@/components/visual-navigator/graph/graph-strongly-connected-component.vue';
-import {ViewEdge, ViewGraph, ViewVertex} from '@/components/visual-navigator/graph/graph-view';
 import {StoreMixin} from '@/mixins/StoreMixin';
+import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
+import ViewGraph from '@/components/visual-navigator/graph/view-graph';
 
 @Component({
     components: {

@@ -14,9 +14,11 @@
 import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
 import Graph from '@/components/visual-navigator/graph/graph.vue';
 import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
-import {ViewEdge, ViewGraph, ViewVertex} from '@/components/visual-navigator/graph/graph-view';
 import {StoreMixin} from '@/mixins/StoreMixin';
 import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../workers/compute-graphv9.worker';
+import ViewGraph from '@/components/visual-navigator/graph/view-graph';
+import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
+import ViewEdge from '@/components/visual-navigator/graph/view-edge';
 const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
 
 @Component({
