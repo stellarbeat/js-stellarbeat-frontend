@@ -154,16 +154,8 @@ export default class Graph extends Mixins(StoreMixin) {
 
     @Watch('fullScreen')
     public onFullScreenChanged() {
-        let transform = zoom.zoomIdentity.translate((this.width - (1 * this.width)) / 2, (this.height - (1 * this.height)) / 2).scale(1);
-        if (this.fullScreen) {
-            this.d3svg.call(this.graphZoom.transform, transform);
-        } else {
-            if (this.centerVertex) {
-                this.centerCorrectVertex();
-            } else {
-                this.d3svg.call(this.graphZoom.transform, transform);
-            }
-        }
+        this.centerCorrectVertex();
+        this.transformAndZoom();
     }
 
     @Watch('isLoading')
@@ -171,11 +163,11 @@ export default class Graph extends Mixins(StoreMixin) {
         this.centerCorrectVertex();
     }
 
-    get width() {
+    width() {
         return (this.$refs.graphSvg as SVGElement).clientWidth;
     }
 
-    get height() {
+    height() {
         return (this.$refs.graphSvg as SVGElement).clientHeight;
     }
 
@@ -188,8 +180,8 @@ export default class Graph extends Mixins(StoreMixin) {
 
     public centerCorrectVertex() {
         if (this.centerVertex !== undefined) {
-            const realVertexX = -this.centerVertex!.x + this.width / 2;
-            const realVertexY = -this.centerVertex!.y + this.height / 2;
+            const realVertexX = -this.centerVertex!.x + this.width() / 2;
+            const realVertexY = -this.centerVertex!.y + this.height() / 2;
 
             let transform = zoom.zoomIdentity.translate(realVertexX, realVertexY).scale(1);
             this.d3svg.call(this.graphZoom.transform, transform);
@@ -197,13 +189,17 @@ export default class Graph extends Mixins(StoreMixin) {
     }
 
     public mounted() {
-        let transform = zoom.zoomIdentity.translate(this.width/2, this.height/2).scale(1);
         this.d3Grid = select(this.$refs.grid as Element);
+        this.d3svg = select(this.$refs.graphSvg as Element);
         this.graphZoom = zoom.zoom().on('zoom', () => {
             this.d3Grid.attr('transform', d3Event.transform);
         }).scaleExtent([1, 3]);
-        this.d3svg = select(this.$refs.graphSvg as Element)
-            .call(this.graphZoom)
+        this.transformAndZoom();
+    }
+
+    transformAndZoom(){
+        let transform = zoom.zoomIdentity.translate(this.width()/2, this.height()/2).scale(1);
+        this.d3svg.call(this.graphZoom)
             .call(this.graphZoom.transform, transform);
     }
 }

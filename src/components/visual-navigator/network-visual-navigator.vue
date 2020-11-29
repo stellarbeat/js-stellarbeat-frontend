@@ -82,7 +82,7 @@
                 <world-map :fullScreen="fullScreen"
                 />
             </div>
-            <network-graph-card>
+            <network-graph-card :full-screen="fullScreen">
 
             </network-graph-card>
 
