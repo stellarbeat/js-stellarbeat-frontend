@@ -1,9 +1,13 @@
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-
+const path = require('path');
 module.exports = {
     configureWebpack: {
         entry: './src/entry-client.ts',
+        output: {
+            path: path.resolve(__dirname, './dist'),
+            filename: 'build.js'
+        },
         optimization: {
             splitChunks: {
                 chunks: 'all'
