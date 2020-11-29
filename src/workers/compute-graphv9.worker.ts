@@ -26,8 +26,8 @@ ctx.addEventListener('message', (event) => {
         }).id( (d: any) => {
             return d.key;
         }))
-        .force('x', forceX(width / 2))
-        .force('y', forceY(height/2))
+        .force('x', forceX(0))
+        .force('y', forceY(0))
         // .alphaDecay(0.1)
         // .alphaMin(0.15)
         // .velocityDecay(0.35);

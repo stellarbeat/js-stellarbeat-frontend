@@ -82,18 +82,10 @@
                 <world-map :fullScreen="fullScreen"
                 />
             </div>
-            <Graph :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
-                   :option-highlight-trusting-nodes="optionHighlightTrustingNodes"
-                   :option-show-failing-edges="optionShowFailingEdges"
-                   :option-show-regular-edges="optionShowRegularEdges"
-                   :option-transitive-quorum-set-only="optionTransitiveQuorumSetOnly"
-                   v-if="view === 'graph'" ref="graph"
-                   :network="network"
-                   :centerNode="centerNode"
-                   :selectedNode="selectedNode"
-                   style="height: 100%"
-                   :fullScreen="fullScreen"
-            />
+            <network-graph-card>
+
+            </network-graph-card>
+
             <div v-show="!menuVisible" class="preview" v-on:click="navigateToView">
                 <img v-if="view === 'map'" src="@/assets/graph-preview.png" alt="graph-preview" class="preview-image">
                 <img v-else src="@/assets/map-preview.png" alt="map-preview" class="preview-image">
