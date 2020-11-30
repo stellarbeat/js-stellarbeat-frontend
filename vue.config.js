@@ -140,12 +140,7 @@ if (!process.env.SSR) {
                     allowlist: /\.(css|vue)$/
                 })
             );
-            config.optimization.splitChunks(false).minimize(true);
-        },
-        pluginOptions: {
-            webpackBundleAnalyzer: {
-                openAnalyzer: false
-            }
+            config.optimization.splitChunks(false).minimize(false);
         }
     }
 }
