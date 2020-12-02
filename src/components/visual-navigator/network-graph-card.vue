@@ -15,7 +15,7 @@ import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
 import Graph from '@/components/visual-navigator/graph/graph.vue';
 import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 import {StoreMixin} from '@/mixins/StoreMixin';
-import ComputeGraphWorker from 'worker-loader?name=dist/[name].js!../../workers/compute-graphv9.worker';
+import ComputeGraphWorker from 'worker-loader?name=worker/[name].js!../../workers/compute-graphv9.worker';
 import ViewGraph from '@/components/visual-navigator/graph/view-graph';
 import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
 import ViewEdge from '@/components/visual-navigator/graph/view-edge';
@@ -28,7 +28,7 @@ const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescrip
 export default class NetworkGraphCard extends Mixins(StoreMixin) {
     public viewGraph!: ViewGraph;
     public networkId!:string;
-    public computeGraphWorker = new _ComputeGraphWorker();
+    public computeGraphWorker!:ComputeGraphWorker;
     public isLoading = true;
 
     @Watch('store.networkUpdated')
@@ -99,6 +99,7 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
     }
 
     mounted(){
+        this.computeGraphWorker = new ComputeGraphWorker();
         this.networkId = this.store.networkId;
         this.computeGraphWorker.onmessage = (
             event: { data: { type: string, vertices: ViewVertex[], edges: ViewEdge[] } }

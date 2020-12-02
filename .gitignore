@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+/dist-server
+/dist-client
 flow-typed/
 
 # local env files

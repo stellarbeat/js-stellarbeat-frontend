@@ -85,7 +85,7 @@
     } from '@stellar/halting-analysis/src';
     import {Network, PublicKey, QuorumSet, Vertex} from '@stellarbeat/js-stellar-domain';
     import HaltingAnalysisWorker
-        from 'worker-loader?name=dist/[name].js!./../../../../workers/halting-analysisv1.worker.ts';
+        from 'worker-loader?name=worker/[name].js!./../../../../workers/halting-analysisv1.worker.ts';
     import Store from '@/store/Store';
     import {BAlert, BButton, BCard, BForm, BFormGroup, BFormInput, BFormSelect, BIconX} from 'bootstrap-vue';
 

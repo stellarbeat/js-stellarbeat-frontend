@@ -1,6 +1,8 @@
 <template>
-        <l-map ref="myMap"
-               :center="center" :zoom="zoom" :options="mapOptions"
+    <div style="height: 100%">
+        <client-only>
+            <l-map ref="myMap"
+               :center="center" :zoom="zoom" :options="mapOptions" v-if="isMounted"
         >
             <l-tile-layer
                     :url="url"
@@ -20,10 +22,12 @@
                 </l-circle-marker>
             </v-marker-cluster>
         </l-map>
+        </client-only>
+    </div>
 </template>
 
 <script lang="ts">
-    require('leaflet-sleep');
+
     import 'leaflet/dist/leaflet.css';
     import "leaflet.markercluster/dist/MarkerCluster.css";
     import "leaflet.markercluster/dist/MarkerCluster.Default.css";
@@ -31,28 +35,45 @@
     import {Component, Prop, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
     import {Node} from '@stellarbeat/js-stellar-domain';
-    //https://vue2-leaflet.netlify.com/quickstart/#marker-icons-are-missing
-    import L, {Icon, latLng} from 'leaflet';
-    import {LCircleMarker, LMap, LMarker, LTileLayer, LTooltip} from 'vue2-leaflet';
-    import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster';
     import FullValidatorTitle from '@/components/node/full-validator-title.vue';
     import Store from '@/store/Store';
 
-    type D = Icon.Default & {
-        _getIconUrl: string;
-    };
-    delete (Icon.Default.prototype as D)._getIconUrl;
-    Icon.Default.mergeOptions({
-        iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-        iconUrl: require('leaflet/dist/images/marker-icon.png'),
-        shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-    });
-
+    //ssr voodoo because leaflet uses window global only available in browser
+    let divIcon: any, latLng:any, icon:any, circleMarker:any, lBrowser:any, point:any;
+    let LCircleMarker: any, LMap:any, LMarker:any, LTileLayer: any, LTooltip: any;
+    let Vue2LeafletMarkerCluster: any;
+    let Vue2Leaflet:any;
+    const isBrowser = typeof window !== 'undefined';
+    if (isBrowser) {
+        const leaflet = require('leaflet');
+        icon = leaflet.Icon;
+        point = leaflet.point;
+        divIcon = leaflet.divIcon;
+        circleMarker = leaflet.circleMarker;
+        lBrowser = leaflet.Browser;
+        delete icon.Default.prototype._getIconUrl;
+        icon.Default.mergeOptions({
+            iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+            iconUrl: require('leaflet/dist/images/marker-icon.png'),
+            shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+        })
+        latLng = require('leaflet').latLng;
+        require('leaflet-sleep');
+        Vue2Leaflet = require('vue2-leaflet');
+        LCircleMarker = Vue2Leaflet.LCircleMarker;
+        LMap = Vue2Leaflet.LMap;
+        LMarker = Vue2Leaflet.LMarker;
+        LTileLayer = Vue2Leaflet.LTileLayer;
+        LTooltip = Vue2Leaflet.LTooltip;
+        Vue2LeafletMarkerCluster = require('vue2-leaflet-markercluster');
+    }
     type Marker = {
         latLng: any,
         node: Node,
         color: string
     }
+
+    import ClientOnly from "vue-client-only";
 
     @Component({
         name: 'world-map',
@@ -63,7 +84,8 @@
             LCircleMarker,
             LMarker,
             LTooltip,
-            'v-marker-cluster': Vue2LeafletMarkerCluster
+            'v-marker-cluster': Vue2LeafletMarkerCluster,
+            ClientOnly
         }
     })
 
@@ -71,10 +93,14 @@
         protected url: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         protected attribution: string = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
         protected zoom: number = 2;
+        protected isMounted:boolean = false;
 
         @Prop({default: false})
         fullScreen!:boolean;
 
+        mounted(){
+            this.isMounted = true;
+        }
         get store(): Store {
             return this.$root.$data.store;
         }
@@ -171,10 +197,10 @@
                 maxClusterRadius: 30,
                 iconCreateFunction: (cluster: any) => {
                     let markers: any[] = cluster.getAllChildMarkers();
-                    return L.divIcon({
+                    return divIcon({
                         html: '<div><span>' + markers.length + '</span></div>',
                         className: this.getMarkerClusterClasses(markers),
-                        iconSize: L.point(40, 40),
+                        iconSize: point(40, 40),
                     });
                 }
             };

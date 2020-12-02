@@ -79,10 +79,9 @@
                 <div class="world-loader">
                     <div class="loader"></div>
                 </div>
-                <world-map :fullScreen="fullScreen"
-                />
+                <world-map :fullScreen="fullScreen"/>
             </div>
-            <network-graph-card :full-screen="fullScreen">
+            <network-graph-card v-else :full-screen="fullScreen">
 
             </network-graph-card>
 
@@ -113,6 +112,8 @@
     } from 'bootstrap-vue';
     import Graph from '@/components/visual-navigator/graph/graph.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
+    import ClientOnly from 'vue-client-only';
+    import WorldMap from '@/components/visual-navigator/world-map.vue';
 
     @Component({
         name: 'network-visual-navigator',
@@ -121,12 +122,13 @@
             Graph,
             SimulationBadge,
             NetworkGraphCard,
-            WorldMap: () => import('@/components/visual-navigator/world-map.vue'),
+            WorldMap,//'world-map': () => import('@/components/visual-navigator/world-map.vue'),
             BBreadcrumb,
             BIconList,
             BButton,
             BIconChevronDoubleLeft,
-            BFormCheckbox, BIconFullscreen, BIconFullscreenExit
+            BFormCheckbox, BIconFullscreen, BIconFullscreenExit,
+            ClientOnly
         },
         directives: {'b-tooltip': VBTooltip}
     })

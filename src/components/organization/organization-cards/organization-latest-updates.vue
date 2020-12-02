@@ -91,14 +91,14 @@
     import Vue from 'vue';
     import {
         Network,
-        Node,
+        Node, NodeSnapShot,
         Organization,
         OrganizationSnapShot,
         PublicKey,
         QuorumSet
     } from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import AsyncComputed from 'vue-async-computed-decorator';
+    //import AsyncComputed from 'vue-async-computed-decorator';
     import {Delta, formatters, create, DiffPatcher} from 'jsondiffpatch';
     import 'jsondiffpatch/dist/formatters-styles/html.css';
 
@@ -115,7 +115,8 @@
         BIconFileDiff,
         BButtonGroup,
         BIconClock,
-        BButtonToolbar
+        BButtonToolbar,
+        BIconExclamationTriangle
     } from 'bootstrap-vue';
 
     interface Update {
@@ -128,7 +129,8 @@
             BTable, BModal, BButton, BListGroup, BListGroupItem, BBadge, BIconFileDiff,
             BButtonGroup,
             BIconClock,
-            BButtonToolbar
+            BButtonToolbar,
+            BIconExclamationTriangle
         },
         directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal}
     })
@@ -139,7 +141,7 @@
         protected updatesPerDate: { date: string, updates: Update[], snapshot: any }[] = [];
         protected isLoading: boolean = true;
         protected failed: boolean = false;
-
+        protected snapShots:NodeSnapShot[] = [];
         @Prop()
         protected organization!: Organization;
 
@@ -153,11 +155,9 @@
             return this.$root.$data.store;
         }
 
-        @AsyncComputed()
-        async snapshots() {
+        async getSnapshots() {
             let snapshots: any = [];
             try {
-
                 this.deltas = new Map();
                 this.updatesPerDate = [];
                 snapshots = await this.store.fetchOrganizationSnapshotsById(this.organization.id);
@@ -201,6 +201,7 @@
                 this.updatesPerDate.reverse();
 
             } catch (e) {
+                this.isLoading = false;
                 this.failed = true;
                 console.log(e);
             }
@@ -215,12 +216,14 @@
             this.store.isLoading = false;
         }
 
-        mounted() {
+        async mounted() {
             this.differ = create({
                 /*propertyFilter: function (name: string, context: any) {
                     return !['startDate', 'endDate'].includes(name);
                 },*/
             });
+            this.snapShots = await this.getSnapshots();
+
         }
 
         get network(): Network {

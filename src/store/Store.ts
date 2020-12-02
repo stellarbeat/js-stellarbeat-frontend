@@ -64,6 +64,16 @@ export default class Store {
         this.availableNetworksPretty.set('fbas', 'FBAS demo');
         this.availableNetworksPretty.set('fbas2', 'FBAS QI demo');
     }
+
+    hydrateNetwork(networkDTO: object, networkId: string){
+        let network = Network.fromJSON(networkDTO);
+        this.networkId = networkId;
+        if(['fbas', 'fbas2'].includes(this.networkId)){
+            this.isLocalNetwork = true;
+        }
+        Vue.set(this, 'network', network);
+        this.isLoading = false;
+    }
     public getNetworkIdPretty(networkId?:string): string|undefined {
         if(!networkId)
             networkId = this.networkId;
@@ -144,13 +154,17 @@ export default class Store {
         if(this.networkId === 'fbas'){
             this.loadFBAS();
             this.isLocalNetwork = true;
-            return;
+            return new Promise(function(resolve, reject) {
+                resolve();
+            });
         }
 
         if(this.networkId === 'fbas2'){
             this.loadFBAS2();
             this.isLocalNetwork = true;
-            return;
+            return new Promise(function(resolve, reject) {
+                resolve();
+            });
         }
 
         this.isLocalNetwork = false;

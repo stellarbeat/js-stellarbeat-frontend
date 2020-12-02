@@ -190,8 +190,7 @@
         BIconInfoCircle, VBModal, VBTooltip
     } from 'bootstrap-vue';
     import {StoreMixin} from '@/mixins/StoreMixin';
-    //import FbasAnalysisWorker
-   //     from 'worker-loader?name=dist/[name].js!./../../../../workers/fbas-analysis-v2.worker.ts';
+    import FbasAnalysisWorker from 'worker-loader?name=worker/[name].js!./../../../../workers/fbas-analysis-v2.worker.ts';
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
     import Analysis from '@/components/network/tools/network-analysis/analysis.vue';
@@ -200,7 +199,7 @@
     import LivenessInfo from '@/components/network/tools/network-analysis/info/liveness-info.vue';
     import TopTierInfo from '@/components/network/tools/network-analysis/info/top-tier-info.vue';
 
-    //const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
+    const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
     @Component({
         components: {
@@ -229,7 +228,7 @@
         directives: {'b-toggle': VBToggle, 'b-modal': VBModal, 'b-tooltip': VBTooltip}
     })
     export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
-        //protected fbasAnalysisWorker = new _FbasAnalysisWorker();
+        protected fbasAnalysisWorker = new _FbasAnalysisWorker();
         protected mergeByOrganizations: boolean = this.$root.$data.store.network.nodes.length > 20;
         protected hasResult: boolean = false;
         protected resultIsMerged: boolean = true;
@@ -271,12 +270,12 @@
 
         performAnalysis() {
             this.isLoading = true;
-            /*this.fbasAnalysisWorker.postMessage({
+            this.fbasAnalysisWorker.postMessage({
                 nodes: this.network.nodes,
                 organizations: this.network.organizations,
                 mergeByOrganizations: this.mergeByOrganizations,
                 failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey)
-            });*/
+            });
         }
 
         async mounted() {
@@ -284,7 +283,7 @@
             this.$nextTick(() => {
                 this.$scrollTo('#network-analysis-card');
             });
-            /*this.fbasAnalysisWorker.onmessage = (
+            this.fbasAnalysisWorker.onmessage = (
                 event: { data: { type: string, result: any } }
             ) => {
                 switch (event.data.type) {
@@ -385,7 +384,7 @@
                     }
                         break;
                 }
-            };*/
+            };
         }
     }
 </script>

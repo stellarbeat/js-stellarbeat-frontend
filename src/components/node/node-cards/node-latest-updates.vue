@@ -112,7 +112,7 @@
     import Vue from 'vue';
     import {Network, Node, PublicKey, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import AsyncComputed from 'vue-async-computed-decorator';
+    //import AsyncComputed from 'vue-async-computed-decorator';
     import {Delta, formatters, create, DiffPatcher} from 'jsondiffpatch';
     import 'jsondiffpatch/dist/formatters-styles/html.css';
 
@@ -183,8 +183,7 @@
             return quorumSet;
         }
 
-        @AsyncComputed()
-        async snapshots() {
+        async getSnapshots() {
             let snapshots: any = [];
             try {
 
@@ -252,7 +251,7 @@
             this.store.isLoading = false;
         }
 
-        mounted() {
+        async mounted() {
             this.differ = create({
                 objectHash(obj: any) {
                     if (obj && obj.hashKey) {
@@ -263,6 +262,7 @@
                     return !['startDate', 'endDate'].includes(name);
                 },*/
             });
+            await this.getSnapshots();
         }
 
         get network(): Network {

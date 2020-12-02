@@ -219,6 +219,28 @@
         protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
         protected navCollapsed = false;
 
+        async mounted(){
+            let networkId = this.$route.query.network;
+            if(networkId && this.store.availableNetworks.includes(networkId)){
+                this.store.networkId = networkId;
+            }
+            if(this.store.network)
+                return;
+
+            await this.store.fetchData();
+        }
+
+        serverPrefetch () {
+            // return the Promise from the action
+            // so that the component waits before rendering
+            let networkId = this.$route.query.network;
+            if(networkId && this.store.availableNetworks.includes(networkId)){
+                this.store.networkId = networkId;
+            }
+
+            return this.store.fetchData();
+        }
+
         @Watch('$route', {immediate: false})
         async onRouteChanged(to: any) {
             let networkId = to.query.network;

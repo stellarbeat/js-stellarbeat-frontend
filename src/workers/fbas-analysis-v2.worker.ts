@@ -15,7 +15,7 @@ ctx.addEventListener('message', (event) => {
             init_panic_hook();
             performAnalysis(nodes, failingNodePublicKeys, organizations, merge);
             initialized = true;
-        })
+        }).catch(reason => console.log(reason));
     } else {
         performAnalysis(nodes, failingNodePublicKeys, organizations, merge);
     }

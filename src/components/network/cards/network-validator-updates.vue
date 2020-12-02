@@ -35,7 +35,7 @@
     import NodesTable from '@/components/node/nodes-table.vue';
     import {BBadge, BIconSearch, BTable, BIconExclamationTriangle, BListGroup, BListGroupItem} from 'bootstrap-vue';
     import {StoreMixin} from '@/mixins/StoreMixin';
-    import AsyncComputed from 'vue-async-computed-decorator';
+    //import AsyncComputed from 'vue-async-computed-decorator';
     import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
     import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 
@@ -52,9 +52,10 @@
     })
     export default class NetworkValidatorUpdates extends Mixins(StoreMixin, IsLoadingMixin) {
         failed: boolean = false;
+        snapshots: NodeSnapShot[] = [];
 
-        @AsyncComputed()
-        async snapshots() {
+        async getSnapshots() {
+            console.log("hier");
             let snapshots: NodeSnapShot[] = [];
             try {
                 snapshots = await this.store.fetchNodeSnapshots();
@@ -63,7 +64,12 @@
                 this.failed = true;
             }
             this.isLoading = false;
+
             return snapshots;
+        }
+
+        async mounted(){
+            this.snapshots = await this.getSnapshots();
         }
     }
 </script>
