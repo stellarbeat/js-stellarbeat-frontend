@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="row h-100" >
-            <aside class="side-bar col-xs-12 col-sm-5 col-lg-3 col-xl-auto mb-5">
+            <aside class="col-xs-12 col-sm-5 col-lg-3 col-xl-auto mb-5">
                 <div class="card pt-0 sidebar-card h-100">
                     <transition
                             name="fade"
@@ -175,86 +175,11 @@
     }
 </script>
 
-<style>
-    .dashboard-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
+<style scoped>
 
     @media (min-width: 1279px) {
         .side-bar {
             width: 272px;
         }
-    }
-
-    .sb-card-title {
-        line-height: 1 !important;
-        margin-bottom: 2px !important;
-    }
-
-    .sb-card-title-icon {
-        opacity: 0.8;
-        color: #1997c6;
-    }
-
-    .sb-card-header {
-        border: none !important;
-        margin-top: 18px;
-        margin-bottom: 5px;
-        margin-left: 0px;
-        padding-left: 21px !important;
-    }
-
-    .title-icon {
-        font-size: 2rem;
-        margin-bottom: 0;
-    }
-
-    .sb-card-subtitle {
-        opacity: 0.7;
-        font-weight: 500;
-        margin-bottom: 0;
-    }
-
-    .sb-navbar-heading {
-        font-size: .6875rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        text-align: left;
-        letter-spacing: .04em;
-        color: #868c97;
-        display: block;
-        margin-bottom: 8px;
-        padding-left: 5px;
-    }
-
-    .sb-nav-bar {
-        list-style: none;
-        flex: 0 0 220px;
-    }
-
-    .sb-nav-list {
-        padding-left: 0px;
-    }
-
-    .sb-nav-item {
-        width: 100%;
-        color: rgba(0, 0, 0, .55);
-        font-weight: 400;
-        font-size: 100%;
-        text-decoration: none;
-        list-style: none;
-        margin-bottom: 1px;
-        margin-top: 1px;
-    }
-
-    .sb-nav-dropdown {
-        margin-left: 0em;
-    }
-    .sb-bread-crumbs {
-        background: white!important;
-        margin: 0px;
-        padding: 0px;
-        align-self: center;
     }
 </style>

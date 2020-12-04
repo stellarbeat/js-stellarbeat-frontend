@@ -6,8 +6,8 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 module.exports = {
     css: {
-        extract: false,//!process.env.SSR, //causes async routes to fail in SSR, but if we enable it on client only we get css mismatch
-        sourceMap: false
+        extract: !process.env.SSR, //causes async routes to fail in SSR
+        sourceMap: true
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
     configureWebpack: {

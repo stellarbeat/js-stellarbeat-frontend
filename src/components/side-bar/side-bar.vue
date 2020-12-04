@@ -105,6 +105,44 @@
         max-height: calc(100vh - 22rem);
     }
 
+    .sb-card-header {
+        border: none !important;
+        margin-top: 18px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 21px !important;
+    }
+
+    .sb-card-title {
+        line-height: 1 !important;
+        margin-bottom: 2px !important;
+    }
+
+    .sb-card-title-icon {
+        opacity: 0.8;
+        color: #1997c6;
+    }
+
+    .title-icon {
+        font-size: 2rem;
+        margin-bottom: 0;
+    }
+
+    .sb-card-subtitle {
+        opacity: 0.7;
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    .sb-nav-bar {
+        list-style: none;
+        flex: 0 0 220px;
+    }
+
+    .sb-nav-list {
+        padding-left: 0px;
+    }
+
     .success {
     }
 

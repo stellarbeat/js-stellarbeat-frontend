@@ -208,6 +208,14 @@
     }
 </script>
 <style scoped>
+
+    .sb-bread-crumbs {
+        background: white!important;
+        margin: 0px;
+        padding: 0px;
+        align-self: center;
+    }
+
     .sb-card-fullscreen {
         z-index: 2;
         height: 100%!important;
