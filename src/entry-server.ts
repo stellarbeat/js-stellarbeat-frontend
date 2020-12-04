@@ -1,7 +1,6 @@
 import createApp from './app'
 
 export default (context:any) => {
-    console.timeEnd('lol');
 
     // since there could potentially be asynchronous route hooks or components,
     // we will be returning a Promise so that the server can wait until

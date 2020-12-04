@@ -58,10 +58,13 @@ server.get("*", async (req, res) => {
         const hit = microCache.get(req.url)
         if (hit) {
             res.type('text/html');
+            console.log("cache!");
             return res.end(hit)
         }
 
+        console.time("render");
         let html = await renderer.renderToString({url: req.url});
+        console.timeEnd("render");
         microCache.set(req.url, html);
         res.type('text/html');
         res.end(html);
