@@ -51,6 +51,7 @@ server.get("*", async (req, res) => {
     try {
         const hit = microCache.get(req.url)
         if (hit) {
+            res.type('text/html');
             return res.end(hit)
         }
 
@@ -62,6 +63,7 @@ server.get("*", async (req, res) => {
 
         let html = await renderer.renderToString({url: req.url});
         microCache.set(req.url, html);
+        res.type('text/html');
         res.end(html);
     } catch (error) {
         if(!isProd){
