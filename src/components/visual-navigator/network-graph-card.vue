@@ -113,7 +113,7 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
         );
     }
 
-    created() {
+    mounted() {
         this.viewGraph = ViewGraph.fromNodes(this.network, undefined, this.store.selectedNode ? this.store.selectedNode.publicKey : undefined);
         this.computeGraphWorker = new ComputeGraphWorker();
         this.networkId = this.store.networkId;
