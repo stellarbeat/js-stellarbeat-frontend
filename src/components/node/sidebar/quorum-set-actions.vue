@@ -34,7 +34,6 @@
                             @submit.stop.prevent
                             v-on:click.prevent.stop>
                         <b-form-input
-                                id="dropdown-edit-threshold"
                                 :state="inputState"
                                 class="thresholdEdit"
                                 size="sm"

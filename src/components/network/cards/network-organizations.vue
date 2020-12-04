@@ -32,7 +32,7 @@
     @Component({
         components: {OrganizationsTable, NodesTable, BIconSearch: BIconSearch, BBadge: BBadge}
     })
-    export default class NetworkNodes extends Vue {
+    export default class NetworkOrganizations extends Vue {
         @Prop()
         node!: Node;
 

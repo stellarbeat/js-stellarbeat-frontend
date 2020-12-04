@@ -52,15 +52,13 @@ export default class ValidatorsDropdown extends Mixins(DropdownMixin) {
   public nodes!: Node[];
 
   get sortedNodes() {
-      return this.nodes.sort((nodeA: Node, nodeB: Node) => {
-        if (nodeA.displayName > nodeB.displayName)
-          return -1;
-        else return 1;
-      }).sort((nodeA: Node, nodeB: Node) => {
-        if (this.network.isNodeFailing(nodeA))
-          return -1;
-        else return 1;
-      });
+      let sort = (nodeA: Node, nodeB: Node) => {
+          return nodeA.displayName.localeCompare(nodeB.displayName);
+      };
+
+      let failingNodes = this.nodes.filter(node => this.network.isNodeFailing(node)).sort(sort);
+      let nonFailingNodes = this.nodes.filter(node => !this.network.isNodeFailing(node)).sort(sort);
+      return failingNodes.concat(nonFailingNodes);
   }
 
   get paginatedNodes() {
