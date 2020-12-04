@@ -61,7 +61,9 @@ server.get("*", async (req, res) => {
             clientManifest // (optional) client build manifest
         })
 
+        console.time("render");
         let html = await renderer.renderToString({url: req.url});
+        console.timeEnd("render");
         microCache.set(req.url, html);
         res.type('text/html');
         res.end(html);
