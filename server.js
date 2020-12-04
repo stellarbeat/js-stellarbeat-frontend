@@ -47,6 +47,12 @@ const microCache = new LRU({
     maxAge: 30000 // Important: entries expires after 1 second.
 })
 
+const renderer = createBundleRenderer(serverBundle, {
+    runInNewContext: false, // recommended
+    template, // (optional) page template
+    clientManifest // (optional) client build manifest
+})
+
 server.get("*", async (req, res) => {
     try {
         const hit = microCache.get(req.url)
@@ -55,15 +61,7 @@ server.get("*", async (req, res) => {
             return res.end(hit)
         }
 
-        const renderer = createBundleRenderer(serverBundle, {
-            runInNewContext: false, // recommended
-            template, // (optional) page template
-            clientManifest // (optional) client build manifest
-        })
-
-        console.time("render");
         let html = await renderer.renderToString({url: req.url});
-        console.timeEnd("render");
         microCache.set(req.url, html);
         res.type('text/html');
         res.end(html);
