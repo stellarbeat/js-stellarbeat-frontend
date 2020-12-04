@@ -1,15 +1,9 @@
-import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-force';
+import {forceLink, forceManyBody, forceSimulation, forceX, forceY} from 'd3-force';
+import {Edge} from '@stellarbeat/js-stellar-domain/lib/graph/directed-graph';
+import ViewEdge from '@/components/visual-navigator/graph/view-edge';
 
-const ctx: Worker = self as any;
-
-ctx.addEventListener('message', (event) => {
-    console.time("worker");
-    const vertices = event.data.vertices;
-    const edges = event.data.edges;
-    const width = event.data.width;
-    const height = event.data.height;
-    //@ts-ignore
-    const transEdgesSize = event.data.vertices.filter(edge => edge.isPartOfTransitiveQuorumSet).length;
+export default function (vertices: any, edges: any) {
+    const transEdgesSize = vertices.filter((edge:ViewEdge) => edge.isPartOfTransitiveQuorumSet).length;
 
     const simulation = forceSimulation(vertices)
         .force('charge', forceManyBody().strength((d) => {
@@ -39,8 +33,9 @@ ctx.addEventListener('message', (event) => {
         //ctx.postMessage({type: 'tick', progress: i / n});
         simulation.tick();
     }
-    console.timeEnd("worker");
-    ctx.postMessage({type: 'end', vertices: vertices, edges: edges});
-});
 
-export default ctx;
+    return {
+        edges: edges,
+        vertices: vertices
+    }
+}

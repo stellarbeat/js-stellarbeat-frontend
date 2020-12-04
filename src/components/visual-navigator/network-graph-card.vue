@@ -20,6 +20,7 @@ import ViewGraph from '@/components/visual-navigator/graph/view-graph';
 import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
 import ViewEdge from '@/components/visual-navigator/graph/view-edge';
 const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
+import calculateGraph from '@/components/visual-navigator/graph/calculate-graph';
 
 @Component({
     name: 'network-graph-card',
@@ -59,8 +60,6 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
         this.computeGraphWorker.postMessage({
             vertices: Array.from(this.viewGraph.viewVertices.values()),
             edges: Array.from(this.viewGraph.viewEdges.values()),
-            width: this.width,
-            height: this.height
         });
 
     }
@@ -93,47 +92,51 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
         return undefined;
     }
 
-    created() {
-        this.viewGraph = ViewGraph.fromNodes(this.network, undefined, this.store.selectedNode ? this.store.selectedNode.publicKey : undefined);
+    mapViewGraph(vertices:any, edges:any){
+        vertices.forEach(
+            (updatedVertex:any) => {
+                let vertex = this.viewGraph.viewVertices.get(updatedVertex.key);
+                if (!vertex)
+                    return;
+                vertex.x = updatedVertex.x;
+                vertex.y = updatedVertex.y;
+            }
+        );
+
+        edges.forEach((updatedEdge:any) => {
+                let edge = this.viewGraph.viewEdges.get(updatedEdge.key);
+                if (!edge)
+                    return;
+                edge.source = updatedEdge.source;
+                edge.target = updatedEdge.target;
+            }
+        );
     }
 
-    mounted(){
+    created() {
+        this.viewGraph = ViewGraph.fromNodes(this.network, undefined, this.store.selectedNode ? this.store.selectedNode.publicKey : undefined);
         this.computeGraphWorker = new ComputeGraphWorker();
         this.networkId = this.store.networkId;
+
         this.computeGraphWorker.onmessage = (
             event: { data: { type: string, vertices: ViewVertex[], edges: ViewEdge[] } }
         ) => {
             switch (event.data.type) {
                 case 'end': {
-                    event.data.vertices.forEach(
-                        updatedVertex => {
-                            let vertex = this.viewGraph.viewVertices.get(updatedVertex.key);
-                            if (!vertex)
-                                return;
-                            vertex.x = updatedVertex.x;
-                            vertex.y = updatedVertex.y;
-                        }
-                    );
-
-                    event.data.edges.forEach(updatedEdge => {
-                            let edge = this.viewGraph.viewEdges.get(updatedEdge.key);
-                            if (!edge)
-                                return;
-                            edge.source = updatedEdge.source;
-                            edge.target = updatedEdge.target;
-                        }
-                    );
+                    this.mapViewGraph(event.data.vertices, event.data.edges);
                     this.isLoading = false;
+                    console.timeEnd("message");
                 }
                 break;
            }
         };
-        this.computeGraphWorker.postMessage({
-            vertices: Array.from(this.viewGraph.viewVertices.values()),
-            edges: Array.from(this.viewGraph.viewEdges.values()),
-            width: this.width,
-            height: this.height
-        });
+
+        let result = calculateGraph(
+            Array.from(this.viewGraph.viewVertices.values()),
+            Array.from(this.viewGraph.viewEdges.values())
+        );
+        this.mapViewGraph(result.vertices, result.edges);
+        this.isLoading = false;
     }
 
     public beforeDestroy() {
