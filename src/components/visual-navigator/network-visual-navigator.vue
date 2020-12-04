@@ -122,7 +122,7 @@
             Graph,
             SimulationBadge,
             NetworkGraphCard,
-            WorldMap,//'world-map': () => import('@/components/visual-navigator/world-map.vue'),
+            'world-map': () => import('@/components/visual-navigator/world-map.vue'),
             BBreadcrumb,
             BIconList,
             BButton,

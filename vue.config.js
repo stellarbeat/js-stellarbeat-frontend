@@ -1,15 +1,13 @@
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const path = require('path');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const nodeExternals = require('webpack-node-externals');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
-const ManifestPlugin = require('webpack-manifest-plugin');
 
 module.exports = {
     css: {
-        extract: true,
-        sourceMap: true
+        extract: false,//!process.env.SSR, //causes async routes to fail in SSR, but if we enable it on client only we get css mismatch
+        sourceMap: false
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
     configureWebpack: {
@@ -24,7 +22,7 @@ module.exports = {
                         to: 'worker/stellar_analysis_bg.wasm'
                     },
                 ],
-            }),
+            })
         ],
         optimization: {
             splitChunks: !process.env.SSR ? {
@@ -51,7 +49,7 @@ module.exports = {
                         loader: 'babel-loader',
                         options: {
                             presets: ['@babel/env'],
-                            compact: true
+                            compact: false
                         },
                     }
                 },
@@ -69,9 +67,9 @@ module.exports = {
     chainWebpack: config => {
         config.module.rule('js').exclude.add(/\.worker\.js$/);
         config.plugins.delete('pre-render');
-
+        console.log(process.env.NODE_ENV);
         if (process.env.SSR) {
-            config.devtool('source-map');
+            //config.devtool('source-map');
             config.target('node');
             config.output.libraryTarget('commonjs2');
             config.plugin("ssr-server").use(new VueSSRServerPlugin());

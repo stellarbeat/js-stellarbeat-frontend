@@ -30,7 +30,7 @@ export default (context:any) => {
                 return reject({ code: 404 })
             }
             // the Promise should resolve to the app instance so it can be rendered
-            resolve(app)
+            resolve(app);
         }, reject)
     })
 }

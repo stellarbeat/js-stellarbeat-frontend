@@ -62,7 +62,6 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
             width: this.width,
             height: this.height
         });
-        //graph.computeGraph();
 
     }
 

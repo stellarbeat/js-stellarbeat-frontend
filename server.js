@@ -43,7 +43,6 @@ const microCache = new LRU({
 
 server.get("*", async (req, res) => {
     try {
-        console.log(req.url);
         const hit = microCache.get(req.url)
         if (hit) {
             return res.end(hit)
@@ -54,12 +53,17 @@ server.get("*", async (req, res) => {
             template, // (optional) page template
             clientManifest // (optional) client build manifest
         })
+
         let html = await renderer.renderToString({url: req.url});
         microCache.set(req.url, html);
         res.end(html);
     } catch (error) {
-        console.log(error);
-        res.end(404);
+        console.log(error);//todo sentry for 500
+        if (error.code === 404) {
+            res.status(404).end('Page not found')
+        } else {
+            res.status(500).end('Internal Server Error')
+        }
     }
 });
 

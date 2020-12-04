@@ -1,6 +1,6 @@
 import createApp from '@/app';
 
-let {app, store} = createApp();
+let {app, router, store} = createApp();
 
 // @ts-ignore
 if (window.__INITIAL_STATE__) {
@@ -9,4 +9,7 @@ if (window.__INITIAL_STATE__) {
     let state = JSON.parse(window.__INITIAL_STATE__);
     store.hydrateNetwork(state.network, state.networkId);
 }
-app.$mount('#app');
+
+router.onReady(() => {
+    app.$mount('#app')
+})
