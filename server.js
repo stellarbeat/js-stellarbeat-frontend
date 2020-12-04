@@ -1,4 +1,5 @@
 const path = require('path');
+const Sentry = require("@sentry/node");
 const express = require('express');
 const server = express();
 const template = require('fs').readFileSync('./public/ssr-template.html', 'utf-8');
@@ -7,6 +8,11 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const serverBundle = require('./dist-server/vue-ssr-server-bundle.json')
 let port = process.env.PORT || 3000;
 const LRU = require("lru-cache");
+
+const isProd = process.env.NODE_ENV === 'production';
+if(isProd)
+    Sentry.init({dsn: process.env.VUE_APP_SENTRY_DSN});
+
 
 server.use("/img", express.static(path.join(__dirname, "./dist-client", "img")));
 server.use("/js", express.static(path.join(__dirname, "./dist-client", "js")));
@@ -58,11 +64,16 @@ server.get("*", async (req, res) => {
         microCache.set(req.url, html);
         res.end(html);
     } catch (error) {
-        console.log(error);//todo sentry for 500
+        if(!isProd){
+            console.log(res.url);
+            console.log(error);
+        }
         if (error.code === 404) {
-            res.status(404).end('Page not found')
+            res.status(404).end('Page not found');
         } else {
-            res.status(500).end('Internal Server Error')
+            if(isProd)
+                Sentry.captureException(error);
+            res.status(500).end('Internal Server Error');
         }
     }
 });

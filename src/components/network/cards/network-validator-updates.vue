@@ -55,7 +55,6 @@
         snapshots: NodeSnapShot[] = [];
 
         async getSnapshots() {
-            console.log("hier");
             let snapshots: NodeSnapShot[] = [];
             try {
                 snapshots = await this.store.fetchNodeSnapshots();
