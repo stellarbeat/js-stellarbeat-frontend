@@ -152,7 +152,7 @@ export default class Store {
             this.changeQueue.reset();
 
         if(this.networkId === 'fbas'){
-            this.loadFBAS();
+            await this.loadFBAS();
             this.isLocalNetwork = true;
             return new Promise(function(resolve, reject) {
                 resolve();

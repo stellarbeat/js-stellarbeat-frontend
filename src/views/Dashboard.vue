@@ -64,12 +64,11 @@
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
     import {BBreadcrumb} from 'bootstrap-vue';
-    import NetworkAnalysis from '@/components/network/tools/network-analysis/network-analysis.vue';
 
     @Component({
         name: 'dashboard',
         components: {
-            NetworkAnalysis,
+            'network-analysis' : () => import('@/components/network/tools/network-analysis/network-analysis.vue'),
             TimeTravelBadge,
             SimulationBadge,
             CrawlTime,

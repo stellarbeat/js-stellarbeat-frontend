@@ -64,11 +64,9 @@
     import SideBar from '@/components/side-bar/side-bar.vue';
 
     import {BIconX, BModal, VBModal} from 'bootstrap-vue';
-    import NetworkAnalysis from '@/components/network/tools/network-analysis/network-analysis.vue';
 
     @Component({
         components: {
-            NetworkAnalysis,
             SideBar,
             OrganizationsDropdown,
             NavLink, SimulateNewNode, ValidatorsDropdown,

@@ -61,13 +61,12 @@ export function createRouter () {
                 component: () => import(/* webpackChunkName: "organizations" */ '@/views/Organizations.vue') as any
             },
 
-            {name: 'faq', path: '/faq', component: FAQ, meta: {fullPreRender: true}},
-            {name: 'api', path: '/api', component: Api, meta: {fullPreRender: true}},
+            {name: 'faq', path: '/faq', component: () => import(/* webpackChunkName: "faq" */ '@/views/FAQ.vue') as any},
+            {name: 'api', path: '/api', component: () => import(/* webpackChunkName: "api" */ '@/views/Api.vue') as any},
             {
                 name: 'terms-and-conditions',
                 path: '/terms-and-conditions',
-                component: TermsAndConditions,
-                meta: {fullPreRender: true}
+                component: () => import(/* webpackChunkName: "tac" */ '@/views/TermsAndConditions.vue') as any
             }
         ],
 
