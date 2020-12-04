@@ -72,7 +72,7 @@ Age = Time since discovery
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
     import {Network, Node} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
     import Store from '@/store/Store';
@@ -80,6 +80,7 @@ Age = Time since discovery
     import NodesTable from '@/components/node/nodes-table.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
     import {BFormInput} from 'bootstrap-vue';
+    import {StoreMixin} from '@/mixins/StoreMixin';
 
     @Component({
         components: {TimeTravelBadge, NodesTable, SimulationBadge, CrawlTime, BFormInput: BFormInput},
@@ -90,19 +91,13 @@ Age = Time since discovery
             ],
         },
     })
-    export default class Nodes extends Vue {
-        @Prop()
-        public network!: Network;
+    export default class Nodes extends Mixins(StoreMixin) {
         @Prop()
         public isLoading!: boolean;
 
         public optionShowInactive: boolean = false;
         public optionShowWatchers: boolean = false;
         public filter: string = '';
-
-        get store(): Store {
-            return this.$root.$data.store;
-        }
 
         get fields(): any {
             if (this.store.isSimulation) {

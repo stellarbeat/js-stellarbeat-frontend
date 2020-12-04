@@ -28,8 +28,7 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
     import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
     import Store from '@/store/Store';
@@ -37,6 +36,7 @@
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
     import {BCol, BFormInput, BIconInfoCircle, BIconShield, BPagination, BRow, BTable, VBTooltip} from 'bootstrap-vue';
     import OrganizationsTable from '@/components/organization/organizations-table.vue';
+    import {StoreMixin} from '@/mixins/StoreMixin';
 
     @Component({
         name: 'organizations',
@@ -61,7 +61,7 @@
             ],
         },
     })
-    export default class Organizations extends Vue {
+    export default class Organizations extends Mixins(StoreMixin) {
         public filter: string = '';
 
         get fields():any {
@@ -84,13 +84,7 @@
         }
 
         @Prop()
-        public network!: Network;
-        @Prop()
         public isLoading!: boolean;
-
-        get store(): Store {
-            return this.$root.$data.store;
-        }
 
         get organizations(): any[] {
             return this.network.organizations

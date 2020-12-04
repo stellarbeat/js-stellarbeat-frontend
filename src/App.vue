@@ -127,7 +127,6 @@
                 </div>
                 <div v-else>
                     <router-view v-if="!store.isLoading && !store.fetchingDataFailed"
-                                 :network="network"
                                  :isLoading="store.isLoading"
                     />
                 </div>
