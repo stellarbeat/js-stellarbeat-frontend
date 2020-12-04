@@ -26,7 +26,8 @@ module.exports = {
         ],
         optimization: {
             splitChunks: !process.env.SSR ? {
-                chunks: 'all'
+                chunks: 'all',
+                maxSize: 250000,
             } : false
         },
         resolve: {

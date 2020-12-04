@@ -65,7 +65,7 @@ server.get("*", async (req, res) => {
         res.end(html);
     } catch (error) {
         if(!isProd){
-            console.log(res.url);
+            console.log(req.url);
             console.log(error);
         }
         if (error.code === 404) {
