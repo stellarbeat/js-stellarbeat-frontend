@@ -10,7 +10,7 @@ export default (context:any) => {
         const { app, router, store } = createApp()
 
         // set server-side router's location
-        router.push(context.url)
+        router.push(context.url).catch(err => {});
 
         // wait until router has resolved possible async components and hooks
         router.onReady(() => {

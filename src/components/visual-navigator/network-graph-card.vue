@@ -81,13 +81,13 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
     }
 
     get selectedVertex(){
-        if(this.store.selectedNode)
+        if(this.store.selectedNode && this.viewGraph)
             return this.viewGraph.viewVertices.get(this.store.selectedNode.publicKey);
         return undefined;
     }
 
     get centerVertex(){
-        if(this.store.centerNode)
+        if(this.store.centerNode && this.viewGraph)
             return this.viewGraph.viewVertices.get(this.store.centerNode.publicKey);
         return undefined;
     }
