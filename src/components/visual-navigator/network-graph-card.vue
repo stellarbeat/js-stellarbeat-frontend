@@ -27,7 +27,7 @@ import calculateGraph from '@/components/visual-navigator/graph/calculate-graph'
     components: {GraphLegend, Graph}
 })
 export default class NetworkGraphCard extends Mixins(StoreMixin) {
-    public viewGraph!: ViewGraph;
+    public viewGraph: ViewGraph = new ViewGraph();
     public networkId!:string;
     public computeGraphWorker!:ComputeGraphWorker;
     public isLoading = true;
@@ -125,18 +125,15 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
                 case 'end': {
                     this.mapViewGraph(event.data.vertices, event.data.edges);
                     this.isLoading = false;
-                    console.timeEnd("message");
                 }
                 break;
            }
         };
 
-        let result = calculateGraph(
-            Array.from(this.viewGraph.viewVertices.values()),
-            Array.from(this.viewGraph.viewEdges.values())
-        );
-        this.mapViewGraph(result.vertices, result.edges);
-        this.isLoading = false;
+        this.computeGraphWorker.postMessage({
+            vertices: Array.from(this.viewGraph.viewVertices.values()),
+            edges: Array.from(this.viewGraph.viewEdges.values()),
+        });
     }
 
     public beforeDestroy() {

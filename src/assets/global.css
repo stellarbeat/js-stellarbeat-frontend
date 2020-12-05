@@ -1,5 +1,5 @@
 .container {
-    max-width: 1360px;
+    max-width: 1360px!important;
 }
 .btn-primary {
     background: #1997c6;
@@ -48,8 +48,8 @@
     margin-right: 10px;
 }
 .page-header {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 10px!important;
+    margin-bottom: 10px!important;
 }
 
 .table.b-table > thead > tr > [aria-sort]:not(.b-table-sort-icon-left), .table.b-table > tfoot > tr > [aria-sort]:not(.b-table-sort-icon-left) {
