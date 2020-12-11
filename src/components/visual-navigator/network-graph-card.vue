@@ -19,8 +19,6 @@ import ComputeGraphWorker from 'worker-loader?name=worker/[name].js!../../worker
 import ViewGraph from '@/components/visual-navigator/graph/view-graph';
 import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
 import ViewEdge from '@/components/visual-navigator/graph/view-edge';
-const _ComputeGraphWorker: any = ComputeGraphWorker; // workaround for typescript not compiling web workers.
-import calculateGraph from '@/components/visual-navigator/graph/calculate-graph';
 
 @Component({
     name: 'network-graph-card',

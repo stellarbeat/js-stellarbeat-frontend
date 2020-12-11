@@ -9,7 +9,7 @@ ctx.addEventListener('message', (event) => {
     const width = event.data.width;
     const height = event.data.height;
     //@ts-ignore
-    const transEdgesSize = event.data.vertices.filter(edge => edge.isPartOfTransitiveQuorumSet).length;
+    const nrOfTransitiveVertices = event.data.vertices.filter(vertex => vertex.isPartOfTransitiveQuorumSet).length;
 
     const simulation = forceSimulation(vertices)
         .force('charge', forceManyBody().strength((d) => {
@@ -17,12 +17,12 @@ ctx.addEventListener('message', (event) => {
         }))
         .force('link', forceLink(edges).strength( (edge: any) => {
             if (edge.isPartOfTransitiveQuorumSet) {
-                return 1/transEdgesSize * 0.2;
+                return 1/nrOfTransitiveVertices * 0.2;
             }
             else if (edge.isPartOfStronglyConnectedComponent) {
                 return 0.1;
             } else {
-                return 0.000001;
+                return 0.001113;
             }
         }).id( (d: any) => {
             return d.key;
@@ -35,7 +35,7 @@ ctx.addEventListener('message', (event) => {
         .stop();
 
     for (let i = 0,
-             n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n; ++i) {
+             n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n*5; ++i) {
         //ctx.postMessage({type: 'tick', progress: i / n});
         simulation.tick();
     }
