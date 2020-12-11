@@ -115,6 +115,8 @@ export default class ViewGraph {
                 vertex.highlightAsTrusted = true;
                 this.trustedVertices.push(vertex);
             }
+        } else {
+            vertex.selected = false;
         }
     }
 

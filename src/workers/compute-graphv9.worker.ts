@@ -35,7 +35,7 @@ ctx.addEventListener('message', (event) => {
         .stop();
 
     for (let i = 0,
-             n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n*5; ++i) {
+             n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n; ++i) {
         //ctx.postMessage({type: 'tick', progress: i / n});
         simulation.tick();
     }

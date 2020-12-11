@@ -98,7 +98,7 @@ import GraphEdge from '@/components/visual-navigator/graph/graph-edge.vue';
 import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
 import * as zoom from 'd3-zoom';
-import {select, event as d3Event} from 'd3-selection';
+import {select} from 'd3-selection';
 import GraphStronglyConnectedComponent
     from '@/components/visual-navigator/graph/graph-strongly-connected-component.vue';
 import {StoreMixin} from '@/mixins/StoreMixin';
@@ -192,8 +192,8 @@ export default class Graph extends Mixins(StoreMixin) {
     public mounted() {
         this.d3Grid = select(this.$refs.grid as Element);
         this.d3svg = select(this.$refs.graphSvg as Element);
-        this.graphZoom = zoom.zoom().on('zoom', () => {
-            this.d3Grid.attr('transform', d3Event.transform);
+        this.graphZoom = zoom.zoom().on('zoom', (event) => {
+            this.d3Grid.attr('transform', event.transform);
         }).scaleExtent([1, 3]);
         this.transformAndZoom();
     }
