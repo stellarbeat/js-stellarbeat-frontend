@@ -111,16 +111,12 @@ export default class ViewGraph {
     classifyVertex(vertex: ViewVertex, selectedVertexKey?: string) {
         if(selectedVertexKey){
             vertex.selected = vertex.key === selectedVertexKey;
-            if(this.viewEdges.has(selectedVertexKey + ':' + vertex.key) && !this.viewEdges.get(selectedVertexKey + ':' + vertex.key)!.isFailing){
-                console.log('trusted by selected:');
-                console.log(vertex.label);
-                vertex.highlightAsTrusted = true;
+            if(this.viewEdges.has(selectedVertexKey + ':' + vertex.key)){
+                vertex.isTrustedBySelectedVertex = true;
                 this.trustedVertices.push(vertex);
             }
-            if(this.viewEdges.has(vertex.key + ':' + selectedVertexKey) && !this.viewEdges.get(vertex.key + ':' + selectedVertexKey)!.isFailing) {
-                console.log('trusting selected')
-                console.log(vertex.label)
-                vertex.highlightAsTrusting = true;
+            if(this.viewEdges.has(vertex.key + ':' + selectedVertexKey)) {
+                vertex.isTrustingSelectedVertex = true;
                 this.trustingVertices.push(vertex);
             }
         } else {
@@ -139,8 +135,8 @@ export default class ViewGraph {
     }
 
     reClassifyVertices(selectedVertexKey?: string){
-        this.trustedVertices.forEach(vertex => vertex.highlightAsTrusted = false);
-        this.trustingVertices.forEach(vertex => vertex.highlightAsTrusting = false);
+        this.trustedVertices.forEach(vertex => vertex.isTrustedBySelectedVertex = false);
+        this.trustingVertices.forEach(vertex => vertex.isTrustingSelectedVertex = false);
         this.trustedVertices = [];
         this.trustingVertices = [];
         this.viewVertices.forEach(viewVertex => this.classifyVertex(viewVertex, selectedVertexKey));

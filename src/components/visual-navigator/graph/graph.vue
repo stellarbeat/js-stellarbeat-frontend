@@ -77,8 +77,8 @@
                         :key="vertex.key"
                                      :publicKey="vertex.key"
                                      :selected="vertex.selected"
-                                     :highlightAsOutgoing="vertex.highlightAsTrusting && optionHighlightTrustingNodes"
-                                     :highlightAsIncoming="vertex.highlightAsTrusted && optionHighlightTrustedNodes"
+                                     :highlightAsOutgoing="highlightVertexAsOutgoing(vertex)"
+                                     :highlightAsIncoming="highlightVertexAsIncoming(vertex)"
                                      :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
                                      :x="vertex.x"
                                      :y="vertex.y"
@@ -163,6 +163,28 @@ export default class Graph extends Mixins(StoreMixin) {
     @Watch('isLoading')
     public onIsLoadingChanged(){
         this.centerCorrectVertex();
+    }
+
+    highlightVertexAsOutgoing(vertex: ViewVertex){
+        if(!this.selectedVertex)
+            return false;
+
+        let edge = this.viewGraph.viewEdges.get(vertex.key + ':' + this.selectedVertex.key);
+        if(!edge)
+            return false;
+
+        return vertex.isTrustingSelectedVertex && this.optionHighlightTrustingNodes && (!edge.isFailing || this.optionShowFailingEdges);
+    }
+
+    highlightVertexAsIncoming(vertex: ViewVertex){
+        if(!this.selectedVertex)
+            return false;
+
+        let edge = this.viewGraph.viewEdges.get(this.selectedVertex.key + ':' + vertex.key);
+        if(!edge)
+            return false;
+
+        return vertex.isTrustedBySelectedVertex && this.optionHighlightTrustedNodes && (!edge.isFailing || this.optionShowFailingEdges);
     }
 
     width() {

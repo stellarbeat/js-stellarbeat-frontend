@@ -11,8 +11,8 @@ export default class ViewVertex {
     x: number = 0;
     y: number = 0;
     isPartOfTransitiveQuorumSet: boolean;
-    highlightAsTrusting: boolean = false;
-    highlightAsTrusted: boolean = false;
+    isTrustingSelectedVertex: boolean = false;
+    isTrustedBySelectedVertex: boolean = false;
     selected: boolean = false;
     isFailing: boolean = false;
 
