@@ -112,12 +112,16 @@ export default class ViewGraph {
         if(selectedVertexKey){
             vertex.selected = vertex.key === selectedVertexKey;
             if(this.viewEdges.has(selectedVertexKey + ':' + vertex.key) && !this.viewEdges.get(selectedVertexKey + ':' + vertex.key)!.isFailing){
-                vertex.highlightAsTrusting = true;
-                this.trustingVertices.push(vertex);
-            }
-            else if(this.viewEdges.has(vertex.key + ':' + selectedVertexKey) && !this.viewEdges.get(vertex.key + ':' + selectedVertexKey)!.isFailing) {
+                console.log('trusted by selected:');
+                console.log(vertex.label);
                 vertex.highlightAsTrusted = true;
                 this.trustedVertices.push(vertex);
+            }
+            if(this.viewEdges.has(vertex.key + ':' + selectedVertexKey) && !this.viewEdges.get(vertex.key + ':' + selectedVertexKey)!.isFailing) {
+                console.log('trusting selected')
+                console.log(vertex.label)
+                vertex.highlightAsTrusting = true;
+                this.trustingVertices.push(vertex);
             }
         } else {
             vertex.selected = false;

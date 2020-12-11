@@ -81,7 +81,13 @@
                 </div>
                 <world-map :fullScreen="fullScreen"/>
             </div>
-            <network-graph-card v-else :full-screen="fullScreen">
+            <network-graph-card v-else :full-screen="fullScreen"
+            :optionShowFailingEdges="optionShowFailingEdges"
+            :optionHighlightTrustingNodes="optionHighlightTrustingNodes"
+            :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
+            :optionShowRegularEdges="optionShowRegularEdges"
+            :optionTransitiveQuorumSetOnly="optionTransitiveQuorumSetOnly">
+
 
             </network-graph-card>
 

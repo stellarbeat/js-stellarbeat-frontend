@@ -7,6 +7,11 @@
         :fullScreen="fullScreen"
         :view-graph="viewGraph"
         :is-loading="isLoading"
+        :optionShowFailingEdges="optionShowFailingEdges"
+        :optionHighlightTrustingNodes="optionHighlightTrustingNodes"
+        :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
+        :optionShowRegularEdges="optionShowRegularEdges"
+        :optionTransitiveQuorumSetOnly="optionTransitiveQuorumSetOnly"
     />
 </template>
 
@@ -29,6 +34,21 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
     public networkId!:string;
     public computeGraphWorker!:ComputeGraphWorker;
     public isLoading = true;
+
+    @Prop({default: false})
+    public optionShowFailingEdges!: boolean;
+
+    @Prop({default: true})
+    public optionHighlightTrustingNodes!: boolean;
+
+    @Prop({default: true})
+    public optionHighlightTrustedNodes!: boolean;
+
+    @Prop({default: true})
+    public optionShowRegularEdges!: boolean;
+
+    @Prop({default: true})
+    public optionTransitiveQuorumSetOnly!: boolean;
 
     @Watch('store.networkUpdated')
     public onNetworkUpdated() {

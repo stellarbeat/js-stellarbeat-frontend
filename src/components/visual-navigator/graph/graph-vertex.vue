@@ -71,7 +71,7 @@ export default class GraphNode extends Vue {
             selected: this.selected,
             failing: this.isFailing,
             target: this.highlightAsIncoming && !this.selected,
-            source : this.highlightAsOutgoing && !this.selected,
+            source : this.highlightAsOutgoing && !this.selected && !this.highlightAsIncoming,
             transitive: this.partOfTransitiveQuorumSet
         };
     }

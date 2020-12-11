@@ -14,11 +14,11 @@
                             :greatest="true"
                             :vertex-coordinates="viewGraph.transitiveQuorumSetCoordinates"
                         />
-                        <graph-strongly-connected-component :key="index"
+                        <graph-strongly-connected-component v-if="!optionTransitiveQuorumSetOnly" :key="index"
                                                             v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
                                                             :vertex-coordinates="sccCoordinates"/>
                         <GraphEdge
-                            v-for="edge in viewGraph.regularEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                            v-for="edge in viewGraph.regularEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                             :key="edge.source.key + edge.target.key"
                             :highlightAsOutgoing="false"
                             :highlightAsIncoming="false"
@@ -31,7 +31,7 @@
                             :hideRegular="!optionShowRegularEdges"
                         />
                         <GraphEdge
-                            v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                            v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                             :key="edge.source.key + edge.target.key"
                             :highlightAsOutgoing="false"
                             :highlightAsIncoming="false"
@@ -45,7 +45,7 @@
                         />
                         <g v-if="selectedVertex && optionHighlightTrustingNodes">
                             <GraphEdge
-                                v-for="edge in viewGraph.trustingEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                                v-for="edge in viewGraph.trustingEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                 :key="edge.source.key + edge.target.key"
                                 :highlightAsOutgoing="false"
                                 :highlightAsIncoming="true"
@@ -60,7 +60,7 @@
                         </g>
                         <g v-if="selectedVertex && optionHighlightTrustedNodes">
                             <GraphEdge
-                                v-for="edge in viewGraph.trustedEdges.filter(edge => !edge.isFailing || optionShowFailingEdges)"
+                                v-for="edge in viewGraph.trustedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges)  && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                 :key="edge.source.key + edge.target.key"
                                 :highlightAsOutgoing="true"
                                 :highlightAsIncoming="false"
@@ -73,11 +73,12 @@
                                 :hideRegular="!optionShowRegularEdges"
                             />
                         </g>
-                        <GraphVertex v-for="vertex in viewGraph.viewVertices.values()" :key="vertex.key"
+                        <GraphVertex v-for="vertex in Array.from(viewGraph.viewVertices.values()).filter(vertex => vertex.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly)"
+                        :key="vertex.key"
                                      :publicKey="vertex.key"
                                      :selected="vertex.selected"
-                                     :highlightAsOutgoing="vertex.highlightAsTrusted"
-                                     :highlightAsIncoming="vertex.highlightAsTrusting"
+                                     :highlightAsOutgoing="vertex.highlightAsTrusting && optionHighlightTrustingNodes"
+                                     :highlightAsIncoming="vertex.highlightAsTrusted && optionHighlightTrustedNodes"
                                      :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
                                      :x="vertex.x"
                                      :y="vertex.y"
