@@ -1,5 +1,5 @@
 <template>
-    <g :transform="coordinateTransform" style="cursor: pointer;" v-on:click="nodeSelected">
+    <g :transform="coordinateTransform" style="cursor: pointer;">
         <circle
                 :r="circleRadius"
                 v-bind:class="classObject"
@@ -77,19 +77,6 @@ export default class GraphNode extends Vue {
     }
     get displayName(): string {
         return this.label;
-    }
-
-    public nodeSelected() {
-        if(this.$route.params.publicKey && this.$route.params.publicKey === this.publicKey)
-            return;
-
-        this.$router.push(
-            {
-                name: 'node-dashboard',
-                params: {publicKey: this.publicKey},
-                query: {'center': '0', 'no-scroll': '1', 'view': this.$route.query.view, 'network': this.$route.query.network},
-            },
-            );
     }
 }
 </script>

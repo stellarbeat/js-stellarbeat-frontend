@@ -84,6 +84,7 @@
                                      :y="vertex.y"
                                      :isFailing="vertex.isFailing"
                                      :label="vertex.label"
+                                     v-on:click.native="vertexSelected(vertex)"
                         ></GraphVertex>
                     </g>
                 </g>
@@ -163,6 +164,10 @@ export default class Graph extends Mixins(StoreMixin) {
     @Watch('isLoading')
     public onIsLoadingChanged(){
         this.centerCorrectVertex();
+    }
+
+    vertexSelected(vertex: ViewVertex){
+        this.$emit('vertex-selected', vertex);
     }
 
     highlightVertexAsOutgoing(vertex: ViewVertex){

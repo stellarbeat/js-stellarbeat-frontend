@@ -13,7 +13,13 @@
                                          :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
                                          class="pl-3 mb-1 view-link"
                                          v-on:click.native="menuVisible = false">
-                                Graph
+                                Node trust graph
+                            </router-link>
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph-org', 'no-scroll': '1', 'network': $route.query.network}}"
+                                         :class="['graph-org'].includes($route.query.view) &&'router-link-exact-active'"
+                                         class="pl-3 mb-1 view-link"
+                                         v-on:click.native="menuVisible = false">
+                                Organization trust graph
                             </router-link>
                             <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1', 'network': $route.query.network}}"
                                          v-on:click.native="menuVisible = false"
@@ -22,8 +28,8 @@
                             </router-link>
                         </ul>
                     </div>
-                    <h6 class="sb-navbar-heading mt-3 ml-0 pl-0" v-if="view === 'graph'">Options</h6>
-                    <div v-if="view === 'graph'">
+                    <h6 class="sb-navbar-heading mt-3 ml-0 pl-0" v-if="view === 'graph' || view === 'graph-org'">Options</h6>
+                    <div v-if="view === 'graph' || view === 'graph-org'">
                         <b-form-checkbox v-model="optionHighlightTrustedNodes" v-show="selectedNode"
                                          class="sb-nav-item sb-nav-toggle mt-1"
                                          switch>
@@ -52,7 +58,7 @@
                     </div>
                 </div>
                 <div>
-                    <graph-legend v-if="view === 'graph'"/>
+                    <graph-legend v-if="view === 'graph' || view === 'graph-org'"/>
                 </div>
             </div>
         </div>
@@ -86,9 +92,8 @@
             :optionHighlightTrustingNodes="optionHighlightTrustingNodes"
             :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
             :optionShowRegularEdges="optionShowRegularEdges"
-            :optionTransitiveQuorumSetOnly="optionTransitiveQuorumSetOnly">
-
-
+            :optionTransitiveQuorumSetOnly="optionTransitiveQuorumSetOnly"
+            :type="view === 'graph' ? 'node' : 'organization'">
             </network-graph-card>
 
             <div v-show="!menuVisible" class="preview" v-on:click="navigateToView">
