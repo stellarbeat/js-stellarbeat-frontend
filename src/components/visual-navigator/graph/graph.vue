@@ -43,7 +43,7 @@
                             :isFailing="edge.isFailing"
                             :hideRegular="!optionShowRegularEdges"
                         />
-                        <g v-if="selectedVertex && optionHighlightTrustingNodes">
+                        <g v-if="selectedVertices.length > 0 && optionHighlightTrustingNodes">
                             <GraphEdge
                                 v-for="edge in viewGraph.trustingEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                 :key="edge.source.key + edge.target.key"
@@ -58,7 +58,7 @@
                                 :hideRegular="!optionShowRegularEdges"
                             />
                         </g>
-                        <g v-if="selectedVertex && optionHighlightTrustedNodes">
+                        <g v-if="selectedVertices.length > 0 && optionHighlightTrustedNodes">
                             <GraphEdge
                                 v-for="edge in viewGraph.trustedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges)  && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                 :key="edge.source.key + edge.target.key"
@@ -119,7 +119,7 @@ export default class Graph extends Mixins(StoreMixin) {
     @Prop()
     public centerVertex!: ViewVertex;
     @Prop()
-    public selectedVertex!: ViewVertex;
+    public selectedVertices!: ViewVertex[];
 
     @Prop({default: false})
     public optionShowFailingEdges!: boolean;
@@ -171,25 +171,28 @@ export default class Graph extends Mixins(StoreMixin) {
     }
 
     highlightVertexAsOutgoing(vertex: ViewVertex){
-        if(!this.selectedVertex)
+        if(this.selectedVertices.length <= 0)
+            return false;
+        let edges = this.selectedVertices.map(selectedVertex => this.viewGraph.viewEdges.get(vertex.key + ':' + selectedVertex.key)).filter(edge => edge !== undefined);
+        let allEdgesAreFailing = edges.every(edge => edge!.isFailing);
+
+        if(edges.length <= 0)
             return false;
 
-        let edge = this.viewGraph.viewEdges.get(vertex.key + ':' + this.selectedVertex.key);
-        if(!edge)
-            return false;
-
-        return vertex.isTrustingSelectedVertex && this.optionHighlightTrustingNodes && (!edge.isFailing || this.optionShowFailingEdges);
+        return vertex.isTrustingSelectedVertex && this.optionHighlightTrustingNodes && (!allEdgesAreFailing || this.optionShowFailingEdges);
     }
 
     highlightVertexAsIncoming(vertex: ViewVertex){
-        if(!this.selectedVertex)
+        if(this.selectedVertices.length <= 0)
             return false;
 
-        let edge = this.viewGraph.viewEdges.get(this.selectedVertex.key + ':' + vertex.key);
-        if(!edge)
+        let edges = this.selectedVertices.map(selectedVertex =>  this.viewGraph.viewEdges.get(selectedVertex.key + ':' + vertex.key)).filter(edge => edge !== undefined);
+        let allEdgesAreFailing = edges.every(edge => edge!.isFailing);
+
+        if(edges.length <= 0)
             return false;
 
-        return vertex.isTrustedBySelectedVertex && this.optionHighlightTrustedNodes && (!edge.isFailing || this.optionShowFailingEdges);
+        return vertex.isTrustedBySelectedVertex && this.optionHighlightTrustedNodes && (!allEdgesAreFailing || this.optionShowFailingEdges);
     }
 
     width() {

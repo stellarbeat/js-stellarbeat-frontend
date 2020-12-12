@@ -20,24 +20,28 @@ export default class ViewEdge {
         this.key = source + ':' + target;
     }
 
-    static fromNodeEdge(edge: Edge, network: Network) {
+    protected static fromEdge(edge:Edge, trustGraph: TrustGraph){
         let viewEdge = new ViewEdge(edge.parent.key, edge.child.key);
-        let source = network.getNodeByPublicKey(edge.parent.key)!;
+        viewEdge.isPartOfStronglyConnectedComponent = trustGraph.isEdgePartOfStronglyConnectedComponent(edge);
+        viewEdge.isPartOfTransitiveQuorumSet = trustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge);
+
+        return viewEdge;
+    }
+    static fromNodeEdge(edge: Edge, trustGraph: TrustGraph, network: Network) {
+        let viewEdge = ViewEdge.fromEdge(edge, trustGraph);
+       let source = network.getNodeByPublicKey(edge.parent.key)!;
         let target = network.getNodeByPublicKey(edge.child.key)!;
-        viewEdge.isPartOfStronglyConnectedComponent = network.nodesTrustGraph.isEdgePartOfStronglyConnectedComponent(edge);
-        viewEdge.isPartOfTransitiveQuorumSet = network.nodesTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge);
         if (network.isNodeFailing(source) || network.isNodeFailing(target))
             viewEdge.isFailing = true;
 
         return viewEdge;
     }
 
-    static fromOrganizationEdge(edge: Edge, organizationTrustGraph: TrustGraph, network: Network) {
-        let viewEdge = new ViewEdge(edge.parent.key, edge.child.key);
+    static fromOrganizationEdge(edge: Edge, trustGraph: TrustGraph, network: Network) {
+        let viewEdge = ViewEdge.fromEdge(edge, trustGraph);
+
         let source = network.getOrganizationById(edge.parent.key)!;
         let target = network.getOrganizationById(edge.child.key)!;
-        viewEdge.isPartOfStronglyConnectedComponent = organizationTrustGraph.isEdgePartOfStronglyConnectedComponent(edge);
-        viewEdge.isPartOfTransitiveQuorumSet = organizationTrustGraph.isEdgePartOfNetworkTransitiveQuorumSet(edge);
         if (!(source.subQuorumAvailable && target.subQuorumAvailable))
             viewEdge.isFailing = true;
 

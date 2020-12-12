@@ -1,6 +1,5 @@
 import {
     Network,
-    Organization,
     TrustGraph,
     Vertex
 } from '@stellarbeat/js-stellar-domain';
@@ -22,20 +21,17 @@ export default class ViewVertex {
         this.isPartOfTransitiveQuorumSet = isPartOfTransitiveQuorumSet;
     }
 
-    static fromVertex(vertex: Vertex, network: Network) {
-        let viewVertex = new ViewVertex(vertex.key, vertex.label, network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
+    static fromVertex(vertex: Vertex, trustGraph: TrustGraph, network: Network) {
+        let viewVertex = new ViewVertex(vertex.key, vertex.label, trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
         let node = network.getNodeByPublicKey(vertex.key);
         viewVertex.isFailing = network.isNodeFailing(node);
 
         return viewVertex;
     }
 
-    static fromOrganization(organization: Organization, organizationTrustGraph: TrustGraph, network: Network) {
-        let vertex = organizationTrustGraph.getVertex(organization.id);
-        if (!vertex)
-            throw new Error('No vertex found for organization: ' + organization.id);
-
-        let viewVertex = new ViewVertex(vertex.key, vertex.label, organizationTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
+    static fromOrganization(vertex: Vertex, trustGraph: TrustGraph, network: Network) {
+        let viewVertex = new ViewVertex(vertex.key, vertex.label, trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
+        let organization = network.getOrganizationById(vertex.key)
         viewVertex.isFailing = !organization.subQuorumAvailable;
 
         return viewVertex;

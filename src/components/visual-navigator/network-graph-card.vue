@@ -3,7 +3,7 @@
         ref="graph"
         v-on:vertex-selected="vertexSelected"
         :centerVertex="centerVertex"
-        :selectedVertex="selectedVertex"
+        :selectedVertices="selectedVertices"
         style="height: 100%"
         :fullScreen="fullScreen"
         :view-graph="viewGraph"
@@ -25,6 +25,7 @@ import ComputeGraphWorker from 'worker-loader?name=worker/[name].js!../../worker
 import ViewGraph from '@/components/visual-navigator/graph/view-graph';
 import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
 import ViewEdge from '@/components/visual-navigator/graph/view-edge';
+import {TrustGraphBuilder} from '@stellarbeat/js-stellar-domain';
 
 @Component({
     name: 'network-graph-card',
@@ -64,17 +65,21 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
 
     @Watch('store.selectedNode')
     public onSelectedNodeChanged() {
-        let selectedKey = this.selectedKey;
-        this.viewGraph.reClassifyEdges(selectedKey);
-        this.viewGraph.reClassifyVertices(selectedKey);
+        this.reclassify();
     }
 
     @Watch('store.selectedOrganization')
-    public onSelectedOrganizationIdChanged(){
-        let selectedKey = this.selectedKey;
-        this.viewGraph.reClassifyEdges(selectedKey);
-        this.viewGraph.reClassifyVertices(selectedKey);
+    public onSelectedOrganizationIdChanged() {
+        this.reclassify();
     }
+
+    protected reclassify() {
+        let selectedKeys = this.selectedKeys;
+        this.viewGraph.reClassifyEdges(selectedKeys);
+        this.viewGraph.reClassifyVertices(selectedKeys);
+
+    }
+
     @Watch('type')
     public onTypeChanged() {
         this.updateGraph();
@@ -83,44 +88,64 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
     @Prop()
     fullScreen!: boolean;
 
-    vertexSelected(vertex:ViewVertex){
-        if(this.type === 'organization'){
-            if(this.$route.params.organizationId && this.$route.params.organizationId === vertex.key)
+    vertexSelected(vertex: ViewVertex) {
+        if (this.type === 'organization') {
+            if (this.$route.params.organizationId && this.$route.params.organizationId === vertex.key)
                 return;
 
             this.$router.push(
                 {
                     name: 'organization-dashboard',
                     params: {organizationId: vertex.key},
-                    query: {'center': '0', 'no-scroll': '1', 'view': this.$route.query.view, 'network': this.$route.query.network},
+                    query: {
+                        'center': '0',
+                        'no-scroll': '1',
+                        'view': this.$route.query.view,
+                        'network': this.$route.query.network
+                    },
                 },
             );
         } else {
-            if(this.$route.params.publicKey && this.$route.params.publicKey === vertex.key)
+            if (this.$route.params.publicKey && this.$route.params.publicKey === vertex.key)
                 return;
 
             this.$router.push(
                 {
                     name: 'node-dashboard',
                     params: {publicKey: vertex.key},
-                    query: {'center': '0', 'no-scroll': '1', 'view': this.$route.query.view, 'network': this.$route.query.network},
+                    query: {
+                        'center': '0',
+                        'no-scroll': '1',
+                        'view': this.$route.query.view,
+                        'network': this.$route.query.network
+                    },
                 },
             );
         }
     }
-    get selectedKey(){
-        let selectedKey = undefined;
-        if (this.type === 'node' && this.store.selectedNode)
-            selectedKey = this.store.selectedNode.publicKey;
-        else if (this.type === 'organization'){
-            if(this.store.selectedOrganization)
-                selectedKey = this.store.selectedOrganization.id;
-            else if(this.store.selectedNode){
-                selectedKey = this.store.selectedNode.organizationId;
+
+    get selectedKeys() {
+        let selectedKeys:string[] = [];
+        if (this.type === 'node'){
+            if(this.store.selectedNode)
+                selectedKeys.push(this.store.selectedNode.publicKey);
+            else if (this.store.selectedOrganization)
+                selectedKeys.push(...this.store.selectedOrganization.validators);
+        }
+        else if (this.type === 'organization') {
+            if (this.store.selectedOrganization)
+                selectedKeys.push(this.store.selectedOrganization.id);
+            else if (this.store.selectedNode && this.store.selectedNode.organizationId) {
+                selectedKeys.push(this.store.selectedNode.organizationId);
             }
         }
 
-        return selectedKey;
+        return selectedKeys;
+    }
+
+    getOrganizationTrustGraph(){
+        let trustGraphBuilder = new TrustGraphBuilder(this.network);
+        return trustGraphBuilder.buildGraphFromOrganizations(this.network.nodesTrustGraph);
     }
 
     updateGraph(merge: boolean = false) {
@@ -129,10 +154,11 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
         if (this.type === 'node')
             this.viewGraph = ViewGraph.fromNodes(
                 this.network,
+                this.network.nodesTrustGraph,
                 merge ? this.viewGraph : undefined,
-                this.selectedKey);
+                this.selectedKeys);
         else
-            this.viewGraph = ViewGraph.fromOrganizations(this.network, merge ? this.viewGraph : undefined, this.selectedKey);
+            this.viewGraph = ViewGraph.fromOrganizations(this.network, this.getOrganizationTrustGraph(), merge ? this.viewGraph : undefined, this.selectedKeys);
 
         this.computeGraphWorker.postMessage({
             vertices: Array.from(this.viewGraph.viewVertices.values()),
@@ -157,10 +183,10 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
         return graph.clientHeight;
     }
 
-    get selectedVertex() {
-        if (this.selectedKey && this.viewGraph)
-            return this.viewGraph.viewVertices.get(this.selectedKey);
-        return undefined;
+    get selectedVertices() {
+        if (this.selectedKeys.length > 0 && this.viewGraph)
+            return this.selectedKeys.map(key => this.viewGraph.viewVertices.get(key));
+        return [];
     }
 
     get centerVertex() {
@@ -192,9 +218,9 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
 
     mounted() {
         if (this.type === 'node')
-            this.viewGraph = ViewGraph.fromNodes(this.network, undefined, this.selectedKey);
+            this.viewGraph = ViewGraph.fromNodes(this.network, this.network.nodesTrustGraph, undefined, this.selectedKeys);
         else
-            this.viewGraph = ViewGraph.fromOrganizations(this.network, undefined, this.selectedKey);
+            this.viewGraph = ViewGraph.fromOrganizations(this.network, this.getOrganizationTrustGraph(), undefined, this.selectedKeys);
         this.computeGraphWorker = new ComputeGraphWorker();
         this.networkId = this.store.networkId;
 

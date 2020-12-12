@@ -1,14 +1,19 @@
 <template>
     <g :transform="coordinateTransform" style="cursor: pointer;">
         <circle
-                :r="circleRadius"
-                v-bind:class="classObject"
+            :r="circleRadius"
+            v-bind:class="classObject"
         >
-          <title>{{ displayName }}</title>
+            <title>{{ displayName }}</title>
         </circle>
         <g>
-        <rect style="fill: white; opacity: 0.7; text-transform: lowercase" :width="rectWidthPx" height="15px" y="9" :x="rectX" rx="2" :class="{'rect-selected': selected, 'rect': !selected}"/>
-        <text y="5" :class="textClass" dy="1.3em" text-anchor="middle" font-size="12px">{{ displayName | truncate(10)}}</text>
+            <rect style="fill: white; opacity: 0.7; text-transform: lowercase" :width="rectWidthPx" height="15px" y="9"
+                  :x="rectX" rx="2" :class="{'rect-selected': selected, 'rect': !selected}">
+            </rect>
+            <text y="5" :class="textClass" dy="1.3em" text-anchor="middle" font-size="12px">
+                {{ displayName | truncate(10) }}
+                <title>{{ displayName }}</title>
+            </text>
         </g>
     </g>
 </template>
@@ -49,8 +54,9 @@ export default class GraphNode extends Vue {
     }
 
     get rectWidth() {
-        return (this.$options!.filters!.truncate(this.displayName,10).length/10) * 70;
+        return (this.$options!.filters!.truncate(this.displayName, 10).length / 10) * 70;
     }
+
     get rectWidthPx() {
         return this.rectWidth + 'px';
     }
@@ -60,21 +66,24 @@ export default class GraphNode extends Vue {
     }
 
     get textClass() {
-      return {
-        active: !this.isFailing,
-        failing: this.isFailing
-      }
+        return {
+            active: !this.isFailing,
+            failing: this.isFailing,
+            selected: this.selected
+        };
     }
+
     get classObject() {
         return {
             active: !this.isFailing,
             selected: this.selected,
             failing: this.isFailing,
             target: this.highlightAsIncoming && !this.selected,
-            source : this.highlightAsOutgoing && !this.selected && !this.highlightAsIncoming,
+            source: this.highlightAsOutgoing && !this.selected && !this.highlightAsIncoming,
             transitive: this.partOfTransitiveQuorumSet
         };
     }
+
     get displayName(): string {
         return this.label;
     }
@@ -82,54 +91,60 @@ export default class GraphNode extends Vue {
 </script>
 
 <style scoped>
-    circle.active {
-        fill: #1997c6;
-    }
+circle.active {
+    fill: #1997c6;
+}
 
-    circle.transitive {
-        fill: #1997c6;
-        opacity: 0.7;
-    }
+circle.transitive {
+    fill: #1997c6;
+    opacity: 0.7;
+}
 
-    circle.selected {
-        stroke:  yellow;
-    }
+circle.selected {
+    stroke: yellow;
+}
 
-    circle.failing {
-        fill: #cd201f
-    }
+circle.failing {
+    fill: #cd201f
+}
 
-    circle.target {
-        stroke:  #fec601;
-        stroke-opacity: 1;
-    }
+circle.target {
+    stroke: #fec601;
+    stroke-opacity: 1;
+}
 
-    circle.source {
-        stroke:  #73bfb8;
-        stroke-opacity: 1;
-    }
+circle.source {
+    stroke: #73bfb8;
+    stroke-opacity: 1;
+}
 
-    circle {
-        stroke: white;
-        fill: #ECEBE4;
-        cursor: pointer;
-        stroke-width: 1.5px;
-    }
-    text{
-        fill: #1997c6;
-        font-weight: 400;
-    }
+circle {
+    stroke: white;
+    fill: #ECEBE4;
+    cursor: pointer;
+    stroke-width: 1.5px;
+}
 
-    .failing {
-      fill: #cd201f;
-      opacity: 0.7;
-    }
+text {
+    fill: #1997c6;
+    font-weight: 400;
+}
 
-    .rect {
-        opacity: 0.8;
-    }
-    .rect-selected {
-        stroke: yellow;
-        stroke-width: 1.5;
-    }
+.failing {
+    fill: #cd201f;
+    opacity: 0.7;
+}
+
+.selected {
+    font-weight: bold;
+}
+
+.rect {
+    opacity: 0.8;
+}
+
+.rect-selected {
+    stroke: yellow;
+    stroke-width: 1.5;
+}
 </style>

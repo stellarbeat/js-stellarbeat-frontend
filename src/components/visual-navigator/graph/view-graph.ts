@@ -1,5 +1,5 @@
 import {
-    Network,
+    Network, TrustGraph,
     TrustGraphBuilder
 } from '@stellarbeat/js-stellar-domain';
 import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
@@ -28,61 +28,63 @@ export default class ViewGraph {
         this.stronglyConnectedEdges = [];
     }
 
-    static fromNodes(network: Network, mergeWithGraph?: ViewGraph, selectedKey?: string) {
+    //todo: network is only needed to set failing status, but is a too heavy dependency
+    static fromNodes(network: Network, trustGraph: TrustGraph, mergeWithGraph?: ViewGraph, selectedKeys:string[] =[]) {
         let viewGraph = new ViewGraph();
 
-        Array.from(network.nodesTrustGraph.edges).forEach(edge => {
-            let viewEdge = ViewEdge.fromNodeEdge(edge, network);
+        Array.from(trustGraph.edges).forEach(edge => {
+            let viewEdge = ViewEdge.fromNodeEdge(edge, trustGraph, network);
             viewGraph.viewEdges.set(viewEdge.key, viewEdge);
-            viewGraph.classifyEdge(viewEdge, selectedKey);
+            viewGraph.classifyEdge(viewEdge, selectedKeys);
         });
 
-        network.nodesTrustGraph.vertices.forEach(vertex => {
-            let viewVertex = ViewVertex.fromVertex(vertex, network);
+        trustGraph.vertices.forEach(vertex => {
+            let viewVertex = ViewVertex.fromVertex(vertex, trustGraph, network);
             if(mergeWithGraph && mergeWithGraph.viewVertices.has(viewVertex.key)){
                 viewVertex.x = mergeWithGraph.viewVertices.get(viewVertex.key)!.x;
                 viewVertex.y = mergeWithGraph.viewVertices.get(viewVertex.key)!.y;
             }
 
             viewGraph.viewVertices.set(viewVertex.key, viewVertex);
-            viewGraph.classifyVertex(viewVertex, selectedKey);
+            viewGraph.classifyVertex(viewVertex, selectedKeys);
         });
 
 
-        network.nodesTrustGraph.stronglyConnectedComponents.forEach((scc, i) => {
+        trustGraph.stronglyConnectedComponents.forEach((scc, i) => {
             viewGraph.stronglyConnectedComponents[i] = Array.from(scc)
-                .filter(vertexKey => !network.nodesTrustGraph.networkTransitiveQuorumSet.has(vertexKey))
+                .filter(vertexKey => !trustGraph.networkTransitiveQuorumSet.has(vertexKey))
                 .map(vertexKey => viewGraph.viewVertices.get(vertexKey)!);
         })
 
         return viewGraph;
     }
 
-    static fromOrganizations(network: Network, mergeWithGraph?: ViewGraph, selectedKey?:string) {
+    //todo: network is only needed to set failing status, but is a too heavy dependency
+    static fromOrganizations(network: Network, trustGraph: TrustGraph, mergeWithGraph?: ViewGraph, selectedKeys:string[]=[]) {
         let viewGraph = new ViewGraph();
 
-        let trustGraphBuilder = new TrustGraphBuilder(network);
-        let organizationTrustGraph = trustGraphBuilder.buildGraphFromOrganizations(network.nodesTrustGraph);
+        //let trustGraphBuilder = new TrustGraphBuilder(trustGraph);
+        //let organizationTrustGraph = trustGraphBuilder.buildGraphFromOrganizations(trustGraph.nodesTrustGraph);
 
-        Array.from(organizationTrustGraph.edges).forEach(edge => {
-            let viewEdge = ViewEdge.fromOrganizationEdge(edge, organizationTrustGraph, network);
+        Array.from(trustGraph.edges).forEach(edge => {
+            let viewEdge = ViewEdge.fromOrganizationEdge(edge, trustGraph, network);
             viewGraph.viewEdges.set(viewEdge.key, viewEdge);
-            viewGraph.classifyEdge(viewEdge, selectedKey);
+            viewGraph.classifyEdge(viewEdge, selectedKeys);
         });
 
-        network.organizations.forEach(organization => {
-            let vertex = ViewVertex.fromOrganization(organization, organizationTrustGraph, network);
-            if(mergeWithGraph && mergeWithGraph.viewVertices.has(vertex.key)){
-                vertex.x = mergeWithGraph.viewVertices.get(vertex.key)!.x;
-                vertex.y = mergeWithGraph.viewVertices.get(vertex.key)!.y;
+        trustGraph.vertices.forEach( vertex => {
+            let viewVertex = ViewVertex.fromOrganization(vertex, trustGraph, network);
+            if(mergeWithGraph && mergeWithGraph.viewVertices.has(viewVertex.key)){
+                viewVertex.x = mergeWithGraph.viewVertices.get(viewVertex.key)!.x;
+                viewVertex.y = mergeWithGraph.viewVertices.get(viewVertex.key)!.y;
             }
-            viewGraph.viewVertices.set(vertex.key, vertex);
-            viewGraph.classifyVertex(vertex, selectedKey);
+            viewGraph.viewVertices.set(vertex.key, viewVertex);
+            viewGraph.classifyVertex(viewVertex, selectedKeys);
         });
 
-        organizationTrustGraph.stronglyConnectedComponents.forEach((scc, i) => {
+        trustGraph.stronglyConnectedComponents.forEach((scc, i) => {
             viewGraph.stronglyConnectedComponents[i] = Array.from(scc)
-                .filter(vertexKey => !network.nodesTrustGraph.networkTransitiveQuorumSet.has(vertexKey))
+                .filter(vertexKey => !trustGraph.networkTransitiveQuorumSet.has(vertexKey))
                 .map(vertexKey => viewGraph.viewVertices.get(vertexKey)!);
         })
 
@@ -108,45 +110,49 @@ export default class ViewGraph {
         return sccPointsArray;
     }
 
-    classifyVertex(vertex: ViewVertex, selectedVertexKey?: string) {
-        if(selectedVertexKey){
-            vertex.selected = vertex.key === selectedVertexKey;
-            if(this.viewEdges.has(selectedVertexKey + ':' + vertex.key)){
-                vertex.isTrustedBySelectedVertex = true;
-                this.trustedVertices.push(vertex);
-            }
-            if(this.viewEdges.has(vertex.key + ':' + selectedVertexKey)) {
-                vertex.isTrustingSelectedVertex = true;
-                this.trustingVertices.push(vertex);
-            }
-        } else {
+    classifyVertex(vertex: ViewVertex, selectedVertexKeys: string[]) {
+        if(selectedVertexKeys.length > 0){
+            vertex.selected = selectedVertexKeys.includes(vertex.key);
+            selectedVertexKeys.forEach(selectedVertexKey => {
+                if(this.viewEdges.has(selectedVertexKey + ':' + vertex.key)){
+                    vertex.isTrustedBySelectedVertex = true;
+                    this.trustedVertices.push(vertex);
+                }
+                if(this.viewEdges.has(vertex.key + ':' + selectedVertexKey)) {
+                    vertex.isTrustingSelectedVertex = true;
+                    this.trustingVertices.push(vertex);
+                }
+            })
+       } else {
             vertex.selected = false;
         }
     }
 
-    classifyEdge(viewEdge: ViewEdge, selectedVertexKey?: string){
-            if(selectedVertexKey && viewEdge.child === selectedVertexKey)
+    classifyEdge(viewEdge: ViewEdge, selectedVertexKeys: string[]){
+        if(selectedVertexKeys.length > 0){
+            if(selectedVertexKeys.includes(viewEdge.child))
                 this.trustingEdges.push(viewEdge);
-            else if (selectedVertexKey && viewEdge.parent === selectedVertexKey)
+            else if (selectedVertexKeys.includes(viewEdge.parent ))
                 this.trustedEdges.push(viewEdge);
-            else if (viewEdge.isPartOfStronglyConnectedComponent)
+        }
+         if (viewEdge.isPartOfStronglyConnectedComponent)
                 this.stronglyConnectedEdges.push(viewEdge);
             else this.regularEdges.push(viewEdge);
-    }
+   }
 
-    reClassifyVertices(selectedVertexKey?: string){
+    reClassifyVertices(selectedVertexKeys: string[]){
         this.trustedVertices.forEach(vertex => vertex.isTrustedBySelectedVertex = false);
         this.trustingVertices.forEach(vertex => vertex.isTrustingSelectedVertex = false);
         this.trustedVertices = [];
         this.trustingVertices = [];
-        this.viewVertices.forEach(viewVertex => this.classifyVertex(viewVertex, selectedVertexKey));
+        this.viewVertices.forEach(viewVertex => this.classifyVertex(viewVertex, selectedVertexKeys));
     }
 
-    reClassifyEdges(selectedVertexKey?: string){
+    reClassifyEdges(selectedVertexKeys: string[]){
         this.trustedEdges = [];
         this.trustingEdges = [];
         this.regularEdges = [];
         this.stronglyConnectedEdges = [];
-        this.viewEdges.forEach(viewEdge => this.classifyEdge(viewEdge, selectedVertexKey))
+        this.viewEdges.forEach(viewEdge => this.classifyEdge(viewEdge, selectedVertexKeys))
     }
 }
