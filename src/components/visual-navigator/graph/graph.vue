@@ -17,74 +17,52 @@
                         <graph-strongly-connected-component v-if="!optionTransitiveQuorumSetOnly" :key="index"
                                                             v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
                                                             :vertex-coordinates="sccCoordinates"/>
-                        <GraphEdge
+                        <path class="edge"
+                            v-for="edge in viewGraph.regularEdges"
+                            v-bind:class="getEdgeClassObject(edge)"
+                            v-bind:d="getEdgePath(edge)"
+                        />
+                        <path class="edge"
                             v-for="edge in viewGraph.regularEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                             :key="edge.source.key + edge.target.key"
-                            :highlightAsOutgoing="false"
-                            :highlightAsIncoming="false"
-                            :isPartOfStronglyConnectedComponent="false"
-                            :parentX="edge.source.x"
-                            :parentY="edge.source.y"
-                            :childX="edge.target.x"
-                            :childY="edge.target.y"
-                            :isFailing="edge.isFailing"
-                            :hideRegular="!optionShowRegularEdges"
+                            v-bind:class="getEdgeClassObject(edge)"
+                            v-bind:d="getEdgePath(edge)"
                         />
-                        <GraphEdge
+                        <path class="edge"
                             v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                             :key="edge.source.key + edge.target.key"
-                            :highlightAsOutgoing="false"
-                            :highlightAsIncoming="false"
-                            :isPartOfStronglyConnectedComponent="true"
-                            :parentX="edge.source.x"
-                            :parentY="edge.source.y"
-                            :childX="edge.target.x"
-                            :childY="edge.target.y"
-                            :isFailing="edge.isFailing"
-                            :hideRegular="!optionShowRegularEdges"
+                            v-bind:class="getEdgeClassObject(edge)"
+                            v-bind:d="getEdgePath(edge)"
                         />
                         <g v-if="selectedVertices.length > 0 && optionHighlightTrustingNodes">
-                            <GraphEdge
+                            <path class="edge"
                                 v-for="edge in viewGraph.trustingEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                 :key="edge.source.key + edge.target.key"
-                                :highlightAsOutgoing="false"
-                                :highlightAsIncoming="true"
-                                :isPartOfStronglyConnectedComponent="false"
-                                :parentX="edge.source.x"
-                                :parentY="edge.source.y"
-                                :childX="edge.target.x"
-                                :childY="edge.target.y"
-                                :isFailing="edge.isFailing"
-                                :hideRegular="!optionShowRegularEdges"
+                                v-bind:class="getEdgeClassObject(edge)"
+                                v-bind:d="getEdgePath(edge)"
                             />
                         </g>
                         <g v-if="selectedVertices.length > 0 && optionHighlightTrustedNodes">
-                            <GraphEdge
+                            <path class="edge"
                                 v-for="edge in viewGraph.trustedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges)  && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                 :key="edge.source.key + edge.target.key"
-                                :highlightAsOutgoing="true"
-                                :highlightAsIncoming="false"
-                                :isPartOfStronglyConnectedComponent="false"
-                                :parentX="edge.source.x"
-                                :parentY="edge.source.y"
-                                :childX="edge.target.x"
-                                :childY="edge.target.y"
-                                :isFailing="edge.isFailing"
-                                :hideRegular="!optionShowRegularEdges"
+                                v-bind:class="getEdgeClassObject(edge)"
+                                v-bind:d="getEdgePath(edge)"
                             />
                         </g>
-                        <GraphVertex v-for="vertex in Array.from(viewGraph.viewVertices.values()).filter(vertex => vertex.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly)"
-                        :key="vertex.key"
-                                     :publicKey="vertex.key"
-                                     :selected="vertex.selected"
-                                     :highlightAsOutgoing="highlightVertexAsOutgoing(vertex)"
-                                     :highlightAsIncoming="highlightVertexAsIncoming(vertex)"
-                                     :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
-                                     :x="vertex.x"
-                                     :y="vertex.y"
-                                     :isFailing="vertex.isFailing"
-                                     :label="vertex.label"
-                                     v-on:click.native="vertexSelected(vertex)"
+                        <GraphVertex
+                            v-for="vertex in Array.from(viewGraph.viewVertices.values()).filter(vertex => vertex.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly)"
+                            :key="vertex.key"
+                            :publicKey="vertex.key"
+                            :selected="vertex.selected"
+                            :highlightAsOutgoing="highlightVertexAsOutgoing(vertex)"
+                            :highlightAsIncoming="highlightVertexAsIncoming(vertex)"
+                            :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
+                            :x="vertex.x"
+                            :y="vertex.y"
+                            :isFailing="vertex.isFailing"
+                            :label="vertex.label"
+                            v-on:click.native="vertexSelected(vertex)"
                         ></GraphVertex>
                     </g>
                 </g>
@@ -106,6 +84,7 @@ import GraphStronglyConnectedComponent
 import {StoreMixin} from '@/mixins/StoreMixin';
 import ViewVertex from '@/components/visual-navigator/graph/view-vertex';
 import ViewGraph from '@/components/visual-navigator/graph/view-graph';
+import ViewEdge from '@/components/visual-navigator/graph/view-edge';
 
 @Component({
     components: {
@@ -162,34 +141,34 @@ export default class Graph extends Mixins(StoreMixin) {
     }
 
     @Watch('isLoading')
-    public onIsLoadingChanged(){
+    public onIsLoadingChanged() {
         this.centerCorrectVertex();
     }
 
-    vertexSelected(vertex: ViewVertex){
+    vertexSelected(vertex: ViewVertex) {
         this.$emit('vertex-selected', vertex);
     }
 
-    highlightVertexAsOutgoing(vertex: ViewVertex){
-        if(this.selectedVertices.length <= 0)
+    highlightVertexAsOutgoing(vertex: ViewVertex) {
+        if (this.selectedVertices.length <= 0)
             return false;
         let edges = this.selectedVertices.map(selectedVertex => this.viewGraph.viewEdges.get(vertex.key + ':' + selectedVertex.key)).filter(edge => edge !== undefined);
         let allEdgesAreFailing = edges.every(edge => edge!.isFailing);
 
-        if(edges.length <= 0)
+        if (edges.length <= 0)
             return false;
 
         return vertex.isTrustingSelectedVertex && this.optionHighlightTrustingNodes && (!allEdgesAreFailing || this.optionShowFailingEdges);
     }
 
-    highlightVertexAsIncoming(vertex: ViewVertex){
-        if(this.selectedVertices.length <= 0)
+    highlightVertexAsIncoming(vertex: ViewVertex) {
+        if (this.selectedVertices.length <= 0)
             return false;
 
-        let edges = this.selectedVertices.map(selectedVertex =>  this.viewGraph.viewEdges.get(selectedVertex.key + ':' + vertex.key)).filter(edge => edge !== undefined);
+        let edges = this.selectedVertices.map(selectedVertex => this.viewGraph.viewEdges.get(selectedVertex.key + ':' + vertex.key)).filter(edge => edge !== undefined);
         let allEdgesAreFailing = edges.every(edge => edge!.isFailing);
 
-        if(edges.length <= 0)
+        if (edges.length <= 0)
             return false;
 
         return vertex.isTrustedBySelectedVertex && this.optionHighlightTrustedNodes && (!allEdgesAreFailing || this.optionShowFailingEdges);
@@ -229,10 +208,27 @@ export default class Graph extends Mixins(StoreMixin) {
         this.transformAndZoom();
     }
 
-    transformAndZoom(){
-        let transform = zoom.zoomIdentity.translate(this.width()/2, this.height()/2).scale(1);
+    transformAndZoom() {
+        let transform = zoom.zoomIdentity.translate(this.width() / 2, this.height() / 2).scale(1);
         this.d3svg.call(this.graphZoom)
             .call(this.graphZoom.transform, transform);
+    }
+
+    getEdgeClassObject(edge: ViewEdge) {
+        return {
+            'outgoing': edge.highlightAsTrusted,
+            'incoming': edge.highlightAsTrusting,
+            'strongly-connected': edge.isPartOfStronglyConnectedComponent,
+            'failing': edge.isFailing,
+        };
+    }
+
+    getEdgePath(edge: ViewEdge) {
+        return 'M' +
+            edge.source.x + ' ' +
+            edge.source.y + ' L' +
+            edge.target.x + ' ' +
+            edge.target.y;
     }
 }
 </script>
@@ -246,5 +242,34 @@ svg.graph {
 
 .dimmer.active .dimmer-content {
     opacity: 0.4;
+}
+
+path.edge {
+    stroke: #1997c6;
+    stroke-width: 0.5px;
+    stroke-opacity: 0.07;
+    fill-opacity: 0;
+}
+
+path.strongly-connected {
+    stroke: #1997c6;
+    stroke-width: 0.7px;
+    stroke-opacity: 0.25;
+}
+
+path.failing {
+    stroke: #cd201f;
+}
+
+path.outgoing {
+    stroke: #fec601;
+    stroke-opacity: 1;
+    stroke-width: 2px;
+}
+
+path.incoming {
+    stroke: #73bfb8;
+    stroke-opacity: 1;
+    stroke-width: 2px;
 }
 </style>

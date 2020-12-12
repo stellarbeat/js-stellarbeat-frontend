@@ -129,15 +129,22 @@ export default class ViewGraph {
     }
 
     classifyEdge(viewEdge: ViewEdge, selectedVertexKeys: string[]){
+        viewEdge.highlightAsTrusted = false;
+        viewEdge.highlightAsTrusting = false;
         if(selectedVertexKeys.length > 0){
-            if(selectedVertexKeys.includes(viewEdge.child))
+            if(selectedVertexKeys.includes(viewEdge.child)){
+                viewEdge.highlightAsTrusting = true;
                 this.trustingEdges.push(viewEdge);
-            else if (selectedVertexKeys.includes(viewEdge.parent ))
+            }
+            else if (selectedVertexKeys.includes(viewEdge.parent )){
+                viewEdge.highlightAsTrusted = true;
                 this.trustedEdges.push(viewEdge);
+            }
         }
-         if (viewEdge.isPartOfStronglyConnectedComponent)
-                this.stronglyConnectedEdges.push(viewEdge);
-            else this.regularEdges.push(viewEdge);
+         if (viewEdge.isPartOfStronglyConnectedComponent){
+             this.stronglyConnectedEdges.push(viewEdge);
+         }
+         else this.regularEdges.push(viewEdge);
    }
 
     reClassifyVertices(selectedVertexKeys: string[]){
