@@ -13,6 +13,17 @@ const isProd = process.env.NODE_ENV === 'production';
 if(isProd)
     Sentry.init({dsn: process.env.VUE_APP_SENTRY_DSN});
 
+//order matters
+let cacheTime = 86400000 * 7; //7 day cache for assets
+server.use(async function (req, res, next) {
+    if (req.url.match(/^\/(css|js|img|fonts)\/.+/) ||
+        req.url.match(/^\/favicon.ico$/) ||
+        req.url.match(/^\/.*\.worker.js$/)
+    ) {
+        res.setHeader('Cache-Control', 'public, max-age=' + cacheTime); // cache header
+    }
+    next();
+});
 
 server.use("/img", express.static(path.join(__dirname, "./dist-client", "img")));
 server.use("/js", express.static(path.join(__dirname, "./dist-client", "js")));
@@ -30,21 +41,9 @@ server.use(
     express.static(path.join(__dirname, "./dist-client", "worker"))
 );
 
-
-let cacheTime = 86400000 * 7; //7 day cache for assets
-server.use(async function (req, res, next) {
-    if (req.url.match(/^\/(css|js|img|fonts)\/.+/) ||
-        req.url.match(/^\/favicon.ico$/) ||
-        req.url.match(/^\/.*\.worker.js$/)
-    ) {
-        res.setHeader('Cache-Control', 'public, max-age=' + cacheTime); // cache header
-    }
-    next();
-});
-
 const microCache = new LRU({
     max: 100,
-    maxAge: 30000 // Important: entries expires after 1 second.
+    maxAge: 30000 // Important: entries expires after 30 second.
 })
 
 const renderer = createBundleRenderer(serverBundle, {
