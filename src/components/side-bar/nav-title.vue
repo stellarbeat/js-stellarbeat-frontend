@@ -1,37 +1,43 @@
-<template>
-    <div class="sb-nav-title" :class="classObject">
-        {{title}}
-        <b-icon-exclamation-triangle :title="danger" v-if="hasDanger" v-b-tooltip:hover.top="{ variant: 'danger' }" class="sb-danger mr-1"/>
-        <b-icon-exclamation-triangle :title="warnings" v-else-if="hasWarnings" v-b-tooltip:hover.top="{ variant: 'warning' }" class="sb-alert mr-1"/>
+<template functional>
+    <div class="sb-nav-title" :class="(props.hasDanger ? 'sb-danger': '') + props.classes">
+        {{props.title}}
+        <b-icon-exclamation-triangle :title="props.danger" v-if="props.hasDanger" v-b-tooltip:hover.top="{ variant: 'danger' }" class="sb-danger mr-1"/>
+        <b-icon-exclamation-triangle :title="props.warnings" v-else-if="props.hasWarnings" v-b-tooltip:hover.top="{ variant: 'warning' }" class="sb-alert mr-1"/>
     </div>
 </template>
 <script lang="ts">
-    import Component from 'vue-class-component';
-    import Vue from 'vue';
-    import {Prop} from 'vue-property-decorator';
-    import {BIcon, BIconExclamationTriangle, VBTooltip} from 'bootstrap-vue';
-
-    @Component({
-        components: {BIcon, BIconExclamationTriangle},
-        directives: {'b-tooltip': VBTooltip}
-    })
-    export default class NavTitle extends Vue {
-        @Prop()
-        title!:string;
-        @Prop({default: false})
-        hasWarnings!:boolean;
-        @Prop()
-        warnings!:string;
-        @Prop({default: false})
-        hasDanger!:boolean;
-        @Prop()
-        danger!:string;
-
-        get classObject(){
-            return {
-                'sb-danger': this.hasDanger
+    import {BIconExclamationTriangle, VBTooltip} from 'bootstrap-vue';
+    import Vue from "vue";
+    Vue.component("b-icon-exclamation-triangle", BIconExclamationTriangle);
+    Vue.directive("b-tooltip", VBTooltip);
+    export default{
+        props: {
+            title: {
+                type: String,
+                default: ''
+            },
+            hasWarnings: {
+                type: Boolean,
+                default: false
+            },
+            warnings: {
+                type: String,
+                default: ''
+            },
+            hasDanger: {
+                type: Boolean,
+                default: false
+            },
+            danger: {
+                type: String,
+                default: ''
+            },
+            classes: {
+                type: String,
+                default: ''
             }
         }
+
     };
 </script>
 
@@ -46,5 +52,13 @@
 
     .sb-alert {
         color: #fec601;
+    }
+
+    .secondary {
+        font-size: 14px;
+    }
+
+    .m-height {
+        min-height: 26px;
     }
 </style>

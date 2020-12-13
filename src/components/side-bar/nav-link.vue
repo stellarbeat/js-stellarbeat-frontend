@@ -15,8 +15,7 @@
 
                     <div class="w-100 d-flex justify-content-between align-content-center">
                         <nav-title
-                                :title="title" class="w-100 pb-0 m-height"
-                                :class="titleClass"
+                                :title="title" :classes="'w-100 pb-0 m-height ' + (secondary ? 'secondary':'')"
                                 :has-warnings="hasWarnings"
                                 :warnings="warnings"
                                 :has-danger="hasDanger"
@@ -136,14 +135,6 @@
 <style scoped>
     .action {
         min-width: 20px;
-    }
-
-    .secondary {
-        font-size: 14px;
-    }
-
-    .m-height {
-        min-height: 26px;
     }
 
     .sub-title {
