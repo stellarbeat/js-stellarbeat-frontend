@@ -6,7 +6,7 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 module.exports = {
     css: {
-        extract: !process.env.SSR, //causes async routes to fail in SSR
+        extract: false,//cannot get hydration to work, so disabling it for now. The css is however included twice in main.js, but at least it's not blocking.
         sourceMap: true
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
@@ -72,7 +72,7 @@ module.exports = {
         config.plugins.delete('pre-render');
         console.log(process.env.NODE_ENV);
         if (process.env.SSR) {
-            //config.devtool('source-map');
+            config.devtool('source-map');
             config.target('node');
             config.output.libraryTarget('commonjs2');
             config.plugin("ssr-server").use(new VueSSRServerPlugin());

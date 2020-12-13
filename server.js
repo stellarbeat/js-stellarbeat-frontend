@@ -33,6 +33,10 @@ server.use(
     express.static(path.join(__dirname, "./dist-client", "favicon.ico"))
 );
 server.use(
+    "/vue-ssr-client-manifest.json",
+    express.static(path.join(__dirname, "./dist-client", "vue-ssr-client-manifest.json"))
+);
+server.use(
     "/robots.txt",
     express.static(path.join(__dirname, "./dist-client", "robots.txt"))
 );
