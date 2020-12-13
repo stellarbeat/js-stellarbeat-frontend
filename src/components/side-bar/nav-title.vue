@@ -1,5 +1,5 @@
 <template functional>
-    <div class="sb-nav-title" :class="(props.hasDanger ? 'sb-danger': '') + props.classes">
+    <div class="sb-nav-title" :class="(props.hasDanger ? 'sb-danger ': '') + props.classes">
         {{props.title}}
         <b-icon-exclamation-triangle :title="props.danger" v-if="props.hasDanger" v-b-tooltip:hover.top="{ variant: 'danger' }" class="sb-danger mr-1"/>
         <b-icon-exclamation-triangle :title="props.warnings" v-else-if="props.hasWarnings" v-b-tooltip:hover.top="{ variant: 'warning' }" class="sb-alert mr-1"/>
