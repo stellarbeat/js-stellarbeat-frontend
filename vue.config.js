@@ -6,7 +6,7 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 module.exports = {
     css: {
-        extract: false,//!process.env.SSR, //causes async routes to fail in SSR
+        extract: !process.env.SSR, //causes async routes to fail in SSR
         sourceMap: true
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
@@ -29,6 +29,7 @@ module.exports = {
             splitChunks: !process.env.SSR ? {
                 chunks: 'all',
                 maxSize: 250000,
+                minSize: 100000
             } : false
         },
         resolve: {
