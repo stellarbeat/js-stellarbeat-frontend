@@ -50,7 +50,7 @@ export default class ViewGraph {
         });
 
 
-        trustGraph.stronglyConnectedComponents.forEach((scc, i) => {
+        trustGraph.stronglyConnectedComponents.filter(scc => scc.size > 1).forEach((scc, i) => {
             viewGraph.stronglyConnectedComponents[i] = Array.from(scc)
                 .filter(vertexKey => !trustGraph.networkTransitiveQuorumSet.has(vertexKey))
                 .map(vertexKey => viewGraph.viewVertices.get(vertexKey)!);
@@ -82,7 +82,7 @@ export default class ViewGraph {
             viewGraph.classifyVertex(viewVertex, selectedKeys);
         });
 
-        trustGraph.stronglyConnectedComponents.forEach((scc, i) => {
+        trustGraph.stronglyConnectedComponents.filter(scc => scc.size > 1).forEach((scc, i) => {
             viewGraph.stronglyConnectedComponents[i] = Array.from(scc)
                 .filter(vertexKey => !trustGraph.networkTransitiveQuorumSet.has(vertexKey))
                 .map(vertexKey => viewGraph.viewVertices.get(vertexKey)!);
