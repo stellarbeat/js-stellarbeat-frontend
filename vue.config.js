@@ -6,7 +6,7 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 module.exports = {
     css: {
-        extract: !process.env.SSR, //causes async routes to fail in SSR
+        extract: false,//!process.env.SSR, //causes async routes to fail in SSR
         sourceMap: true
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
