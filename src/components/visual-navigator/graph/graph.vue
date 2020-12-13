@@ -18,52 +18,58 @@
                                                             v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
                                                             :vertex-coordinates="sccCoordinates"/>
                         <path class="edge"
-                            v-for="edge in viewGraph.regularEdges"
-                            v-bind:class="getEdgeClassObject(edge)"
-                            v-bind:d="getEdgePath(edge)"
+                              v-for="edge in viewGraph.regularEdges"
+                              v-bind:class="getEdgeClassObject(edge)"
+                              v-bind:d="getEdgePath(edge)"
                         />
                         <path class="edge"
-                            v-for="edge in viewGraph.regularEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
-                            :key="edge.source.key + edge.target.key"
-                            v-bind:class="getEdgeClassObject(edge)"
-                            v-bind:d="getEdgePath(edge)"
+                              v-for="edge in viewGraph.regularEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
+                              :key="edge.source.key + edge.target.key"
+                              v-bind:class="getEdgeClassObject(edge)"
+                              v-bind:d="getEdgePath(edge)"
                         />
                         <path class="edge"
-                            v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
-                            :key="edge.source.key + edge.target.key"
-                            v-bind:class="getEdgeClassObject(edge)"
-                            v-bind:d="getEdgePath(edge)"
+                              v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
+                              :key="edge.source.key + edge.target.key"
+                              v-bind:class="getEdgeClassObject(edge)"
+                              v-bind:d="getEdgePath(edge)"
                         />
                         <g v-if="selectedVertices.length > 0 && optionHighlightTrustingNodes">
                             <path class="edge"
-                                v-for="edge in viewGraph.trustingEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
-                                :key="edge.source.key + edge.target.key"
-                                v-bind:class="getEdgeClassObject(edge)"
-                                v-bind:d="getEdgePath(edge)"
+                                  v-for="edge in viewGraph.trustingEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
+                                  :key="edge.source.key + edge.target.key"
+                                  v-bind:class="getEdgeClassObject(edge)"
+                                  v-bind:d="getEdgePath(edge)"
                             />
                         </g>
                         <g v-if="selectedVertices.length > 0 && optionHighlightTrustedNodes">
                             <path class="edge"
-                                v-for="edge in viewGraph.trustedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges)  && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
-                                :key="edge.source.key + edge.target.key"
-                                v-bind:class="getEdgeClassObject(edge)"
-                                v-bind:d="getEdgePath(edge)"
+                                  v-for="edge in viewGraph.trustedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges)  && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
+                                  :key="edge.source.key + edge.target.key"
+                                  v-bind:class="getEdgeClassObject(edge)"
+                                  v-bind:d="getEdgePath(edge)"
                             />
                         </g>
-                        <GraphVertex
-                            v-for="vertex in Array.from(viewGraph.viewVertices.values()).filter(vertex => vertex.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly)"
-                            :key="vertex.key"
-                            :publicKey="vertex.key"
-                            :selected="vertex.selected"
-                            :highlightAsOutgoing="highlightVertexAsOutgoing(vertex)"
-                            :highlightAsIncoming="highlightVertexAsIncoming(vertex)"
-                            :partOfTransitiveQuorumSet="vertex.partOfTransitiveQuorumSet"
-                            :x="vertex.x"
-                            :y="vertex.y"
-                            :isFailing="vertex.isFailing"
-                            :label="vertex.label"
-                            v-on:click.native="vertexSelected(vertex)"
-                        ></GraphVertex>
+                        <g :transform="getVertexTransform(vertex)" class="vertex" style="cursor: pointer;"
+                           v-for="vertex in Array.from(viewGraph.viewVertices.values()).filter(vertex => vertex.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly)"
+                        v-on:click="vertexSelected(vertex)">
+                            <circle
+                                :r="5"
+                                v-bind:class="getVertexClassObject(vertex)"
+                            >
+                                <title>{{ vertex.label }}</title>
+                            </circle>
+                            <g>
+                                <rect style="fill: white; opacity: 0.7; text-transform: lowercase" :width="getVertexTextRectWidthPx(vertex)"
+                                      height="15px" y="9"
+                                      :x="getVertexTextRectX(vertex)" rx="2" :class="{'rect-selected': vertex.selected, 'rect': !vertex.selected}">
+                                </rect>
+                                <text y="5" :class="getVertexTextClass(vertex)" dy="1.3em" text-anchor="middle" font-size="12px">
+                                    {{ vertex.label | truncate(10) }}
+                                    <title>{{ vertex.label }}</title>
+                                </text>
+                            </g>
+                        </g>
                     </g>
                 </g>
             </svg>
@@ -74,7 +80,6 @@
 <script lang="ts">
 import GraphVertex from './graph-vertex.vue';
 import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
-import GraphEdge from '@/components/visual-navigator/graph/graph-edge.vue';
 import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
 import * as zoom from 'd3-zoom';
@@ -90,7 +95,6 @@ import ViewEdge from '@/components/visual-navigator/graph/view-edge';
     components: {
         GraphStronglyConnectedComponent,
         GraphLegend,
-        GraphEdge,
         GraphVertex
     }
 })
@@ -147,6 +151,41 @@ export default class Graph extends Mixins(StoreMixin) {
 
     vertexSelected(vertex: ViewVertex) {
         this.$emit('vertex-selected', vertex);
+    }
+
+    getVertexTransform(vertex:ViewVertex): string {
+        return `translate(${vertex.x},${vertex.y})`;
+    }
+
+    getVertexTextRectWidth(vertex:ViewVertex) {
+        return (this.$options!.filters!.truncate(vertex.label, 10).length / 10) * 70;
+    }
+
+    getVertexTextRectWidthPx(vertex:ViewVertex) {
+        return this.getVertexTextRectWidth(vertex) + 'px';
+    }
+
+    getVertexTextRectX(vertex: ViewVertex) {
+        return '-' + this.getVertexTextRectWidth(vertex) / 2 + 'px';
+    }
+
+    getVertexTextClass(vertex:ViewVertex) {
+        return {
+            active: !vertex.isFailing,
+            failing: vertex.isFailing,
+            selected: vertex.selected
+        };
+    }
+
+    getVertexClassObject(vertex:ViewVertex) {
+        return {
+            active: !vertex.isFailing,
+            selected: vertex.selected,
+            failing: vertex.isFailing,
+            target: this.highlightVertexAsIncoming(vertex) && !vertex.selected,
+            source: this.highlightVertexAsOutgoing(vertex) && !vertex.selected && !this.highlightVertexAsIncoming(vertex),
+            transitive: vertex.isPartOfTransitiveQuorumSet
+        };
     }
 
     highlightVertexAsOutgoing(vertex: ViewVertex) {
@@ -271,5 +310,61 @@ path.incoming {
     stroke: #73bfb8;
     stroke-opacity: 1;
     stroke-width: 2px;
+}
+circle.active {
+    fill: #1997c6;
+}
+
+circle.transitive {
+    fill: #1997c6;
+    opacity: 0.7;
+}
+
+circle.selected {
+    stroke: yellow;
+}
+
+circle.failing {
+    fill: #cd201f
+}
+
+circle.target {
+    stroke: #fec601;
+    stroke-opacity: 1;
+}
+
+circle.source {
+    stroke: #73bfb8;
+    stroke-opacity: 1;
+}
+
+circle {
+    stroke: white;
+    fill: #ECEBE4;
+    cursor: pointer;
+    stroke-width: 1.5px;
+}
+
+text {
+    fill: #1997c6;
+    font-weight: 400;
+}
+
+.failing {
+    fill: #cd201f;
+    opacity: 0.7;
+}
+
+.selected {
+    font-weight: bold;
+}
+
+.rect {
+    opacity: 0.8;
+}
+
+.rect-selected {
+    stroke: yellow;
+    stroke-width: 1.5;
 }
 </style>
