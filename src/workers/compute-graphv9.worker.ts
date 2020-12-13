@@ -17,7 +17,7 @@ ctx.addEventListener('message', (event) => {
         }))
         .force('link', forceLink(edges).strength( (edge: any) => {
             if (edge.isPartOfTransitiveQuorumSet) {
-                return 1/nrOfTransitiveVertices * 0.2;
+                return 1/nrOfTransitiveVertices * 0.17;
             }
             else if (edge.isPartOfStronglyConnectedComponent) {
                 return 0.1;

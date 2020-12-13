@@ -25,9 +25,10 @@ module.exports = {
             })
         ],
         optimization: {
-            splitChunks:
-                false,
-            minimize: false
+            splitChunks: !process.env.SSR ? {
+                chunks: 'all',
+                maxSize: 250000,
+            } : false
         },
         resolve: {
             alias: {
@@ -67,8 +68,9 @@ module.exports = {
     chainWebpack: config => {
         config.module.rule('js').exclude.add(/\.worker\.js$/);
         config.plugins.delete('pre-render');
+        console.log(process.env.NODE_ENV);
         if (process.env.SSR) {
-            config.devtool('source-map');
+            //config.devtool('source-map');
             config.target('node');
             config.output.libraryTarget('commonjs2');
             config.plugin("ssr-server").use(new VueSSRServerPlugin());
@@ -87,7 +89,6 @@ module.exports = {
             config.optimization.splitChunks(false).minimize(false);
         } else{
             config.plugin("ssr-client").use(new VueSSRClientPlugin({}));
-            config.optimization.splitChunks(false).minimize(false);
         }
     },
     pluginOptions: {
