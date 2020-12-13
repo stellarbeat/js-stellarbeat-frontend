@@ -78,7 +78,6 @@
 </template>
 
 <script lang="ts">
-import GraphVertex from './graph-vertex.vue';
 import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
 import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
 
@@ -94,8 +93,7 @@ import ViewEdge from '@/components/visual-navigator/graph/view-edge';
 @Component({
     components: {
         GraphStronglyConnectedComponent,
-        GraphLegend,
-        GraphVertex
+        GraphLegend
     }
 })
 export default class Graph extends Mixins(StoreMixin) {
