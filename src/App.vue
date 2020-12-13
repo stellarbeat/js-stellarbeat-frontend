@@ -9,7 +9,7 @@
                                 <div class="d-flex">
                                     <router-link class="header-brand mr-0 mt-2"
                                                  :to="{ name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }">
-                                        <img src="./assets/logo.png" class="header-brand-img" alt="stellarbeat.io">
+                                        <img width="541" height="622" src="./assets/logo.svg" class="header-brand-img" alt="stellarbeat.io">
                                     </router-link>
                                     <div class="d-none d-lg-flex" style="width: 264px"></div>
                                 </div>
