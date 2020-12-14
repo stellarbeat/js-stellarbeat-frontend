@@ -7,11 +7,12 @@ export default (context:any) => {
     // everything is ready before rendering.
     return new Promise((resolve, reject) => {
         // @ts-ignore
-        const { app, router, store } = createApp()
+        const { app, router, store } = createApp();
+        const meta = app.$meta();
 
         // set server-side router's location
         router.push(context.url).catch(err => {});
-
+        context.meta = meta;
         // wait until router has resolved possible async components and hooks
         router.onReady(() => {
             context.rendered = () => {
