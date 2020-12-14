@@ -3,9 +3,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const nodeExternals = require('webpack-node-externals');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
-const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const webpack = require('webpack');
-const ManifestPlugin = require("webpack-manifest-plugin");
+
 module.exports = {
     css: {
         extract: true,//!process.env.SSR,//cannot get hydration to work, so disabling it for now. The css is however included twice in main.js, but at least it's not blocking.
@@ -24,7 +23,7 @@ module.exports = {
                         to: 'worker/stellar_analysis_bg.wasm'
                     },
                 ],
-            })
+            }),
         ],
         optimization: {
             minimize: !process.env.SSR,
@@ -74,7 +73,7 @@ module.exports = {
         config.plugins.delete('pre-render');
         console.log(process.env.NODE_ENV);
         if (process.env.SSR) {
-            config.devtool('source-map');
+ //           config.devtool('source-map');
             config.target('node');
             config.output.libraryTarget('commonjs2');
             config.plugin("ssr-server").use(new VueSSRServerPlugin());
@@ -85,7 +84,7 @@ module.exports = {
             config.plugins.delete('webpack-bundle-analyzer');
             config.plugins.delete('pre-render');
             config.plugin("limit-chunk-count-plugin").use(new webpack.optimize.LimitChunkCountPlugin({
-                maxChunks: 1
+                maxChunks: 1//needed for mini css extract plugin to work server side
             }))
             config.externals(
                 nodeExternals({
