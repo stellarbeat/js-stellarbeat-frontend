@@ -42,9 +42,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <Hydrate when-visible class="col-12">
+                    <div class="col-12">
                         <router-view name="dashboard"/>
-                    </Hydrate>
+                    </div>
                 </div>
             </div>
         </div>
