@@ -3,10 +3,12 @@ const CopyPlugin = require('copy-webpack-plugin');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const nodeExternals = require('webpack-node-externals');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
-
+const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
+const webpack = require('webpack');
+const ManifestPlugin = require("webpack-manifest-plugin");
 module.exports = {
     css: {
-        extract: false,//cannot get hydration to work, so disabling it for now. The css is however included twice in main.js, but at least it's not blocking.
+        extract: true,//!process.env.SSR,//cannot get hydration to work, so disabling it for now. The css is however included twice in main.js, but at least it's not blocking.
         sourceMap: true
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
@@ -29,7 +31,7 @@ module.exports = {
             splitChunks: !process.env.SSR ? {
                 chunks: 'all',
                 maxSize: 250000,
-                minSize: 100000
+                minSize: 100000,
             } : false
         },
         resolve: {
@@ -82,7 +84,9 @@ module.exports = {
             config.plugins.delete('friendly-errors');
             config.plugins.delete('webpack-bundle-analyzer');
             config.plugins.delete('pre-render');
-
+            config.plugin("limit-chunk-count-plugin").use(new webpack.optimize.LimitChunkCountPlugin({
+                maxChunks: 1
+            }))
             config.externals(
                 nodeExternals({
                     allowlist: /\.(css|vue)$/

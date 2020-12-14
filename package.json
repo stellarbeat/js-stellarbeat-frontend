@@ -33,6 +33,7 @@
     "d3-shape": "^2.0.0",
     "d3-zoom": "^2.0.0",
     "express": "^4.17.1",
+    "extract-css-chunks-webpack-plugin": "^4.9.0",
     "jsondiffpatch": "^0.4.1",
     "leaflet": "1.7.1",
     "leaflet-sleep": "^0.5.2",
