@@ -1,5 +1,5 @@
 <template>
-    <div class="w-100 d-flex">
+    <div class="crawl-time-component">
         <client-only class="crawl-time-component">
             <!--Needs to be client only because date rendering is based on locale!-->
             <b-form-datepicker size="sm" v-model="crawlDate" class="date-picker p-0"
