@@ -4,7 +4,7 @@
             <div class="page-header d-flex justify-content-between">
                 <div class="d-flex align-items-center">
                     <h1 class="page-title">Organizations</h1>
-                    <simulation-badge class="mr-2"/>
+                    <simulation-badge/>
                     <time-travel-badge/>
                 </div>
                 <crawl-time class=""/>
