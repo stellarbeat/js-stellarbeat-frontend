@@ -300,13 +300,13 @@ path.failing {
 
 path.outgoing {
     stroke: #fec601;
-    stroke-opacity: 1;
+    stroke-opacity: 0.9;
     stroke-width: 2px;
 }
 
 path.incoming {
     stroke: #73bfb8;
-    stroke-opacity: 1;
+    stroke-opacity: 0.9;
     stroke-width: 2px;
 }
 circle.active {
@@ -315,7 +315,6 @@ circle.active {
 
 circle.transitive {
     fill: #1997c6;
-    opacity: 0.7;
 }
 
 circle.selected {

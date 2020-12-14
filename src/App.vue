@@ -9,7 +9,7 @@
                                 <div class="d-flex">
                                     <router-link class="header-brand mr-0 mt-2"
                                                  :to="{ name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }">
-                                        <img width="541" height="622" src="./assets/logo.svg" class="header-brand-img" alt="stellarbeat.io">
+                                        <img src="./assets/logo.svg" class="header-brand-img" alt="stellarbeat.io">
                                     </router-link>
                                     <div class="d-none d-lg-flex" style="width: 264px"></div>
                                 </div>
@@ -31,11 +31,11 @@
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
                                             <a href="https://github.com/stellarbeat"
-                                               class="btn btn-sm bt btn-outline-primary-sb" target="_blank">
+                                               class="btn btn-sm bt btn-primary-sb" target="_blank">
                                                 <github/>
                                                 Github</a>
                                             <a href="mailto:stellarbeatio@gmail.com"
-                                               class="btn btn-sm bt btn-outline-primary-sb ml-2" target="_blank">
+                                               class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
                                                 <b-icon-envelope/>
                                                 Mail</a>
                                         </div>
@@ -141,11 +141,11 @@
                 </router-link>
                 <div class="nav-item d-none d-lg-flex pr-0">
                     <a href="https://github.com/stellarbeat"
-                       class="btn btn-sm bt btn-outline-primary" target="_blank">
+                       class="btn btn-sm bt btn-primary-sb" target="_blank">
                         <github/>
                         Github</a>
                     <a href="mailto:stellarbeatio@gmail.com"
-                       class="btn btn-sm bt btn-outline-primary ml-2" target="_blank">
+                       class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
                         <b-icon-envelope/>
                         Mail</a>
                 </div>
@@ -303,7 +303,7 @@
     }
 
     .brand-title {
-        color: #08b5e5;
+        color: #44bbe7;
     }
 
     .collapser {
