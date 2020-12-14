@@ -2,8 +2,8 @@ import Vue from 'vue';
 import App from './App.vue';
 import {createRouter} from './router';
 import VueTruncate from 'vue-truncate-filter';
-import './assets/tabler-ui-light.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
+//import './assets/tabler-ui-light.css';
+import './assets/custom.scss';
 import Meta from 'vue-meta';
 import * as Sentry from '@sentry/browser';
 // Importing the global css file

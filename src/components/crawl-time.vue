@@ -12,7 +12,7 @@
             <b-form-timepicker size="sm" v-model="crawlTime" class="time-picker p-0" dropleft>
                 <template v-slot:button-content></template>
             </b-form-timepicker>
-            <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary time-travel-btn"
+            <button v-b-tooltip.hover title="Travel to selected time" class="btn btn-sm btn-primary-sb time-travel-btn"
                     @click="timeTravel">
                 <b-icon-clock/>
             </button>

@@ -31,11 +31,11 @@
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
                                             <a href="https://github.com/stellarbeat"
-                                               class="btn btn-sm bt btn-outline-primary" target="_blank">
+                                               class="btn btn-sm bt btn-outline-primary-sb" target="_blank">
                                                 <github/>
                                                 Github</a>
                                             <a href="mailto:stellarbeatio@gmail.com"
-                                               class="btn btn-sm bt btn-outline-primary ml-2" target="_blank">
+                                               class="btn btn-sm bt btn-outline-primary-sb ml-2" target="_blank">
                                                 <b-icon-envelope/>
                                                 Mail</a>
                                         </div>

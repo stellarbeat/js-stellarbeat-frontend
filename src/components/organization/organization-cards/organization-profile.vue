@@ -3,7 +3,7 @@
         <div class="card-body d-flex flex-column text-center justify-content-center align-items-center">
             <h3 class="mb-3">
                                 <span v-b-tooltip.hover v-if="organization.isTierOneOrganization"
-                                      title="Tier one organization" class="badge sb-badge badge-primary">
+                                      title="Tier one organization" class="badge sb-badge badge-primary-sb">
                             <b-icon-shield/>
                         </span>
                 {{organization.name}}

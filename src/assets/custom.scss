@@ -1,0 +1,15 @@
+@import 'src/assets/tabler-ui/variables';
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'src/assets/tabler-ui/dashboard/dashboard';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: #1a85ad;
+}
+.btn-thin {
+  padding: 0.2rem 0.05rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
+  min-width: 0px!important;
+}
