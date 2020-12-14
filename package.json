@@ -4,15 +4,12 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "build-all": "yarn build-client && yarn build-server",
     "build-client": "vue-cli-service build",
     "build-server": "SSR=1 vue-cli-service build",
-    "build-all": "yarn build-client && yarn build-server",
     "heroku-postbuild": "npm run build-all",
     "start": "node server.js",
     "test": "vue-cli-service test:unit"
-  },
-  "engines": {
-    "node": "10.17"
   },
   "dependencies": {
     "@popperjs/core": "^2.3.3",
@@ -58,6 +55,8 @@
     "vue2-leaflet-markercluster": "^3.1.0"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^3.0.0",
+    "@fullhuman/vue-cli-plugin-purgecss": "^3.0.1",
     "@open-wc/webpack-import-meta-loader": "^0.4.7",
     "@types/chart.js": "^2.9.24",
     "@types/d3-force": "^2.1.0",
@@ -85,8 +84,10 @@
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
-    "webpack-manifest-plugin": "^2.2.0",
     "webpack-node-externals": "^2.5.2",
     "worker-loader": "^2.0.0"
+  },
+  "engines": {
+    "node": "10.17"
   }
 }

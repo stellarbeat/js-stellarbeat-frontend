@@ -68,6 +68,7 @@ module.exports = {
             ]
         }
     },
+
     chainWebpack: config => {
         config.module.rule('js').exclude.add(/\.worker\.js$/);
         config.plugins.delete('pre-render');
@@ -96,9 +97,12 @@ module.exports = {
             config.plugin("ssr-client").use(new VueSSRClientPlugin({}));
         }
     },
+
     pluginOptions: {
         webpackBundleAnalyzer: {
             openAnalyzer: false
         }
-    }
+    },
+
+    runtimeCompiler: true
 }
