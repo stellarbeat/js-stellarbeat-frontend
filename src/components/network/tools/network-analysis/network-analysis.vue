@@ -17,7 +17,7 @@
                         <div class="accordion" role="tablist">
                             <b-card no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
-                                    <b-button block v-b-toggle.accordion-quorum variant="outline-primary">Quorum
+                                    <b-button block v-b-toggle.accordion-quorum variant="outline-primary-sb">Quorum
                                         intersection
                                     </b-button>
                                 </b-card-header>
@@ -47,7 +47,7 @@
                             </b-card>
                             <b-card no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
-                                    <b-button block v-b-toggle.accordion-liveness variant="outline-primary">Liveness
+                                    <b-button block v-b-toggle.accordion-liveness variant="outline-primary-sb">Liveness
                                         risk
                                     </b-button>
                                 </b-card-header>
@@ -84,7 +84,7 @@
                             </b-card>
                             <b-card no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
-                                    <b-button block v-b-toggle.accordion-safety variant="outline-primary">Safety risk
+                                    <b-button block v-b-toggle.accordion-safety variant="outline-primary-sb">Safety risk
                                     </b-button>
                                 </b-card-header>
                                 <b-collapse id="accordion-safety" visible accordion="my-accordion" role="tabpanel">
@@ -121,7 +121,7 @@
 
                             <b-card no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
-                                    <b-button block v-b-toggle.accordion-top-tier variant="outline-primary">Top tier
+                                    <b-button block v-b-toggle.accordion-top-tier variant="outline-primary-sb">Top tier
                                     </b-button>
                                 </b-card-header>
                                 <b-collapse id="accordion-top-tier" visible accordion="my-accordion" role="tabpanel">
@@ -161,7 +161,7 @@
                                      switch>
                         Merge by organizations
                     </b-form-checkbox>
-                    <b-button variant="primary" v-on:click="performAnalysis">Perform analysis</b-button>
+                    <b-button variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
                 </div>
             </div>
         </b-card-body>
