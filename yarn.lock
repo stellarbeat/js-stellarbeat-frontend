@@ -2049,13 +2049,6 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@znck/prop-types@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@znck/prop-types/-/prop-types-0.6.3.tgz#4d378129216a0877b122ab91d0832620b7037bca"
-  integrity sha512-r4Zc8DMl4fvb7PSmY9GLUwZuIBMGUwmYxx8KrpAQXuUvGgORUyKzO7MhUGnnJoI1FIFrRgu1oGOp8IvxdmSFAw==
-  dependencies:
-    vue "2.*"
-
 abab@^2.0.0:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -6989,13 +6982,6 @@ launch-editor@^2.2.1:
     chalk "^2.3.0"
     shell-quote "^1.6.1"
 
-lazy-hydration@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/lazy-hydration/-/lazy-hydration-1.0.5.tgz#9ada672d253f80b4e94cc4b42fff96ee5f96af10"
-  integrity sha512-xt/6mFpmQnNIZGncVYS+3VpDiDXdIz2AyFij9Vq+/MHcAA7VDIG+M/aQT0ykTuh94u3sDwZkOiTLYrG6H0vEkA==
-  dependencies:
-    "@znck/prop-types" "^0.6.3"
-
 leaflet-sleep@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/leaflet-sleep/-/leaflet-sleep-0.5.2.tgz#0e051ee3fca7b075a820b4651a545230434ce162"
@@ -11044,6 +11030,11 @@ vue-jest@^3.0.5:
     tsconfig "^7.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
+vue-lazy-hydration@^2.0.0-beta.4:
+  version "2.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/vue-lazy-hydration/-/vue-lazy-hydration-2.0.0-beta.4.tgz#11e7021a9bac003ea6ed74f132dcd0d025fafc1f"
+  integrity sha512-bhr7AxzrSEPed4cOawIeCxJmR8pglberR78x1zs0886xR+47/EXE9s0Ezss90CPINo8ApzUfA/r+SbNffn+t9w==
+
 "vue-loader-v16@npm:vue-loader@^16.0.0-beta.7":
   version "16.0.0-beta.7"
   resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-16.0.0-beta.7.tgz#6f2726fa0e2b1fbae67895c47593bbf69f2b9ab8"
@@ -11154,7 +11145,7 @@ vue2-leaflet@^2.6.0:
   resolved "https://registry.yarnpkg.com/vue2-leaflet/-/vue2-leaflet-2.6.0.tgz#c83c60a745fbc2a74d9dbd0f75b2a5ae07d220a9"
   integrity sha512-JG+w9TtNuk1yRpPta+RjzH6J+opdRUPzSo8UuBnwk+a/6XD0f2tsaB6g3D6ZpBgIE4wZA2dbZ0dZFz2ulYMj3A==
 
-vue@2.*, vue@^2.6.12:
+vue@^2.6.12:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg==

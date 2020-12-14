@@ -31,9 +31,9 @@
             <div class="col-sm-7 col-lg-9 col-xl" id="content">
                 <div class="row">
                     <div class="col">
-                        <Hydrate when-visible>
+                        <LazyHydrate when-visible>
                             <network-visual-navigator :view="view"/>
-                        </Hydrate>
+                        </LazyHydrate>
                     </div>
                 </div>
                 <div class="row" v-if="store.isNetworkAnalysisVisible" id="network-analysis-card">
@@ -66,12 +66,12 @@ import CrawlTime from '@/components/crawl-time.vue';
 import SimulationBadge from '@/components/simulation-badge.vue';
 import TimeTravelBadge from '@/components/time-travel-badge.vue';
 import {BBreadcrumb} from 'bootstrap-vue';
-import Hydrate from 'lazy-hydration';
+import LazyHydrate from 'vue-lazy-hydration';
 
 @Component({
     name: 'dashboard',
     components: {
-        Hydrate,
+        LazyHydrate,
         'network-analysis': () => import('@/components/network/tools/network-analysis/network-analysis.vue'),
         TimeTravelBadge,
         SimulationBadge,
