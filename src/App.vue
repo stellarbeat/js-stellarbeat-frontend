@@ -4,7 +4,7 @@
             <div>
                 <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
                     <div class="header pt-2 pb-0 my-header">
-                        <div class="container">
+                        <div class="container-fluid" style="max-width: 1360px;">
                             <div class="d-flex justify-content-between w-100">
                                 <div class="d-flex">
                                     <router-link class="header-brand mr-0 mt-2"
@@ -48,7 +48,7 @@
 
                 </b-navbar>
                 <b-collapse class="header collapse d-lg-flex p-0" is-nav id="nav_collapse">
-                    <div class="container collapser">
+                    <div class="container-fluid collapser" style="max-width: 1360px;">
                         <div class="row align-items-center">
                             <b-nav-item-dropdown variant="primary" toggle-class="gray" class="ml-0 pl-0 mt-3 d-lg-none"
                                                  v-if="!store.isLoading">
@@ -120,7 +120,7 @@
                 </b-collapse>
             </div>
 
-            <div class="container h-100 mt-0 mt-md-2">
+            <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px;">
                 <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
                 <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
                     <div class="loader"></div>
@@ -133,7 +133,7 @@
             </div>
         </div>
         <footer class="footer">
-            <div class="container">
+            <div class="container-fluid" style="max-width: 1360px;">
             <div class="d-flex justify-content-between mx-4">
                 <router-link active-class="active" class="nav-link"
                              :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network} }"
