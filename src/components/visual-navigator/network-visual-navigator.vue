@@ -1,7 +1,7 @@
 <template>
     <div class="card" :class="{'card-fullscreen': fullScreen, 'sb-card-fullscreen': fullScreen}" style="height: 600px">
         <div class="menu border-right p-3" v-show="menuVisible">
-            <div class="text-gray collapse-icon" v-on:click="menuVisible = false">
+            <div class="text-gray collapse-icon" v-on:click="menuVisible = false" role="button" tabindex="0">
                 <b-icon-chevron-double-left font-scale="1"/>
             </div>
             <div class="d-flex flex-column justify-content-between h-100">
@@ -12,18 +12,20 @@
                             <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1', 'network': $route.query.network}}"
                                          :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
                                          class="pl-3 mb-1 view-link"
-                                         v-on:click.native="menuVisible = false">
+                                         v-on:click.native="menuVisible = false" role="button"
+                                         tabindex="0">
                                 Node trust graph
                             </router-link>
                             <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph-org', 'no-scroll': '1', 'network': $route.query.network}}"
                                          :class="['graph-org'].includes($route.query.view) &&'router-link-exact-active'"
                                          class="pl-3 mb-1 view-link"
-                                         v-on:click.native="menuVisible = false">
+                                         v-on:click.native="menuVisible = false" role="button" tabindex="0">
                                 Organization trust graph
                             </router-link>
                             <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1', 'network': $route.query.network}}"
                                          v-on:click.native="menuVisible = false"
                                          class="pl-3 mb-1 view-link"
+                                         role="button" tabindex="0"
                                          :class="$route.query.view === 'map' && 'router-link-exact-active'">Map
                             </router-link>
                         </ul>
@@ -63,7 +65,7 @@
             </div>
         </div>
         <div class="card-header m-0 p-0 d-flex border-0">
-            <div class="menu-button ml-3 text-gray" v-on:click="menuVisible = true">
+            <div class="menu-button ml-3 text-gray" v-on:click="menuVisible = true" role="button" tabindex="0">
                 <b-icon-list font-scale="2"/>
             </div>
             <div class="pl-3 sb-bread-crumbs-container py-0">

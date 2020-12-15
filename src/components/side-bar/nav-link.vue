@@ -1,8 +1,12 @@
 <template>
     <div v-on:click="$emit('click')"
+         v-on:keyup.enter="$emit('click')"
+         v-on:keyup.space="$emit('click')"
          :class="classObject"
          v-on:mouseenter="hover=true"
          v-on:mouseleave="hover=false"
+         role="button"
+         tabindex="0"
          class="d-flex justify-content-between"
     >
         <div class="w-100 d-flex flex-row justify-content-between align-items-center">

@@ -3,12 +3,14 @@
         <b-form-input class="form-control search-input" type="text" v-model.lazy="searchString"
                       id="searchInput" placeholder="Search"
                       autocomplete="off"
+                      @keydown.tab.native.prevent.stop="onArrowDown"
                       @keydown.down.native="onArrowDown"
                       @keydown.up.native="onArrowUp"
-                      @keydown.enter.native.prevent.stop="onEnter">
+                      @keydown.enter.native.prevent.stop="onEnter"
+                        @keydown.esc.native="searchString = ''">
         </b-form-input>
         <div class="dropdown-menu sb-dropdown-menu" v-bind:class="{show: showSuggestions}"
-             aria-labelledby="searchInput">
+             aria-labelledby="searchInput" role="button" tabindex="0">
             <a
                     class="dropdown-item"
                     href="#" v-for="(match, i) in filteredList"
@@ -97,19 +99,19 @@
 
         protected navigate(match: Match) {
             this.searchString = '';
-            this.$router.push(match.route);
+            this.$router.push(match.route).catch(e => {});
         }
 
         protected onArrowDown() {
             if (this.arrowCounter < this.filteredList.length - 1) {
                 this.arrowCounter = this.arrowCounter + 1;
-            }
+            } else this.arrowCounter = 0;
         }
 
         protected onArrowUp() {
             if (this.arrowCounter > 0) {
                 this.arrowCounter = this.arrowCounter - 1;
-            }
+            } else this.arrowCounter = this.filteredList.length -1;
         }
 
         protected onEnter() {
