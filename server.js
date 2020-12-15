@@ -65,7 +65,7 @@ server.get("*", async (req, res) => {
         }
 
         let html = await renderer.renderToString({url: req.url});
-        microCache.set(req.url, html);
+        //microCache.set(req.url, html);
         res.type('text/html');
         res.setHeader('Cache-Control', 'public, max-age=30');
         res.end(html);
