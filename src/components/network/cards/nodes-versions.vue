@@ -67,8 +67,8 @@
         get chartData() {
             return [
                 this.sortedVersions[0][1],
-                this.sortedVersions[1][1],
-                this.sortedVersions[2][1],
+                this.sortedVersions[1] ? this.sortedVersions[1][1] : [],
+                this.sortedVersions[2] ? this.sortedVersions[2][1] : [],
                 this.sortedVersions.slice(3).reduce((accumulator, currentValue) => {
                     return accumulator + currentValue[1];
                 }, 0)
@@ -82,8 +82,8 @@
                 data: {
                     labels: [
                         this.sortedVersions[0][0],
-                        this.sortedVersions[1][0],
-                        this.sortedVersions[2][0],
+                        this.sortedVersions[1] ? this.sortedVersions[1][0] : '',
+                        this.sortedVersions[2] ? this.sortedVersions[2][0]:'',
                         'Other'
                     ],
                     datasets: [{
