@@ -1,6 +1,6 @@
 <template>
     <div class="dropdown search">
-        <b-form-input class="form-control search-input" type="text" v-model.lazy="searchString"
+        <b-form-input class="form-control search-input" type="text" v-model.lazy="searchString" ref="searchInput"
                       id="searchInput" placeholder="Search"
                       autocomplete="off"
                       @keydown.tab.native.prevent.stop="onArrowDown"
@@ -120,6 +120,8 @@
             }
 
             this.arrowCounter = -1;
+
+           this.$refs.searchInput.blur();
         }
     }
 </script>
