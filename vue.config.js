@@ -29,6 +29,8 @@ module.exports = {
             minimize: !process.env.SSR,
             splitChunks: !process.env.SSR ? {
                 chunks: 'all',
+                maxSize: 250000,
+                minSize: 100000,
             } : false
         },
         resolve: {

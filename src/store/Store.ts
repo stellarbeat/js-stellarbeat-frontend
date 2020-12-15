@@ -71,7 +71,6 @@ export default class Store {
         if(['fbas', 'fbas2'].includes(this.networkId)){
             this.isLocalNetwork = true;
         }
-        Object.freeze(network);
         Vue.set(this, 'network', network);
         this.isLoading = false;
     }
@@ -180,7 +179,6 @@ export default class Store {
             let result = await axios.get(this.getApiUrl() + '/v1', {params});
             if (result.data) {
                 let network = Network.fromJSON(result.data);
-                Object.freeze(network);
                 Vue.set(this, 'network', network);
                 this.isLoading = false;
                 return;
