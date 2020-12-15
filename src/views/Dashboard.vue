@@ -8,6 +8,15 @@
             </div>
             <crawl-time v-if="!store.isSimulation"/>
         </div>
+        <b-alert v-if="selectedNode" :show="selectedNode.unknown" variant="warning">Selected node with public key:
+            <strong>{{ selectedNode.publicKey }}</strong>
+            is unknown or archived
+        </b-alert>
+        <b-alert v-if="selectedOrganization" :show="selectedOrganization.unknown" variant="warning">Selected organization with id:
+            <strong>{{ selectedOrganization.publicKey }}</strong>
+            is unknown or archived
+        </b-alert>
+
         <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
@@ -65,12 +74,13 @@ import NetworkSideBar from '@/components/network/sidebar/network-side-bar.vue';
 import CrawlTime from '@/components/crawl-time.vue';
 import SimulationBadge from '@/components/simulation-badge.vue';
 import TimeTravelBadge from '@/components/time-travel-badge.vue';
-import {BBreadcrumb} from 'bootstrap-vue';
+import {BBreadcrumb, BAlert} from 'bootstrap-vue';
 import LazyHydrate from 'vue-lazy-hydration';
 
 @Component({
     name: 'dashboard',
     components: {
+        BAlert,
         LazyHydrate,
         'network-analysis': () => import('@/components/network/tools/network-analysis/network-analysis.vue'),
         TimeTravelBadge,

@@ -185,7 +185,7 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
 
     get selectedVertices() {
         if (this.selectedKeys.length > 0 && this.viewGraph)
-            return this.selectedKeys.map(key => this.viewGraph.viewVertices.get(key));
+            return this.selectedKeys.map(key => this.viewGraph.viewVertices.get(key)).filter(vertex=> vertex !==undefined);
         return [];
     }
 
