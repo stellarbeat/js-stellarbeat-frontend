@@ -241,7 +241,6 @@
 
         @Watch('$route', {immediate: false})
         async onRouteChanged(to: any) {
-            console.log("routy")
             let networkId = to.query.network;
 
             if (!this.store.availableNetworks.includes(to.query.network))
@@ -281,9 +280,8 @@
 
             this.$router.push(
                 {
-                    name: this.$route.name ? this.$route.name : undefined,
-                    params: this.$route.params,
-                    query: {'view': this.$route.query.view, 'no-scroll': '1', 'network': networkId},
+                    name: 'network-dashboard',
+                    query: {'network': networkId},
                 },
             ).catch(e => {
                 //this triggers a navigation guard error that we can safely ignore. See router beforeEach
