@@ -218,7 +218,7 @@
         protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
         protected navCollapsed = false;
 
-        async mounted(){
+        async created(){
             let networkId = this.$route.query.network;
             if(networkId && this.store.availableNetworks.includes(networkId)){
                 this.store.networkId = networkId;

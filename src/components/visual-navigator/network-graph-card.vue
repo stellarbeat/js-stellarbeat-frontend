@@ -221,6 +221,7 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
             this.viewGraph = ViewGraph.fromNodes(this.network, this.network.nodesTrustGraph, undefined, this.selectedKeys);
         else
             this.viewGraph = ViewGraph.fromOrganizations(this.network, this.getOrganizationTrustGraph(), undefined, this.selectedKeys);
+        Object.freeze(this.viewGraph);//not reactive;
         this.computeGraphWorker = new ComputeGraphWorker();
         this.networkId = this.store.networkId;
 

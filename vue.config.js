@@ -29,8 +29,6 @@ module.exports = {
             minimize: !process.env.SSR,
             splitChunks: !process.env.SSR ? {
                 chunks: 'all',
-                maxSize: 250000,
-                minSize: 100000,
             } : false
         },
         resolve: {
@@ -71,7 +69,7 @@ module.exports = {
 
     chainWebpack: config => {
         if (process.env.SSR) {
- //           config.devtool('source-map');
+            config.devtool('source-map');
             config.target('node');
             config.output.libraryTarget('commonjs2');
             config.plugin("ssr-server").use(new VueSSRServerPlugin());
