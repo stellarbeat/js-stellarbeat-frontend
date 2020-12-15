@@ -1,5 +1,5 @@
 <template>
-    <span v-if="store.isTimeTravel && !store.isSimulation" class="tag">Time Travel
+    <span v-if="store.isTimeTravel && !store.isSimulation" class="tag mx-2">Time Travel
         <a href="#"
            v-on:click.stop.prevent="resetTimeTravel()"
            class="tag-addon"><b-icon-x/>
