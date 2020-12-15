@@ -48,7 +48,7 @@ module.exports = {
                 {
                     test: /\.js$/,
                     // Exclude transpiling `node_modules`, except `bootstrap-vue/src`
-                    exclude: /node_modules\/(?!bootstrap-vue\/src\/)/,
+                    exclude: [/node_modules\/(?!bootstrap-vue\/src\/)/, /\.worker\.js$/],
                     use: {
                         loader: 'babel-loader',
                         options: {
@@ -70,9 +70,6 @@ module.exports = {
     },
 
     chainWebpack: config => {
-        config.module.rule('js').exclude.add(/\.worker\.js$/);
-        config.plugins.delete('pre-render');
-        console.log(process.env.NODE_ENV);
         if (process.env.SSR) {
  //           config.devtool('source-map');
             config.target('node');
@@ -83,7 +80,6 @@ module.exports = {
             config.plugins.delete('prefetch');
             config.plugins.delete('friendly-errors');
             config.plugins.delete('webpack-bundle-analyzer');
-            config.plugins.delete('pre-render');
             config.plugin("limit-chunk-count-plugin").use(new webpack.optimize.LimitChunkCountPlugin({
                 maxChunks: 1//needed for mini css extract plugin to work server side
             }))
@@ -92,7 +88,6 @@ module.exports = {
                     allowlist: /\.(css|vue)$/
                 })
             );
-            config.optimization.splitChunks(false).minimize(false);
         } else{
             config.plugin("ssr-client").use(new VueSSRClientPlugin({}));
         }
