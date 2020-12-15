@@ -134,7 +134,7 @@
         },
         directives: {'b-tooltip': VBTooltip, 'b-modal': VBModal}
     })
-    export default class NodeLatestUpdates extends Vue {
+    export default class OrganizationLatestUpdates extends Vue {
         protected differ!: DiffPatcher;
         protected diffModalHtml: string = '<p>No update selected</p>';
         protected deltas: Map<string, Delta | undefined> = new Map();

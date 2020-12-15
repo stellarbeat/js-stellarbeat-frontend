@@ -7,15 +7,18 @@ export default class LocalNetworks {
         let organizations = [{
             id: 'sp',
             name: 'Satoshipay',
-            validators: ['sp1', 'sp2']
+            validators: ['sp1', 'sp2'],
+            subQuorumAvailable: true
         }, {
             id: 'lb',
             name: 'LOBSTR',
-            validators: ['lb1', 'lb2']
+            validators: ['lb1', 'lb2'],
+            subQuorumAvailable: true
         }, {
             id: 'sdf',
             name: 'SDF',
-            validators: ['sdf1', 'sdf2']
+            validators: ['sdf1', 'sdf2'],
+            subQuorumAvailable: true
         }].map(organization => Organization.fromJSON(organization)!);
         let nodes = [
             {
@@ -224,16 +227,20 @@ export default class LocalNetworks {
         let organizations = [{
             id: 'sp',
             name: 'Satoshipay',
-            validators: ['sp1', 'sp2', 'sp3']
+            validators: ['sp1', 'sp2', 'sp3'],
+            subQuorumAvailable: true
         }, {
             id: 'lb',
             name: 'LOBSTR',
-            validators: ['lb1', 'lb2', 'lb3']
+            validators: ['lb1', 'lb2', 'lb3'],
+            subQuorumAvailable: true
         }, {
             id: 'sdf',
             name: 'SDF',
-            validators: ['sdf1', 'sdf2', 'sdf3']
-        }].map(organization => Organization.fromJSON(organization)!);
+            validators: ['sdf1', 'sdf2', 'sdf3'],
+            subQuorumAvailable: true
+        }
+        ].map(organization => Organization.fromJSON(organization)!);
         let nodes = [
             {
                 'ip': 'localhost',

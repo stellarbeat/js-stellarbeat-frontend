@@ -152,7 +152,7 @@ export default class Store {
             this.changeQueue.reset();
 
         if(this.networkId === 'fbas'){
-            await this.loadFBAS();
+            this.loadFBAS();
             this.isLocalNetwork = true;
             return new Promise(function(resolve, reject) {
                 resolve();
@@ -166,7 +166,6 @@ export default class Store {
                 resolve();
             });
         }
-
         this.isLocalNetwork = false;
         try {
             let params:any = {};
@@ -177,13 +176,9 @@ export default class Store {
             else
                 this.isTimeTravel = false;
             this.isLoading = true;
-            console.time("fetch");
             let result = await axios.get(this.getApiUrl() + '/v1', {params});
-            console.timeEnd("fetch");
             if (result.data) {
-                console.time("network");
                 let network = Network.fromJSON(result.data);
-                console.timeEnd("network");
                 Vue.set(this, 'network', network);
                 this.isLoading = false;
                 return;

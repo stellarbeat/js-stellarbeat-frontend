@@ -225,7 +225,6 @@
             }
             if(this.store.network)
                 return;
-
             await this.store.fetchData();
         }
 
@@ -242,6 +241,7 @@
 
         @Watch('$route', {immediate: false})
         async onRouteChanged(to: any) {
+            console.log("routy")
             let networkId = to.query.network;
 
             if (!this.store.availableNetworks.includes(to.query.network))
