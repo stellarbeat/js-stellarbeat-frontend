@@ -121,7 +121,7 @@
 
             this.arrowCounter = -1;
 
-           this.$refs.searchInput.blur();
+            (this.$refs.searchInput as any).blur();
         }
     }
 </script>
