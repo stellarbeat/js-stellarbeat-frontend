@@ -7,7 +7,7 @@ const webpack = require('webpack');
 
 module.exports = {
     css: {
-        extract: true,//!process.env.SSR,//cannot get hydration to work, so disabling it for now. The css is however included twice in main.js, but at least it's not blocking.
+        extract: true,
         sourceMap: true
     },
     outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
