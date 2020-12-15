@@ -108,7 +108,7 @@
     </div>
 </template>
 <script lang="ts">
-    import {Component, Prop} from 'vue-property-decorator';
+import {Component, Prop, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
     import {Network, Node, PublicKey, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
@@ -183,6 +183,10 @@
             return quorumSet;
         }
 
+        @Watch('node')
+        async onNodeChanged(){
+            await this.getSnapshots();
+        }
         async getSnapshots() {
             let snapshots: any = [];
             try {

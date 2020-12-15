@@ -87,7 +87,7 @@
     </div>
 </template>
 <script lang="ts">
-    import {Component, Prop} from 'vue-property-decorator';
+import {Component, Prop, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
     import {
         Network,
@@ -144,7 +144,10 @@
         protected snapShots:NodeSnapShot[] = [];
         @Prop()
         protected organization!: Organization;
-
+        @Watch('organization')
+        async onOrganizationChanged(){
+            await this.getSnapshots();
+        }
         showDiff(snapShot: any) {
             formatters.html.showUnchanged(true);
             this.diffModalHtml = formatters.html.format(this.deltas.get(snapShot.startDate)!, snapShot);
