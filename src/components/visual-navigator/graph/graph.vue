@@ -17,36 +17,30 @@
                         <graph-strongly-connected-component v-if="!optionTransitiveQuorumSetOnly" :key="index"
                                                             v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
                                                             :vertex-coordinates="sccCoordinates"/>
-                        <path class="edge"
-                              v-for="edge in viewGraph.regularEdges"
-                              v-bind:class="getEdgeClassObject(edge)"
-                              v-bind:d="getEdgePath(edge)"
-                        />
+
                         <path class="edge"
                               v-for="edge in viewGraph.regularEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                               :key="edge.source.key + edge.target.key"
-                              v-bind:class="getEdgeClassObject(edge)"
                               v-bind:d="getEdgePath(edge)"
+                              :class="getEdgeClassObject(edge)"
                         />
                         <path class="edge"
                               v-for="edge in viewGraph.stronglyConnectedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                               :key="edge.source.key + edge.target.key"
-                              v-bind:class="getEdgeClassObject(edge)"
                               v-bind:d="getEdgePath(edge)"
+                              :class="getEdgeClassObject(edge)"
                         />
                         <g v-if="selectedVertices.length > 0 && optionHighlightTrustingNodes">
-                            <path class="edge"
+                            <path class="edge incoming"
                                   v-for="edge in viewGraph.trustingEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                   :key="edge.source.key + edge.target.key"
-                                  v-bind:class="getEdgeClassObject(edge)"
                                   v-bind:d="getEdgePath(edge)"
                             />
                         </g>
                         <g v-if="selectedVertices.length > 0 && optionHighlightTrustedNodes">
-                            <path class="edge"
+                            <path class="edge outgoing"
                                   v-for="edge in viewGraph.trustedEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges)  && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
                                   :key="edge.source.key + edge.target.key"
-                                  v-bind:class="getEdgeClassObject(edge)"
                                   v-bind:d="getEdgePath(edge)"
                             />
                         </g>
@@ -253,8 +247,6 @@ export default class Graph extends Mixins(StoreMixin) {
 
     getEdgeClassObject(edge: ViewEdge) {
         return {
-            'outgoing': edge.highlightAsTrusted,
-            'incoming': edge.highlightAsTrusting,
             'strongly-connected': edge.isPartOfStronglyConnectedComponent,
             'failing': edge.isFailing,
         };

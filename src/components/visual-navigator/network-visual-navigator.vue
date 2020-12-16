@@ -42,11 +42,6 @@
                                          switch>
                             Highlight trusting nodes
                         </b-form-checkbox>
-                        <b-form-checkbox v-model="optionShowRegularEdges"
-                                         class="sb-nav-item sb-nav-toggle mt-1"
-                                         switch>
-                            Show active edges
-                        </b-form-checkbox>
                         <b-form-checkbox v-model="optionShowFailingEdges"
                                          class="sb-nav-item sb-nav-toggle mt-1"
                                          switch>
