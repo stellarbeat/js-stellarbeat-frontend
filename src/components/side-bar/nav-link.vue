@@ -32,11 +32,9 @@
                 </div>
             </div>
             <div class="action mr-1">
-                <transition name="fade">
                     <div :class="dropdownClass" v-if="hover">
                         <slot name="action-dropdown"/>
                     </div>
-                </transition>
             </div>
         </div>
     </div>
