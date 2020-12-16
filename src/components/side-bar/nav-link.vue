@@ -1,41 +1,39 @@
-<template functional>
-    <div v-on:click="listeners.click()"
-         :class="{
-                'sb-nav-dropdown-toggle': false,
-                'sb-nav-link': props.isLinkInDropdown,
-                'sb-nav-dropdown-link': props.isLinkInDropdown
-            }"
+<template>
+    <div v-on:click="$emit('click')"
+         v-on:keyup.enter="$emit('click')"
+         v-on:keyup.space="$emit('click')"
+         :class="classObject"
+         v-on:mouseenter="hover=true"
+         v-on:mouseleave="hover=false"
          role="button"
          tabindex="0"
-         class="d-flex justify-content-between trigger"
+         class="d-flex justify-content-between"
     >
-        <div class="w-100 d-flex flex-row justify-content-between align-items-center trigger">
-            <div class="w-100 d-flex flex-column align-items-stretch trigger">
+        <div class="w-100 d-flex flex-row justify-content-between align-items-center">
+            <div class="w-100 d-flex flex-column align-items-stretch">
                 <div class="w-100 d-flex align-items-center align-content-center">
                     <div class="sb-nav-link-icon align-content-center">
-                        <b-icon :icon="$options.methods.chevronDirection(props.dropDownShowing)" scale="0.8"
-                                v-if="props.showDropdownToggle"/>
-                        <b-icon v-else-if="props.showIcon" :icon="props.icon" scale="0.8"/>
+                        <b-icon :icon="chevronDirection" scale="0.8" v-if="showDropdownToggle"/>
+                        <b-icon v-else-if="showIcon" :icon="icon" scale="0.8"/>
                     </div>
 
                     <div class="w-100 d-flex justify-content-between align-content-center">
                         <nav-title
-                            :title="props.title" :classes="'w-100 pb-0 m-height ' + (props.secondary ? 'secondary':'')"
-                            :has-warnings="props.hasWarnings"
-                            :warnings="props.warnings"
-                            :has-danger="props.hasDanger"
-                            :danger="props.dangers"
+                            :title="title" :classes="'w-100 pb-0 m-height ' + (secondary ? 'secondary':'')"
+                            :has-warnings="hasWarnings"
+                            :warnings="warnings"
+                            :has-danger="hasDanger"
+                            :danger="dangers"
                         />
                     </div>
                 </div>
-                <div v-if="props.showSubTitle" class="text-muted sub-title">
-                    {{ props.subTitle }}
+                <div v-if="showSubTitle" class="text-muted sub-title">
+                    {{subTitle}}
                 </div>
             </div>
             <div class="action mr-1">
                 <transition name="fade">
-
-                <div :class="$options.methods.dropdownClass(props.showDropdownToggle)" class="my-hidden">
+                    <div :class="dropdownClass" v-if="hover">
                         <slot name="action-dropdown"/>
                     </div>
                 </transition>
@@ -45,6 +43,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import {Component, Prop} from 'vue-property-decorator';
 import NavTitle from '@/components/side-bar/nav-title.vue';
 import {
     BIcon,
@@ -60,97 +59,82 @@ import {
     BBadge
 } from 'bootstrap-vue';
 
-Vue.component('nav-title', NavTitle);
-Vue.component('b-icon', BIcon);
-Vue.component('b-icon-plus', BIconPlus);
-Vue.component('b-icon-download', BIconDownload);
-Vue.component('b-icon-chevron-right', BIconChevronRight);
-Vue.component('b-icon-chevron-down', BIconChevronDown);
-Vue.component('b-icon-lightning', BIconLightning);
-Vue.component('b-icon-gear', BIconGear);
-Vue.component('b-icon-search', BIconSearch);
-Vue.component('b-icon-lightning-fill', BIconLightningFill);
-Vue.component('b-icon-gear-wide', BIconGearWide);
-Vue.component('b-badge', BBadge);
-
-export default {
-    props: {
-        title: {
-            type: String,
-            default: ''
-        },
-        showSubTitle: {
-            type: Boolean,
-            default: false
-        },
-        subTitle: {
-            type: String,
-            default: ''
-        },
-        showDropdownToggle: {
-            type: Boolean,
-            default: false
-        },
-        dropDownShowing: {
-            type: Boolean,
-            default: false
-        },
-        isLinkInDropdown: {
-            type: Boolean,
-            default: false
-        },
-        hasWarnings: {
-            type: Boolean,
-            default: false
-        },
-        warnings: {
-            type: String,
-            default: ''
-        },
-        hasDanger: {
-            type: Boolean,
-            default: false
-        },
-        dangers: {
-            type: String,
-            default: ''
-        },
-        showIcon: {
-            type: Boolean,
-            default: false
-        },
-        icon: {
-            type: String,
-            default: ''
-        },
-        secondary: {
-            type: Boolean,
-            default: false
-        }
-    },
-    methods: {
-        getTitleClass(secondary: boolean): any {
-            return {
-                'secondary': secondary
-            };
-        },
-        chevronDirection(dropDownShowing: boolean): any {
-            if (dropDownShowing)
-                return 'chevron-down';
-            else return 'chevron-right';
-        },
-        classObject(): any {
-            return;
-        },
-        dropdownClass(showDropdownToggle: boolean): any {
-            return {
-                'right-end': showDropdownToggle,
-                'right': showDropdownToggle
-            };
-        }
+@Component({
+    components: {
+        NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning, BIconGear, BIconSearch,
+        BIconLightningFill,
+        BIconGearWide, BBadge
     }
-};
+})
+export default class NavLink extends Vue {
+    @Prop()
+    title!: string;
 
+    @Prop({default: false})
+    showSubTitle!: boolean;
+
+    @Prop()
+    subTitle!: string;
+
+    @Prop({default: false})
+    showDropdownToggle!: boolean;
+
+    @Prop({default: false})
+    dropDownShowing!: boolean;
+
+    @Prop({default: false})
+    isLinkInDropdown!: boolean;
+
+    @Prop({default: false})
+    hasWarnings!: boolean;
+
+    @Prop()
+    warnings!: string;
+
+    @Prop({default: false})
+    hasDanger!: boolean;
+
+    @Prop()
+    dangers!: string;
+
+    @Prop({default: false})
+    showIcon!: boolean;
+
+    @Prop({})
+    icon!: string;
+
+    @Prop({default: false})
+    secondary!: boolean;
+
+    hover: boolean = false;
+
+    get titleClass(): any {
+        return {
+            'secondary': this.secondary
+        };
+    }
+
+    get chevronDirection(): any {
+        if (this.dropDownShowing)
+            return 'chevron-down';
+        else return 'chevron-right';
+    }
+
+    get classObject(): any {
+        return {
+            'sb-nav-dropdown-toggle': false,
+            'sb-nav-link': !this.isLinkInDropdown,
+            'sb-nav-dropdown-link': this.isLinkInDropdown
+        };
+    }
+
+    get dropdownClass(): any {
+        return {
+            'right-end': !this.showDropdownToggle,
+            'right': this.showDropdownToggle
+        };
+    }
+}
 </script>
 <style scoped>
 .action {
@@ -241,14 +225,5 @@ export default {
 
 .sb-nav-dropdown-link:hover {
     background-color: #f8f9fa;
-}
-
-.my-hidden {
-   opacity: 0;
-}
-
-.trigger:hover .my-hidden {
-    transition: all 0.5s ease-in-out;
-    opacity: 1;
 }
 </style>
