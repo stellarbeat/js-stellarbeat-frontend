@@ -23,6 +23,7 @@ import NetworkStatisticsStore from '@/store/NetworkStatisticsStore';
 import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-set-organizations-add';
 import LocalNetworks from '@/store/LocalNetworks';
+import {AggregateChange} from '@/services/change-queue/changes/aggregate-change';
 
 type NetworkId = string;
 
@@ -192,8 +193,16 @@ export default class Store {
         }
     }
 
-    public toggleActive(node: Node) {
-        this.processChange(new EntityPropertyUpdate(node, 'active', !node.active));
+    public toggleOrganizationAvailability(organization: Organization){
+        let targetAvailability = !organization.subQuorumAvailable;
+        let aggregateChange = new AggregateChange([
+            new EntityPropertyUpdate(organization, 'subQuorumAvailable', targetAvailability),
+            ...organization.validators.map(validator => {
+                let node = this.network.getNodeByPublicKey(validator);
+                return new EntityPropertyUpdate(node, 'isValidating', targetAvailability);
+            })
+        ])
+        this.processChange(aggregateChange);
     }
 
     public toggleValidating(node: Node) {
@@ -239,7 +248,7 @@ export default class Store {
         this.processChange(new QuorumSetOrganizationsAdd(toQuorumSet, organizations));
     }
 
-    protected processChange(change: Change) {
+    public processChange(change: Change) {
         this.changeQueue.execute(change);
         this.network.modifyNetwork();
         this.networkUpdated++;

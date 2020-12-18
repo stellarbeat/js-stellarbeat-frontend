@@ -20,9 +20,7 @@
         <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
-                    :network="network"
-                    :publicKey="store.haltingAnalysisPublicKey"
-                    v-on:update-validating-states="updateValidatingStates">
+                    :publicKey="store.haltingAnalysisPublicKey">
                 </HaltingAnalysis>
             </div>
         </div>
@@ -178,10 +176,6 @@ export default class Dashboard extends Vue {
 
     get network(): Network {
         return this.$root.$data.store.network;
-    }
-
-    public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {
-        this.store.updateValidatingStates(updates);
     }
 
     get isSimulation(): boolean {

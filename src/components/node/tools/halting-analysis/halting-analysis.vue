@@ -11,8 +11,8 @@
         </template>
         <div class="row">
             <div class="col-12">
-                <b-alert :show="!vertex.available" variant="warning">{{vertex.label}} is failing.</b-alert>
-                <div v-if="vertex.available">
+                <b-alert :show="network.isNodeFailing(node)" variant="warning">{{vertex.label}} is failing.</b-alert>
+                <div v-if="!network.isNodeFailing(node)">
                     <b-form inline>
                         <b-form-group
                                 label-size="sm"
@@ -88,6 +88,8 @@
         from 'worker-loader?name=worker/[name].js!./../../../../workers/halting-analysisv1.worker.ts';
     import Store from '@/store/Store';
     import {BAlert, BButton, BCard, BForm, BFormGroup, BFormInput, BFormSelect, BIconX} from 'bootstrap-vue';
+    import {AggregateChange} from '@/services/change-queue/changes/aggregate-change';
+    import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
 
     const _HaltingAnalysisWorker: any = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 
@@ -106,8 +108,6 @@
     })
     export default class HaltingAnalysis extends Vue {
         @Prop()
-        protected network!: Network;
-        @Prop()
         protected publicKey!: PublicKey;
 
         protected showAnalysisResult: boolean = false;
@@ -122,6 +122,10 @@
 
         get store(): Store {
             return this.$root.$data.store;
+        }
+
+        get network():Network {
+            return this.store.network;
         }
 
         get dimmerClass() {
@@ -143,6 +147,10 @@
             return this.network.nodesTrustGraph.getVertex(this.publicKey);
         }
 
+        get node(){
+            return this.network.getNodeByPublicKey(this.publicKey);
+        }
+
         getNetworkGraphNodes() {
             return Array.from(this.network.nodesTrustGraph.vertices.values()) //todo only nodes in transitive quorum set
                 .map(vertex => this.mapVertexToNetworkGraphNode(vertex, vertex === this.vertex));
@@ -153,19 +161,22 @@
                 return;
             }
             this.simulated = true;
-            this.$emit('update-validating-states', this.selectedFailure.map(publicKey => {
-                return {'publicKey': publicKey, 'validating': false};
-            }));
-            //this.$scrollTo('#quorum-set-explorer-card');
+            let aggregateChange = new AggregateChange(
+                this.selectedFailure.map(failurePublicKey => new EntityPropertyUpdate(this.network.getNodeByPublicKey(failurePublicKey), 'isValidating', false))
+            )
+
+            this.store.processChange(aggregateChange);
         }
 
         resetFailureSimulation() {
             if (this.selectedFailure === null) {
                 return;
             }
-            this.$emit('update-validating-states', this.selectedFailure.map(publicKey => {
-                return {'publicKey': publicKey, 'validating': true};
-            }));
+            let aggregateChange = new AggregateChange(
+                this.selectedFailure.map(failurePublicKey => new EntityPropertyUpdate(this.network.getNodeByPublicKey(failurePublicKey), 'isValidating', true))
+            )
+
+            this.store.processChange(aggregateChange);
             this.simulated = false;
         }
 
