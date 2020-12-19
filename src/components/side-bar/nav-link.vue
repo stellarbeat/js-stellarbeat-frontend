@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="action mr-1">
-                    <div :class="dropdownClass" v-if="hover">
+                    <div :class="dropdownClass" v-show="hover">
                         <slot name="action-dropdown"/>
                     </div>
             </div>

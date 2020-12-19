@@ -9,7 +9,11 @@
             :showIcon="true"
             :show-sub-title="true"
             :sub-title="'Transitive quorum set'"
-        />
+        >
+            <template v-slot:action-dropdown>
+                <organization-actions v-on:add-organizations="store.addOrganizationToTransitiveQuorumSet" supports-add="true"/>
+            </template>
+        </nav-link>
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                 v-for="organization in paginatedOrganizations"
