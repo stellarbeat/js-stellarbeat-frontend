@@ -57,9 +57,12 @@
                                                   :items="blockingSets" :merged="resultIsMerged">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
-                                                  <h3 v-if="blockingSetsMinLength <= 0">
+                                                  <h3 v-if="!resultIsMerged && blockingSetsMinLength <= 0">
                                                     Network halted.
                                                   </h3>
+                                                    <h3 v-else-if="resultIsMerged && blockingSetsMergedMinLength <=0">
+                                                        Network halted.
+                                                    </h3>
                                                 <h3 v-else-if="!resultIsMerged">
                                                         Found set(s) of {{blockingSetsMinLength}} nodes across
                                                         {{blockingSetsMergedMinLength}} organizations that could
@@ -93,9 +96,10 @@
                                                   :items="splittingSets" :merged="resultIsMerged">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
-                                                  <h3 v-if="splittingSetsMinLength <= 0">
+                                                  <h3 v-if="!resultIsMerged && splittingSetsMinLength <= 0">
                                                     No intersection between quorums found.
                                                   </h3>
+                                                    <h3 v-else-if="resultIsMerged && splittingSetsMergedMinLength <= 0">No intersection between quorums found.</h3>
                                                     <h3 v-else-if="!resultIsMerged">
                                                         Found set(s) of {{splittingSetsMinLength}} nodes across
                                                         {{splittingSetsMergedMinLength}} organizations that could
