@@ -8,7 +8,11 @@
                 :drop-down-showing="showing"
                 :sub-title="'organization'"
                 :show-sub-title="true"
-        />
+        >
+            <template v-slot:action-dropdown>
+                <organization-actions :organization="organization"/>
+            </template>
+        </nav-link>
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="validator in validators"
@@ -38,9 +42,11 @@
     import NodeActions from '@/components/node/sidebar/node-actions.vue';
     import Store from '@/store/Store';
     import {BIconSearch} from 'bootstrap-vue';
+    import OrganizationActions from '@/components/organization/sidebar/organization-actions.vue';
 
     @Component({
         components: {
+            OrganizationActions,
             NodeActions,
             NavPagination,
             NavLink,

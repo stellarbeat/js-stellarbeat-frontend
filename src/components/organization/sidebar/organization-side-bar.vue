@@ -5,7 +5,7 @@
         </template>
         <template v-slot:sub-title>
                 {{organizationType}}
-                <b-badge v-if="failAt <= 0" variant="danger"
+                <b-badge v-if="!selectedOrganization.subQuorumAvailable" variant="danger"
                          v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing
                 </b-badge>
         </template>

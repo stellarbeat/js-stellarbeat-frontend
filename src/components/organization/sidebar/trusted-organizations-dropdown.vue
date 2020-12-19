@@ -19,9 +19,9 @@
                     :has-warnings="false"
                     warnings=""
             >
-                <template v-slot:action-dropdown>
-                    <!--node-actions :node="validator"/!-->
-                </template>
+                    <template v-slot:action-dropdown>
+                        <organization-actions :organization="organization"/>
+                    </template>
             </nav-link>
         </div>
     </div>
@@ -34,9 +34,11 @@
     import {DropdownMixin} from '@/components/side-bar/dropdown-mixin';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
     import NodeActions from '@/components/node/sidebar/node-actions.vue';
+    import OrganizationActions from '@/components/organization/sidebar/organization-actions.vue';
 
     @Component({
         components: {
+            OrganizationActions,
             NodeActions,
             NavPagination,
             NavLink
