@@ -5,8 +5,11 @@
         </template>
         <template v-slot:sub-title>
             {{nodeType}}
-            <b-badge v-show="network.isNodeFailing(selectedNode)" variant="danger"
-                     style="vertical-align: bottom">Failing
+            <b-badge v-show="!selectedNode.isValidating" variant="danger"
+                     style="vertical-align: bottom" v-b-tooltip="'Node not validating'">Failing
+            </b-badge>
+            <b-badge variant="danger" v-show="network.isValidatorBlocked(selectedNode)" v-b-tooltip="'Quorumset not reaching threshold'" style="vertical-align: bottom">
+               Blocked
             </b-badge>
         </template>
         <template v-slot:explore-list-items>
@@ -21,9 +24,9 @@
             </li>
         </template>
         <template v-slot:tool-list-items>
-            <li class="sb-nav-item" v-if="selectedNode.isValidator">
+            <li class="sb-nav-item" v-if="selectedNode.isValidator && !network.isValidatorBlocked(selectedNode)">
                 <nav-link
-                        :title="selectedNode.isValidating ? 'Halt this node' : 'Try validating'"
+                        :title="selectedNode.isValidating ? 'Halt this node' : 'Start validating'"
                         :show-icon="true"
                         :icon="selectedNode.isValidating ? 'lightning-fill' : 'lightning'"
                         v-on:click="store.toggleValidating(selectedNode)"
@@ -57,14 +60,14 @@
             <quorum-slices :selected-node="selectedNode"/>
             <li class="sb-nav-item" v-if="selectedNode.isValidator">
                 <nav-link
-                        :title="'Export configuration'"
+                        :title="'Stellar core config'"
                         v-b-modal.tomlExportModal
                         :show-icon="true"
                         icon="download"
                 />
             </li>
             <b-modal lazy size="lg" id="tomlExportModal" v-on:show="loadTomlExport()"
-                     title="Stellar Core Configuration" ok-only ok-title="Close"
+                     title="Stellar Core Config" ok-only ok-title="Close"
             >
                 <pre><code>{{tomlNodesExport}}</code></pre>
             </b-modal>

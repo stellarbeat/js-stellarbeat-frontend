@@ -22,7 +22,7 @@
         <template v-slot:tool-list-items>
             <li class="sb-nav-item">
                 <nav-link
-                        :title="'Export configuration'"
+                        :title="'Stellar core config'"
                         v-b-modal.tomlExportModal
                         :show-icon="true"
                         icon="download"
@@ -38,7 +38,7 @@
                 <simulate-new-node/>
             </li>
             <b-modal lazy size="lg" id="tomlExportModal"
-                     title="Stellar Core Configuration" ok-only ok-title="Close"
+                     title="Stellar Core Config" ok-only ok-title="Close"
             >
                 <pre><code>{{tomlNodesExport}}</code></pre>
             </b-modal>

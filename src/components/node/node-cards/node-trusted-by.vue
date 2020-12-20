@@ -23,11 +23,14 @@
 
         get fields():any {
             let fields = [
-                {key: 'name', label: 'Node', sortable: true}
+                {key: 'name', label: 'Node', sortable: true},
             ];
 
             if(!this.store.isSimulation)
                 fields.push( {key: 'index', label: 'index', sortable: true});
+
+            //@ts-ignore
+            fields.push({key: 'action', label: '', sortable: false, tdClass: 'action'});
 
             return fields;
         }

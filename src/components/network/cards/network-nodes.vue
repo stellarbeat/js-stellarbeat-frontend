@@ -34,14 +34,19 @@
         protected filter:string="";
 
         get fields(): any {
-            if(this.store.isSimulation){
-                return [{key: 'name', label: 'Node', sortable: true}];
-            } else {
-                return [
-                    {key: 'name', label: 'Node', sortable: true},
-                    {key: 'index', label: 'Index', sortable: true},
-                ];
+            let fields = [
+                {key: 'name', label: 'Node', sortable: true}
+            ]
+            if(!this.store.isSimulation){
+                fields.push(
+                    {key: 'index', label: 'Index', sortable: true}
+                );
             }
+
+            //@ts-ignore
+            fields.push({key: 'action', label: '', sortable: false, tdClass: 'action'});
+
+            return fields;
         }
 
         get store(): Store {

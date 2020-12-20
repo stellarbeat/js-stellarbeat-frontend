@@ -49,7 +49,7 @@
             <b-dropdown-divider/>
             <b-dropdown-item v-b-modal="'quorumSetTomlExportModal' + id" v-on:click.prevent.stop>
                 <b-icon-download class="dropdown-icon" scale="0.9"/>
-                Export config
+                Stellar core config
             </b-dropdown-item>
         </b-dropdown>
         <b-modal lazy size="lg" :id="'add-validators-modal-' + id"
@@ -71,7 +71,7 @@
             </template>
         </b-modal>
         <b-modal lazy size="lg" :id="'quorumSetTomlExportModal'+id"
-                 title="Stellar Core Configuration" ok-only ok-title="Close"
+                 title="Stellar Core Config" ok-only ok-title="Close"
                  v-on:show="loadTomlExport(id)"
         >
             <pre><code>{{tomlNodesExport}}</code></pre>

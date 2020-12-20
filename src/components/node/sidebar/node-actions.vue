@@ -3,13 +3,16 @@
             <template slot="button-content">
                 <b-icon-three-dots-vertical scale="0.9"/>
             </template>
-            <b-dropdown-header>
+            <b-dropdown-header >
                 Simulation options
             </b-dropdown-header>
-            <b-dropdown-item v-on:click.prevent.stop="store.toggleValidating(node)">
+            <b-dropdown-item  v-if="!network.isValidatorBlocked(node)" v-on:click.prevent.stop="store.toggleValidating(node)">
                 <b-icon-lightning scale="0.9"/>
-                {{node.isValidating ? 'Halt this node' : 'Try validating'}}
+                {{node.isValidating ? 'Halt this node' : 'Start validating'}}
             </b-dropdown-item>
+            <b-dropdown-text v-else>
+               Node blocked: quorumset not reaching threshold
+            </b-dropdown-text>
             <b-dropdown-item v-if="supportsDelete" v-on:click="store.deleteValidatorFromQuorumSet(quorumSet, node)" @click.prevent.stop>
                 <b-icon-x-circle scale="0.9"/>
                 Remove
@@ -17,7 +20,7 @@
             <b-dropdown-header>
                 Tools
             </b-dropdown-header>
-            <b-dropdown-item v-on:click.prevent.stop="store.showHaltingAnalysis(node)">
+            <b-dropdown-item v-if="supportsHaltingAnalysis" v-on:click.prevent.stop="store.showHaltingAnalysis(node)">
                 <b-icon-gear-wide scale="0.9"/>
                 Halting analysis
             </b-dropdown-item>
@@ -31,13 +34,13 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component, Prop} from "vue-property-decorator";
-    import {BDropdown, BDropdownItem, BIconThreeDotsVertical, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton} from 'bootstrap-vue';
+    import {BDropdown, BDropdownItem, BIconThreeDotsVertical, BDropdownText, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton} from 'bootstrap-vue';
 
-    import {Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Network, Node, QuorumSet} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
 
     @Component({
-        components: {BDropdown, BDropdownItem, BIconThreeDotsVertical, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton}
+        components: {BDropdown, BDropdownItem, BDropdownText, BIconThreeDotsVertical, BDropdownHeader, BIconXCircle, BIconGearWide, BIconClipboard, BIconLightning, BDropdownItemButton}
     })
     export default class NodeActions extends Vue {
         @Prop()
@@ -46,9 +49,15 @@
         public supportsDelete!: Boolean;
         @Prop()
         public quorumSet!:QuorumSet;
+        @Prop({default: true})
+        public supportsHaltingAnalysis!:boolean;
 
         get store():Store {
             return this.$root.$data.store;
+        }
+
+        get network(): Network {
+            return this.store.network;
         }
 
         copyPublicKey() {

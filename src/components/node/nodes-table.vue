@@ -16,9 +16,13 @@
                             {{ data.item.name }}
                         </router-link>
                     </div>
-                    <b-badge variant="danger"
-                             v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))">
+                    <b-badge variant="danger" v-b-tooltip="'Node not validating'"
+                             v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && !network.getNodeByPublicKey(data.item.publicKey).isValidating">
                         Failing
+                    </b-badge>
+                    <b-badge variant="danger" v-b-tooltip="'Quorumset not reaching threshold'"
+                             v-if="network.isValidatorBlocked(network.getNodeByPublicKey(data.item.publicKey))">
+                        Blocked
                     </b-badge>
                 </div>
             </template>
@@ -34,6 +38,9 @@
             <template v-slot:cell(version)="data">
                 {{data.value || " " | truncate(28)}}
             </template>
+            <template v-slot:cell(action)="data">
+               <node-actions :node="network.getNodeByPublicKey(data.item.publicKey)"></node-actions>
+            </template>
         </b-table>
         <div class="d-flex justify-content-end m-1" v-show="nodes.length >= perPage">
             <b-pagination size="sm" limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
@@ -48,10 +55,11 @@
     import Store from '@/store/Store';
 
     import {BBadge, BIconShield, BPagination, BTable, VBTooltip} from 'bootstrap-vue';
+    import NodeActions from '@/components/node/sidebar/node-actions.vue';
 
     @Component(
         {
-            components: {BTable, BPagination, BIconShield: BIconShield, BBadge: BBadge},
+            components: {NodeActions, BTable, BPagination, BIconShield: BIconShield, BBadge: BBadge},
             directives: {'b-tooltip': VBTooltip}
         })
     export default class NodesTable extends Vue {
@@ -83,6 +91,8 @@
     }
 </script>
 
-<style scoped>
-
+<style>
+.action {
+    width: 20px;
+}
 </style>

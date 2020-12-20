@@ -42,10 +42,14 @@
                     {key: 'validating30Days', label: '30D validating', sortable: true},
                     {key: 'version', label: 'version', sortable: true},
                     {key: 'country', label: 'country', sortable: true},
-                    {key: 'isp', label: 'isp', sortable: true}
+                    {key: 'isp', label: 'isp', sortable: true},
+                    {key: 'action', label: '', sortable: false, tdClass: 'action'}
                 ];
             } else {
-                return [{key: 'name', label: 'Quorumset validator', sortable: true}];
+                return [
+                    {key: 'name', label: 'Quorumset validator', sortable: true},
+                    {key: 'action', label: '', sortable: false, tdClass: 'action'}
+                    ];
             }
 
         }
@@ -77,3 +81,6 @@
         }
     }
 </script>
+<style scoped>
+
+</style>

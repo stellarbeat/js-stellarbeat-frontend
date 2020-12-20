@@ -9,7 +9,6 @@ export class AggregateChange implements Change{
 
     execute(): void {
         this.changes.forEach(change => {
-            console.log(change)
             change.execute();
         })
     }
