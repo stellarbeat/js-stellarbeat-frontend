@@ -6,7 +6,7 @@ import {
     OrganizationId,
     OrganizationSnapShot,
     PublicKey,
-    QuorumSet
+    QuorumSet, TrustGraphBuilder
 } from '@stellarbeat/js-stellar-domain';
 import {Change, ChangeQueue} from '@/services/change-queue/change-queue';
 import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
