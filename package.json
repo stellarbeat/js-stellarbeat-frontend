@@ -7,8 +7,9 @@
     "build-all": "yarn build-client && yarn build-server",
     "build-client": "vue-cli-service build",
     "build-server": "SSR=1 vue-cli-service build",
-    "heroku-postbuild": "npm run build-all",
+    "heroku-postbuild": "npm run build-client",
     "start": "node server.js",
+    "start-ssr": "node server-ssr.js",
     "test": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -76,9 +77,11 @@
     "miragejs": "^0.1.34",
     "moment-locales-webpack-plugin": "^1.2.0",
     "node-sass": "^5.0.0",
+    "prerender-spa-plugin": "^3.4.0",
     "sass-loader": "^10.1.0",
     "ts-jest": "^24.3.0",
     "typescript": "^3.9.7",
+    "vue-cli-plugin-prerender-spa": "^1.1.6",
     "vue-cli-plugin-webpack-bundle-analyzer": "^1.4.0",
     "vue-ssr-webpack-plugin": "^3.0.0",
     "vue-template-compiler": "^2.6.12",

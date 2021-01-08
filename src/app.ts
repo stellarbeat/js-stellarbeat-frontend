@@ -49,7 +49,10 @@ let createApp = () => {
                 'store': store
             };
         },
-        render: h => h(App)
+        render: h => h(App),
+        mounted() {
+            document.dispatchEvent(new Event('x-app-rendered'));
+        },
     });
 
     return { app, router, store }

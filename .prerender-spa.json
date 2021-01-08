@@ -1,1 +1,1 @@
-{"renderRoutes":["/", "/faq", "/api", "/terms-and-conditions"],"useRenderEvent":true,"onlyProduction":true}
+{"renderRoutes":["/", "/nodes", "/organizations", "/faq", "/api", "/terms-and-conditions"],"useRenderEvent":true,"onlyProduction":true}
