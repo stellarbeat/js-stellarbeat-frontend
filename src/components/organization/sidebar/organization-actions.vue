@@ -8,10 +8,13 @@
             <b-dropdown-header>
                 Simulation options
             </b-dropdown-header>
-            <b-dropdown-item v-if="organization" v-on:click.prevent.stop="store.toggleOrganizationAvailability(organization)">
+            <b-dropdown-item v-if="!network.isOrganizationBlocked(organization)" v-on:click.prevent.stop="store.toggleOrganizationAvailability(organization)">
                 <b-icon-lightning scale="0.9"/>
-                {{ organization.subQuorumAvailable ? 'Halt this organization' : 'Try validating' }}
+                {{ organization.subQuorumAvailable ? 'Halt this organization' : 'Start validating' }}
             </b-dropdown-item>
+            <b-dropdown-text v-else>
+                Organization blocked: not enough validators are reaching their quorumset threshold.
+            </b-dropdown-text>
             <b-dropdown-item v-if="supportsDelete" v-on:click="() => {}" @click.prevent.stop>
                 <b-icon-x-circle scale="0.9"/>
                 Remove
@@ -47,6 +50,7 @@ import {
     BIconLightning,
     BDropdownItemButton,
     BModal,
+    BDropdownText,
     VBModal
 } from 'bootstrap-vue';
 
@@ -59,6 +63,7 @@ import {StoreMixin} from '@/mixins/StoreMixin';
     components: {
         AddOrganizationsTable,
         BDropdown,
+        BDropdownText,
         BDropdownItem,
         BIconThreeDotsVertical,
         BDropdownHeader,
