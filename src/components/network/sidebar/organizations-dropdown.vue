@@ -24,7 +24,7 @@
                 :has-warnings="hasWarnings(organization)"
                 warnings="Not all history archives up-to-date"
                 :has-danger="!organization.subQuorumAvailable"
-                :dangers="getOrganizationDangers(organization)"
+                :dangers="store.getOrganizationDangers(organization)"
             >
                 <template v-slot:action-dropdown>
                     <organization-actions :organization="organization"/>
@@ -91,13 +91,7 @@ export default class OrganizationsDropdown extends Mixins(DropdownMixin) {
         return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
     }
 
-    getOrganizationDangers(organization: Organization){
-        if(this.network.isOrganizationBlocked(organization)){
-            return 'Organization blocked: Validators not reaching quorumset thresholds'
-        } else {
-            return 'More then 50% of its validators are failing';
-        }
-    }
+
 }
 </script>
 

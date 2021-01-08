@@ -15,14 +15,14 @@
 
                             <router-link
                                     :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view, 'network': $route.query.network}}">
-                                {{ validator.name | truncate(30)}}
+                                {{ validator.displayName | truncate(30)}}
                             </router-link>
                             <span v-if="!validator.active"
                                   class="badge sb-badge badge-danger ml-1"
                             >Not active</span>
-                            <span v-if="!validator.isValidating"
+                            <span v-if="network.isNodeFailing(validator)"
                                   class="badge sb-badge badge-danger ml-1"
-                            >Not validating
+                            >{{network.isValidatorBlocked(validator) ? 'Blocked': 'Failing'}}
                 </span></div>
                     </li>
                 </ul>
@@ -59,10 +59,9 @@
                             </span>
                     <span v-else-if="row.item.failAt < 1"
                           class="badge sb-badge badge-danger ml-1"
-                          v-b-tooltip.hover title="Failing, not available"
-                    >Failing
+                          v-b-tooltip.hover :title="row.item.dangers"
+                    >{{row.item.blocked ? 'Blocked': 'Failing'}}
                     </span>
-
                 </div>
             </template>
             <template v-slot:cell(url)="row">

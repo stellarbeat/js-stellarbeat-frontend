@@ -97,7 +97,9 @@ import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
                         url: organization.url,
                         email: organization.officialEmail,
                         id: organization.id,
-                        failAt: this.getFailAt(organization),
+                        failAt: this.store.getOrganizationFailAt(organization),
+                        dangers: this.store.getOrganizationDangers(organization),
+                        blocked: this.network.isOrganizationBlocked(organization),
                         subQuorum24HAvailability: organization.subQuorum24HoursAvailability + '%',
                         subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%',
                         isTierOneOrganization: organization.isTierOneOrganization
@@ -107,29 +109,12 @@ import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
 
         getValidators(organization: Organization) {
             return organization.validators.map(publicKey => {
-                let node = this.network.getNodeByPublicKey(publicKey);
-                if (node) {
-                    return {
-                        'name': node.displayName,
-                        'publicKey': node.publicKey,
-                        'isFullValidator': node.isFullValidator,
-                        'isValidating': node.isValidating,
-                        'active': node.active
-                    };
-                } else {
-                    return {'publicKey': publicKey, 'name': publicKey};
-                }
+                return this.network.getNodeByPublicKey(publicKey);
+
             }).sort((a: any, b: any) => a.name.localeCompare(b.name));
         }
 
-        getFailAt(organization: Organization) {
-            let nrOfValidatingNodes = organization.validators
-                .map(validator => this.network.getNodeByPublicKey(validator))
-                .filter(validator => validator !== undefined)
-                .filter(node => node!.isValidating).length;
 
-            return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
-        }
     }
 </script>
 <style scoped>

@@ -61,13 +61,13 @@
             let nrOfValidatingNodes = organization.validators
                 .map(validator => this.network.getNodeByPublicKey(validator))
                 .filter(validator => validator !== undefined)
-                .filter(node => node!.isValidating).length;
+                .filter(node => !this.network.isNodeFailing(node)).length;
 
             return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
         }
 
         get numberOfActiveOrganizations() {
-            return this.network.organizations.filter(organization => this.getFailAt(organization) >= 1).length;
+            return this.network.organizations.filter(organization => organization.subQuorumAvailable).length;
         }
 
         get organizations(): any[] {
@@ -77,6 +77,8 @@
                         name: organization.name,
                         id: organization.id,
                         failAt: this.getFailAt(organization),
+                        dangers: this.store.getOrganizationDangers(organization),
+                        blocked: this.network.isOrganizationBlocked(organization),
                         subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%',
                         isTierOneOrganization: organization.isTierOneOrganization
                     };

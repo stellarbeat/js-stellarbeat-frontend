@@ -330,4 +330,22 @@ export default class Store {
         if (typeof word !== 'string') return '';
         return word.charAt(0).toUpperCase() + word.slice(1);
     };
+
+    //todo: needs better location
+    getOrganizationDangers(organization: Organization){
+        if(this.network.isOrganizationBlocked(organization)){
+            return 'Organization blocked: Validators not reaching quorumset thresholds'
+        } else {
+            return 'More then 50% of its validators are failing';
+        }
+    }
+    //todo: move
+    getOrganizationFailAt(organization: Organization) {
+        let nrOfValidatingNodes = organization.validators
+            .map(validator => this.network.getNodeByPublicKey(validator))
+            .filter(validator => validator !== undefined)
+            .filter(node => !this.network.isNodeFailing(node!)).length;
+
+        return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
+    }
 }
