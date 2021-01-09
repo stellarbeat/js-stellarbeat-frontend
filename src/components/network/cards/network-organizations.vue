@@ -39,14 +39,19 @@
         protected filter: string = '';
 
         get fields(): any {
-            if (this.store.isSimulation) {
-                return [{key: 'name', label: 'Node', sortable: true}];
-            } else {
-                return [
-                    {key: 'name', label: 'Node', sortable: true},
-                    {key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true}
-                ];
+            let fields = [
+                {key: 'name', label: 'Node', sortable: true},
+            ]
+            //@ts-ignore
+            fields.push();
+            if (!this.store.isSimulation) {
+                fields.push({key: 'subQuorum30DAvailability', label: '30D Availability', sortable: true});
             }
+
+            //@ts-ignore
+            fields.push({key: 'action', label: '', sortable: false, tdClass: 'action'});
+
+            return fields;
         }
 
         get store(): Store {

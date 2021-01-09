@@ -75,6 +75,9 @@
                 <a v-if="row.item.email" :href="'mailto:' + row.item.email"
                    class="" target="_blank">{{row.item.email}}</a>
             </template>
+            <template v-slot:cell(action)="data">
+                <organization-actions :organization="network.getOrganizationById(data.item.id)"></organization-actions>
+            </template>
         </b-table>
         <div class="d-flex justify-content-end m-1" v-show="organizations.length >= perPage">
             <b-pagination size="sm" limit="3" class="mb-0" :totalRows="totalRows" :per-page="perPage" v-model="currentPage"/>
@@ -89,10 +92,12 @@
     import Store from '@/store/Store';
 
     import {BBadge, BIconInfoCircle, BIconShield, BPagination, BTable, VBTooltip} from 'bootstrap-vue';
+    import OrganizationActions from '@/components/organization/sidebar/organization-actions.vue';
 
     @Component(
         {
             components: {
+                OrganizationActions,
                 BTable,
                 BPagination,
                 BIconShield: BIconShield,
