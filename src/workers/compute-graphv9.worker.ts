@@ -3,7 +3,6 @@ import {forceManyBody, forceSimulation, forceLink, forceX, forceY} from 'd3-forc
 const ctx: Worker = self as any;
 
 ctx.addEventListener('message', (event) => {
-    console.time("worker");
     const vertices = event.data.vertices;
     const edges = event.data.edges;
     const width = event.data.width;
@@ -39,7 +38,6 @@ ctx.addEventListener('message', (event) => {
         //ctx.postMessage({type: 'tick', progress: i / n});
         simulation.tick();
     }
-    console.timeEnd("worker");
     ctx.postMessage({type: 'end', vertices: vertices, edges: edges});
 });
 
