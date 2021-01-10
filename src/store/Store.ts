@@ -348,4 +348,15 @@ export default class Store {
 
         return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
     }
+
+    getDateFromParam(date: any) {
+        if (date === undefined || date=== null)
+            return false;
+
+        let timestamp = Date.parse(date);
+
+        if(!isNaN(timestamp))
+            return new Date(timestamp);
+        else return undefined;
+    }
 }

@@ -223,20 +223,18 @@
             if(networkId && this.store.availableNetworks.includes(networkId)){
                 this.store.networkId = networkId;
             }
-            if(this.store.network)
-                return;
-            await this.store.fetchData();
+            let timeAt = this.store.getDateFromParam(this.$route.query.at);
+            await this.store.fetchData(timeAt);
         }
 
         serverPrefetch () {
-            // return the Promise from the action
-            // so that the component waits before rendering
-            let networkId = this.$route.query.network;
+           let networkId = this.$route.query.network;
             if(networkId && this.store.availableNetworks.includes(networkId)){
                 this.store.networkId = networkId;
             }
+            let timeAt = this.store.getDateFromParam(this.$route.query.at);
 
-            return this.store.fetchData();
+            return this.store.fetchData(timeAt);
         }
 
         @Watch('$route', {immediate: false})
@@ -248,12 +246,11 @@
 
             if (networkId !== this.store.networkId) {
                 this.store.networkId = to.query.network;
-                await this.store.fetchData(); //the created hook does not have a filled up route object, so we need to handle it here...
+                await this.store.fetchData();
             }
 
             if (!this.network)
                 await this.store.fetchData();
-
         }
 
         get store() {
