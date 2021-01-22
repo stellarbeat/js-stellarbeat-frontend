@@ -50,7 +50,7 @@ export default class Store {
     public isTimeTravel: boolean = false;
     public timeTravelDate?:Date;
 
-    public includeWatcherNodes: boolean = true;
+    public includeWatcherNodes: boolean = false;
     public watcherNodeFilter = (node:Node) => {
         return this.includeWatcherNodes || node.isValidator
     };
