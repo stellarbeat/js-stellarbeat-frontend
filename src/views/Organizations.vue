@@ -89,7 +89,6 @@ import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
         get organizations(): any[] {
             return this.network.organizations
                 .map((organization) => {
-                    console.log(organization)
                     return {
                         name: organization.name,
                         validators: this.getValidators(organization),
