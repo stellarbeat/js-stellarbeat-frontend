@@ -48,6 +48,7 @@ export default class Store {
     public isHaltingAnalysisVisible: boolean = false;
     public isNetworkAnalysisVisible: boolean = false;
     public isTimeTravel: boolean = false;
+    public timeTravelDate?:Date;
 
     public includeWatcherNodes: boolean = true;
     public watcherNodeFilter = (node:Node) => {
@@ -147,7 +148,7 @@ export default class Store {
         return [];
     }
 
-    async fetchData(time?:Date): Promise<void> {
+    async fetchData(at?:Date): Promise<void> {
         this.fetchingDataFailed = false;
         if(this.isSimulation)
             this.changeQueue.reset();
@@ -170,12 +171,16 @@ export default class Store {
         this.isLocalNetwork = false;
         try {
             let params:any = {};
-            if(time){
-                params['at'] = time.toISOString();
+            if(at){
+                params['at'] = at.toISOString();
                 this.isTimeTravel = true;
+                this.timeTravelDate = at;
             }
-            else
+            else {
                 this.isTimeTravel = false;
+                this.timeTravelDate = undefined;
+            }
+
             this.isLoading = true;
             let result = await axios.get(this.getApiUrl() + '/v1', {params});
             if (result.data) {
@@ -351,12 +356,28 @@ export default class Store {
 
     getDateFromParam(date: any) {
         if (date === undefined || date=== null)
-            return false;
+            return undefined;
 
         let timestamp = Date.parse(date);
 
         if(!isNaN(timestamp))
             return new Date(timestamp);
         else return undefined;
+    }
+
+    copyAndModifyObject(
+        myObject: object,
+        propsToModifyOrAdd: {key: string, value:any}[] = [],
+        propsToDelete: string[] = [] ){
+
+        let copy:any = Object.assign({}, myObject);
+        propsToModifyOrAdd.forEach(prop => {
+            copy[prop.key] = prop.value;
+        })
+        propsToDelete.forEach(prop => {
+            delete copy[prop]
+        })
+
+        return copy;
     }
 }

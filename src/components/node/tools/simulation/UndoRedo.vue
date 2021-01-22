@@ -59,7 +59,7 @@
                 this.$router.push(
                     {
                         name: 'network-dashboard',
-                        query: {'no-scroll': '1', 'network': this.$route.query.network, 'view': this.$route.query.view}
+                        query: {'no-scroll': '1', 'network': this.$route.query.network, 'view': this.$route.query.view, 'at': this.$route.query.at}
                     },
                 );
             }

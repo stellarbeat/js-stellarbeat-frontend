@@ -12,7 +12,7 @@
                             </span>
                     <div class="mr-1">
                         <router-link
-                                :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view, 'network': $route.query.network}}">
+                                :to="{ name: 'node-dashboard', params: { 'publicKey': data.item.publicKey }, query: { 'center': '1' , 'view': $route.query.view, 'network': $route.query.network, 'at': $route.query.at}}">
                             {{ data.item.name }}
                         </router-link>
                     </div>
@@ -28,7 +28,7 @@
             </template>
             <template v-slot:cell(organization)="data">
                 <router-link v-if="data.item.organizationId"
-                             :to="{ name: 'organization-dashboard', params: { 'organizationId': data.item.organizationId, 'view': $route.query.view, 'network': $route.query.network }}">
+                             :to="{ name: 'organization-dashboard', params: { 'organizationId': data.item.organizationId, 'view': $route.query.view, 'network': $route.query.network, 'at': $route.query.at }}">
                     {{ data.item.organization}}
                 </router-link>
             </template>

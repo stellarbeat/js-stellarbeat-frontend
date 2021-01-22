@@ -8,7 +8,7 @@
                             <div class="d-flex justify-content-between w-100">
                                 <div class="d-flex">
                                     <router-link class="header-brand mr-0 mt-2"
-                                                 :to="{ name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }">
+                                                 :to="{ name: 'network-dashboard' }">
                                         <img src="./assets/logo.svg" width="27.833" height="32" class="header-brand-img" alt="stellarbeat.io">
                                     </router-link>
                                     <div class="d-none d-lg-flex" style="width: 264px"></div>
@@ -63,7 +63,7 @@
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
                                                      exact
-                                                     :to="{name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network} }"
+                                                     :to="{name: 'network-dashboard', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }"
                                                      :class="homeActiveClass">
                                             <b-icon-house class="mr-1" scale="0.9"/>
                                             Home
@@ -71,7 +71,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" exact-active-class="active" class="nav-link"
-                                                     :to="{ name: 'nodes', query: { view: $route.query.view, network: $route.query.network} }"
+                                                     :to="{ name: 'nodes', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }"
                                                      exact>
                                             <b-icon-bullseye class="mr-1" scale="0.9"/>
                                             Nodes
@@ -79,7 +79,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'organizations', query: { view: $route.query.view, network: $route.query.network} }"
+                                                     :to="{ name: 'organizations', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }"
                                                      exact>
                                             <b-icon-building class="mr-1" scale="0.9"/>
                                             Organizations
@@ -93,14 +93,14 @@
                                   </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'api', query: { view: $route.query.view, network: $route.query.network} }">
+                                                     :to="{ name: 'api', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }">
                                             <b-icon-code class="mr-1" scale="0.9"/>
                                             API
                                         </router-link>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'faq', query: { view: $route.query.view, network: $route.query.network} }">
+                                                     :to="{ name: 'faq', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }">
                                             <b-icon-question-circle class="mr-1" scale="0.9"/>
                                             FAQ
                                         </router-link>
@@ -136,7 +136,7 @@
             <div class="container-fluid" style="max-width: 1360px;">
             <div class="d-flex justify-content-between mx-4">
                 <router-link active-class="active" class="nav-link"
-                             :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network} }"
+                             :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }"
                              exact> Terms and Conditions
                 </router-link>
                 <div class="nav-item d-none d-lg-flex pr-0">
@@ -180,6 +180,7 @@
         BDropdownItem,
         BIconNewspaper
     } from 'bootstrap-vue';
+    import Store from '@/store/Store';
 
     @Component({
         name: 'app',
@@ -220,7 +221,7 @@
 
         async created(){
             let networkId = this.$route.query.network;
-            if(networkId && this.store.availableNetworks.includes(networkId)){
+            if('string' === typeof networkId && this.store.availableNetworks.includes(networkId)){
                 this.store.networkId = networkId;
             }
             let timeAt = this.store.getDateFromParam(this.$route.query.at);
@@ -229,7 +230,7 @@
 
         serverPrefetch () {
            let networkId = this.$route.query.network;
-            if(networkId && this.store.availableNetworks.includes(networkId)){
+            if('string' === typeof networkId && this.store.availableNetworks.includes(networkId)){
                 this.store.networkId = networkId;
             }
             let timeAt = this.store.getDateFromParam(this.$route.query.at);
@@ -239,21 +240,26 @@
 
         @Watch('$route', {immediate: false})
         async onRouteChanged(to: any) {
-            let networkId = to.query.network;
+            let networkId = this.store.networkId;
+            let timeTravelDate = this.store.getDateFromParam(to.query.at);
+            let timeTravel = false;
+            if(!timeTravelDate && this.store.isTimeTravel)//time travel reset
+                timeTravel = true;
+            if(timeTravelDate && !this.store.timeTravelDate)
+                timeTravel = true;
+            if(timeTravelDate && this.store.timeTravelDate && timeTravelDate.getTime() !== this.store.timeTravelDate.getTime())
+                timeTravel = true;
 
-            if (!this.store.availableNetworks.includes(to.query.network))
-                networkId = 'public';
+            if (this.store.availableNetworks.includes(to.query.network))
+                networkId = to.query.network;
 
-            if (networkId !== this.store.networkId) {
-                this.store.networkId = to.query.network;
-                await this.store.fetchData();
+            if (networkId !== this.store.networkId || timeTravel) {
+                this.store.networkId = networkId;
+                await this.store.fetchData(timeTravel ? timeTravelDate : undefined);
             }
-
-            if (!this.network)
-                await this.store.fetchData();
         }
 
-        get store() {
+        get store(): Store {
             return this.$root.$data.store;
         }
 

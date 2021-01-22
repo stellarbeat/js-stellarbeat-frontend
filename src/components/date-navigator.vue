@@ -125,10 +125,16 @@
             return this.$root.$data.store;
         }
 
-        async timeTravel() {
-            this.store.isLoading = true;
-            await this.store.fetchData(this.datePickerDate);
-            this.store.isLoading = false;
+        timeTravel() {
+            let query = this.store.copyAndModifyObject(this.$route.query, [{key: 'at', value: this.datePickerDate.toISOString()}])
+            this.$router.push(
+                {
+                    name: this.$route.name ? this.$route.name : undefined,
+                    params: this.$route.params,
+                    query: query
+                },
+            );
+
         }
 
         public async created() {

@@ -14,7 +14,7 @@
                                         </span>
 
                             <router-link
-                                    :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view, 'network': $route.query.network}}">
+                                    :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view, 'network': $route.query.network}, 'at': $route.query.at}">
                                 {{ validator.displayName | truncate(30)}}
                             </router-link>
                             <span v-if="!validator.active"
@@ -48,7 +48,7 @@
                         </span>
                     <div class="mr-1">
                         <router-link
-                                :to="{ name: 'organization-dashboard', params: { 'organizationId': row.item.id}, query: {'view': $route.query.view, 'network': $route.query.network }}">
+                                :to="{ name: 'organization-dashboard', params: { 'organizationId': row.item.id}, query: {'view': $route.query.view, 'network': $route.query.network, 'at': $route.query.at }}">
                             {{ row.item.name}}
                         </router-link>
                     </div>

@@ -104,7 +104,7 @@ export default class Dashboard extends Vue {
                 this.$router.push(
                     {
                         name: 'network-dashboard',
-                        query: {view: this.$route.query.view, network: this.$route.query.network}
+                        query: {view: this.$route.query.view, network: this.$route.query.network, 'at': this.$route.query.at}
                     },
                 );
             }
@@ -116,7 +116,7 @@ export default class Dashboard extends Vue {
                 this.$router.push(
                     {
                         name: 'network-dashboard',
-                        query: {view: this.$route.query.view, network: this.$route.query.network}
+                        query: {view: this.$route.query.view, network: this.$route.query.network, 'at': this.$route.query.at}
                     },
                 );
             }

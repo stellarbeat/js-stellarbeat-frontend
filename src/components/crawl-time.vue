@@ -42,13 +42,18 @@ export default class CrawlTime extends Vue {
         return this.$root.$data.store;
     }
 
-    public async timeTravel() {
-        this.store.isLoading = true;
-        await this.store.fetchData(
-            moment(this.crawlDate).hours(Number(this.crawlTime.substr(0, 2))).minutes(Number(this.crawlTime.substr(3, 2))).toDate()
+    public timeTravel() {
+        this.$router.push(
+            {
+                name: this.$route.name ? this.$route.name : undefined,
+                params: this.$route.params,
+                query: {
+                    'view': this.$route.query.view, 'no-scroll': '1', 'network': this.$route.query.network,
+                    'at': moment(this.crawlDate).hours(Number(this.crawlTime.substr(0, 2))).minutes(Number(this.crawlTime.substr(3, 2))).toISOString()
+                },
+            },
         );
-        this.store.isLoading = false;
-    }
+   }
 }
 </script>
 

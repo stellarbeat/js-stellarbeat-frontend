@@ -18,7 +18,7 @@
                         <div class="d-flex align-items-center ml-2">
                             <div class="mr-1">
                                 <router-link
-                                        :to="{ name: 'organization-dashboard', params: { organizationId: snapshot.organization.id }, query: {network: $route.query.network}}">
+                                        :to="{ name: 'organization-dashboard', params: { organizationId: snapshot.organization.id }, query: {network: $route.query.network, 'at': $route.query.at}}">
                                     {{snapshot.organization.name}}
                                 </router-link>
                             </div>

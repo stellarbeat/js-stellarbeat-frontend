@@ -93,7 +93,8 @@ export default class ValidatorsDropdown extends Mixins(DropdownMixin) {
                 'center': '1',
                 'no-scroll': '0',
                 'view': this.$route.query.view,
-                'network': this.$route.query.network
+                'network': this.$route.query.network,
+                'at': this.$route.query.at
             },
         });
     }

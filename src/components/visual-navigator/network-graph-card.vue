@@ -101,7 +101,7 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
                         'center': '0',
                         'no-scroll': '1',
                         'view': this.$route.query.view,
-                        'network': this.$route.query.network
+                        'network': this.$route.query.network, 'at': this.$route.query.at
                     },
                 },
             );
@@ -117,7 +117,7 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
                         'center': '0',
                         'no-scroll': '1',
                         'view': this.$route.query.view,
-                        'network': this.$route.query.network
+                        'network': this.$route.query.network, 'at': this.$route.query.at
                     },
                 },
             );

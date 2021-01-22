@@ -72,7 +72,7 @@ export default class OrganizationsDropdown extends Mixins(DropdownMixin) {
         this.$router.push({
             name: 'organization-dashboard',
             params: {organizationId: organization.id},
-            query: {view: this.$route.query.view, 'no-scroll': '0', 'network': this.$route.query.network}
+            query: {view: this.$route.query.view, 'no-scroll': '0', 'network': this.$route.query.network, 'at': this.$route.query.at}
         });
     }
 

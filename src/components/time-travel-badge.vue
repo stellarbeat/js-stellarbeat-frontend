@@ -7,29 +7,34 @@
     </span>
 </template>
 <script lang="ts">
-    import Store from '@/store/Store';
-    import {BIconX} from 'bootstrap-vue';
+import Store from '@/store/Store';
+import Vue from 'vue';
+import {BIconX} from 'bootstrap-vue';
+import {Component} from 'vue-property-decorator';
 
-    export default {
-        name: 'time-travel-badge',
-        components: {BIconX: BIconX},
-        computed: {
-            store():Store {
-                return (this as any).$root.$data.store;
-            }
-        },
-        methods: {
-            async resetTimeTravel() {
-                (this as any).$root.$data.store.isLoading = true;
-                await (this as any).$root.$data.store.fetchData();
-                (this as any).$root.$data.store.isLoading = false;
-            }
-        }
-    };
+@Component({
+    components: { BIconX: BIconX }
+})
+export default class TimeTravelBadge extends Vue {
+    get store(): Store {
+        return (this as any).$root.$data.store;
+    }
+
+    resetTimeTravel() {
+        let query = this.store.copyAndModifyObject(this.$route.query, [], ['at']);
+        this.$router.push(
+            {
+                name: this.$route.name ? this.$route.name : undefined,
+                params: this.$route.params,
+                query: query
+            },
+        );
+    }
+}
 </script>
 <style scoped>
 
-    .tag-close-btn {
-        text-decoration: none;
-    }
+.tag-close-btn {
+    text-decoration: none;
+}
 </style>

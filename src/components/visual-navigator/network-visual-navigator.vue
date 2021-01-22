@@ -9,20 +9,20 @@
                     <h6 class="sb-navbar-heading mt-3 ml-0 pl-0">View</h6>
                     <div class="mt-3">
                         <ul style="list-style: none" class="pl-0">
-                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1', 'network': $route.query.network}}"
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph', 'no-scroll': '1', 'network': $route.query.network, 'at': $route.query.at}}"
                                          :class="['graph', undefined].includes($route.query.view) &&'router-link-exact-active'"
                                          class="pl-3 mb-1 view-link"
                                          v-on:click.native="menuVisible = false" role="button"
                                          tabindex="0">
                                 Node trust graph
                             </router-link>
-                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph-org', 'no-scroll': '1', 'network': $route.query.network}}"
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'graph-org', 'no-scroll': '1', 'network': $route.query.network, 'at': $route.query.at}}"
                                          :class="['graph-org'].includes($route.query.view) &&'router-link-exact-active'"
                                          class="pl-3 mb-1 view-link"
                                          v-on:click.native="menuVisible = false" role="button" tabindex="0">
                                 Organization trust graph
                             </router-link>
-                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1', 'network': $route.query.network}}"
+                            <router-link tag="li" :to="{path: $route.path, query: {'view': 'map', 'no-scroll': '1', 'network': $route.query.network, 'at': $route.query.at}}"
                                          v-on:click.native="menuVisible = false"
                                          class="pl-3 mb-1 view-link"
                                          role="button" tabindex="0"
@@ -157,7 +157,7 @@
             let crumbs = [];
             crumbs.push({
                 text: this.store.getNetworkIdPretty(),
-                to: {name: 'network-dashboard', query: {view: this.$route.query.view, 'network': this.$route.query.network}}
+                to: {name: 'network-dashboard', query: {view: this.$route.query.view, 'network': this.$route.query.network, 'at': this.$route.query.at}}
             });
 
             if (this.selectedNode) {
@@ -167,7 +167,7 @@
                         to: {
                             name: 'organization-dashboard',
                             params: {'organizationId': this.selectedNode.organizationId},
-                            query: {'view': this.$route.query.view, 'network': this.$route.query.network}
+                            query: {'view': this.$route.query.view, 'network': this.$route.query.network, 'at': this.$route.query.at}
                         },
                         active: false
                     });
@@ -189,7 +189,7 @@
                 {
                     name: this.$route.name ? this.$route.name : undefined,
                     params: this.$route.params,
-                    query: {'view': toView, 'no-scroll': '1', 'network': this.$route.query.network},
+                    query: {'view': toView, 'no-scroll': '1', 'network': this.$route.query.network, 'at': this.$route.query.at},
                 },
             );
         }
