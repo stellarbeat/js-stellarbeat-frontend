@@ -5,8 +5,9 @@
         </template>
         <template v-slot:sub-title>
                 {{organizationType}}
-                <b-badge v-if="!selectedOrganization.subQuorumAvailable" variant="danger"
-                         v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing
+                <b-badge v-if="network.isOrganizationFailing(selectedOrganization)" variant="danger"
+                         v-b-tooltip:hover="store.getOrganizationDangers(selectedOrganization)">
+                    {{network.isOrganizationBlocked(selectedOrganization) ? 'Blocked': 'Failing' }}
                 </b-badge>
         </template>
         <template v-slot:explore-list-items>
@@ -20,6 +21,14 @@
             </li>
         </template>
         <template v-slot:tool-list-items>
+            <li class="sb-nav-item" v-if="!network.isOrganizationBlocked(selectedOrganization)">
+                <nav-link
+                    :title="selectedOrganization.subQuorumAvailable ? 'Halt this organization' : 'Start validating'"
+                    :show-icon="true"
+                    :icon="selectedOrganization.subQuorumAvailable ? 'lightning-fill' : 'lightning'"
+                    v-on:click="store.toggleOrganizationAvailability(selectedOrganization)"
+               />
+            </li>
             <li class="sb-nav-item">
                 <nav-link
                         :title="'Stellar core config'"
