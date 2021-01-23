@@ -10,13 +10,8 @@
                 <g ref="grid">
 
                     <g v-if="!isLoading">
-                        <graph-strongly-connected-component
-                            :greatest="true"
-                            :vertex-coordinates="viewGraph.transitiveQuorumSetCoordinates"
-                        />
-                        <graph-strongly-connected-component v-if="!optionTransitiveQuorumSetOnly" :key="index"
-                                                            v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
-                                                            :vertex-coordinates="sccCoordinates"/>
+
+
 
                         <path class="edge"
                               v-for="edge in viewGraph.regularEdges.filter(edge => (!edge.isFailing || optionShowFailingEdges) && (edge.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly))"
@@ -44,6 +39,13 @@
                                   v-bind:d="getEdgePath(edge)"
                             />
                         </g>
+                        <graph-strongly-connected-component
+                            :greatest="true"
+                            :vertex-coordinates="viewGraph.transitiveQuorumSetCoordinates"
+                        />
+                        <graph-strongly-connected-component v-if="!optionTransitiveQuorumSetOnly" :key="index"
+                                                            v-for="(sccCoordinates, index) in viewGraph.stronglyConnectedComponentCoordinates"
+                                                            :vertex-coordinates="sccCoordinates"/>
                         <g :transform="getVertexTransform(vertex)" class="vertex" style="cursor: pointer;"
                            v-for="vertex in Array.from(viewGraph.viewVertices.values()).filter(vertex => vertex.isPartOfTransitiveQuorumSet || !optionTransitiveQuorumSetOnly)"
                         v-on:click="vertexSelected(vertex)">
@@ -293,13 +295,13 @@ path.failing {
 path.outgoing {
     stroke: #fec601;
     stroke-opacity: 0.9;
-    stroke-width: 2px;
+    stroke-width: 1.3px;
 }
 
 path.incoming {
     stroke: #73bfb8;
     stroke-opacity: 0.9;
-    stroke-width: 2px;
+    stroke-width: 1.3px;
 }
 circle.active {
     fill: #1997c6;

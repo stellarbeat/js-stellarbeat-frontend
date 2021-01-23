@@ -32,12 +32,12 @@
                     </div>
                     <h6 class="sb-navbar-heading mt-3 ml-0 pl-0" v-if="view === 'graph' || view === 'graph-org'">Options</h6>
                     <div v-if="view === 'graph' || view === 'graph-org'">
-                        <b-form-checkbox v-model="optionHighlightTrustedNodes" v-show="selectedNode"
+                        <b-form-checkbox v-model="optionHighlightTrustedNodes" v-show="selectedNode || selectedOrganization"
                                          class="sb-nav-item sb-nav-toggle mt-1"
                                          switch>
                             Highlight trusted nodes
                         </b-form-checkbox>
-                        <b-form-checkbox v-model="optionHighlightTrustingNodes" v-show="selectedNode"
+                        <b-form-checkbox v-model="optionHighlightTrustingNodes" v-show="selectedNode || selectedOrganization"
                                          class="sb-nav-item sb-nav-toggle mt-1"
                                          switch>
                             Highlight trusting nodes
