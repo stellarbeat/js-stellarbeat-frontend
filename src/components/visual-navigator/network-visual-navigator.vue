@@ -225,7 +225,7 @@
     }
 
     .sb-card-fullscreen {
-        z-index: 2;
+        z-index: 4;
         height: 100%!important;
     }
 
