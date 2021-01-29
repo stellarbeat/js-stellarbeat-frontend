@@ -26,26 +26,26 @@
                        v-b-tooltip.hover :title="organization.url"
                        class="social-link"
                        target="_blank">
-                        <b-icon-link/>
+                        <b-icon-link scale="1.4"/>
                     </a>
                 </li>
                 <li v-if="organization.physicalAddress" class="list-inline-item">
                     <a :href="'https://www.google.com/maps/search/?api=1&query=' + organization.physicalAddress"
                        target="_blank" class="social-link" v-b-tooltip.hover
                        :title="organization.physicalAddress">
-                        <b-icon-map/>
+                        <b-icon-map scale="1.2"/>
                     </a>
                 </li>
                 <li v-if="organization.officialEmail" class="list-inline-item">
                     <a class="social-link" v-b-tooltip.hover :title="organization.officialEmail"
                        :href="'mailto:' + organization.officialEmail" target="_blank">
-                        <b-icon-envelope/>
+                        <b-icon-envelope scale="1.2"/>
                     </a>
                 </li>
                 <li v-if="organization.phoneNumber" class="list-inline-item">
                     <a class="social-link" v-b-tooltip.hover :title="organization.phoneNumber"
                        :href="'tel:' + organization.phoneNumber" target="_blank">
-                        <b-icon-phone/>
+                        <b-icon-phone scale="1.2"/>
                     </a>
                 </li>
                 <li v-if="organization.twitter" class="list-inline-item">
@@ -66,7 +66,15 @@
                        v-b-tooltip.hover title="Keybase"
                        target="_blank" class="social-link"
                     >
-                        <img class="mb-2" width="16px" src="../../../assets/keybase-brands-grey.svg">
+                        <img class="mb-2" width="19px" src="../../../assets/keybase-brands-grey.svg">
+                    </a>
+                </li>
+                <li v-if="organization.horizonUrl" class="list-inline-item">
+                    <a :href="organization.horizonUrl"
+                       v-b-tooltip.hover title="Horizon"
+                       target="_blank" class="social-link"
+                    >
+                        <stellar/>
                     </a>
                 </li>
             </ul>
@@ -91,10 +99,12 @@
     import Github from '@/components/organization/logo/github.vue';
     import Twitter from '@/components/organization/logo/twitter.vue';
     import {BAlert, BBadge, BIconExclamationCircle, BIconLink, BIconMap, BIconShield, VBTooltip, BIconEnvelope} from 'bootstrap-vue';
+    import Stellar from '@/components/organization/logo/stellar.vue';
 
 
     @Component({
         components: {
+            Stellar,
             Twitter,
             Github,
             BAlert: BAlert,

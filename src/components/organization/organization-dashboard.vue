@@ -4,20 +4,20 @@
             <div class="row row-cards row-deck" v-if="!store.isSimulation">
                 <LazyHydrate when-visible>
 
-                    <div class="col-md-12 col-lg-6 col-xl-4">
+                    <div class="col-12">
                         <organization-profile :organization="organization"/>
                     </div>
                 </LazyHydrate>
                 <LazyHydrate when-visible>
 
-                    <div class="col-md-12 col-lg-6 col-xl-4" v-if="!store.isSimulation">
+                    <div class="col-md-12 col-lg-6" v-if="!store.isSimulation">
                         <OrganizationStatisticsSubQuorum24hAvailability :organization="organization"/>
                         <OrganizationStatisticsSubQuorum30DAvailability :organization="organization"/>
                     </div>
                 </LazyHydrate>
                 <LazyHydrate when-visible>
 
-                    <div class="col-md-12 col-lg-12 col-xl-4" v-if="!store.isSimulation">
+                    <div class="col-md-12 col-lg-6" v-if="!store.isSimulation">
                         <history-card
                             :subject="'Availability history'"
                             :entityId="organization.id"
