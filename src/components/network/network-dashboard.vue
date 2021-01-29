@@ -69,6 +69,11 @@
                 </div>
             </LazyHydrate>
 
+            <LazyHydrate when-visible>
+                <div class="col-lg-6 col-12">
+                    <network-horizon/>
+                </div>
+            </LazyHydrate>
         </div>
     </div>
 </template>
@@ -90,9 +95,11 @@ import NetworkValidatorUpdates from '@/components/network/cards/network-validato
 import NetworkOrganizationUpdates from '@/components/network/cards/network-organization-updates.vue';
 import Store from '@/store/Store';
 import LazyHydrate from 'vue-lazy-hydration';
+import NetworkHorizon from '@/components/network/cards/network-horizon.vue';
 
 @Component({
     components: {
+        NetworkHorizon,
         NetworkOrganizationUpdates,
         LazyHydrate,
         NetworkValidatorUpdates,
