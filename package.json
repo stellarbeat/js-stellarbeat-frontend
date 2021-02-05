@@ -18,7 +18,7 @@
     "@sentry/integrations": "^5.28.0",
     "@sentry/node": "^5.28.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellar-domain": "^2.13.0",
+    "@stellarbeat/js-stellar-domain": "^2.14.0",
     "axios": "^0.21.1",
     "bootstrap-vue": "2.21.2",
     "chart.js": "^2.9.3",
