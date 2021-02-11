@@ -5,11 +5,8 @@
         </template>
         <template v-slot:sub-title>
             {{nodeType}}
-            <b-badge v-show="!selectedNode.isValidating" variant="danger"
-                     style="vertical-align: bottom" v-b-tooltip="'Node not validating'">Failing
-            </b-badge>
-            <b-badge variant="danger" v-show="network.isValidatorBlocked(selectedNode)" v-b-tooltip="'Quorumset not reaching threshold'" style="vertical-align: bottom">
-               Blocked
+            <b-badge v-if="network.isNodeFailing(selectedNode)" variant="danger"
+                     style="vertical-align: bottom" v-b-tooltip="store.getNodeFailingReason(selectedNode).description">{{store.getNodeFailingReason(selectedNode).label}}
             </b-badge>
         </template>
         <template v-slot:explore-list-items>

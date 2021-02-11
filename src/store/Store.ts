@@ -345,7 +345,7 @@ export default class Store {
         }
     }
     getNodeFailingReason(node: Node): {label: string, description: string}|undefined{
-        if(!node.active)
+        if(!node.active && !node.isValidator)
             return {
                 label: 'Missing',
                 description: 'Unable to connect to node in latest crawl'

@@ -11,7 +11,7 @@
                 :secondary="!isRoot"
                 :has-warnings="hasWarnings"
                 :warnings="'Not all history archives up-to-date'"
-                :has-danger="network.isQuorumSetFailing(store.selectedNode, quorumSet)"
+                :has-danger="network.isQuorumSetBlocked(store.selectedNode, quorumSet)"
                 :dangers="quorumSet.hasValidators() ? 'Quorumset not reaching threshold' : 'Quorumset not yet detected by crawler'"
         >
             <template v-slot:action-dropdown>
@@ -30,7 +30,7 @@
                     :title="getDisplayName(validator)"
                     :isLinkInDropdown="true"
                     :has-danger="network.isNodeFailing(validator)"
-                    :dangers="'Node not validating ' + (network.isQuorumSetFailing(validator) ? ': quorumset not reaching threshold' : '')"
+                    :dangers="'Node not validating ' + (network.isQuorumSetBlocked(validator) ? ': quorumset not reaching threshold' : '')"
                     :has-warnings="validator.historyUrl && !validator.isFullValidator"
                     warnings="History archive not up-to-date"
             >
