@@ -16,15 +16,10 @@
                             {{ data.item.name }}
                         </router-link>
                     </div>
-                    <b-badge variant="danger" v-b-tooltip="'Node not validating'"
-                             v-if="network.getNodeByPublicKey(data.item.publicKey).isValidator && !network.getNodeByPublicKey(data.item.publicKey).isValidating">
-                        Failing
+                    <b-badge v-if="network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))" variant="danger" v-b-tooltip="store.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).description">
+                        {{store.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).label}}
                     </b-badge>
-                    <b-badge variant="danger" v-b-tooltip="'Quorumset not reaching threshold'"
-                             v-if="network.isValidatorBlocked(network.getNodeByPublicKey(data.item.publicKey))">
-                        Blocked
-                    </b-badge>
-                </div>
+               </div>
             </template>
             <template v-slot:cell(organization)="data">
                 <router-link v-if="data.item.organizationId"

@@ -344,6 +344,25 @@ export default class Store {
             return 'More then 50% of its validators are failing';
         }
     }
+    getNodeFailingReason(node: Node): {label: string, description: string}|undefined{
+        if(!node.active)
+            return {
+                label: 'Missing',
+                description: 'Unable to connect to node in latest crawl'
+                };
+
+        if(node.isValidator && this.network.isNodeMissing(node))
+            return {
+                label: 'Missing',
+                description: 'Not validating in latest crawl'
+                };
+
+        if(node.isValidator && this.network.isValidatorBlocked(node))
+            return {
+                label: 'Blocked',
+                description: 'Quorumset not reaching threshold'
+                }
+    }
     //todo: move
     getOrganizationFailAt(organization: Organization) {
         let nrOfValidatingNodes = organization.validators
