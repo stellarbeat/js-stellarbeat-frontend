@@ -3,7 +3,7 @@
         <div class="card-body py-0 d-flex flex-column justify-content-center align-items-center">
             <h3 class="mt-5 mb-4 text-center d-flex align-items-start">
                 <full-validator-title :node="node"/>
-                <b-badge v-show="network.isNodeFailing(node)" variant="danger" class="ml-1">Failing</b-badge>
+                <b-badge v-show="network.isNodeFailing(node)" variant="danger" class="ml-1" v-b-tooltip:hover.top="store.getNodeFailingReason(node).description">{{store.getNodeFailingReason(node).label}}</b-badge>
             </h3>
             <table class="table card-table">
                 <tbody>

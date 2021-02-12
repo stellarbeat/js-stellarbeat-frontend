@@ -122,6 +122,7 @@
 
             <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px;">
                 <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
+                <b-alert :show="store.isLocalNetwork" variant="info">Learn more about the demo networks <a href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e">here!</a></b-alert>
                 <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
                     <div class="loader"></div>
                 </div>

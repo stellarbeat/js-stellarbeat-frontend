@@ -15,7 +15,7 @@
                     :title="getDisplayName(validator)"
                     :is-link-in-dropdown="true"
                     :has-danger="network.isNodeFailing(validator)"
-                    :dangers="validator.isValidating ? 'Node blocked: quorumset not reaching threshold' : 'Node not validating '"
+                    :dangers="store.getNodeFailingReason(validator).description"
                     :has-warnings="validator.historyUrl && !validator.isFullValidator"
                     warnings="History archive not up-to-date"
             >

@@ -23,7 +23,7 @@
                         :has-warnings="hasWarnings(node)"
                         :warnings="warnings()"
                         :has-danger="network.isNodeFailing(node)"
-                        :dangers="!node.isValidating ?'Node not validating' : 'Node blocked: not reaching quorumset threshold'"
+                        :dangers="store.getNodeFailingReason(node).label"
                     >
                         <template v-slot:action-dropdown>
                             <node-actions :node="node"/>

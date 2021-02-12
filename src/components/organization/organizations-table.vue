@@ -17,13 +17,11 @@
                                     :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view, 'network': $route.query.network}, 'at': $route.query.at}">
                                 {{ validator.displayName | truncate(30)}}
                             </router-link>
-                            <span v-if="!validator.active"
-                                  class="badge sb-badge badge-danger ml-1"
-                            >Not active</span>
                             <span v-if="network.isNodeFailing(validator)"
                                   class="badge sb-badge badge-danger ml-1"
-                            >{{network.isValidatorBlocked(validator) ? 'Blocked': 'Failing'}}
-                </span></div>
+                                  v-b-tooltip:hover="store.getNodeFailingReason(validator).description"
+                            >{{store.getNodeFailingReason(validator).label}}</span>
+                </div>
                     </li>
                 </ul>
             </template>
