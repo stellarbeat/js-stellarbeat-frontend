@@ -23,6 +23,7 @@
                             :has-warnings="hasWarnings"
                             :warnings="warnings"
                             :has-danger="hasDanger"
+                            :complete-danger="completeDanger"
                             :danger="dangers"
                         />
                     </div>
@@ -91,6 +92,10 @@ export default class NavLink extends Vue {
 
     @Prop({default: false})
     hasDanger!: boolean;
+
+    //do we want the title also red
+    @Prop({default:true})
+    completeDanger!: boolean;
 
     @Prop()
     dangers!: string;

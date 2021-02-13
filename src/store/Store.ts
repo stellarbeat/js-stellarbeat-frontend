@@ -336,6 +336,24 @@ export default class Store {
         return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
+    someNodesHaveWarnings(nodes:Node[]){
+        return nodes.some(node => this.nodeHasWarnings(node));
+    }
+
+    nodeHasWarnings(node:Node){
+        return this.isFullValidatorWithOutOfDateArchive(node);
+    }
+
+    getNodeWarningReasons(node:Node){
+        if(this.isFullValidatorWithOutOfDateArchive(node))
+            return 'History archive not up-to-date';
+
+        return 'None';
+    }
+
+    isFullValidatorWithOutOfDateArchive(node: Node){
+        return node.historyUrl && !node.isFullValidator;
+    }
     //todo: needs better location
     getOrganizationDangers(organization: Organization){
         if(this.network.isOrganizationBlocked(organization)){

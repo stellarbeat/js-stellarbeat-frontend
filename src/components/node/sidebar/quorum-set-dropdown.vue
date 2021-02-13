@@ -10,9 +10,9 @@
                 :drop-down-showing="showing"
                 :secondary="!isRoot"
                 :has-warnings="hasWarnings"
-                :warnings="'Not all history archives up-to-date'"
+                :warnings="quorumSetWarnings"
                 :has-danger="network.isQuorumSetBlocked(store.selectedNode, quorumSet)"
-                :dangers="quorumSet.hasValidators() ? 'Quorumset not reaching threshold' : 'Quorumset not yet detected by crawler'"
+                :dangers="quorumSetDangers"
         >
             <template v-slot:action-dropdown>
                 <quorum-set-actions
@@ -31,7 +31,7 @@
                     :isLinkInDropdown="true"
                     :has-danger="network.isNodeFailing(validator)"
                     :dangers="'Node not validating ' + (network.isQuorumSetBlocked(validator) ? ': quorumset not reaching threshold' : '')"
-                    :has-warnings="validator.historyUrl && !validator.isFullValidator"
+                    :has-warnings="store.nodeHasWarnings(validator)"
                     warnings="History archive not up-to-date"
             >
 
@@ -72,17 +72,53 @@
         @Prop({default: 0})
         protected level!: number;
 
-        get hasWarnings() {
+        //checks one level of inner quorumsets
+        get quorumSetHasFailingValidators(){
             return this.quorumSet.validators
                 .map(validator => this.network.getNodeByPublicKey(validator)!)
-                .some(validator => validator.historyUrl && !validator.isFullValidator)
+                .some(validator => this.network.isNodeFailing(validator)) ||
+                this.quorumSet.innerQuorumSets.some(quorumSet => {
+                    return quorumSet.validators
+                        .map(validator => this.network.getNodeByPublicKey(validator)!)
+                        .some(validator => this.network.isNodeFailing(validator))
+                })
+        }
+
+        get quorumSetDangers(){
+            if(!this.quorumSet.hasValidators())
+                return 'Quorumset not yet detected by crawler';
+
+            if(this.network.isQuorumSetBlocked(this.store.selectedNode!, this.quorumSet))
+                return 'Quorumset not reaching threshold';
+
+            return 'None';
+        }
+
+        get quorumSetWarnings(){
+            if(this.quorumSetHasFailingValidators)
+                return 'Some validators are failing';
+
+            if(this.hasWarnings)
+                return 'Some history archives are out-of-date';
+        }
+
+        //checks one level of inner quorumSets
+        get hasWarnings() {
+            return this.quorumSet.validators
+                .map(validator => this.network.getNodeByPublicKey(validator))
+                .some(validator => this.store.nodeHasWarnings(validator) || this.network.isNodeFailing(validator))
+                ||
+                this.quorumSet.innerQuorumSets.some(quorumSet => {
+                    return quorumSet.validators
+                        .map(validator => this.network.getNodeByPublicKey(validator))
+                        .some(validator => this.store.nodeHasWarnings(validator) || this.network.isNodeFailing(validator))
+                })
         }
 
         get classObject():any {
             return {
                 'pl-3': this.level === 1,
                 'pl-4': this.level === 2
-
             }
         }
         get title(): string {
