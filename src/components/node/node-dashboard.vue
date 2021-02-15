@@ -1,5 +1,11 @@
 <template>
     <div v-if="selectedNode">
+        <b-alert :show="network.isNodeFailing(selectedNode)" variant="danger">
+            {{network.getNodeFailingReason(selectedNode).description}}
+        </b-alert>
+        <b-alert :show="network.nodeHasWarnings(selectedNode)" variant="warning">
+            {{network.getNodeWarningReasons(selectedNode)}}
+        </b-alert>
         <div class="row row-cards row-deck" v-if="!store.isSimulation">
             <LazyHydrate when-visible>
 
@@ -156,6 +162,10 @@ import NodeStatistics30DActive from '@/components/node/node-cards/statistics/nod
 import NodeTrustedBy from '@/components/node/node-cards/node-trusted-by.vue';
 import NodeLatestUpdates from '@/components/node/node-cards/node-latest-updates.vue';
 import LazyHydrate from 'vue-lazy-hydration';
+import {
+    BAlert,
+} from 'bootstrap-vue';
+import {Network, QuorumSetService} from '@stellarbeat/js-stellar-domain';
 
 @Component({
     components: {
@@ -169,7 +179,8 @@ import LazyHydrate from 'vue-lazy-hydration';
         NodeStatistics24HValidating,
         NodeQuorumSetValidators,
         NodeExtraInfo, NodeInfo, HistoryCard,
-        LazyHydrate
+        LazyHydrate,
+        BAlert
     }
 })
 
@@ -177,6 +188,10 @@ export default class NodeDashboard extends Vue {
 
     get store(): Store {
         return this.$root.$data.store;
+    }
+
+    get network(): Network {
+        return this.store.network;
     }
 
     get selectedNode() {

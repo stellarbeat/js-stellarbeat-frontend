@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-body py-0 d-flex justify-content-center align-items-center">
+        <div class="card-body py-0 d-flex align-items-center">
             <table class="table card-table">
                 <tbody>
                 <tr class="text-gray ">

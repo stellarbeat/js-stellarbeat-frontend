@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-body py-0 d-flex flex-column justify-content-center align-items-center">
+        <div class="card-body py-0 d-flex flex-column align-items-center">
             <h3 class="mt-5 mb-4 text-center d-flex align-items-start">
                 <full-validator-title :node="node"/>
                 <b-badge v-show="network.isNodeFailing(node)" variant="danger" class="ml-1" v-b-tooltip:hover.top="network.getNodeFailingReason(node).description">{{network.getNodeFailingReason(node).label}}</b-badge>
@@ -38,9 +38,6 @@
                 </tbody>
             </table>
         </div>
-        <b-alert class="card-alert" :show="this.node.historyUrl && !this.node.isFullValidator" variant="warning">
-            <b-icon-exclamation-triangle/> History archive not up-to-date
-        </b-alert>
     </div>
 </template>
 <script lang="ts">
@@ -48,8 +45,6 @@
     import Vue from 'vue';
     import {Network, Node} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
-    import Chart from 'chart.js';
-    import Gauge from '@/components/charts/gauge.vue';
     import {
         BAlert,
         BBadge,
