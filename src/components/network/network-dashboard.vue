@@ -69,7 +69,7 @@
                 </div>
             </LazyHydrate>
 
-            <LazyHydrate when-visible>
+            <LazyHydrate when-visible v-if="!store.isSimulation">
                 <div class="col-lg-6 col-12">
                     <network-horizon/>
                 </div>
