@@ -6,7 +6,7 @@
         <template v-slot:sub-title>
             {{nodeType}}
             <b-badge v-if="network.isNodeFailing(selectedNode)" variant="danger"
-                     style="vertical-align: bottom" v-b-tooltip="store.getNodeFailingReason(selectedNode).description">{{store.getNodeFailingReason(selectedNode).label}}
+                     style="vertical-align: bottom" v-b-tooltip="network.getNodeFailingReason(selectedNode).description">{{network.getNodeFailingReason(selectedNode).label}}
             </b-badge>
         </template>
         <template v-slot:explore-list-items>

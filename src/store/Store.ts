@@ -336,24 +336,8 @@ export default class Store {
         return word.charAt(0).toUpperCase() + word.slice(1);
     };
 
-    someNodesHaveWarnings(nodes:Node[]){
-        return nodes.some(node => this.nodeHasWarnings(node));
-    }
 
-    nodeHasWarnings(node:Node){
-        return this.isFullValidatorWithOutOfDateArchive(node);
-    }
 
-    getNodeWarningReasons(node:Node){
-        if(this.isFullValidatorWithOutOfDateArchive(node))
-            return 'History archive not up-to-date';
-
-        return 'None';
-    }
-
-    isFullValidatorWithOutOfDateArchive(node: Node){
-        return node.historyUrl && !node.isFullValidator;
-    }
     //todo: needs better location
     getOrganizationDangers(organization: Organization){
         if(this.network.isOrganizationBlocked(organization)){
@@ -362,30 +346,7 @@ export default class Store {
             return 'More then 50% of its validators are failing';
         }
     }
-    getNodeFailingReason(node: Node): {label: string, description: string}{
-        if(!node.active && !node.isValidator)
-            return {
-                label: 'Failing',
-                description: 'Unable to connect to node during latest crawl'
-                };
 
-        if(node.isValidator && this.network.isNodeMissing(node))
-            return {
-                label: 'Failing',
-                description: 'Not validating in latest consensus rounds'
-                };
-
-        if(node.isValidator && this.network.isValidatorBlocked(node))
-            return {
-                label: 'Blocked',
-                description: 'Quorum set not reaching threshold'
-                }
-
-        return {
-            label: 'Live',
-            description: 'Live'
-        }
-    }
     //todo: move
     getOrganizationFailAt(organization: Organization) {
         let nrOfValidatingNodes = organization.validators

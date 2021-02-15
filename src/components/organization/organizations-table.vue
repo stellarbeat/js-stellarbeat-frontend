@@ -19,8 +19,8 @@
                             </router-link>
                             <span v-if="network.isNodeFailing(validator)"
                                   class="badge sb-badge badge-danger ml-1"
-                                  v-b-tooltip:hover="store.getNodeFailingReason(validator).description"
-                            >{{store.getNodeFailingReason(validator).label}}</span>
+                                  v-b-tooltip:hover="network.getNodeFailingReason(validator).description"
+                            >{{network.getNodeFailingReason(validator).label}}</span>
                 </div>
                     </li>
                 </ul>

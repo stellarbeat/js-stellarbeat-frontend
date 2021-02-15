@@ -21,7 +21,7 @@
                     :title="getDisplayName(validator)"
                     :is-link-in-dropdown="true"
                     :has-danger="network.isNodeFailing(validator)"
-                    :dangers="store.getNodeFailingReason(validator).description"
+                    :dangers="network.getNodeFailingReason(validator).description"
                     :has-warnings="validator.historyUrl && !validator.isFullValidator"
                     warnings="History archive not up-to-date"
             >

@@ -20,10 +20,10 @@
                         v-on:click="selectNode(node)"
                         :title="getDisplayName(node)"
                         :isLinkInDropdown="true"
-                        :has-warnings="store.nodeHasWarnings(node)"
-                        :warnings="store.getNodeWarningReasons(node)"
+                        :has-warnings="network.nodeHasWarnings(node)"
+                        :warnings="network.getNodeWarningReasons(node)"
                         :has-danger="network.isNodeFailing(node)"
-                        :dangers="store.getNodeFailingReason(node).label"
+                        :dangers="network.getNodeFailingReason(node).label"
                     >
                         <template v-slot:action-dropdown>
                             <node-actions :node="node"/>
@@ -74,18 +74,18 @@ export default class ValidatorsDropdown extends Mixins(DropdownMixin) {
     }
 
     hasWarnings(node: Node) {
-        return this.store.nodeHasWarnings(node);
+        return this.network.nodeHasWarnings(node);
     }
 
     get hasGeneralValidatorsWarning() {
-        return this.nodes.some(node => this.store.nodeHasWarnings(node) || this.network.isNodeFailing(node));
+        return this.nodes.some(node => this.network.nodeHasWarnings(node) || this.network.isNodeFailing(node));
     }
 
     get generalValidatorsWarning(){
         if(this.nodes.some(node => this.network.isNodeFailing(node)))
             return 'Some nodes are failing';
 
-        if(this.nodes.some(node => this.store.isFullValidatorWithOutOfDateArchive(node)))
+        if(this.nodes.some(node => this.network.isFullValidatorWithOutOfDateArchive(node)))
             return 'Some history archives not up-to-date';
     }
 

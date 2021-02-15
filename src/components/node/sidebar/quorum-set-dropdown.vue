@@ -31,7 +31,7 @@
                     :isLinkInDropdown="true"
                     :has-danger="network.isNodeFailing(validator)"
                     :dangers="'Node not validating ' + (network.isQuorumSetBlocked(validator) ? ': quorumset not reaching threshold' : '')"
-                    :has-warnings="store.nodeHasWarnings(validator)"
+                    :has-warnings="network.nodeHasWarnings(validator)"
                     warnings="History archive not up-to-date"
             >
 
@@ -46,7 +46,7 @@
 
 <script lang="ts">
     import {Component, Prop, Mixins, Watch} from 'vue-property-decorator';
-    import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Node, Organization, QuorumSet, QuorumSetService} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/dropdown-mixin';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';
@@ -74,45 +74,20 @@
 
         //checks one level of inner quorumsets
         get quorumSetHasFailingValidators(){
-            return this.quorumSet.validators
-                .map(validator => this.network.getNodeByPublicKey(validator)!)
-                .some(validator => this.network.isNodeFailing(validator)) ||
-                this.quorumSet.innerQuorumSets.some(quorumSet => {
-                    return quorumSet.validators
-                        .map(validator => this.network.getNodeByPublicKey(validator)!)
-                        .some(validator => this.network.isNodeFailing(validator))
-                })
+            return QuorumSetService.quorumSetHasFailingValidators(this.quorumSet, this.network);
         }
 
         get quorumSetDangers(){
-            if(!this.quorumSet.hasValidators())
-                return 'Quorumset not yet detected by crawler';
-
-            if(this.network.isQuorumSetBlocked(this.store.selectedNode!, this.quorumSet))
-                return 'Quorumset not reaching threshold';
-
-            return 'None';
+           return QuorumSetService.getQuorumSetDangers(this.store.selectedNode!, this.quorumSet, this.network);
         }
 
         get quorumSetWarnings(){
-            if(this.quorumSetHasFailingValidators)
-                return 'Some validators are failing';
-
-            if(this.hasWarnings)
-                return 'Some history archives are out-of-date';
-        }
+            return QuorumSetService.getQuorumSetWarnings(this.quorumSet, this.network);
+       }
 
         //checks one level of inner quorumSets
         get hasWarnings() {
-            return this.quorumSet.validators
-                .map(validator => this.network.getNodeByPublicKey(validator))
-                .some(validator => this.store.nodeHasWarnings(validator) || this.network.isNodeFailing(validator))
-                ||
-                this.quorumSet.innerQuorumSets.some(quorumSet => {
-                    return quorumSet.validators
-                        .map(validator => this.network.getNodeByPublicKey(validator))
-                        .some(validator => this.store.nodeHasWarnings(validator) || this.network.isNodeFailing(validator))
-                })
+            return QuorumSetService.quorumSetHasWarnings(this.quorumSet, this.network);
         }
 
         get classObject():any {

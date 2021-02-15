@@ -16,8 +16,8 @@
                             {{ data.item.name }}
                         </router-link>
                     </div>
-                    <b-badge v-if="network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))" variant="danger" v-b-tooltip="store.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).description">
-                        {{store.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).label}}
+                    <b-badge v-if="network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))" variant="danger" v-b-tooltip="network.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).description">
+                        {{network.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).label}}
                     </b-badge>
                </div>
             </template>
