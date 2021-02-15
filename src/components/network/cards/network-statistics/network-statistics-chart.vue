@@ -140,6 +140,11 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
             },
         });
     }
+    public beforeDestroy() {
+        if (this.chart) {
+            this.chart.destroy();
+        }
+    }
 }
 </script>
 
