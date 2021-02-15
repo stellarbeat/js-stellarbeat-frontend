@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="organization &&!store.isSimulation">
+        <div v-if="organization">
             <div class="row row-cards row-deck" v-if="!store.isSimulation">
                 <LazyHydrate when-visible>
 
@@ -38,13 +38,13 @@
                         <organization-validators :organization="organization"/>
                     </div>
                 </LazyHydrate>
-                <LazyHydrate when-visible>
-
-                    <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
-                        <organization-latest-updates :organization="organization"/>
-                    </div>
-                </LazyHydrate>
             </div>
+            <div class="row row-cards" v-if="!store.isSimulation"></div>
+            <LazyHydrate when-visible>
+                <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
+                    <organization-latest-updates :organization="organization"/>
+                </div>
+            </LazyHydrate>
         </div>
     </div>
 </template>
@@ -66,6 +66,7 @@ import OrganizationStatisticsSubQuorum30DAvailability
 import OrganizationLatestUpdates
     from '@/components/organization/organization-cards/organization-latest-updates.vue';
 import LazyHydrate from 'vue-lazy-hydration';
+
 @Component({
     components: {
         LazyHydrate,

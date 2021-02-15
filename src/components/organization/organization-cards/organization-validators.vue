@@ -16,16 +16,22 @@
     export default class OrganizationValidators extends Vue{
         @Prop()
         organization!: Organization;
-        fields:any[] = [
-            {key: 'name', label: 'Validator'},
-            'index',
-            {key: 'validating24Hour', label: '24H validating'},
-            {key: 'validating30Days', label: '30D validating'},
-            'version',
-            'country',
-            'isp'
-
-        ]
+        get fields():any[]{
+            let fields = [
+                {key: 'name', label: 'Validator'},
+                'country',
+                'isp'
+            ]
+            if(!this.store.isSimulation){
+               fields.push(
+                   'index',
+                   {key: 'validating24Hour', label: '24H validating'},
+                   {key: 'validating30Days', label: '30D validating'},
+                   'version',
+               )
+            }
+           return fields;
+        }
 
         get store(): Store {
             return this.$root.$data.store;
