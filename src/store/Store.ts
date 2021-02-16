@@ -253,12 +253,12 @@ export default class Store {
         this.processChange(new QuorumSetOrganizationsAdd(toQuorumSet, organizations));
     }
 
-    public addOrganizationToTransitiveQuorumSet(organizations: Organization[]) {
-        let transitiveNodes = Array.from(this.network.nodesTrustGraph.networkTransitiveQuorumSet)
-            .map(publicKey => this.network.getNodeByPublicKey(publicKey)!);
+    public addOrganizationsToOrganization(organizations: Organization[], toOrganization: Organization) {
+        let toNodes = toOrganization.validators
+            .map(publicKey => this.network.getNodeByPublicKey(publicKey));
 
         let changes:Change[] = [];
-        transitiveNodes.forEach(node => {
+        toNodes.forEach(node => {
             changes.push(new QuorumSetOrganizationsAdd(node.quorumSet, organizations));
             changes.push(new EntityPropertyUpdate(node.quorumSet, 'threshold', node.quorumSet.threshold + 1))
         })

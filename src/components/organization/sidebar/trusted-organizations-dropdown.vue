@@ -6,7 +6,12 @@
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
                 :drop-down-showing="showing"
-        />
+        >
+            <template v-slot:action-dropdown>
+                <organization-actions :supports-halt="false" :supports-delete="false"  :supports-add="true" :organization="organization"/>
+
+            </template>
+        </nav-link>
         <div v-show="showing" class="sb-nav-dropdown">
             <nav-link
                     v-for="organization in trustedOrganizations"

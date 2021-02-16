@@ -8,24 +8,27 @@
             <b-dropdown-header>
                 Simulation options
             </b-dropdown-header>
-            <b-dropdown-item v-if="!network.isOrganizationBlocked(organization)" v-on:click.prevent.stop="store.toggleOrganizationAvailability(organization)">
-                <b-icon-lightning scale="0.9"/>
-                {{ organization.subQuorumAvailable ? 'Halt this organization' : 'Start validating' }}
-            </b-dropdown-item>
-            <b-dropdown-text v-else>
-                Organization blocked: not enough validators are reaching their quorumset threshold.
-            </b-dropdown-text>
+            <div v-if="supportsHalt">
+                <b-dropdown-item v-if="!network.isOrganizationBlocked(organization)"
+                                 v-on:click.prevent.stop="store.toggleOrganizationAvailability(organization)">
+                    <b-icon-lightning scale="0.9"/>
+                    {{ organization.subQuorumAvailable ? 'Halt this organization' : 'Start validating' }}
+                </b-dropdown-item>
+                <b-dropdown-text v-else>
+                    Organization blocked: not enough validators are reaching their quorumset threshold.
+                </b-dropdown-text>
+            </div>
             <b-dropdown-item v-if="supportsDelete" v-on:click="() => {}" @click.prevent.stop>
                 <b-icon-x-circle scale="0.9"/>
                 Remove
             </b-dropdown-item>
-            <b-dropdown-item v-if="supportsAdd" v-b-modal="'add-transitive-organization-modal-' + id"
+            <b-dropdown-item v-if="supportsAdd" v-b-modal="'add-organizations-modal-' + id"
                              @click.prevent.stop>
                 <b-icon-plus-circle scale="0.9"/>
                 Add organization
             </b-dropdown-item>
         </b-dropdown>
-        <b-modal lazy size="lg" :id="'add-transitive-organization-modal-' + id"
+        <b-modal lazy size="lg" :id="'add-organizations-modal-' + id"
                  title="Select organization to add"
                  ok-title="Add"
                  v-on:ok="organizationsToAddModalOk">
@@ -83,33 +86,40 @@ export default class OrganizationActions extends Mixins(StoreMixin) {
     public supportsDelete!: Boolean;
     @Prop({default: false})
     public supportsAdd!: Boolean;
+    @Prop({default: true})
+    public supportsHalt!: Boolean;
 
     public organizationsToAdd: Organization[] = [];
-    public id!:number;
+    public id!: number;
+
+    get trustedOrganizationIds() {
+        let trustedOrganizationIds = new Set<string>();
+        this.organization.validators.forEach(publicKey => {
+            let validator = this.network.getNodeByPublicKey(publicKey)!;
+            this.network.getTrustedOrganizations(validator.quorumSet).forEach(org => {
+                if (org.id !== this.organization.id)
+                    trustedOrganizationIds.add(org.id);
+            });
+        });
+        return Array.from(trustedOrganizationIds);
+    }
 
     public get possibleOrganizationsToAdd() {
-        let transitiveNodes = Array.from(this.network.nodesTrustGraph.networkTransitiveQuorumSet)
-            .map(publicKey => this.network.getNodeByPublicKey(publicKey)!);
-        let transitiveOrganizations =
-            transitiveNodes
-                .filter(node => node && node.organizationId)
-                .map(node => node!.organizationId!);
-
         return this.store.network.organizations
-            .filter((organization) => transitiveOrganizations.indexOf(organization.id) < 0);
+            .filter((organization) => this.trustedOrganizationIds.indexOf(organization.id) < 0);
     }
 
     organizationsToAddModalOk(bvEvent: any, modalId: string) {
         if (this.organizationsToAdd.length > 0) {
-            this.store.addOrganizationToTransitiveQuorumSet(this.organizationsToAdd)
+            this.store.addOrganizationsToOrganization(this.organizationsToAdd, this.organization);
         }
     }
 
-    onOrganizationsSelected(organizations:Organization[]){
+    onOrganizationsSelected(organizations: Organization[]) {
         this.organizationsToAdd = organizations;
     }
 
-    created(){
+    created() {
         this.id = this.store.getUniqueId();
     }
 }
