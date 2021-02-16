@@ -6,7 +6,7 @@
         <template v-slot:sub-title>
                 {{organizationType}}
                 <b-badge v-if="network.isOrganizationFailing(selectedOrganization)" variant="danger"
-                         v-b-tooltip:hover="store.getOrganizationDangers(selectedOrganization)">
+                         v-b-tooltip:hover="store.getOrganizationFailingReason(selectedOrganization)">
                     {{network.isOrganizationBlocked(selectedOrganization) ? 'Blocked': 'Failing' }}
                 </b-badge>
         </template>

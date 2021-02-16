@@ -356,7 +356,7 @@ export default class Store {
 
 
     //todo: needs better location
-    getOrganizationDangers(organization: Organization){
+    getOrganizationFailingReason(organization: Organization){
         if(this.network.isOrganizationBlocked(organization)){
             return 'Organization blocked: Validators not reaching quorumset thresholds'
         } else {
@@ -364,7 +364,25 @@ export default class Store {
         }
     }
 
-    //todo: move
+    public organizationHasWarnings(organization: Organization) {
+        return this.organizationHasOutOfDateHistoryArchives(organization)
+           || this.getOrganizationFailAt(organization) === 1;
+
+    }
+    public organizationHasOutOfDateHistoryArchives(organization: Organization){
+        return organization.validators
+            .map(validator => this.network.getNodeByPublicKey(validator)!)
+            .some(validator => validator.historyUrl && !validator.isFullValidator)
+    }
+
+    getOrganizationWarningReason(organization: Organization){
+        if(this.getOrganizationFailAt(organization) === 1)
+            return "If one more validator fails, this organization will fail"
+
+        if(this.organizationHasOutOfDateHistoryArchives(organization))
+            return "Not all history archives up-to-date";
+    }
+
     getOrganizationFailAt(organization: Organization) {
         let nrOfValidatingNodes = organization.validators
             .map(validator => this.network.getNodeByPublicKey(validator))

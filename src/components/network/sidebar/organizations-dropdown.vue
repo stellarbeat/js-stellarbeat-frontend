@@ -22,9 +22,9 @@
                 :title="organization.name | truncate(30)"
                 :is-link-in-dropdown="true"
                 :has-warnings="hasWarnings(organization)"
-                warnings="Not all history archives up-to-date"
+                :warnings="store.getOrganizationWarningReason(organization)"
                 :has-danger="!organization.subQuorumAvailable"
-                :dangers="store.getOrganizationDangers(organization)"
+                :dangers="store.getOrganizationFailingReason(organization)"
             >
                 <template v-slot:action-dropdown>
                     <organization-actions :organization="organization"/>
@@ -77,9 +77,7 @@ export default class OrganizationsDropdown extends Mixins(DropdownMixin) {
     }
 
     public hasWarnings(organization: Organization) {
-        return organization.validators
-            .map(validator => this.network.getNodeByPublicKey(validator)!)
-            .some(validator => validator.historyUrl && !validator.isFullValidator);
+        return this.store.organizationHasWarnings(organization);
     }
 
     public getFailAt(organization: Organization) {

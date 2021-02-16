@@ -1,6 +1,12 @@
 <template>
     <div>
         <div v-if="organization">
+            <b-alert :show="network.isOrganizationFailing(organization)" variant="danger">
+                {{ store.getOrganizationFailingReason(organization) }}
+            </b-alert>
+            <b-alert :show="store.organizationHasWarnings(organization)" variant="warning">
+                {{ store.getOrganizationWarningReason(organization) }}
+            </b-alert>
             <div class="row row-cards row-deck" v-if="!store.isSimulation">
                 <LazyHydrate when-visible>
 
@@ -66,7 +72,9 @@ import OrganizationStatisticsSubQuorum30DAvailability
 import OrganizationLatestUpdates
     from '@/components/organization/organization-cards/organization-latest-updates.vue';
 import LazyHydrate from 'vue-lazy-hydration';
-
+import {
+    BAlert,
+} from 'bootstrap-vue';
 @Component({
     components: {
         LazyHydrate,
@@ -75,7 +83,7 @@ import LazyHydrate from 'vue-lazy-hydration';
         OrganizationStatisticsSubQuorum24hAvailability,
         OrganizationValidators,
         OrganizationProfile,
-        HistoryCard, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution
+        HistoryCard, ValidatorsServerLoad, NodesVersions, NodesCountryDistribution, BAlert
     }
 })
 

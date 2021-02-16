@@ -79,17 +79,6 @@
                 </li>
             </ul>
         </div>
-        <b-alert :show="hasWarnings" variant="warning" class="mb-0 text-center">
-            <p v-if="failAt === 1" class="mb-1">
-                <b-icon-exclamation-triangle/>
-                If one more validator fails, this organization will fail.
-            </p>
-            <hr v-if="failAt === 1 && notAllArchivesUpToDate">
-            <p v-if="notAllArchivesUpToDate" class="mb-0">
-                <b-icon-exclamation-triangle/>
-                Not all history archives up-to-date.
-            </p>
-        </b-alert>
     </div>
 </template>
 <script lang="ts">
@@ -133,18 +122,7 @@
                 });
         }
 
-        get failAt() {
-            let nrOfValidatingNodes = this.organization.validators
-                .map(validator => this.network.getNodeByPublicKey(validator))
-                .filter(validator => validator !== undefined)
-                .filter(node => node!.isValidating).length;
 
-            return nrOfValidatingNodes - this.organization.subQuorumThreshold + 1;
-        }
-
-        get hasWarnings() {
-            return this.notAllArchivesUpToDate || this.failAt === 1;
-        }
     };
 </script>
 

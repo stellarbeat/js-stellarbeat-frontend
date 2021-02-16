@@ -20,9 +20,9 @@
                     :title="organization.name"
                     :is-link-in-dropdown="true"
                     :has-danger="network.isOrganizationFailing(organization)"
-                    :dangers="store.getOrganizationDangers(organization)"
-                    :has-warnings="false"
-                    warnings=""
+                    :dangers="store.getOrganizationFailingReason(organization)"
+                    :has-warnings="store.organizationHasWarnings(organization)"
+                    :warnings="store.getOrganizationWarningReason(organization)"
             >
                     <template v-slot:action-dropdown>
                         <organization-actions :supports-delete="true" :organization="organization"/>

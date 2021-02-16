@@ -98,7 +98,7 @@ import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
                         email: organization.officialEmail,
                         id: organization.id,
                         failAt: this.store.getOrganizationFailAt(organization),
-                        dangers: this.store.getOrganizationDangers(organization),
+                        dangers: this.store.getOrganizationFailingReason(organization),
                         blocked: this.network.isOrganizationBlocked(organization),
                         subQuorum24HAvailability: organization.subQuorum24HoursAvailability + '%',
                         subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%',

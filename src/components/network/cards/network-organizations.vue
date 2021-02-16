@@ -82,7 +82,7 @@
                         name: organization.name,
                         id: organization.id,
                         failAt: this.getFailAt(organization),
-                        dangers: this.store.getOrganizationDangers(organization),
+                        dangers: this.store.getOrganizationFailingReason(organization),
                         blocked: this.network.isOrganizationBlocked(organization),
                         subQuorum30DAvailability: organization.subQuorum30DaysAvailability + '%',
                         isTierOneOrganization: organization.isTierOneOrganization
