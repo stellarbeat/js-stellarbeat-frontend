@@ -1251,10 +1251,10 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellar-domain@^2.17.2":
-  version "2.17.2"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-2.17.2.tgz#df0d09074950bc071d4115e65b681fa307ad1588"
-  integrity sha512-1c/UHCxxjreyZ3Q0DfrpuCGr3bTUsA8uQVF/Bg1xZ9I8rAQQ/ef3OxhA7y7/T4JzzeSHeNIZWN1qQzKnAtiLSQ==
+"@stellarbeat/js-stellar-domain@^2.17.3":
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-2.17.3.tgz#9faf7ec485f1cdca2238ad94eaec6563d2c3883c"
+  integrity sha512-xJaXUB1Td3JLZDnjs2ai/ZtAN0WN7EpFEZ3R9x3667T4cSK/UKs4dQSYJ2z0oNKEiGDYMDtgIgcHCdn/E7zrAg==
   dependencies:
     "@iarna/toml" "^2.2.3"
     find-versions "^3.1.0"

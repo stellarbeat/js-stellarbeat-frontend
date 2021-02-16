@@ -6,7 +6,7 @@ import {
     OrganizationId,
     OrganizationSnapShot,
     PublicKey,
-    QuorumSet, TrustGraphBuilder
+    QuorumSet, QuorumSetService, TrustGraphBuilder
 } from '@stellarbeat/js-stellar-domain';
 import {Change, ChangeQueue} from '@/services/change-queue/change-queue';
 import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
@@ -251,6 +251,23 @@ export default class Store {
 
     public addOrganizations(toQuorumSet: QuorumSet, organizations: Organization[]) {
         this.processChange(new QuorumSetOrganizationsAdd(toQuorumSet, organizations));
+    }
+
+    public removeOrganizationFromOrganization(organization: Organization, fromOrganization: Organization){
+        let fromNodes = fromOrganization.validators
+            .map(publicKey => this.network.getNodeByPublicKey(publicKey));
+
+        let changes:Change[] = [];
+        fromNodes.forEach(node => {
+            node.quorumSet.innerQuorumSets.forEach(qSet => {
+                if(QuorumSetService.isOrganizationQuorumSet(qSet, this.network) && this.network.getNodeByPublicKey(qSet.validators[0]).organizationId === organization.id){
+                    changes.push(new InnerQuorumSetDelete(node.quorumSet, qSet));
+                    changes.push(new EntityPropertyUpdate(node.quorumSet, 'threshold', node.quorumSet.threshold - 1))
+                }
+            })
+        })
+
+        this.processChange(new AggregateChange(changes));
     }
 
     public addOrganizationsToOrganization(organizations: Organization[], toOrganization: Organization) {

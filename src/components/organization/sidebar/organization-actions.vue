@@ -18,7 +18,7 @@
                     Organization blocked: not enough validators are reaching their quorumset threshold.
                 </b-dropdown-text>
             </div>
-            <b-dropdown-item v-if="supportsDelete" v-on:click="() => {}" @click.prevent.stop>
+            <b-dropdown-item v-if="supportsDelete" v-on:click="store.removeOrganizationFromOrganization(organization, store.selectedOrganization)" @click.prevent.stop>
                 <b-icon-x-circle scale="0.9"/>
                 Remove
             </b-dropdown-item>

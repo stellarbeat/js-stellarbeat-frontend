@@ -149,16 +149,7 @@
             if(this.isRoot)
                 return false;
 
-            if (quorumSet.validators.length === 0) {
-                return false;
-            }
-
-            let organizationId = this.network.getNodeByPublicKey(quorumSet.validators[0])!.organizationId;
-            if ( organizationId === undefined || this.network.getOrganizationById(organizationId) === undefined) {
-                return false;
-            }
-
-            return quorumSet.validators.map(validator => this.network.getNodeByPublicKey(validator)!).every((validator, index, validators) => validator.organizationId === validators[0].organizationId);
+            return QuorumSetService.isOrganizationQuorumSet(quorumSet, this.network);
         }
 
         public subQuorumOrganizationName(quorumSet: QuorumSet): string {

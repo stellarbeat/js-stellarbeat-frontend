@@ -25,7 +25,7 @@
                     warnings=""
             >
                     <template v-slot:action-dropdown>
-                        <organization-actions :organization="organization"/>
+                        <organization-actions :supports-delete="true" :organization="organization"/>
                     </template>
             </nav-link>
         </div>
