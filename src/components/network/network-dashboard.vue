@@ -1,6 +1,10 @@
 <template>
     <div>
+        <b-alert :show="store.networkHasDangers()" variant="danger">
+            {{store.getNetworkDangers().description}}
+        </b-alert>
         <div class="row row-cards row-deck">
+
             <LazyHydrate when-visible>
                 <div class="col-12">
                     <network-statistics :network="network"/>
@@ -88,7 +92,7 @@ import NetworkStatistics from '@/components/network/cards/network-statistics/net
 import NetworkNodes from '@/components/network/cards/network-nodes.vue';
 import NetworkOrganizations from '@/components/network/cards/network-organizations.vue';
 import NetworkAnalysis from '@/components/network/cards/network-risk-analysis-charts/network-analysis.vue';
-import {BCard, BListGroup, BListGroupItem, BBadge} from 'bootstrap-vue';
+import {BCard, BListGroup, BListGroupItem, BBadge,BAlert} from 'bootstrap-vue';
 import LivenessInfo from '@/components/network/cards/network-risk-analysis-charts/liveness-info.vue';
 import SafetyInfo from '@/components/network/cards/network-risk-analysis-charts/safety-info.vue';
 import NetworkValidatorUpdates from '@/components/network/cards/network-validator-updates.vue';
@@ -115,7 +119,8 @@ import NetworkHorizon from '@/components/network/cards/network-horizon.vue';
         BCard,
         BListGroup,
         BListGroupItem,
-        BBadge
+        BBadge,
+        BAlert
     }
 })
 

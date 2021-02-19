@@ -396,6 +396,38 @@ export default class Store {
         return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
     }
 
+    getNetworkDangers():{label: string, description: string}{
+        if(!this.network.networkStatistics.hasQuorumIntersection && !this.isSimulation){
+            return {
+                label: 'Safety risk',
+                description: 'Network does not have quorum intersection and could have safety issues'
+            }
+        }
+
+        if(!this.network.networkStatistics.hasTransitiveQuorumSet){
+            return {
+                label: 'Safety risk',
+                description: 'Network does not have a transitive quorum set and could have safety issues'
+            }
+        }
+
+        if(this.network.networkStatistics.minBlockingSetFilteredSize === 0 && !this.isSimulation){
+            return {
+                label: 'Liveness risk',
+                description: 'Network could have liveness issues because all nodes in a blocking set are failing'
+            }
+        }
+
+        return {
+            label: 'Ok',
+            description: 'No dangers'
+        };
+    }
+
+    networkHasDangers(){
+        return this.getNetworkDangers().label !== 'Ok';
+    }
+
     getDateFromParam(date: any) {
         if (date === undefined || date=== null)
             return undefined;

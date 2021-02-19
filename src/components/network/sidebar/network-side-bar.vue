@@ -5,6 +5,9 @@
         </template>
         <template v-slot:sub-title>
                 Network
+            <b-badge v-if="store.networkHasDangers()" variant="danger"
+                     style="vertical-align: bottom" v-b-tooltip.hover.right="store.getNetworkDangers().description">{{store.getNetworkDangers().label}}
+            </b-badge>
         </template>
         <template v-slot:explore-list-items>
             <li v-if="networkTransitiveQuorumSetOrganizations.length > 0" class="sb-nav-item">
@@ -63,7 +66,7 @@
     import OrganizationsDropdown from '@/components/network/sidebar/organizations-dropdown.vue';
     import SideBar from '@/components/side-bar/side-bar.vue';
 
-    import {BIconX, BModal, VBModal} from 'bootstrap-vue';
+    import {BIconX, BModal, VBModal, BBadge, VBTooltip} from 'bootstrap-vue';
 
     @Component({
         components: {
@@ -71,9 +74,10 @@
             OrganizationsDropdown,
             NavLink, SimulateNewNode, ValidatorsDropdown,
             BModal,
-            BIconX: BIconX
+            BIconX: BIconX,
+            BBadge
         },
-        directives: {'b-modal': VBModal}
+        directives: {'b-modal': VBModal, 'b-tooltip': VBTooltip}
     })
     export default class NetworkSideBar extends Vue {
         protected validatorsExpanded: boolean = this.networkTransitiveQuorumSetOrganizations.length === 0;
