@@ -1,17 +1,17 @@
 <template>
     <div class="card card-profile">
-        <div class="card-body d-flex flex-column text-center justify-content-center align-items-center">
-            <h3 class="mb-3">
+        <div class="card-body pb-2 d-flex flex-column text-center justify-content-center align-items-center">
+            <h3 class="my-1">
                                 <span v-b-tooltip.hover v-if="organization.isTierOneOrganization"
                                       title="Tier one organization" class="badge sb-badge badge-primary-sb">
                             <b-icon-shield/>
                         </span>
                 {{organization.name}}
-                <b-badge v-if="failAt <= 0" variant="danger"
+                <b-badge v-if="store.getOrganizationFailAt(organization) <= 0" variant="danger"
                          v-b-tooltip:hover="'More then 50% of its validators are failing'">Failing
                 </b-badge>
             </h3>
-            <p class="m-4" v-if="organization.description">
+            <p class="m-2" v-if="organization.description">
                 {{organization.description}}
             </p>
             <b-alert class="mt-2" v-else show variant="info">No description found in <a
@@ -20,7 +20,7 @@
             </b-alert>
 
 
-            <ul class="social-links list-inline mb-4 mt-2">
+            <ul class="social-links list-inline mb-2 mt-2">
                 <li v-if="organization.url" class="list-inline-item">
                     <a :href="organization.url"
                        v-b-tooltip.hover :title="organization.url"
@@ -112,6 +112,10 @@
 
         get network(): Network {
             return this.$root.$data.store.network;
+        }
+
+        get store() {
+            return this.$root.$data.store;
         }
 
         get notAllArchivesUpToDate() {
