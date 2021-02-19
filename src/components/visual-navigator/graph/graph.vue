@@ -1,7 +1,7 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div v-bind:class="dimmerClass" style="height: 100%;">
         <div class="loader"></div>
-        <div class="dimmer-content" style="height: 100%;">
+        <div class="dimmer-content svg-wrapper h-100" >
             <svg class="graph" xmlns="http://www.w3.org/2000/svg"
                  ref="graphSvg"
                  width="100%"
@@ -266,7 +266,6 @@ export default class Graph extends Mixins(StoreMixin) {
 
 <style scoped>
 svg.graph {
-    height: inherit;
     width: 100%;
     cursor: grab;
 }
@@ -357,5 +356,8 @@ text {
 .rect-selected {
     stroke: yellow;
     stroke-width: 1.5;
+}
+.svg-wrapper{
+
 }
 </style>

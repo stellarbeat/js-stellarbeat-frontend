@@ -74,7 +74,7 @@
                 <b-icon-fullscreen-exit/>
             </a>
         </div>
-        <div class="card-body p-0">
+        <div class="card-body p-0 h-100" >
             <div v-if="network.nodesTrustGraph.networkTransitiveQuorumSet.size === 0"
                  class="card-alert alert alert-danger" show>No transitive quorum set detected in network!
             </div>
