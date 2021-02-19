@@ -8,6 +8,10 @@
             <b-badge v-if="network.isNodeFailing(selectedNode)" variant="danger"
                      style="vertical-align: bottom" v-b-tooltip="network.getNodeFailingReason(selectedNode).description">{{network.getNodeFailingReason(selectedNode).label}}
             </b-badge>
+            <b-badge v-else-if="network.nodeHasWarnings(selectedNode)" variant="warning"
+                     v-b-tooltip="network.getNodeWarningReasons(selectedNode)">
+              Warning
+            </b-badge>
         </template>
         <template v-slot:explore-list-items>
             <li class="sb-nav-item" v-if="hasOrganization">

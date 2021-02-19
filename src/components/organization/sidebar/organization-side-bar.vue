@@ -9,6 +9,10 @@
                          v-b-tooltip:hover="store.getOrganizationFailingReason(selectedOrganization)">
                     {{network.isOrganizationBlocked(selectedOrganization) ? 'Blocked': 'Failing' }}
                 </b-badge>
+                <b-badge v-else-if="store.organizationHasWarnings(selectedOrganization)" variant="warning"
+                        v-b-tooltip:hover="store.getOrganizationWarningReason(selectedOrganization)">
+                        Warning
+                </b-badge>
         </template>
         <template v-slot:explore-list-items>
             <li class="sb-nav-item">

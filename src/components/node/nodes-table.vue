@@ -19,6 +19,10 @@
                     <b-badge v-if="network.isNodeFailing(network.getNodeByPublicKey(data.item.publicKey))" variant="danger" v-b-tooltip="network.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).description">
                         {{network.getNodeFailingReason(network.getNodeByPublicKey(data.item.publicKey)).label}}
                     </b-badge>
+                    <b-badge v-else-if="network.nodeHasWarnings(network.getNodeByPublicKey(data.item.publicKey))"
+                             v-b-tooltip="network.getNodeWarningReasons(network.getNodeByPublicKey(data.item.publicKey))" variant="warning">
+                        Warning
+                    </b-badge>
                </div>
             </template>
             <template v-slot:cell(organization)="data">

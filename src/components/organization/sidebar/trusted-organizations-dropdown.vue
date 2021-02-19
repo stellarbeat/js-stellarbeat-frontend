@@ -6,6 +6,8 @@
                 v-on:click="toggleShow"
                 :showDropdownToggle="true"
                 :drop-down-showing="showing"
+                :has-warnings="store.someOrganizationsHaveWarnings(trustedOrganizations)"
+                :warnings="'Some organizations have warnings'"
         >
             <template v-slot:action-dropdown>
                 <organization-actions :supports-halt="false" :supports-delete="false"  :supports-add="true" :organization="organization"/>

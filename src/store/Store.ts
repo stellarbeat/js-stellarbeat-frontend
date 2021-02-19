@@ -383,6 +383,10 @@ export default class Store {
             return "Not all history archives up-to-date";
     }
 
+    someOrganizationsHaveWarnings(organizations: Organization[]){
+        return organizations.some(organization => this.organizationHasWarnings(organization)||this.network.isOrganizationFailing(organization) );
+    }
+
     getOrganizationFailAt(organization: Organization) {
         let nrOfValidatingNodes = organization.validators
             .map(validator => this.network.getNodeByPublicKey(validator))
