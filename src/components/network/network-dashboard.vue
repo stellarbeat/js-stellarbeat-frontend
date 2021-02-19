@@ -3,6 +3,9 @@
         <b-alert :show="store.networkHasDangers()" variant="danger">
             {{store.getNetworkDangers().description}}
         </b-alert>
+        <b-alert :show="store.networkHasWarnings()" variant="warning">
+            {{store.getNetworkWarnings().description}}
+        </b-alert>
         <div class="row row-cards row-deck">
 
             <LazyHydrate when-visible>

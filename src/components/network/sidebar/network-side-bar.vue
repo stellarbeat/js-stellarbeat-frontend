@@ -8,6 +8,9 @@
             <b-badge v-if="store.networkHasDangers()" variant="danger"
                      style="vertical-align: bottom" v-b-tooltip.hover.right="store.getNetworkDangers().description">{{store.getNetworkDangers().label}}
             </b-badge>
+            <b-badge v-if="store.networkHasWarnings()" variant="warning"
+                     style="vertical-align: bottom" v-b-tooltip.hover.right="store.getNetworkWarnings().description">{{store.getNetworkWarnings().label}}
+            </b-badge>
         </template>
         <template v-slot:explore-list-items>
             <li v-if="networkTransitiveQuorumSetOrganizations.length > 0" class="sb-nav-item">

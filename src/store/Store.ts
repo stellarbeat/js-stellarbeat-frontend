@@ -396,6 +396,31 @@ export default class Store {
         return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
     }
 
+    getNetworkWarnings(): {label: string, description: string}{
+        if(!this.isSimulation && this.network.networkStatistics.minBlockingSetFilteredSize <= 2){
+            return {
+                label: 'Liveness risk',
+                description: this.network.networkStatistics.minBlockingSetFilteredSize + ' nodes found that could halt the network if they fail'
+            }
+        }
+
+        if(!this.isSimulation && this.network.networkStatistics.minBlockingSetOrgsFilteredSize && this.network.networkStatistics.minBlockingSetOrgsFilteredSize <= 1){
+            return {
+                label: 'Liveness risk',
+                description: 'Organization found that could halt the network if it fails'
+            }
+        }
+
+        return {
+            label: 'Ok',
+            description: 'No warnings'
+        }
+    }
+
+    networkHasWarnings(){
+        return this.getNetworkWarnings().label !== 'Ok';
+    }
+
     getNetworkDangers():{label: string, description: string}{
         if(!this.network.networkStatistics.hasQuorumIntersection && !this.isSimulation){
             return {
