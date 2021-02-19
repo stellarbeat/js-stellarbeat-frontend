@@ -45,12 +45,13 @@
                     </div>
                 </LazyHydrate>
             </div>
-            <div class="row row-cards" v-if="!store.isSimulation"></div>
+            <div class="row row-cards" v-if="!store.isSimulation">
             <LazyHydrate when-visible>
                 <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
                     <organization-latest-updates :organization="organization"/>
                 </div>
             </LazyHydrate>
+            </div>
         </div>
     </div>
 </template>
