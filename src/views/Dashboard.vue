@@ -17,7 +17,7 @@
             is unknown or archived
         </b-alert>
 
-        <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible" id="halting-analysis-card">
+        <div class="row row-cards row-deck" v-if="store.isHaltingAnalysisVisible && !network.getNodeByPublicKey(store.haltingAnalysisPublicKey).unknown" id="halting-analysis-card">
             <div class="col-12">
                 <HaltingAnalysis
                     :publicKey="store.haltingAnalysisPublicKey">
