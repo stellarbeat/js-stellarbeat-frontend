@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.3.3",
-    "@sentry/browser": "^5.28.0",
-    "@sentry/integrations": "^5.28.0",
-    "@sentry/node": "^5.28.0",
+    "@sentry/browser": "^5.30.0",
+    "@sentry/integrations": "^5.30.0",
+    "@sentry/node": "^5.30.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
     "@stellarbeat/js-stellar-domain": "^2.17.3",
     "axios": "^0.21.1",
