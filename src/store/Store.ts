@@ -400,7 +400,7 @@ export default class Store {
         if(!this.isSimulation && this.network.networkStatistics.minBlockingSetFilteredSize <= 2){
             return {
                 label: 'Liveness risk',
-                description: this.network.networkStatistics.minBlockingSetFilteredSize + ' nodes found that could halt the network if they fail'
+                description: this.network.networkStatistics.minBlockingSetFilteredSize + ' node(s) found that could halt the network if they fail'
             }
         }
 
