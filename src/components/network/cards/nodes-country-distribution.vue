@@ -69,14 +69,33 @@
         }
 
         get chartData() {
-            return [
-                this.sortedCountries[0][1],
-                this.sortedCountries[1][1],
-                this.sortedCountries[2][1],
-                this.sortedCountries.slice(3).reduce((accumulator, currentValue) => {
+            let countries = [];
+            if(this.sortedCountries[0])
+               countries.push(this.sortedCountries[0][1]);
+            if(this.sortedCountries[1])
+                countries.push(this.sortedCountries[1][1]);
+            if(this.sortedCountries[2])
+                countries.push(this.sortedCountries[2][1]);
+            if(this.sortedCountries[3])
+                countries.push(this.sortedCountries.slice(3).reduce((accumulator, currentValue) => {
                     return accumulator + currentValue[1];
-                }, 0)
-            ];
+                }, 0))
+            ;
+
+            return countries;
+        }
+        get labels(){
+            let labels = [];
+            if(this.sortedCountries[0])
+                labels.push(this.sortedCountries[0][0]);
+            if(this.sortedCountries[1])
+                labels.push(this.sortedCountries[1][0]);
+            if(this.sortedCountries[2])
+                labels.push(this.sortedCountries[2][0]);
+            if(this.sortedCountries[3])
+                labels.push('Other');
+
+            return labels;
         }
 
         initializeDoghnut() {
@@ -88,12 +107,7 @@
                 type: 'doughnut',
                 // The data for our dataset
                 data: {
-                    labels: [
-                        this.sortedCountries[0][0],
-                        this.sortedCountries[1][0],
-                        this.sortedCountries[2][0],
-                        'Other'
-                    ],
+                    labels: this.labels,
                     datasets: [{
                         label: 'Node countries',
                         backgroundColor: [

@@ -179,7 +179,8 @@
         BIconGlobe2,
         BNavItemDropdown,
         BDropdownItem,
-        BIconNewspaper
+        BIconNewspaper,
+        BBadge
     } from 'bootstrap-vue';
     import Store from '@/store/Store';
 
@@ -203,7 +204,8 @@
             BNavbarToggle,
             BFormSelect,
             BIconGlobe2,
-            BIconNewspaper
+            BIconNewspaper,
+            BBadge,
         },
         metaInfo: {
             title: 'Stellarbeat.io - Stellar network visibility',
