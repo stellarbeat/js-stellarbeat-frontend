@@ -44,7 +44,6 @@
         get sortedCountries() {
             let countries = this.network.nodes
                 .filter(this.store.watcherNodeFilter)
-                .filter(node => node.active)
                 .filter(node => node.geoData.countryName)
                 .map(node => node.geoData.countryName)
                 .reduce((accumulator: any, currentValue: string | undefined) => {

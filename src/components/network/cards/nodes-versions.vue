@@ -43,7 +43,6 @@
         get sortedVersions() {
             let versions = this.network.nodes
                 .filter(this.$root.$data.store.watcherNodeFilter)
-                .filter(node => node.active)
                 .filter(node => node.versionStr)
                 .map(node => node.versionStr!.replace('stellar-core ', '').replace('v', '').replace(/ \(.*$/, '').replace(/\-.*$/, ''))
                 .reduce((accumulator: any, currentValue: string) => {
@@ -65,14 +64,34 @@
         }
 
         get chartData() {
-            return [
-                this.sortedVersions[0][1],
-                this.sortedVersions[1] ? this.sortedVersions[1][1] : [],
-                this.sortedVersions[2] ? this.sortedVersions[2][1] : [],
-                this.sortedVersions.slice(3).reduce((accumulator, currentValue) => {
+            let countries = [];
+            if(this.sortedVersions[0])
+                countries.push(this.sortedVersions[0][1]);
+            if(this.sortedVersions[1])
+                countries.push(this.sortedVersions[1][1]);
+            if(this.sortedVersions[2])
+                countries.push(this.sortedVersions[2][1]);
+            if(this.sortedVersions[3])
+                countries.push(this.sortedVersions.slice(3).reduce((accumulator, currentValue) => {
                     return accumulator + currentValue[1];
-                }, 0)
-            ];
+                }, 0))
+                ;
+
+            return countries;
+        }
+
+        get labels(){
+            let labels = [];
+            if(this.sortedVersions[0])
+                labels.push(this.sortedVersions[0][0]);
+            if(this.sortedVersions[1])
+                labels.push(this.sortedVersions[1][0]);
+            if(this.sortedVersions[2])
+                labels.push(this.sortedVersions[2][0]);
+            if(this.sortedVersions[3])
+                labels.push('Other');
+
+            return labels;
         }
 
         initializeDoghnut() {
