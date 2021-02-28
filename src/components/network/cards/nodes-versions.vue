@@ -99,12 +99,7 @@
             this.chart = new Chart(context as CanvasRenderingContext2D, {
                 type: 'doughnut',
                 data: {
-                    labels: [
-                        this.sortedVersions[0][0],
-                        this.sortedVersions[1] ? this.sortedVersions[1][0] : '',
-                        this.sortedVersions[2] ? this.sortedVersions[2][0]:'',
-                        'Other'
-                    ],
+                    labels: this.labels,
                     datasets: [{
                         label: 'Node versions',
                         backgroundColor: [
