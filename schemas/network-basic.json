@@ -1,0 +1,166 @@
+{
+  "definitions": {
+    "quorumSet": {
+      "title": "Quorumset",
+      "type": "object",
+      "required": [
+        "threshold",
+        "validators",
+        "innerQuorumSets"
+      ],
+      "properties": {
+        "threshold": {
+          "$id": "#quorumSet/threshold",
+          "title": "Threshold",
+          "type": "integer",
+          "examples": [
+            3
+          ],
+          "default": 1
+        },
+        "validators": {
+          "$id": "#quorumSet/validators",
+          "title": "Validators",
+          "type": "array",
+          "examples": [
+            "GCGB2S2KGYARPVIA37HYZXVRM2YZUEXA6S33ZU5BUDC6THSB62LZSTYH",
+            "GCM6QMP3DLRPTAZW2UZPCPX2LF3SXWXKPMP3GKFZBDSF3QZGV2G5QSTK",
+            "GABMKJM6I25XI4K7U6XWMULOUQIQ27BCTMLS6BYYSOWKTBUXVRJSXHYQ"
+          ],
+          "default": []
+        },
+        "innerQuorumSets": {
+          "$id": "#quorumSet/innerQuorumSets",
+          "title": "Innerquorumsets",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/quorumSet"
+          },
+          "default": []
+        }
+      }
+    },
+    "node": {
+      "title": "Node",
+      "$id": "#node",
+      "type": "object",
+      "required": [
+        "publicKey",
+        "quorumSet",
+        "countryCode",
+        "isp"
+      ],
+      "properties": {
+        "publicKey": {
+          "$id": "#node/publicKey",
+          "title": "Publickey",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "GCGB2S2KGYARPVIA37HYZXVRM2YZUEXA6S33ZU5BUDC6THSB62LZSTYH"
+          ],
+          "pattern": "^.*$"
+        },
+        "quorumSet": {
+          "$ref": "#/definitions/quorumSet"
+        },
+        "countryCode": {
+          "$id": "#node/countryCode",
+          "title": "Country code",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "SG"
+          ],
+          "pattern": "^.*$"
+        },
+        "isp": {
+          "$id": "#node/isp",
+          "title": "Isp",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Digitalocean LLC"
+          ],
+          "pattern": "^.*$"
+        }
+      }
+    },
+    "organization": {
+      "title": "Organizations",
+      "$id": "#organizations",
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "validators"
+      ],
+      "properties": {
+        "id": {
+          "$id": "#organization/id",
+          "title": "Id",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "266107f8966d45eedce41fee2581326d"
+          ],
+          "pattern": "^.*$"
+        },
+        "name": {
+          "$id": "#organization/name",
+          "title": "Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "SDF"
+          ],
+          "pattern": "^.*$"
+        },
+        "validators": {
+          "$id": "#organization/validators",
+          "title": "Validators",
+          "type": "array",
+          "default": [],
+          "items": {
+            "$id": "#organization/validators/items",
+            "title": "Items",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "GCGB2S2KGYARPVIA37HYZXVR…S33ZU5BUDC6THSB62LZSTYH",
+              "GABMKJM6I25XI4K7U6XWMULO…MLS6BYYSOWKTBUXVRJSXHYQ",
+              "GCM6QMP3DLRPTAZW2UZPCPX2…MP3GKFZBDSF3QZGV2G5QSTK"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stellarbeat.io/schema/network.json",
+  "title": "Network",
+  "type": "object",
+  "required": [
+    "nodes",
+    "organizations"
+  ],
+  "properties": {
+    "nodes": {
+      "title": "Nodes",
+      "type": "array",
+      "default": [],
+      "items": {
+        "$ref": "#/definitions/node"
+      }
+    },
+    "organizations": {
+      "title": "Organizations",
+      "type": "array",
+      "default": [],
+      "items": {
+        "$ref": "#/definitions/organization"
+      }
+    }
+  }
+}
