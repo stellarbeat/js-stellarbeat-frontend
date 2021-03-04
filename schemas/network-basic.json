@@ -87,8 +87,8 @@
       }
     },
     "organization": {
-      "title": "Organizations",
-      "$id": "#organizations",
+      "title": "Organization",
+      "$id": "#organization",
       "type": "object",
       "required": [
         "id",
