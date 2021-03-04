@@ -28,7 +28,7 @@
         <h3>More information</h3>
         <p class="my-4">
             If you want to learn more about network splitting sets, check out the following
-            <a target="_blank" href="https://arxiv.org/pdf/2002.08101.pdf">white paper</a>,
+            <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2002.08101.pdf">white paper</a>,
             more specific the section regarding minimal splitting sets.
         </p>
     </div>

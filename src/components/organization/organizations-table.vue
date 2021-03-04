@@ -63,15 +63,15 @@
                 </div>
             </template>
             <template v-slot:cell(url)="row">
-                <a :href="row.item.url" target="_blank">{{row.item.url}}</a>
+                <a :href="row.item.url" target="_blank" rel="noopener">{{row.item.url}}</a>
             </template>
             https://keybase.io/
             <template v-slot:cell(keybase)="row">
-                <a :href="'https://keybase.io/' + row.item.keybase" target="_blank">{{row.item.keybase}}</a>
+                <a :href="'https://keybase.io/' + row.item.keybase" target="_blank" rel="noopener">{{row.item.keybase}}</a>
             </template>
             <template v-slot:cell(email)="row">
                 <a v-if="row.item.email" :href="'mailto:' + row.item.email"
-                   class="" target="_blank">{{row.item.email}}</a>
+                   class="" target="_blank" rel="noopener">{{row.item.email}}</a>
             </template>
             <template v-slot:cell(action)="data">
                 <organization-actions :organization="network.getOrganizationById(data.item.id)"></organization-actions>

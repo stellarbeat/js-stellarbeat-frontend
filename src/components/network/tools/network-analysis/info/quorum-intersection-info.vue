@@ -13,13 +13,13 @@
         <p class="my-4">
             A minimal quorum is a set of nodes that form a quorum but does not contain another quorum.
             If all minimal quorums intersect, it can be shown that the network has quorum intersection.
-            If you want to learn more, check out the following <a target="_blank"
+            If you want to learn more, check out the following <a target="_blank" rel="noopener"
                                                                  href="https://arxiv.org/pdf/2002.08101.pdf">white
             paper</a>.
         </p>
         <template v-slot:modal-footer>
             <div class="w-100">
-                <p class="float-left">Powered by <a target="_blank" href="https://github.com/wiberlin/fbas_analyzer">wiberlin/fbas_analyzer</a>
+                <p class="float-left">Powered by <a target="_blank" rel="noopener" href="https://github.com/wiberlin/fbas_analyzer">wiberlin/fbas_analyzer</a>
                 </p>
                 <b-button
                         variant="primary"

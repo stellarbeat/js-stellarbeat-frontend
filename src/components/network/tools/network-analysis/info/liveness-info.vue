@@ -17,13 +17,13 @@
         </p>
         <h3>More information</h3>
         <p class="my-4">
-            If you want to learn more about network blocking sets, check out the following <a target="_blank"
+            If you want to learn more about network blocking sets, check out the following <a target="_blank" rel="noopener"
                                                                                               href="https://arxiv.org/pdf/2002.08101.pdf">white
             paper</a>, more specific the section regarding minimal blocking sets.
         </p>
         <template v-slot:modal-footer>
             <div class="w-100">
-                <p class="float-left">Powered by <a target="_blank" href="https://github.com/wiberlin/fbas_analyzer">wiberlin/fbas_analyzer</a>
+                <p class="float-left">Powered by <a target="_blank" rel="noopener" href="https://github.com/wiberlin/fbas_analyzer">wiberlin/fbas_analyzer</a>
                 </p>
                 <b-button
                         variant="primary"

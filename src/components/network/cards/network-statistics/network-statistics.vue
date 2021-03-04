@@ -14,7 +14,7 @@
                     <h4>What if your node is missing?</h4>
                     <p>
                         A common issue is a closed port (default: 11625). Send us an <a
-                            href="mailto:stellarbeatio@gmail.com"
+                            href="mailto:stellarbeatio@gmail.com" rel="noopener"
                             target="_blank"> e-mail</a> if the problem persists.
                     </p>
 
@@ -35,7 +35,7 @@
                     <h4>What if your node not showing up?</h4>
                     <p>
                         A common issue is a closed port (default: 11625). Send us an <a
-                            href="mailto:stellarbeatio@gmail.com"
+                            href="mailto:stellarbeatio@gmail.com" rel="noopener"
                             target="_blank"> e-mail</a> if the problem persists.
                     </p>
 
@@ -45,7 +45,7 @@
                             target="_blank"
                             href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
                         and update the linked <a target="_blank"
-                                                 href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
+                                                 href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md" rel="noopener">stellar.toml</a>
                         file to include your validator info.
                     </p>
                     <h4>
@@ -77,9 +77,9 @@
                     <h4>How does my node gain full validator status?</h4>
                     <p>
                         Support <a
-                            target="_blank"
+                            target="_blank" rel="noopener"
                             href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                        and update the linked <a target="_blank"
+                        and update the linked <a target="_blank" rel="noopener"
                                                  href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                         file to include your history archive url's and make sure the archive(s) are up-to-date.
                     </p>
@@ -100,9 +100,9 @@
                     <h4>How can you add your organization?</h4>
                     <p>
                         Support <a
-                            target="_blank"
+                            target="_blank" rel="noopener"
                             href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                        and update the linked <a target="_blank"
+                        and update the linked <a target="_blank" rel="noopener"
                                                  href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                         file to include your organization and validator info.
                     </p>
@@ -122,7 +122,7 @@
 
                     <p class="my-4">
                         If you want to learn more about the top tier concept, check out the following
-                        <a target="_blank" href="https://arxiv.org/pdf/2002.08101.pdf">white paper</a>
+                        <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2002.08101.pdf">white paper</a>
                     </p>
                 </template>
             </network-statistics-card>
@@ -141,7 +141,7 @@
 
                     <p class="my-4">
                         If you want to learn more about the top tier concept, check out the following
-                        <a target="_blank" href="https://arxiv.org/pdf/2002.08101.pdf">white paper</a>
+                        <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2002.08101.pdf">white paper</a>
                     </p>
                 </template>
             </network-statistics-card>

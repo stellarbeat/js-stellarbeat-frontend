@@ -21,23 +21,23 @@
                 <p>
                     A common issue is a closed port (default: 11625). Send us an <a
                         href="mailto:stellarbeatio@gmail.com"
-                        target="_blank"> e-mail</a> if the problem persists.
+                        target="_blank" rel="noopener"> e-mail</a> if the problem persists.
                 </p>
                 <h3>How can I update the name of my validator?</h3>
                 <p>
                     Support <a
-                        target="_blank"
+                        target="_blank" rel="noopener"
                         href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                    and update the linked <a target="_blank"
+                    and update the linked <a target="_blank" rel="noopener"
                                              href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                     file to include your validator info.
                 </p>
                 <h3>How do I gain full validator status?</h3>
                 <p>
                     Support <a
-                        target="_blank"
+                        target="_blank" rel="noopener"
                         href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                    and update the linked <a target="_blank"
+                    and update the linked <a target="_blank" rel="noopener"
                                              href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                     file to include your history archive url's and make sure the archive(s) are up-to-date.
                 </p>
@@ -63,21 +63,21 @@ Age = Time since discovery
                         </code></pre>
                 <h3>Why is my validator 'overloaded'?</h3>
                 <p> When your validator disconnects from the crawler with an <a
-                        target="_blank"
+                        target="_blank" rel="noopener"
                         href="https://github.com/stellar/stellar-core/blob/cc6208b268d3102381c4e2502fcbb6e3afd4249a/src/xdr/Stellar-overlay.x#L16">err_load</a> message, it is marked as overloaded. It indicates how easily new nodes can connect to your validator. A possible solution is to increase MAX_ADDITIONAL_PEER_CONNECTIONS (inbound connections). Another way a node is marked overloaded when it takes too long to send/process messages. In this case you will see a high cpu usage on your node.</p>
                 <h3>How can I add my organization?</h3>
                 <p>
                     Support <a
-                        target="_blank"
+                        target="_blank" rel="noopener"
                         href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0020.md">sep-0020</a>
-                    and update the linked <a target="_blank"
+                    and update the linked <a target="_blank" rel="noopener"
                                              href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
                     file to include your organization info.
                 </p>
                 <h3>Where can I find the code?</h3>
                 <p>
                     All code is open-source and available on <a href="https://github.com/stellarbeat"
-                                                class="btn btn-sm bt btn-outline-primary"
+                                                class="btn btn-sm bt btn-outline-primary" rel="noopener"
                                                 target="_blank"><github/> Github</a>
                 </p>
             </div>

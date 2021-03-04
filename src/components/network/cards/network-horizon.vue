@@ -6,7 +6,7 @@
         <div class="card-body p-0">
             <b-list-group flush class="w-100 mb-4 card-columns">
                 <b-list-group-item class="px-3 py-3" v-for="horizon in horizons" :key="horizon.name">
-                    <a :href="horizon.url" target="_blank">{{horizon.name}}</a>
+                    <a :href="horizon.url" target="_blank" rel="noopener">{{horizon.name}}</a>
                 </b-list-group-item>
             </b-list-group>
         </div>

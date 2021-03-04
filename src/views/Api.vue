@@ -11,9 +11,9 @@
                     <dt>Networks</dt>
                     <dd>
                         <ul class="pl-1">
-                            <li>Public network: <a href="https://api.stellarbeat.io" target="_blank">https://api.stellarbeat.io</a>
+                            <li>Public network: <a href="https://api.stellarbeat.io" target="_blank" rel="noopener">https://api.stellarbeat.io</a>
                             </li>
-                            <li>Test network: <a href="https://api-testnet.stellarbeat.io" target="_blank">https://api-testnet.stellarbeat.io</a>
+                            <li>Test network: <a href="https://api-testnet.stellarbeat.io" target="_blank" rel="noopener">https://api-testnet.stellarbeat.io</a>
                             </li>
                         </ul>
                     </dd>

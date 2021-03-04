@@ -15,7 +15,7 @@
                 {{organization.description}}
             </p>
             <b-alert class="mt-2" v-else show variant="info">No description found in <a
-                    target="_blank"
+                    target="_blank" rel="noopener"
                     href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md">stellar.toml</a>
             </b-alert>
 
@@ -25,44 +25,44 @@
                     <a :href="organization.url"
                        v-b-tooltip.hover :title="organization.url"
                        class="social-link"
-                       target="_blank">
+                       target="_blank" rel="noopener">
                         <b-icon-link scale="1.4"/>
                     </a>
                 </li>
                 <li v-if="organization.physicalAddress" class="list-inline-item">
                     <a :href="'https://www.google.com/maps/search/?api=1&query=' + organization.physicalAddress"
-                       target="_blank" class="social-link" v-b-tooltip.hover
+                       target="_blank" rel="noopener" class="social-link" v-b-tooltip.hover
                        :title="organization.physicalAddress">
                         <b-icon-map scale="1.2"/>
                     </a>
                 </li>
                 <li v-if="organization.officialEmail" class="list-inline-item">
                     <a class="social-link" v-b-tooltip.hover :title="organization.officialEmail"
-                       :href="'mailto:' + organization.officialEmail" target="_blank">
+                       :href="'mailto:' + organization.officialEmail" target="_blank" rel="noopener">
                         <b-icon-envelope scale="1.2"/>
                     </a>
                 </li>
                 <li v-if="organization.phoneNumber" class="list-inline-item">
                     <a class="social-link" v-b-tooltip.hover :title="organization.phoneNumber"
-                       :href="'tel:' + organization.phoneNumber" target="_blank">
+                       :href="'tel:' + organization.phoneNumber" target="_blank" rel="noopener">
                         <b-icon-phone scale="1.2"/>
                     </a>
                 </li>
                 <li v-if="organization.twitter" class="list-inline-item">
                     <a :href="'https://twitter.com/' + organization.twitter" class="social-link"
                        v-b-tooltip.hover title="Twitter"
-                       target="_blank">
+                       target="_blank" rel="noopener">
                         <twitter/>
                     </a>
                 </li>
                 <li v-if="organization.github" class="list-inline-item">
-                    <a :href="'https://github.com/' + organization.github" target="_blank"
+                    <a :href="'https://github.com/' + organization.github" target="_blank" rel="noopener"
                        v-b-tooltip.hover title="Github" class="social-link">
                         <github/>
                     </a>
                 </li>
                 <li v-if="organization.keybase" class="list-inline-item">
-                    <a :href="'https://keybase.io/' + organization.keybase"
+                    <a :href="'https://keybase.io/' + organization.keybase" rel="noopener"
                        v-b-tooltip.hover title="Keybase"
                        target="_blank" class="social-link"
                     >
@@ -72,7 +72,7 @@
                 <li v-if="organization.horizonUrl" class="list-inline-item">
                     <a :href="organization.horizonUrl"
                        v-b-tooltip.hover title="Horizon"
-                       target="_blank" class="social-link"
+                       target="_blank" class="social-link" rel="noopener"
                     >
                         <stellar/>
                     </a>

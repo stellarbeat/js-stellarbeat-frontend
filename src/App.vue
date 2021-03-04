@@ -31,7 +31,7 @@
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
                                             <a href="https://github.com/stellarbeat"
-                                               class="btn btn-sm bt btn-primary-sb" target="_blank">
+                                               class="btn btn-sm bt btn-primary-sb" target="_blank" rel="noopener">
                                                 <github/>
                                                 Github</a>
                                             <a href="mailto:stellarbeatio@gmail.com"
@@ -86,7 +86,7 @@
                                         </router-link>
                                     </li>
                                   <li class="nav-item">
-                                    <a class="nav-link" target="_blank" href="https://medium.com/stellarbeatio">
+                                    <a class="nav-link" target="_blank" href="https://medium.com/stellarbeatio" rel="noopener">
                                       <b-icon-newspaper class="mr-1" scale="0.9"/>
                                       Blog
                                     </a>
@@ -122,7 +122,7 @@
 
             <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px;">
                 <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
-                <b-alert :show="store.isLocalNetwork" variant="info">Learn more about the demo networks <a href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e" target="_blank">here!</a></b-alert>
+                <b-alert :show="store.isLocalNetwork" variant="info">Learn more about the demo networks <a href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e" target="_blank" rel="noopener">here!</a></b-alert>
                 <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
                     <div class="loader"></div>
                 </div>
@@ -142,10 +142,10 @@
                 </router-link>
                 <div class="nav-item d-none d-lg-flex pr-0">
                     <a href="https://github.com/stellarbeat"
-                       class="btn btn-sm bt btn-primary-sb" target="_blank">
+                       class="btn btn-sm bt btn-primary-sb" target="_blank" rel="noopener">
                         <github/>
                         Github</a>
-                    <a href="mailto:stellarbeatio@gmail.com"
+                    <a href="mailto:stellarbeatio@gmail.com" rel="noopener"
                        class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
                         <b-icon-envelope/>
                         Mail</a>
