@@ -16,6 +16,10 @@ if(isProd)
 //order matters
 let cacheTime = 86400000 * 7; //7 day cache for assets
 server.use(async function (req, res, next) {
+    res.setHeader('X-Frame-Options', 'DENY'); //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+    //res.setHeader('Content-Security-Policy', 'default-src \'self\' *.stellarbeat.io');//https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+    res.setHeader('X-XSS-Protection', '1');//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection
+    res.setHeader('X-Content-Type-Options', 'nosniff');
     if (req.url.match(/^\/(css|js|img|fonts)\/.+/) ||
         req.url.match(/^\/favicon.ico$/) ||
         req.url.match(/^\/.*\.worker.js$/)
