@@ -10,7 +10,8 @@
     "heroku-postbuild": "npm run build-client",
     "start": "node server.js",
     "start-ssr": "node server-ssr.js",
-    "test": "vue-cli-service test:unit"
+    "test": "vue-cli-service test:unit",
+    "generate-validators": "ajv compile -s schemas/network-basic.json -o src/generated/custom-network-validator.js --code-optimize=true --code-lines"
   },
   "dependencies": {
     "@popperjs/core": "^2.3.3",
@@ -72,6 +73,7 @@
     "@vue/cli-service": "^4.5.9",
     "@vue/test-utils": "^1.0.0-beta.29",
     "ajv": "^7.1.1",
+    "ajv-cli": "^4.1.0",
     "copy-webpack-plugin": "^6.1.1",
     "jest": "^24.9.0",
     "mini-css-extract-plugin": "^1.3.1",

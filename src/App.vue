@@ -9,7 +9,8 @@
                                 <div class="d-flex">
                                     <router-link class="header-brand mr-0 mt-2"
                                                  :to="{ name: 'network-dashboard' }">
-                                        <img src="./assets/logo.svg" width="27.833" height="32" class="header-brand-img" alt="stellarbeat.io">
+                                        <img src="./assets/logo.svg" width="27.833" height="32" class="header-brand-img"
+                                             alt="stellarbeat.io">
                                     </router-link>
                                     <div class="d-none d-lg-flex" style="width: 264px"></div>
                                 </div>
@@ -22,12 +23,19 @@
                                         <div class="nav-item pr-0">
                                             <b-nav-item-dropdown style="width:137px" toggle-class="gray"
                                                                  class="text-gray nav-link px-0"
-                                                                 v-if="!store.isLoading">
+                                                                 v-if="!store.isLoading"
+                                            >
                                                 <template #button-content>
-                                                    {{store.getNetworkIdPretty()}}
+                                                    {{ store.getNetworkIdPretty() }}
                                                 </template>
-                                              <b-dropdown-item v-for="network in Array.from(store.availableNetworks)" :key="network" @click="navigateToNetwork(network)">
-                                                {{store.getNetworkIdPretty(network)}}</b-dropdown-item>
+                                                <b-dropdown-item
+                                                    v-for="network in Array.from(store.availableNetworks)"
+                                                    :key="network" @click="navigateToNetwork(network)">
+                                                    {{ store.getNetworkIdPretty(network) }}
+                                                </b-dropdown-item>
+                                                <b-dropdown-item>
+                                                    Custom network
+                                                </b-dropdown-item>
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
                                             <a href="https://github.com/stellarbeat"
@@ -53,10 +61,15 @@
                             <b-nav-item-dropdown variant="primary" toggle-class="gray" class="ml-0 pl-0 mt-3 d-lg-none"
                                                  v-if="!store.isLoading">
                                 <template #button-content>
-                                    {{store.getNetworkIdPretty()}}
+                                    {{ store.getNetworkIdPretty() }}
                                 </template>
-                              <b-dropdown-item v-for="network in Array.from(store.availableNetworks)" :key="network" @click="navigateToNetwork(network)">
-                                {{store.getNetworkIdPretty(network)}}</b-dropdown-item>
+                                <b-dropdown-item v-for="network in Array.from(store.availableNetworks)" :key="network"
+                                                 @click="navigateToNetwork(network)">
+                                    {{ store.getNetworkIdPretty(network) }}
+                                </b-dropdown-item>
+                                <b-dropdown-item>
+                                    Custom network
+                                </b-dropdown-item>
                             </b-nav-item-dropdown>
                             <div class="col-lg order-lg-first">
                                 <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
@@ -85,12 +98,13 @@
                                             Organizations
                                         </router-link>
                                     </li>
-                                  <li class="nav-item">
-                                    <a class="nav-link" target="_blank" href="https://medium.com/stellarbeatio" rel="noopener">
-                                      <b-icon-newspaper class="mr-1" scale="0.9"/>
-                                      Blog
-                                    </a>
-                                  </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" target="_blank" href="https://medium.com/stellarbeatio"
+                                           rel="noopener">
+                                            <b-icon-newspaper class="mr-1" scale="0.9"/>
+                                            Blog
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
                                                      :to="{ name: 'api', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }">
@@ -121,8 +135,10 @@
             </div>
 
             <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px;">
-                <b-alert :show="showError" variant="danger">{{errorMessage}}</b-alert>
-                <b-alert :show="store.isLocalNetwork" variant="info">Learn more about the demo networks <a href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e" target="_blank" rel="noopener">here!</a></b-alert>
+                <b-alert :show="showError" variant="danger">{{ errorMessage }}</b-alert>
+                <b-alert :show="store.isLocalNetwork" variant="info">Learn more about the demo networks <a
+                    href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e" target="_blank"
+                    rel="noopener">here!</a></b-alert>
                 <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
                     <div class="loader"></div>
                 </div>
@@ -130,27 +146,28 @@
                     <router-view v-if="!store.isLoading && !store.fetchingDataFailed"
                                  :isLoading="store.isLoading"
                     />
+                    <custom-network></custom-network>
                 </div>
             </div>
         </div>
         <footer class="footer">
             <div class="container-fluid" style="max-width: 1360px;">
-            <div class="d-flex justify-content-between mx-4">
-                <router-link active-class="active" class="nav-link"
-                             :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }"
-                             exact> Terms and Conditions
-                </router-link>
-                <div class="nav-item d-none d-lg-flex pr-0">
-                    <a href="https://github.com/stellarbeat"
-                       class="btn btn-sm bt btn-primary-sb" target="_blank" rel="noopener">
-                        <github/>
-                        Github</a>
-                    <a href="mailto:stellarbeatio@gmail.com" rel="noopener"
-                       class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
-                        <b-icon-envelope/>
-                        Mail</a>
+                <div class="d-flex justify-content-between mx-4">
+                    <router-link active-class="active" class="nav-link"
+                                 :to="{ name: 'terms-and-conditions', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }"
+                                 exact> Terms and Conditions
+                    </router-link>
+                    <div class="nav-item d-none d-lg-flex pr-0">
+                        <a href="https://github.com/stellarbeat"
+                           class="btn btn-sm bt btn-primary-sb" target="_blank" rel="noopener">
+                            <github/>
+                            Github</a>
+                        <a href="mailto:stellarbeatio@gmail.com" rel="noopener"
+                           class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
+                            <b-icon-envelope/>
+                            Mail</a>
+                    </div>
                 </div>
-            </div>
             </div>
         </footer>
     </div>
@@ -159,13 +176,42 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import {Component, Watch} from 'vue-property-decorator';
-    import Search from '@/components/search.vue';
-    import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
-    import Github from '@/components/organization/logo/github.vue';
-    import {
+import Vue from 'vue';
+import {Component, Watch} from 'vue-property-decorator';
+import Search from '@/components/search.vue';
+import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
+import Github from '@/components/organization/logo/github.vue';
+import CustomNetwork from '@/components/custom-network/custom-network.vue';
+import {
+    BNavbar,
+    BAlert,
+    BCollapse,
+    BIconBuilding,
+    BIconBullseye,
+    BIconHouse,
+    BIconCode,
+    BIconQuestionCircle,
+    BIconEnvelope,
+    BNavbarToggle,
+    BFormSelect,
+    BIconGlobe2,
+    BNavItemDropdown,
+    BDropdownItem,
+    BIconNewspaper,
+    BBadge
+} from 'bootstrap-vue';
+import Store from '@/store/Store';
+
+@Component({
+    name: 'app',
+    components: {
+        Github,
+        CustomNetwork,
+        UndoRedo,
+        Search,
         BNavbar,
+        BNavItemDropdown,
+        BDropdownItem,
         BAlert,
         BCollapse,
         BIconBuilding,
@@ -177,156 +223,129 @@
         BNavbarToggle,
         BFormSelect,
         BIconGlobe2,
-        BNavItemDropdown,
-        BDropdownItem,
         BIconNewspaper,
-        BBadge
-    } from 'bootstrap-vue';
-    import Store from '@/store/Store';
-
-    @Component({
-        name: 'app',
-        components: {
-            Github,
-            UndoRedo,
-            Search,
-            BNavbar,
-            BNavItemDropdown,
-            BDropdownItem,
-            BAlert,
-            BCollapse,
-            BIconBuilding,
-            BIconBullseye,
-            BIconHouse,
-            BIconCode,
-            BIconQuestionCircle,
-            BIconEnvelope,
-            BNavbarToggle,
-            BFormSelect,
-            BIconGlobe2,
-            BIconNewspaper,
-            BBadge,
-        },
-        metaInfo: {
-            title: 'Stellarbeat.io - Stellar network visibility',
-            meta: [
-                {
-                    name: 'description',
-                    content: 'Giving insight into the Stellar network through various tools & visualizations.'
-                }
-            ]
-        }
-    })
-
-    export default class App extends Vue {
-        protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
-        protected navCollapsed = false;
-
-        async created(){
-            let networkId = this.$route.query.network;
-            if('string' === typeof networkId && this.store.availableNetworks.includes(networkId)){
-                this.store.networkId = networkId;
+        BBadge,
+    },
+    metaInfo: {
+        title: 'Stellarbeat.io - Stellar network visibility',
+        meta: [
+            {
+                name: 'description',
+                content: 'Giving insight into the Stellar network through various tools & visualizations.'
             }
-            let timeAt = this.store.getDateFromParam(this.$route.query.at);
-            await this.store.fetchData(timeAt);
+        ]
+    }
+})
+
+export default class App extends Vue {
+    protected errorMessage = 'Could not connect to stellarbeat.io api, please refresh the page';
+    protected navCollapsed = false;
+
+    async created() {
+        let networkId = this.$route.query.network;
+        if ('string' === typeof networkId && this.store.availableNetworks.includes(networkId)) {
+            this.store.networkId = networkId;
         }
+        let timeAt = this.store.getDateFromParam(this.$route.query.at);
+        await this.store.fetchData(timeAt);
+    }
 
-        serverPrefetch () {
-           let networkId = this.$route.query.network;
-            if('string' === typeof networkId && this.store.availableNetworks.includes(networkId)){
-                this.store.networkId = networkId;
-            }
-            let timeAt = this.store.getDateFromParam(this.$route.query.at);
-
-            return this.store.fetchData(timeAt);
+    serverPrefetch() {
+        let networkId = this.$route.query.network;
+        if ('string' === typeof networkId && this.store.availableNetworks.includes(networkId)) {
+            this.store.networkId = networkId;
         }
+        let timeAt = this.store.getDateFromParam(this.$route.query.at);
 
-        @Watch('$route', {immediate: false})
-        async onRouteChanged(to: any) {
-            let networkId = this.store.networkId;
-            let timeTravelDate = this.store.getDateFromParam(to.query.at);
-            let timeTravel = false;
-            if(!timeTravelDate && this.store.isTimeTravel)//time travel reset
-                timeTravel = true;
-            if(timeTravelDate && !this.store.timeTravelDate)
-                timeTravel = true;
-            if(timeTravelDate && this.store.timeTravelDate && timeTravelDate.getTime() !== this.store.timeTravelDate.getTime())
-                timeTravel = true;
+        return this.store.fetchData(timeAt);
+    }
 
-            if (this.store.availableNetworks.includes(to.query.network))
-                networkId = to.query.network;
+    @Watch('$route', {immediate: false})
+    async onRouteChanged(to: any) {
+        let networkId = this.store.networkId;
+        let timeTravelDate = this.store.getDateFromParam(to.query.at);
+        let timeTravel = false;
+        if (!timeTravelDate && this.store.isTimeTravel)//time travel reset
+            timeTravel = true;
+        if (timeTravelDate && !this.store.timeTravelDate)
+            timeTravel = true;
+        if (timeTravelDate && this.store.timeTravelDate && timeTravelDate.getTime() !== this.store.timeTravelDate.getTime())
+            timeTravel = true;
 
-            if (networkId !== this.store.networkId || timeTravel) {
-                this.store.networkId = networkId;
-                await this.store.fetchData(timeTravel ? timeTravelDate : undefined);
-            }
-        }
+        if (this.store.availableNetworks.includes(to.query.network))
+            networkId = to.query.network;
 
-        get store(): Store {
-            return this.$root.$data.store;
-        }
-
-        get network() {
-            return this.store.network;
-        }
-
-        get showError() {
-            return this.store.fetchingDataFailed;
-        }
-
-        get homeActiveClass() {
-            return {
-                'active': this.$route.name === 'network-dashboard' || this.$route.name === 'node-dashboard' || this.$route.name === 'organization-dashboard'
-            };
-        }
-
-        navigateToNetwork(networkId: string) {
-            if (networkId === this.store.networkId)
-                return;
-
-            this.$router.push(
-                {
-                    name: 'network-dashboard',
-                    query: {'network': networkId},
-                },
-            ).catch(e => {
-                //this triggers a navigation guard error that we can safely ignore. See router beforeEach
-            });
+        if (networkId !== this.store.networkId || timeTravel) {
+            this.store.networkId = networkId;
+            await this.store.fetchData(timeTravel ? timeTravelDate : undefined);
         }
     }
+
+    get store(): Store {
+        return this.$root.$data.store;
+    }
+
+    get network() {
+        return this.store.network;
+    }
+
+    get showError() {
+        return this.store.fetchingDataFailed;
+    }
+
+    get homeActiveClass() {
+        return {
+            'active': this.$route.name === 'network-dashboard' || this.$route.name === 'node-dashboard' || this.$route.name === 'organization-dashboard'
+        };
+    }
+
+    navigateToNetwork(networkId: string) {
+        if (networkId === this.store.networkId)
+            return;
+
+        this.$router.push(
+            {
+                name: 'network-dashboard',
+                query: {'network': networkId},
+            },
+        ).catch(e => {
+            //this triggers a navigation guard error that we can safely ignore. See router beforeEach
+        });
+    }
+}
 </script>
 
 <style scoped>
-    .action-bar {
-        background-color: #eaebed;
-        padding: 2px;
-    }
+.action-bar {
+    background-color: #eaebed;
+    padding: 2px;
+}
 
-    .full {
-        background: #f5f7fb;
-    }
+.full {
+    background: #f5f7fb;
+}
 
-    .brand-title {
-        color: #44bbe7;
-    }
+.brand-title {
+    color: #44bbe7;
+}
 
-    .collapser {
-        background: white;
-    }
+.collapser {
+    background: white;
+}
 
-    .my-header {
-        width: 100%;
-    }
+.my-header {
+    width: 100%;
+}
 
-    .my-navbar-toggle {
-        border: none;
+.my-navbar-toggle {
+    border: none;
 
-    }
+}
 
 </style>
 
 <style>
-    .gray {
-        color: #80858a !important;
-    }
+.gray {
+    color: #80858a !important;
+}
 </style>
