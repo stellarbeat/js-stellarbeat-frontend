@@ -36,7 +36,7 @@ export default class Store {
     public networkUpdated: number = 0;
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
-    public availableNetworks = ['public', 'test', 'fbas', 'fbas2'];
+    public availableNetworks = ['public', 'test', 'fbas', 'fbas2', 'custom'];
     public availableNetworksPretty!:Map<string, string>;
     public networkId: NetworkId = 'public';
     public isLocalNetwork: boolean = false;
@@ -49,6 +49,7 @@ export default class Store {
     public isNetworkAnalysisVisible: boolean = false;
     public isTimeTravel: boolean = false;
     public timeTravelDate?:Date;
+    public customNetwork: Network|undefined;
 
     public includeWatcherNodes: boolean = false;
     public watcherNodeFilter = (node:Node) => {
@@ -65,6 +66,7 @@ export default class Store {
         this.availableNetworksPretty.set('test', 'Testnet');
         this.availableNetworksPretty.set('fbas', 'FBAS demo');
         this.availableNetworksPretty.set('fbas2', 'FBAS QI demo');
+        this.availableNetworksPretty.set('custom', 'Custom network');
     }
 
     hydrateNetwork(networkDTO: object, networkId: string){
@@ -168,6 +170,23 @@ export default class Store {
                 resolve();
             });
         }
+
+        if(this.networkId === 'custom'){
+            console.log("custom");
+            console.log(this.customNetwork);
+            this.isLocalNetwork = true;
+            if(this.customNetwork !== undefined)
+                this.loadCustomNetwork();
+            else
+                this.loadFBAS2();
+
+
+            this.isLocalNetwork = true;
+            return new Promise(function(resolve, reject) {
+                resolve();
+            });
+        }
+
         this.isLocalNetwork = false;
         try {
             let params:any = {};
@@ -332,6 +351,19 @@ export default class Store {
         this.changeQueue.reset();
         this.network.modifyNetwork();
         this.networkUpdated++;
+    }
+
+    public loadCustomNetwork(){
+        console.log("loading custom network");
+        if(!this.customNetwork){
+            this.isLoading = false;
+            return;
+        }
+
+        this.network = this.customNetwork;
+        Vue.set(this, 'network', this.customNetwork);
+        this.networkUpdated ++;
+        this.isLoading = false;
     }
 
     public loadFBAS() {
