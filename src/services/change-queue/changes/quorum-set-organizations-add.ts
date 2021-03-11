@@ -1,7 +1,7 @@
 import {QuorumSet, Organization} from '@stellarbeat/js-stellar-domain';
-import {Change} from '@/services/change-queue/change-queue';
+import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
-export class QuorumSetOrganizationsAdd implements Change {
+export class QuorumSetOrganizationsAdd implements NetworkChange {
     _quorumSet: QuorumSet;
     _organizations: Organization[];
 

@@ -1,7 +1,7 @@
 import {QuorumSet, Node} from '@stellarbeat/js-stellar-domain';
-import {Change} from '@/services/change-queue/change-queue';
+import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
-export class InnerQuorumSetAdd implements Change {
+export class InnerQuorumSetAdd implements NetworkChange {
     _quorumSet: QuorumSet;
     _innerQuorumSet: QuorumSet;
 

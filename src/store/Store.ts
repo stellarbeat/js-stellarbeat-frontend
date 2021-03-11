@@ -8,7 +8,7 @@ import {
     PublicKey,
     QuorumSet, QuorumSetService, TrustGraphBuilder
 } from '@stellarbeat/js-stellar-domain';
-import {Change, ChangeQueue} from '@/services/change-queue/change-queue';
+import {NetworkChange, NetworkChangeQueue} from '@/services/change-queue/network-change-queue';
 import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
 import {QuorumSetValidatorDelete} from '@/services/change-queue/changes/quorum-set-validator-delete';
 import {InnerQuorumSetDelete} from '@/services/change-queue/changes/inner-quorum-set-delete';
@@ -28,12 +28,13 @@ import {AggregateChange} from '@/services/change-queue/changes/aggregate-change'
 type NetworkId = string;
 
 export default class Store {
+    protected _network?: Network;
+    protected _networkChangeQueue?: NetworkChangeQueue;
+
     public measurementsStartDate: Date = new Date('2019-06-01');
     public isLoading: boolean = true;
     public fetchingDataFailed: boolean = false;
-    public network!: Network;
-    public changeQueue: ChangeQueue = new ChangeQueue();
-    public networkUpdated: number = 0;
+    public networkReCalculated: number = 0; //to update graph views
     public centerNode?:Node = undefined;
     public selectedNode?:Node = undefined;
     public availableNetworks = ['public', 'test', 'fbas', 'fbas2', 'custom'];
@@ -69,13 +70,36 @@ export default class Store {
         this.availableNetworksPretty.set('custom', 'Custom network');
     }
 
+    get network():Network{
+        if(!this._network)
+            throw new Error("Network not loaded correctly");
+
+        return this._network;
+    }
+
+    setNetwork(network: Network){
+        this._network = network;
+        Vue.set(this, '_network', this._network);
+        this.networkReCalculated++;
+        this._networkChangeQueue = new NetworkChangeQueue(this.network);
+    }
+
+    get changeQueue():NetworkChangeQueue {
+        if(!this._networkChangeQueue){
+            this._networkChangeQueue = new NetworkChangeQueue(this.network);
+        }
+
+        return this._networkChangeQueue;
+    }
+
     hydrateNetwork(networkDTO: object, networkId: string){
         let network = Network.fromJSON(networkDTO);
         this.networkId = networkId;
         if(['fbas', 'fbas2'].includes(this.networkId)){
             this.isLocalNetwork = true;
         }
-        Vue.set(this, 'network', network);
+
+        this.setNetwork(network);
         this.isLoading = false;
     }
     public getNetworkIdPretty(networkId?:string): string|undefined {
@@ -150,10 +174,8 @@ export default class Store {
         return [];
     }
 
-    async fetchData(at?:Date): Promise<void> {
+    async initializeNetwork(at?:Date): Promise<void> {
         this.fetchingDataFailed = false;
-        if(this.isSimulation)
-            this.changeQueue.reset();
 
         if(this.networkId === 'fbas'){
             this.loadFBAS();
@@ -172,8 +194,6 @@ export default class Store {
         }
 
         if(this.networkId === 'custom'){
-            console.log("custom");
-            console.log(this.customNetwork);
             this.isLocalNetwork = true;
             if(this.customNetwork !== undefined)
                 this.loadCustomNetwork();
@@ -204,7 +224,7 @@ export default class Store {
             let result = await axios.get(this.getApiUrl() + '/v1', {params});
             if (result.data) {
                 let network = Network.fromJSON(result.data);
-                Vue.set(this, 'network', network);
+                this.setNetwork(network);
                 this.isLoading = false;
                 return;
             } else {
@@ -233,15 +253,6 @@ export default class Store {
         if (!node.active)
             this.changeQueue.execute(new EntityPropertyUpdate(node, 'active', !node.active));
         this.processChange(new EntityPropertyUpdate(node, 'isValidating', !node.isValidating));
-    }
-
-    public updateValidatingStates(updates: Array<{ 'publicKey': PublicKey, 'validating': boolean }>) {
-        updates.forEach(update => {
-            let node = this.network.getNodeByPublicKey(update.publicKey);
-            this.changeQueue.execute(new EntityPropertyUpdate(node, 'isValidating', update.validating));
-        });
-        this.network.modifyNetwork();
-        this.networkUpdated++;
     }
 
     public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
@@ -276,7 +287,7 @@ export default class Store {
         let fromNodes = fromOrganization.validators
             .map(publicKey => this.network.getNodeByPublicKey(publicKey));
 
-        let changes:Change[] = [];
+        let changes:NetworkChange[] = [];
         fromNodes.forEach(node => {
             node.quorumSet.innerQuorumSets.forEach(qSet => {
                 if(QuorumSetService.isOrganizationQuorumSet(qSet, this.network) && this.network.getNodeByPublicKey(qSet.validators[0]).organizationId === organization.id){
@@ -293,7 +304,7 @@ export default class Store {
         let toNodes = toOrganization.validators
             .map(publicKey => this.network.getNodeByPublicKey(publicKey));
 
-        let changes:Change[] = [];
+        let changes:NetworkChange[] = [];
         toNodes.forEach(node => {
             changes.push(new QuorumSetOrganizationsAdd(node.quorumSet, organizations));
             changes.push(new EntityPropertyUpdate(node.quorumSet, 'threshold', node.quorumSet.threshold + 1))
@@ -302,10 +313,10 @@ export default class Store {
         this.processChange(new AggregateChange(changes));
     }
 
-    public processChange(change: Change) {
+    public processChange(change: NetworkChange) {
         this.changeQueue.execute(change);
-        this.network.modifyNetwork();
-        this.networkUpdated++;
+        this.network.recalculateNetwork();
+        this.networkReCalculated++;
     }
 
     get isSimulation(): boolean {
@@ -325,8 +336,8 @@ export default class Store {
             return;
         }
         this.changeQueue.undo();
-        this.network.modifyNetwork();
-        this.networkUpdated++;
+        this.network.recalculateNetwork();
+        this.networkReCalculated++;
     }
 
     public redoUpdate() {
@@ -334,14 +345,13 @@ export default class Store {
             return;
         }
         this.changeQueue.redo();
-        this.network.modifyNetwork();
-        this.networkUpdated++;
+        this.network.recalculateNetwork();
+        this.networkReCalculated++;
     }
 
     public addNodeToNetwork(node: Node) {
         this.changeQueue.execute(new NetworkAddNode(this.network, node));
-        this.network.modifyNetwork(this.network.nodes); //needs better solution
-        this.networkUpdated++;
+        this.networkReCalculated++;
     }
 
     public resetUpdates() {
@@ -349,34 +359,29 @@ export default class Store {
             return;
         }
         this.changeQueue.reset();
-        this.network.modifyNetwork();
-        this.networkUpdated++;
+        this.network.recalculateNetwork();
+        this.networkReCalculated++;
     }
 
     public loadCustomNetwork(){
-        console.log("loading custom network");
         if(!this.customNetwork){
             this.isLoading = false;
             return;
         }
 
-        this.network = this.customNetwork;
-        Vue.set(this, 'network', this.customNetwork);
-        this.networkUpdated ++;
+        this.setNetwork(this.customNetwork);
         this.isLoading = false;
     }
 
     public loadFBAS() {
         let network = LocalNetworks.getFBASNetwork();
-        Vue.set(this, 'network', network);
-        this.networkUpdated++;
+        this.setNetwork(network);
         this.isLoading = false;
     }
 
     public loadFBAS2() {
         let network = LocalNetworks.getFBAS2Network();
-        Vue.set(this, 'network', network);
-        this.networkUpdated++;
+        this.setNetwork(network);
         this.isLoading = false;
     }
 

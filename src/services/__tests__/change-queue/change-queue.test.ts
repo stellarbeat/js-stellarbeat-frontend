@@ -1,17 +1,17 @@
-import {ChangeQueue} from "../../change-queue/change-queue";
+import {NetworkChangeQueue} from "../../change-queue/network-change-queue";
 import {EntityPropertyUpdate} from "../../change-queue/changes/entity-property-update";
-import {Node} from "@stellarbeat/js-stellar-domain";
+import {Node, Network} from "@stellarbeat/js-stellar-domain";
 
 jest.mock('./../../change-queue/changes/entity-property-update');
 
 describe("update manager", () => {
-    let myNodeUpdateManager:ChangeQueue;
+    let myNodeUpdateManager:NetworkChangeQueue;
     let update1:EntityPropertyUpdate;
     let update2:EntityPropertyUpdate;
     let update3:EntityPropertyUpdate;
 
     beforeEach(() => {
-        myNodeUpdateManager = new ChangeQueue();
+        myNodeUpdateManager = new NetworkChangeQueue(new Network([]));
 
         update1 =  new EntityPropertyUpdate(new Node('a'), 'a', 'true');
         update1.toString = jest.fn(()=> 'a');

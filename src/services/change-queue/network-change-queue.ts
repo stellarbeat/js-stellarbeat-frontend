@@ -1,24 +1,28 @@
 import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
+import {Network} from '@stellarbeat/js-stellar-domain';
 
-export interface Change {
+export interface NetworkChange {
     execute():void;
     revert():void;
 }
 /**
  *
  */
-export class ChangeQueue
+export class NetworkChangeQueue
 {
-    protected _changesQueue: Change[];
+    protected _changesQueue: NetworkChange[];
     protected _changesQueueIndex: number;
+    protected _network: Network;
 
-    constructor() {
+    constructor(network: Network) {
         this._changesQueue = [];
         this._changesQueueIndex = 0;
+        this._network = network;
     }
 
-    execute(change:Change): void {
+    execute(change:NetworkChange): void {
         change.execute();
+        this._network.recalculateNetwork();
         if(this._changesQueueIndex !== this._changesQueue.length) {
             this._changesQueue = this._changesQueue.splice(0, this._changesQueueIndex);
         }

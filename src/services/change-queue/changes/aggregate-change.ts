@@ -1,8 +1,8 @@
-import {Change} from '@/services/change-queue/change-queue';
+import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
-export class AggregateChange implements Change{
-    protected changes: Change[];
-    constructor(changes: Change[]){
+export class AggregateChange implements NetworkChange{
+    protected changes: NetworkChange[];
+    constructor(changes: NetworkChange[]){
         this.changes = changes;
     }
 

@@ -215,7 +215,7 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
 
         async timeTravel(update: any) {
             this.store.isLoading = true;
-            await this.store.fetchData(new Date(update.startDate));
+            await this.store.initializeNetwork(new Date(update.startDate));
             this.store.isLoading = false;
         }
 

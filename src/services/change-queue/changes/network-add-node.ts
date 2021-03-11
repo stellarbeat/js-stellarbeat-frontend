@@ -1,7 +1,7 @@
 import {Node, Network} from '@stellarbeat/js-stellar-domain';
-import {Change} from '@/services/change-queue/change-queue';
+import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
-export class NetworkAddNode implements Change {
+export class NetworkAddNode implements NetworkChange {
     _network: Network;
     _node: Node;
 

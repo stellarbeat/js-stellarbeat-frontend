@@ -1,9 +1,9 @@
 import {QuorumSet, Node} from '@stellarbeat/js-stellar-domain';
-import {Change} from '@/services/change-queue/change-queue';
+import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
 type PublicKey = string;
 
-export class QuorumSetValidatorDelete implements Change {
+export class QuorumSetValidatorDelete implements NetworkChange {
     _quorumSet: QuorumSet;
     _validator: PublicKey;
 

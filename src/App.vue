@@ -247,7 +247,7 @@ export default class App extends Vue {
             this.store.networkId = networkId;
         }
         let timeAt = this.store.getDateFromParam(this.$route.query.at);
-        await this.store.fetchData(timeAt);
+        await this.store.initializeNetwork(timeAt);
     }
 
     serverPrefetch() {
@@ -257,7 +257,7 @@ export default class App extends Vue {
         }
         let timeAt = this.store.getDateFromParam(this.$route.query.at);
 
-        return this.store.fetchData(timeAt);
+        return this.store.initializeNetwork(timeAt);
     }
 
     @Watch('$route', {immediate: false})
@@ -277,7 +277,7 @@ export default class App extends Vue {
 
         if (networkId !== this.store.networkId || timeTravel) {
             this.store.networkId = networkId;
-            await this.store.fetchData(timeTravel ? timeTravelDate : undefined);
+            await this.store.initializeNetwork(timeTravel ? timeTravelDate : undefined);
         }
     }
 

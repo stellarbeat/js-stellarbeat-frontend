@@ -55,8 +55,8 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
     @Prop({default: true})
     public optionTransitiveQuorumSetOnly!: boolean;
 
-    @Watch('store.networkUpdated')
-    public onNetworkUpdated() {
+    @Watch('store.networkReCalculated')
+    public onNetworkReCalculated() {
         if (this.networkId !== this.store.networkId) {
             this.viewGraph.reset();
         }

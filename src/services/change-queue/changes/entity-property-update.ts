@@ -1,8 +1,8 @@
-import {Change} from '@/services/change-queue/change-queue';
+import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
 type Entity = any; //any object
 
-export class EntityPropertyUpdate implements Change{
+export class EntityPropertyUpdate implements NetworkChange{
     protected _originalValue:any;
     protected _entity: Entity;
     protected _propertyName: string;
