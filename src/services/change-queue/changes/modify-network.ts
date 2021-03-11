@@ -1,7 +1,7 @@
 import {Node, Network, Organization} from '@stellarbeat/js-stellar-domain';
 import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
-export class UpdateNetwork implements NetworkChange {
+export class ModifyNetwork implements NetworkChange {
     _network: Network;
     _originalNodes: Node[];
     _originalOrganizations: Organization[];
@@ -17,12 +17,12 @@ export class UpdateNetwork implements NetworkChange {
     }
 
     execute(): void {
-        //this._network.nodes = this._newNodes;
-        //this._network.organizations = this._newOrganizations;
+        this._network.nodes = this._newNodes;
+        this._network.organizations = this._newOrganizations;
     }
 
     revert(): void {
-        //this._network.nodes = this._originalNodes;
-        //this._network.organizations = this._originalOrganizations;
+        this._network.nodes = this._originalNodes;
+        this._network.organizations = this._originalOrganizations;
    }
 }

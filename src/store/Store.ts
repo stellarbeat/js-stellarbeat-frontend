@@ -250,9 +250,13 @@ export default class Store {
     }
 
     public toggleValidating(node: Node) {
+        let changes = [];
         if (!node.active)
-            this.changeQueue.execute(new EntityPropertyUpdate(node, 'active', !node.active));
-        this.processChange(new EntityPropertyUpdate(node, 'isValidating', !node.isValidating));
+            changes.push(new EntityPropertyUpdate(node, 'active', !node.active));
+
+        changes.push(new EntityPropertyUpdate(node, 'isValidating', !node.isValidating));
+
+        this.processChange(new AggregateChange(changes));
     }
 
     public editQuorumSetThreshold(quorumSet: QuorumSet, newThreshold: number) {
