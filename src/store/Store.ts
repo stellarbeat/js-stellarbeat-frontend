@@ -67,7 +67,6 @@ export default class Store {
         this.availableNetworksPretty.set('test', 'Testnet');
         this.availableNetworksPretty.set('fbas', 'FBAS demo');
         this.availableNetworksPretty.set('fbas2', 'FBAS QI demo');
-        this.availableNetworksPretty.set('custom', 'Custom network');
     }
 
     get network():Network{

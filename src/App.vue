@@ -33,9 +33,6 @@
                                                     :key="network" @click="navigateToNetwork(network)">
                                                     {{ store.getNetworkIdPretty(network) }}
                                                 </b-dropdown-item>
-                                                <b-dropdown-item>
-                                                    Custom network
-                                                </b-dropdown-item>
                                             </b-nav-item-dropdown>
                                             <div v-else style="width:137px"></div>
                                             <a href="https://github.com/stellarbeat"
@@ -66,9 +63,6 @@
                                 <b-dropdown-item v-for="network in Array.from(store.availableNetworks)" :key="network"
                                                  @click="navigateToNetwork(network)">
                                     {{ store.getNetworkIdPretty(network) }}
-                                </b-dropdown-item>
-                                <b-dropdown-item>
-                                    Custom network
                                 </b-dropdown-item>
                             </b-nav-item-dropdown>
                             <div class="col-lg order-lg-first">
@@ -277,7 +271,10 @@ export default class App extends Vue {
 
         if (networkId !== this.store.networkId || timeTravel) {
             this.store.networkId = networkId;
-            await this.store.initializeNetwork(timeTravel ? timeTravelDate : undefined);
+            this.store.isLoading = true;
+            await this.$nextTick(async () => { //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
+                await this.store.initializeNetwork(timeTravel ? timeTravelDate : undefined);
+            });
         }
     }
 

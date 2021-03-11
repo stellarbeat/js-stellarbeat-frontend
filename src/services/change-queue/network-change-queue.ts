@@ -6,7 +6,7 @@ export interface NetworkChange {
     revert():void;
 }
 /**
- *
+ * todo: limit number of stored changes (memory usage)
  */
 export class NetworkChangeQueue
 {
