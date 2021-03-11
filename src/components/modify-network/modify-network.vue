@@ -4,7 +4,7 @@
             <b-form-textarea
                 @input="modified = true"
                 id="textarea"
-                v-model="customNetworkString"
+                v-model="modifiedNetworkString"
                 placeholder="Paste your custom network here"
                 rows="20"
                 max-rows="20"
@@ -33,7 +33,8 @@ import {
     BFormTextarea,
     BButton
 } from 'bootstrap-vue';
-import {Network, Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
+import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
+import {ModifyNetwork as ModifyNetworkChange} from '@/services/change-queue/changes/modify-network';
 
 @Component({
     components: {BFormTextarea,BButton},
@@ -45,8 +46,8 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
     })
     visible!: boolean;
 
-    customNetworkString!: string;
-    customNetwork!: {
+    modifiedNetworkString!: string;
+    modifiedNetwork!: {
         nodes: {
             publicKey: string,
             countryCode: string,
@@ -66,15 +67,14 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
 
     validate(){
         console.log("validate");
-        this.customNetwork = JSON.parse(this.customNetworkString);
-        this.isValid = validate(this.customNetwork);
+        this.modifiedNetwork = JSON.parse(this.modifiedNetworkString);
+        this.isValid = validate(this.modifiedNetwork);
         this.validationErrors = validate.errors;
         this.modified = false;
     }
 
     load(){
-        console.log("load");
-        let nodes = this.customNetwork.nodes.map(basicNode => {
+        let nodes = this.modifiedNetwork.nodes.map(basicNode => {
             let node = new Node(basicNode.publicKey);
             node.name = basicNode.name;
             node.geoData.countryCode = basicNode.countryCode;
@@ -86,28 +86,18 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
             return node;
         })
 
-        let organizations = this.customNetwork.organizations.map(basicOrganization => {
+        let organizations = this.modifiedNetwork.organizations.map(basicOrganization => {
             let organization = new Organization(basicOrganization.id, basicOrganization.name);
             organization.validators = basicOrganization.validators;
             organization.subQuorumAvailable = true; //we set all orgs as available by default
             return organization;
         })
 
-        this.store.customNetwork = new Network(nodes, organizations);
-        this.$router.push(
-            {
-                name: 'network-dashboard',
-                query: {'network': 'custom'},
-            },
-        ).catch(e => {
-            //we are already on the custom page
-            this.store.isLoading = true;
-            this.store.loadCustomNetwork();
-        });
+        this.store.processChange(new ModifyNetworkChange(this.network, nodes, organizations));
     }
 
     created() {
-        this.customNetwork = {
+        this.modifiedNetwork = {
             nodes: this.network.nodes
                 .filter(node => node.isValidator)
                 .map(node => {
@@ -128,7 +118,7 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
                     };
                 })
         };
-        this.customNetworkString = JSON.stringify(this.customNetwork, null, 2);
+        this.modifiedNetworkString = JSON.stringify(this.modifiedNetwork, null, 2);
     }
 }
 </script>

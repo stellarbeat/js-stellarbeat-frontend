@@ -175,7 +175,7 @@ import {Component, Watch} from 'vue-property-decorator';
 import Search from '@/components/search.vue';
 import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
 import Github from '@/components/organization/logo/github.vue';
-import CustomNetwork from '@/components/custom-network/custom-network.vue';
+import CustomNetwork from '@/components/modify-network/modify-network.vue';
 import {
     BNavbar,
     BAlert,
