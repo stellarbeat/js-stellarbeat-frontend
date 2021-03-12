@@ -77,8 +77,7 @@ export default class Store {
     }
 
     setNetwork(network: Network){
-        this._network = network;
-        Vue.set(this, '_network', this._network);
+        Vue.set(this, '_network', network);
         this.networkReCalculated++;
         this._networkChangeQueue = new NetworkChangeQueue(this.network);
     }
