@@ -53,6 +53,15 @@
                         v-on:click="store.isNetworkAnalysisVisible = true"
                 />
             </li>
+            <li class="sb-nav-item">
+                <nav-link
+                    title="Modify Network"
+                    :show-icon="true"
+                    icon="pencil"
+                    v-on:click="$refs['modifyNetwork'].showModal()"
+            />
+                <modify-network ref="modifyNetwork"/>
+            </li>
         </template>
     </side-bar>
 </template>
@@ -70,9 +79,11 @@
     import SideBar from '@/components/side-bar/side-bar.vue';
 
     import {BIconX, BModal, VBModal, BBadge, VBTooltip} from 'bootstrap-vue';
+    import ModifyNetwork from '@/components/modify-network/modify-network.vue';
 
     @Component({
         components: {
+            ModifyNetwork,
             SideBar,
             OrganizationsDropdown,
             NavLink, SimulateNewNode, ValidatorsDropdown,
@@ -85,6 +96,7 @@
     export default class NetworkSideBar extends Vue {
         protected validatorsExpanded: boolean = this.networkTransitiveQuorumSetOrganizations.length === 0;
         protected organizationsExpanded: boolean = true;
+        protected modifyNetworkModalVisible: boolean = false;
 
         get store(): Store {
             return this.$root.$data.store;

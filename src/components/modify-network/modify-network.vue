@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div v-if="visible"> <!--todo: modal!-->
+   <b-modal v-model="modalVisible">
+        <div > <!--todo: modal!-->
             <b-form-textarea
                 @input="modified = true"
                 id="textarea"
@@ -21,7 +21,7 @@
             </b-button>
 
         </div>
-    </div>
+   </b-modal>
 </template>
 
 <script lang="ts">
@@ -31,23 +31,22 @@ import {StoreMixin} from '@/mixins/StoreMixin';
 const validate = require('@/generated/custom-network-validator');
 import {
     BFormTextarea,
-    BButton
+    BButton,
+    BModal,
+    VBModal, VBTooltip
 } from 'bootstrap-vue';
 import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
 import {ModifyNetwork as ModifyNetworkChange} from '@/services/change-queue/changes/modify-network';
 
 @Component({
-    components: {BFormTextarea,BButton},
-    directives: {}
+    components: {BFormTextarea,BButton, BModal},
+    directives: {'b-modal': VBModal}
 })
 export default class CustomNetwork extends Mixins(StoreMixin) {
-    @Prop({
-        default: true
-    })
-    visible!: boolean;
+    modalVisible:boolean = false;
 
-    modifiedNetworkString!: string;
-    modifiedNetwork!: {
+    modifiedNetworkString: string = '';
+    modifiedNetwork: {
         nodes: {
             publicKey: string,
             countryCode: string,
@@ -60,10 +59,15 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
             id: string,
             validators: string[]
         }[]
-    };
+    } = {nodes: [], organizations: []};
     isValid:boolean = false;
     modified:boolean = false;
     validationErrors: [] = [];
+
+    showModal(){
+        this.initModifiedNetworkString();
+        this.modalVisible = true;
+    }
 
     validate(){
         console.log("validate");
@@ -96,7 +100,8 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
         this.store.processChange(new ModifyNetworkChange(this.network, nodes, organizations));
     }
 
-    created() {
+    initModifiedNetworkString() {
+        console.log("created");
         this.modifiedNetwork = {
             nodes: this.network.nodes
                 .filter(node => node.isValidator)

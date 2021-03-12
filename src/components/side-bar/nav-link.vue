@@ -55,13 +55,15 @@ import {
     BIconGearWide,
     BIconGear,
     BIconSearch,
-    BBadge
+    BBadge,
+    BIconPencil
 } from 'bootstrap-vue';
 
 @Component({
     components: {
         NavTitle, BIcon, BIconPlus, BIconDownload, BIconChevronRight, BIconChevronDown, BIconLightning, BIconGear, BIconSearch,
         BIconLightningFill,
+        BIconPencil,
         BIconGearWide, BBadge
     }
 })
