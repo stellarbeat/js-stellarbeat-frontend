@@ -78,16 +78,16 @@ export default class Store {
 
     setNetwork(network: Network){
         Vue.set(this, '_network', network);
+        Vue.set(this, '_networkChangeQueue',  new NetworkChangeQueue(this.network));
         this.networkReCalculated++;
-        this._networkChangeQueue = new NetworkChangeQueue(this.network);
     }
 
     get changeQueue():NetworkChangeQueue {
         if(!this._networkChangeQueue){
-            this._networkChangeQueue = new NetworkChangeQueue(this.network);
+            throw new Error("Network not loaded correctly");
         }
 
-        return this._networkChangeQueue;
+        return this._networkChangeQueue!;
     }
 
     hydrateNetwork(networkDTO: object, networkId: string){
@@ -322,6 +322,7 @@ export default class Store {
     }
 
     get isSimulation(): boolean {
+        console.log(this.changeQueue.hasUndo());
         return this.changeQueue.hasUndo() || this.isLocalNetwork;
     }
 
