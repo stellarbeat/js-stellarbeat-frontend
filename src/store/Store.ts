@@ -322,7 +322,6 @@ export default class Store {
     }
 
     get isSimulation(): boolean {
-        console.log(this.changeQueue.hasUndo());
         return this.changeQueue.hasUndo() || this.isLocalNetwork;
     }
 

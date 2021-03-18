@@ -31,7 +31,7 @@ if (isProd) {
 }
 
 //Vue.use(AsyncComputedPlugin);
-
+VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);

@@ -207,6 +207,7 @@
         protected yearStatistics: NetworkStatisticsAggregation[] = [];
 
         public async mounted() {
+            console.log("mounted")
             if(!this.store.isSimulation) {
                 let oneYearAgo = moment(this.network.crawlDate).subtract(1, 'y').toDate();
                 this.yearStatistics = await this.store.networkMeasurementStore.getMonthStatistics('stellar-public', oneYearAgo, this.network.crawlDate);
