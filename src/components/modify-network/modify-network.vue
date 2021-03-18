@@ -57,7 +57,7 @@ import {
     BListGroupItem, BListGroup,
     VBModal, VBTooltip
 } from 'bootstrap-vue';
-import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
+import {Node, NodeGeoData, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
 import {ModifyNetwork as ModifyNetworkChange} from '@/services/change-queue/changes/modify-network';
 
 @Component({
@@ -69,13 +69,7 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
 
     modifiedNetworkString: string = '';
     modifiedNetwork: {
-        nodes: {
-            publicKey: string,
-            countryCode: string,
-            name: string,
-            isp: string
-            quorumSet: any
-        }[],
+        nodes: any[],
         organizations: {
             name: string,
             id: string,
@@ -110,12 +104,11 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
         let nodes = this.modifiedNetwork.nodes.map(basicNode => {
             let node = new Node(basicNode.publicKey);
             node.name = basicNode.name;
-            node.geoData.countryCode = basicNode.countryCode;
-            node.geoData.countryName = basicNode.countryCode;
+            node.geoData = NodeGeoData.fromJSON(JSON.stringify(basicNode.geoData));
             node.quorumSet = QuorumSet.fromJSON(JSON.stringify(basicNode.quorumSet));
             node.isp = basicNode.isp;
-            node.isValidating = true; //we set all nodes as validating by default
-            node.active = true;
+            node.isValidating = basicNode.isValidating === undefined ? true : basicNode.isValidating;
+            node.active = basicNode.active === undefined ? true : basicNode.active;
 
             nodesMap.set(node.publicKey, node);
             return node;
@@ -156,7 +149,9 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
                         'publicKey': node.publicKey,
                         'name': node.displayName,
                         'quorumSet': this.mapToBasicQuorumSet(node.quorumSet),
-                        'countryCode': node.geoData.countryCode ? node.geoData.countryCode : 'N/A',
+                        'geoData': {
+                            'countryCode': node.geoData.countryCode ? node.geoData.countryCode : 'N/A',
+                        },
                         'isp': node.isp ? node.isp : 'N/A'
                     };
                 }),

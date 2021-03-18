@@ -46,10 +46,8 @@
       "type": "object",
       "required": [
         "publicKey",
-        "quorumSet",
-        "countryCode",
-        "isp"
-      ],
+        "quorumSet"
+     ],
       "properties": {
         "publicKey": {
           "$id": "#node/publicKey",
@@ -64,15 +62,50 @@
         "quorumSet": {
           "$ref": "#/definitions/quorumSet"
         },
-        "countryCode": {
-          "$id": "#node/countryCode",
-          "title": "Country code",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "SG"
-          ],
-          "pattern": "^.*$"
+        "geoData": {
+          "$id": "#node/geoData",
+          "title": "geoData",
+          "type": "object",
+          "required": [
+         ],
+          "properties": {
+            "countryCode": {
+              "$id": "#node/geoData/countryCode",
+              "title": "countryCode",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "US"
+              ]
+            },
+            "countryName": {
+              "$id": "#node/geoData/countryName",
+              "title": "countryName",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "United States"
+              ]
+            },
+            "longitude": {
+              "$id": "#node/geoData/longitude",
+              "title": "longitude",
+              "type": "number",
+              "default": "",
+              "examples": [
+                52.309051513671875
+              ]
+            },
+            "latitude": {
+              "$id": "#node/geoData/latitude",
+              "title": "latitude",
+              "type": "number",
+              "default": "",
+              "examples": [
+                52.309051513671875
+              ]
+            }
+          }
         },
         "isp": {
           "$id": "#node/isp",
