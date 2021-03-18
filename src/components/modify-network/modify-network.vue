@@ -1,5 +1,13 @@
 <template>
     <b-modal size="xl" v-model="modalVisible">
+        <template #modal-header="{ close }">
+            <h5 class="modal-title">Modify the network</h5>
+            <!-- Emulate built in modal header close button action -->
+            <b-button size="sm" aria-label="Close" variant="outline-default" @click="close()">
+                <b-icon-x/>
+            </b-button>
+
+        </template>
         <template #default>
             <b-form-textarea
                 @input="modified = true"
@@ -45,6 +53,7 @@ import {
     BButton,
     BButtonGroup,
     BModal,
+    BIconX,
     BListGroupItem, BListGroup,
     VBModal, VBTooltip
 } from 'bootstrap-vue';
@@ -52,7 +61,7 @@ import {Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
 import {ModifyNetwork as ModifyNetworkChange} from '@/services/change-queue/changes/modify-network';
 
 @Component({
-    components: {BFormTextarea, BButton, BModal, BButtonGroup, BListGroup, BListGroupItem},
+    components: {BFormTextarea, BButton, BModal, BButtonGroup, BListGroup, BListGroupItem, BIconX},
     directives: {'b-modal': VBModal}
 })
 export default class CustomNetwork extends Mixins(StoreMixin) {
