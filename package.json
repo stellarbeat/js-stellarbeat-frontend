@@ -11,7 +11,7 @@
     "start": "node server.js",
     "start-ssr": "node server-ssr.js",
     "test": "vue-cli-service test:unit",
-    "generate-validators": "ajv compile -s schemas/network-basic.json -o src/generated/custom-network-validator.js --code-optimize=true --code-lines"
+    "generate-validators": "ajv compile -s schemas/network-basic.json -o generated/custom-network-validator.js --code-optimize=true --code-lines"
   },
   "dependencies": {
     "@popperjs/core": "^2.3.3",

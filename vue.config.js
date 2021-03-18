@@ -48,7 +48,9 @@ module.exports = {
                 {
                     test: /\.js$/,
                     // Exclude transpiling `node_modules`, except `bootstrap-vue/src`
-                    exclude: [/node_modules\/(?!bootstrap-vue\/src\/)/, /\.worker\.js$/],
+                    // exclude js workers
+                    //exclude generated js
+                    exclude: [/node_modules\/(?!bootstrap-vue\/src\/)/, /\.worker\.js$/, /generated\//],
                     use: {
                         loader: 'babel-loader',
                         options: {
