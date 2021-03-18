@@ -22,6 +22,9 @@
             </b-button-group>
         </template>
         <template #modal-footer="{ ok, cancel }">
+            <b-button variant="default" @click="initModifiedNetworkString();cancel()">
+                Cancel
+            </b-button>
             <b-button v-if="isValid && !modified" variant="success" @click="load(); ok();">
                 Load network
             </b-button>
