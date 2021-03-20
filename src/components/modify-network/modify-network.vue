@@ -47,7 +47,7 @@
 import {Component, Mixins, Prop} from 'vue-property-decorator';
 import {StoreMixin} from '@/mixins/StoreMixin';
 
-const validate = require('@/../generated/custom-network-validator');
+const validate = require('@stellarbeat/js-stellar-domain/lib/network-schema');
 import {
     BFormTextarea,
     BButton,
