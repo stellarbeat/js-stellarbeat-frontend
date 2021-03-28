@@ -23,8 +23,8 @@ module.exports = {
                         to: 'worker/stellar_analysis_bg.wasm'
                     },
                     {
-                        from: 'node_modules/@stellarbeat/js-stellar-domain/schema.json',
-                        to: 'schema.json'
+                        from: 'node_modules/@stellarbeat/js-stellar-domain/schemas/network.json',
+                        to: 'schemas/network.json'
 
                     }
                 ],
