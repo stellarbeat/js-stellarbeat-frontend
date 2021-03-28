@@ -113,20 +113,22 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
             nodesMap.set(node.publicKey, node);
             return node;
         });
+        let organizations:Organization[] = [];
+        if(this.modifiedNetwork.organizations) {
+            let organizations = this.modifiedNetwork.organizations.map(basicOrganization => {
+                let organization = new Organization(basicOrganization.id, basicOrganization.name);
+                organization.validators = basicOrganization.validators;
+                organization.validators.forEach(validatorPublicKey => {
+                    let validator = nodesMap.get(validatorPublicKey);
+                    if (!validator)
+                        return;
 
-        let organizations = this.modifiedNetwork.organizations.map(basicOrganization => {
-            let organization = new Organization(basicOrganization.id, basicOrganization.name);
-            organization.validators = basicOrganization.validators;
-            organization.validators.forEach(validatorPublicKey => {
-                let validator = nodesMap.get(validatorPublicKey);
-                if (!validator)
-                    return;
-
-                validator.organizationId = organization.id;
+                    validator.organizationId = organization.id;
+                });
+                organization.subQuorumAvailable = true; //we set all orgs as available by default
+                return organization;
             });
-            organization.subQuorumAvailable = true; //we set all orgs as available by default
-            return organization;
-        });
+        }
 
         this.store.processChange(new ModifyNetworkChange(this.network, nodes, organizations));
     }

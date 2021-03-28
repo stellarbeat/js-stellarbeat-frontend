@@ -22,6 +22,11 @@ module.exports = {
                         from: 'node_modules/stellar_analysis/stellar_analysis_bg.wasm',
                         to: 'worker/stellar_analysis_bg.wasm'
                     },
+                    {
+                        from: 'node_modules/@stellarbeat/js-stellar-domain/schema.json',
+                        to: 'schema.json'
+
+                    }
                 ],
             }),
         ],
