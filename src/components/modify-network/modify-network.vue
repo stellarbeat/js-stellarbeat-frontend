@@ -20,7 +20,7 @@
             ></b-form-textarea>
             <div v-if="!isValid" class="mt-2">
                 <b-list-group>
-                    <b-list-group-item variant="danger" v-for="error in validationErrors">{{error.message + (error.dataPath ? ' at ' + error.dataPath : '')}}</b-list-group-item>
+                    <b-list-group-item variant="danger" v-for="error in validationErrors">{{error.message + (error.dataPath ? ' at ' + error.dataPath : '') + (error.params ? ' ( ' +  Object.values(error.params)[0] + ' ) ': '') }}</b-list-group-item>
                 </b-list-group>
             </div>
             <b-button-group class="mt-2">
@@ -78,7 +78,7 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
     } = {nodes: [], organizations: []};
     isValid: boolean = false;
     modified: boolean = false;
-    validationErrors: {dataPath?: string, message: string}[] = [];
+    validationErrors: {dataPath?: string, message: string, params: any}[] = [];
 
     showModal() {
         this.initModifiedNetworkString();
@@ -94,7 +94,7 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
             this.validationErrors = validate.errors;
         }
         catch (error){
-            this.validationErrors = [{message: error.message, dataPath: undefined}];
+            this.validationErrors = [{message: error.message, dataPath: undefined, params: undefined}];
         }
 
     }
