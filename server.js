@@ -26,6 +26,11 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.get(['/schemas/network', '/schemas/node', '/schemas/organization'], (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // allow cors access
+    next();
+});
+
 app.use(express.static('dist-client'));
 
 app.listen(port, () => console.log('app listening on port: ' + port));
