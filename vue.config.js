@@ -23,7 +23,7 @@ module.exports = {
                         to: 'worker/stellar_analysis_bg.wasm'
                     },
                     {
-                        from: '*(node|organization|network).json',
+                        from: '*.json',
                         to: 'schemas/',
                         context: 'node_modules/@stellarbeat/js-stellar-domain/schemas/'
                     }
