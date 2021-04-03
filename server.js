@@ -26,7 +26,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(['/schemas/network.json', '/schemas/node.json', '/schemas/organization.json'], function (req, res, next) {
+app.use(['/schemas/*.json'], function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*'); // allow cors access
     next();
 });
