@@ -439,7 +439,7 @@ export default class Store {
         if(this.network.networkStatistics.minBlockingSetFilteredSize === 0 && !this.isSimulation){
             return {
                 label: 'Liveness risk',
-                description: 'Network could have liveness issues because all nodes in a blocking set are failing'
+                description: 'Network could have liveness issues because all nodes in a blocking set are failing or Stellarbeat crawler is malfunctioning. Check https://dashboard.stellar.org'
             }
         }
 
