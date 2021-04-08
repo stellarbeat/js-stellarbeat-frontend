@@ -57,19 +57,11 @@
                                                   :items="blockingSets" :merged="resultIsMerged">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
-                                                  <h3 v-if="!resultIsMerged && blockingSetsMinLength <= 0">
-                                                    Network halted.
-                                                  </h3>
-                                                    <h3 v-else-if="resultIsMerged && blockingSetsMergedMinLength <=0">
+                                                    <h3 v-if="blockingSetsMergedMinLength <=0">
                                                         Network halted.
                                                     </h3>
-                                                <h3 v-else-if="!resultIsMerged">
-                                                        Found set(s) of {{blockingSetsMinLength}} nodes across
-                                                        {{blockingSetsMergedMinLength}} organizations that could
-                                                        impact liveness.
-                                                    </h3>
                                                     <h3 v-else>
-                                                        Found set(s) of {{blockingSetsMergedMinLength}} organizations
+                                                        Found set(s) of size {{blockingSetsMergedMinLength}}
                                                         that could
                                                         impact liveness.
                                                     </h3>
@@ -96,17 +88,9 @@
                                                   :items="splittingSets" :merged="resultIsMerged">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
-                                                  <h3 v-if="!resultIsMerged && splittingSetsMinLength <= 0">
-                                                    No intersection between quorums found.
-                                                  </h3>
-                                                    <h3 v-else-if="resultIsMerged && splittingSetsMergedMinLength <= 0">No intersection between quorums found.</h3>
-                                                    <h3 v-else-if="!resultIsMerged">
-                                                        Found set(s) of {{splittingSetsMinLength}} nodes across
-                                                        {{splittingSetsMergedMinLength}} organizations that could
-                                                        impact safety.
-                                                    </h3>
+                                                    <h3 v-if="splittingSetsMergedMinLength <= 0">No intersection between quorums found.</h3>
                                                     <h3 v-else>
-                                                        Found set(s) of {{splittingSetsMergedMinLength}} organizations
+                                                        Found set(s) of size {{splittingSetsMergedMinLength}}
                                                         that could
                                                         impact safety.
                                                     </h3>
@@ -160,11 +144,27 @@
                     <b-alert show variant="warning" v-if="!mergeByOrganizations && network.nodes.length > 20">
                         Warning: computing node results will be slow when simulating non symmetric top tiers.
                     </b-alert>
-                    <b-form-checkbox v-model="mergeByOrganizations"
+                    <b-form-checkbox v-model="mergeByOrganizations" v-show="false"
                                      class="sb-nav-item sb-nav-toggle mb-2"
                                      switch>
                         Merge by organizations
                     </b-form-checkbox>
+
+                    <b-form-group label="Analysis target: " v-slot="{ ariaDescribedby }">
+                        <b-form-radio-group
+                            id="radio-group-2"
+                            v-model="mergeBySelected"
+                            :aria-describedby="ariaDescribedby"
+                            name="radio-sub-component"
+                        >
+                            <b-form-radio :value="MergeBy.DoNotMerge">Nodes</b-form-radio>
+                            <b-form-radio :value="MergeBy.Organizations">Organizations</b-form-radio>
+                            <b-form-radio :value="MergeBy.Countries" >Countries</b-form-radio>
+                            <b-form-radio :value="MergeBy.ISPs">ISP's</b-form-radio>
+                        </b-form-radio-group>
+                    </b-form-group>
+
+
                     <b-button variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
                 </div>
             </div>
@@ -191,7 +191,10 @@
         BCollapse,
         VBToggle,
         BCardHeader,
-        BIconInfoCircle, VBModal, VBTooltip
+        BIconInfoCircle, VBModal, VBTooltip,
+        BFormGroup,
+        BFormRadio,
+        BFormRadioGroup
     } from 'bootstrap-vue';
     import {StoreMixin} from '@/mixins/StoreMixin';
     import FbasAnalysisWorker from 'worker-loader?name=worker/[name].js!./../../../../workers/fbas-analysis-v2.worker.ts';
@@ -202,6 +205,7 @@
     import SafetyInfo from '@/components/network/tools/network-analysis/info/safety-info.vue';
     import LivenessInfo from '@/components/network/tools/network-analysis/info/liveness-info.vue';
     import TopTierInfo from '@/components/network/tools/network-analysis/info/top-tier-info.vue';
+    import {MergeBy} from "stellar_analysis";
 
     const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
@@ -227,11 +231,16 @@
             BCardText,
             BCollapse,
             BCardHeader,
-            BIconInfoCircle
+            BIconInfoCircle,
+            BFormGroup,
+            BFormRadioGroup,
+            BFormRadio
         },
         directives: {'b-toggle': VBToggle, 'b-modal': VBModal, 'b-tooltip': VBTooltip}
     })
     export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
+        protected mergeBySelected:MergeBy = MergeBy.DoNotMerge;
+        protected MergeBy:any = MergeBy;
         protected fbasAnalysisWorker = new _FbasAnalysisWorker();
         protected mergeByOrganizations: boolean = this.$root.$data.store.network.nodes.length > 20;
         protected hasResult: boolean = false;
@@ -243,6 +252,7 @@
             // A column that needs custom formatting
             {key: 'minimalQuorums', label: 'Minimal quorums'}
         ];
+
 
         protected blockingSets: { value: PublicKey[], text: string }[] = [];
         protected blockingSetsMinLength: number = 0;
@@ -277,7 +287,7 @@
             this.fbasAnalysisWorker.postMessage({
                 nodes: this.network.nodes,
                 organizations: this.network.organizations,
-                mergeByOrganizations: this.mergeByOrganizations,
+                mergeBy: this.mergeBySelected,
                 failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey)
             });
         }
@@ -298,15 +308,15 @@
                     case 'end': {
                         if (event.data.result) {
                             this.hasResult = true;
-                            this.resultIsMerged = true;
-                            this.hasQuorumIntersection = event.data.result.organizationAnalysis.has_intersection;
-                            this.minimalQuorumsMerged = JSON.parse(event.data.result.organizationAnalysis.minimal_quorums)
+                            this.resultIsMerged = true;//event.data.result.mergeBy !== MergeBy.DoNotMerge;
+                            this.hasQuorumIntersection = event.data.result.analysis.has_intersection;
+                            this.minimalQuorumsMerged = JSON.parse(event.data.result.analysis.minimal_quorums)
                                 .map((quorum: string[]) => {
                                     return {
                                         'minimalQuorums': quorum.join(', ')
                                     };
                                 });
-                            let blockingSetsMerged = JSON.parse(event.data.result.organizationAnalysis.minimal_blocking_sets);
+                            let blockingSetsMerged = JSON.parse(event.data.result.analysis.minimal_blocking_sets);
                             if (blockingSetsMerged.length > 0) {
                                 this.blockingSetsMergedMinLength = blockingSetsMerged[0].length;
                                 this.blockingSetsMerged = blockingSetsMerged
@@ -316,7 +326,7 @@
                                         };
                                     });
                             }
-                            let splittingSetsMerged = JSON.parse(event.data.result.organizationAnalysis.minimal_splitting_sets);
+                            let splittingSetsMerged = JSON.parse(event.data.result.analysis.minimal_splitting_sets);
                             if (splittingSetsMerged.length > 0) {
                                 this.splittingSetsMergedMinLength = splittingSetsMerged[0].length;
                                 this.splittingSetsMerged = splittingSetsMerged
@@ -327,61 +337,12 @@
                                     });
                             }
 
-                            this.topTier = event.data.result.organizationAnalysis.top_tier.map((top:string) => {
+                            this.topTier = event.data.result.analysis.top_tier.map((top:string) => {
                                 return {
                                     'topTier': top
                                 }
                             });
-                            this.topTierIsSymmetric = event.data.result.organizationAnalysis.symmetric_top_tier_exists;
-
-                            if (!event.data.result.merged) {
-                                this.resultIsMerged = false;
-                                this.hasQuorumIntersection = event.data.result.nodesAnalysis.has_intersection; //quorum intersection based on nodesAnalysis is more accurate
-                                this.minimalQuorums = JSON.parse(event.data.result.nodesAnalysis.minimal_quorums)
-                                    .map((quorum: PublicKey[]) => {
-                                        let quorumPretty = quorum.map(publicKey => this.network.getNodeByPublicKey(publicKey)!.displayName).join(', ');
-                                        return {
-                                            'minimalQuorums': quorumPretty
-                                        };
-                                    });
-
-
-                                let blockingSets = JSON.parse(event.data.result.nodesAnalysis.minimal_blocking_sets);
-                                if (blockingSets.length > 0) {
-                                    this.blockingSetsMinLength = blockingSets[0].length;
-                                    this.blockingSets = blockingSets
-                                        .map((blockingSet: PublicKey[]) => {
-                                            let blockingSetPretty = blockingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey)!.displayName).join(', ');
-                                            return {
-                                                'blockingSets': blockingSetPretty
-                                            };
-                                        });
-                                }
-
-
-                                let splittingSets = JSON.parse(event.data.result.nodesAnalysis.minimal_splitting_sets);
-                                if (splittingSets.length > 0) {
-                                    this.splittingSetsMinLength = splittingSets[0].length;
-                                    this.splittingSets = splittingSets
-                                        .map((splittingSet: PublicKey[]) => {
-                                            let splittingSetPretty = splittingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey)!.displayName).join(', ');
-                                            return {
-                                                'splittingSets': splittingSetPretty
-                                            };
-                                        });
-                                }
-
-                                this.topTier = event.data.result.nodesAnalysis.top_tier
-                                    .map((top:string) => this.network.getNodeByPublicKey(top)!.displayName)
-                                    .sort()
-                                    .map((top:string) => {
-                                    return {
-                                        'topTier': top
-                                    }
-                                })
-                                this.topTierIsSymmetric = event.data.result.nodesAnalysis.symmetric_top_tier_exists;
-                            }
-
+                            this.topTierIsSymmetric = event.data.result.analysis.symmetric_top_tier_exists;
                         }
 
                         this.isLoading = false;

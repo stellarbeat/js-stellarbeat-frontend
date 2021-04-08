@@ -38,7 +38,7 @@
     "lru-cache": "^6.0.0",
     "moment": "^2.24.0",
     "regenerator-runtime": "^0.13.3",
-    "stellar_analysis": "^0.2.0",
+    "stellar_analysis": "^0.3.0",
     "stickybits": "^3.7.7",
     "vue": "^2.6.12",
     "vue-async-computed": "^3.8.2",

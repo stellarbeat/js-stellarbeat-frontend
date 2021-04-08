@@ -10263,10 +10263,10 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-stellar_analysis@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.2.0.tgz#254ff27b8a94ccb72569905e02af40144fefb796"
-  integrity sha512-FGL9X1PopS3jmHj/APhuDi/TPIjK8k/Q82W6hNLu+VaopRdKoVeANFHXBOb/apW52fuz00vsjm0HQtb4n3v0tw==
+stellar_analysis@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.3.0.tgz#4a83de45bf23dc1cf4358956b17cb750b41d6950"
+  integrity sha512-HBWStbGr0mpQV76Y4jNVVyeRMk/Bf2v2gwEki+0cHqI2HpxRxwhJbV5ZUEfKL6HrXmfUPfULlEYQwitIqvtL7Q==
 
 stickybits@^3.7.7:
   version "3.7.7"
