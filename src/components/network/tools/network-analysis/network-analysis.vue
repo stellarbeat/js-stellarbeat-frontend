@@ -282,10 +282,20 @@
             ];
         }
 
+        get correctlyConfiguredNodes(){
+            let isNodeCorrectlyConfigured = (node:Node) => {
+                return !(node.quorumSet.validators.length === 1
+                    && node.publicKey === node.quorumSet.validators[0]
+                    && node.quorumSet.innerQuorumSets.length === 0);
+            }
+
+            return this.network.nodes.filter(node => isNodeCorrectlyConfigured(node));
+        }
+
         performAnalysis() {
             this.isLoading = true;
             this.fbasAnalysisWorker.postMessage({
-                nodes: this.network.nodes,
+                nodes: this.correctlyConfiguredNodes,
                 organizations: this.network.organizations,
                 mergeBy: this.mergeBySelected,
                 failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey)
