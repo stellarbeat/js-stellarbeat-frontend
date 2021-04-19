@@ -3,7 +3,7 @@
         <slot name="title"></slot>
         <div>
             <b-table id="network-analysis-table" striped hover :fields="fields"
-                     :items="merged ? mergedItems : items"
+                     :items="items"
                      :per-page="perPage" thead-class="my-thead"
                      tbody-class="my-tbody" :current-page="currentPage">
                 <template v-slot:head(minimalQuorums)="data">
@@ -60,14 +60,8 @@
         directives: {'b-toggle': VBToggle}
     })
     export default class Analysis extends Mixins(StoreMixin) {
-        protected merge: boolean = false;
-
-        @Prop()
-        merged!:boolean;
         @Prop()
         items!: any;
-        @Prop()
-        mergedItems!: any;
         @Prop()
         fields: any;
 
@@ -75,7 +69,7 @@
         protected currentPage: number = 1;
 
         get rows() {
-            return this.merged ? this.mergedItems.length : this.items.length;
+            return this.items.length;
         }
     }
 </script>
