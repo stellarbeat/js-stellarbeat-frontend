@@ -79,7 +79,7 @@
     import SideBar from '@/components/side-bar/side-bar.vue';
 
     import {BIconX, BModal, VBModal, BBadge, VBTooltip} from 'bootstrap-vue';
-    import ModifyNetwork from '@/components/modify-network/modify-network.vue';
+    import ModifyNetwork from '@/components/network/tools/modify-network.vue';
 
     @Component({
         components: {

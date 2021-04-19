@@ -20,7 +20,10 @@
             ></b-form-textarea>
             <div v-if="!isValid" class="mt-2">
                 <b-list-group>
-                    <b-list-group-item variant="danger" v-for="error in validationErrors">{{error.message + (error.dataPath ? ' at ' + error.dataPath : '') + (error.params ? ' ( ' +  Object.values(error.params)[0] + ' ) ': '') }}</b-list-group-item>
+                    <b-list-group-item variant="danger" v-for="error in validationErrors">{{
+                            error.message + (error.dataPath ? ' at ' + error.dataPath : '') + (error.params ? ' ( ' + Object.values(error.params)[0] + ' ) ' : '')
+                        }}
+                    </b-list-group-item>
                 </b-list-group>
             </div>
             <b-button-group class="mt-2">
@@ -70,15 +73,11 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
     modifiedNetworkString: string = '';
     modifiedNetwork: {
         nodes: any[],
-        organizations: {
-            name: string,
-            id: string,
-            validators: string[]
-        }[]
+        organizations: any[]
     } = {nodes: [], organizations: []};
     isValid: boolean = false;
     modified: boolean = false;
-    validationErrors: {dataPath?: string, message: string, params: any}[] = [];
+    validationErrors: { dataPath?: string, message: string, params: any }[] = [];
 
     showModal() {
         this.initModifiedNetworkString();
@@ -88,12 +87,11 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
     validate() {
         this.isValid = false;
         this.modified = false;
-        try{
+        try {
             this.modifiedNetwork = JSON.parse(this.modifiedNetworkString);
             this.isValid = validate(this.modifiedNetwork);
             this.validationErrors = validate.errors;
-        }
-        catch (error){
+        } catch (error) {
             this.validationErrors = [{message: error.message, dataPath: undefined, params: undefined}];
         }
 
@@ -102,21 +100,17 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
     load() {
         let nodesMap = new Map<string, Node>();
         let nodes = this.modifiedNetwork.nodes.map(basicNode => {
-            let node = new Node(basicNode.publicKey);
-            node.name = basicNode.name;
-            node.geoData = NodeGeoData.fromJSON(JSON.stringify(basicNode.geoData));
-            node.quorumSet = QuorumSet.fromJSON(JSON.stringify(basicNode.quorumSet));
-            node.isp = basicNode.isp;
+            let node = Node.fromJSON(basicNode);
             node.isValidating = basicNode.isValidating === undefined ? true : basicNode.isValidating;
             node.active = basicNode.active === undefined ? true : basicNode.active;
 
             nodesMap.set(node.publicKey, node);
             return node;
         });
-        let organizations:Organization[] = [];
-        if(this.modifiedNetwork.organizations) {
-            let organizations = this.modifiedNetwork.organizations.map(basicOrganization => {
-                let organization = new Organization(basicOrganization.id, basicOrganization.name);
+        let organizations: Organization[] = [];
+        if (this.modifiedNetwork.organizations) {
+            organizations = this.modifiedNetwork.organizations.map(basicOrganization => {
+                let organization = Organization.fromJSON(basicOrganization);
                 organization.validators = basicOrganization.validators;
                 organization.validators.forEach(validatorPublicKey => {
                     let validator = nodesMap.get(validatorPublicKey);
@@ -125,7 +119,7 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
 
                     validator.organizationId = organization.id;
                 });
-                organization.subQuorumAvailable = true; //we set all orgs as available by default
+                organization.subQuorumAvailable = basicOrganization.subQuorumAvailable === undefined ? true : basicOrganization.subQuorumAvailable;
                 return organization;
             });
         }
@@ -133,8 +127,8 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
         this.store.processChange(new ModifyNetworkChange(this.network, nodes, organizations));
     }
 
-    mapToBasicQuorumSet(quorumSet: QuorumSet){
-        let qSet:any = {};
+    mapToBasicQuorumSet(quorumSet: QuorumSet) {
+        let qSet: any = {};
         qSet.threshold = quorumSet.threshold;
         qSet.validators = quorumSet.validators;
         qSet.innerQuorumSets = quorumSet.innerQuorumSets.map(innerQSet => this.mapToBasicQuorumSet(innerQSet));
