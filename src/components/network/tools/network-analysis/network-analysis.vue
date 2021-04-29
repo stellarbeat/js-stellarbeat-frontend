@@ -320,6 +320,8 @@ const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescrip
                             this.hasQuorumIntersection = event.data.result.analysis.has_intersection;
                             this.minimalQuorums = JSON.parse(event.data.result.analysis.minimal_quorums)
                                 .map((quorum: string[]) => {
+                                    if(this.resultMergedBy === MergeBy.DoNotMerge)
+                                        quorum = quorum.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
                                     return {
                                         'minimalQuorums': quorum.join(', ')
                                     };
@@ -329,6 +331,8 @@ const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescrip
                                 this.blockingSetsMinLength = blockingSets[0].length;
                                 this.blockingSets = blockingSets
                                     .map((blockingSet: string[]) => {
+                                        if(this.resultMergedBy === MergeBy.DoNotMerge)
+                                            blockingSet = blockingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
                                         return {
                                             'blockingSets': blockingSet.join(', ')
                                         };
@@ -339,6 +343,8 @@ const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescrip
                                 this.splittingSetsMinLength = splittingSets[0].length;
                                 this.splittingSets = splittingSets
                                     .map((splittingSet: string[]) => {
+                                        if(this.resultMergedBy === MergeBy.DoNotMerge)
+                                            splittingSet = splittingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
                                         return {
                                             'splittingSets': splittingSet.join(', ')
                                         };
@@ -346,6 +352,8 @@ const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescrip
                             }
 
                             this.topTier = event.data.result.analysis.top_tier.map((top:string) => {
+                                if(this.resultMergedBy === MergeBy.DoNotMerge)
+                                    top = this.network.getNodeByPublicKey(top).displayName;
                                 return {
                                     'topTier': top
                                 }

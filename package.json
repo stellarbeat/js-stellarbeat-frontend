@@ -92,6 +92,6 @@
     "worker-loader": "^2.0.0"
   },
   "engines": {
-    "node": "10.17"
+    "node": "10.x"
   }
 }
