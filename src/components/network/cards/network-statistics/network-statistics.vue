@@ -110,9 +110,9 @@
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3" v-if="!store.isSimulation" >
-            <network-statistics-card :value="network.networkStatistics.topTierFilteredSize" :is-loading="isLoading"
+            <network-statistics-card :value="network.networkStatistics.topTierSize" :is-loading="isLoading"
                                      title="Top tier validators" tooltip="Number of active validators in the top tier"
-                                     :initialDataLoaded="initialDataLoaded" stats-property="topTierFilteredAverage"
+                                     :initialDataLoaded="initialDataLoaded" stats-property="topTierAverage"
                                      :year-statistics="yearStatistics" :is-simulation-sensitive="true">
                 <template v-slot:info>
                     <h3>Top tier active validators</h3>
@@ -128,10 +128,10 @@
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3" v-if="!store.isSimulation" >
-            <network-statistics-card :value="network.networkStatistics.topTierOrgsFilteredSize" :is-loading="isLoading"
+            <network-statistics-card :value="network.networkStatistics.topTierOrgsSize" :is-loading="isLoading"
                                      title="Top tier organizations"
                                      tooltip="Number of active organizations in the top tier"
-                                     :initialDataLoaded="initialDataLoaded" stats-property="topTierOrgsFilteredAverage"
+                                     :initialDataLoaded="initialDataLoaded" stats-property="topTierOrgsAverage"
                                      :year-statistics="yearStatistics"  :is-simulation-sensitive="true">
                 <template v-slot:info>
                     <h3>Top tier active organizations</h3>
