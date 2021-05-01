@@ -31,9 +31,22 @@
                     <ValidatorsServerLoad/>
                 </div>
             </LazyHydrate>
-
             <LazyHydrate when-visible>
-                <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
+                <div class="col-lg-6" v-if="!store.isSimulation">
+                    <liveness-radar-chart/>
+                </div>
+            </LazyHydrate>
+            <LazyHydrate when-visible>
+                <div class="col-lg-6" v-if="!store.isSimulation">
+                    <NetworkAnalysis analysis-type="safety">
+                        <template v-slot:info>
+                            <safety-info/>
+                        </template>
+                    </NetworkAnalysis>
+                </div>
+            </LazyHydrate>
+            <LazyHydrate when-visible>
+                <div class="col-lg-12" v-if="!store.isSimulation">
                     <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
                         <template v-slot:info>
                             <liveness-info/>
@@ -42,15 +55,7 @@
                 </div>
             </LazyHydrate>
 
-            <LazyHydrate when-visible>
-                <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
-                    <NetworkAnalysis analysis-type="safety">
-                        <template v-slot:info>
-                            <safety-info/>
-                        </template>
-                    </NetworkAnalysis>
-                </div>
-            </LazyHydrate>
+
 
             <LazyHydrate when-visible>
                 <div v-if="network.organizations.length > 0" class="col-lg-6 col-xl-6">
@@ -103,9 +108,11 @@ import NetworkOrganizationUpdates from '@/components/network/cards/network-organ
 import Store from '@/store/Store';
 import LazyHydrate from 'vue-lazy-hydration';
 import NetworkHorizon from '@/components/network/cards/network-horizon.vue';
+import LivenessRadarChart from '@/components/network/cards/network-risk-analysis-charts/liveness-radar-chart.vue';
 
 @Component({
     components: {
+        LivenessRadarChart,
         NetworkHorizon,
         NetworkOrganizationUpdates,
         LazyHydrate,

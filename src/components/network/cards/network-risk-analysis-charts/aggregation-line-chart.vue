@@ -55,12 +55,10 @@
             return this.store.network;
         }
 
-        @Watch('chartDataSets')
-        onChartDataSetsChanged() {
+        updateData(){
             this.chart.data.datasets = this.chartDataSets;
             this.chart.update();
         }
-
 
         public initializeBarChart() {
             let chartId = 'livenessChart' + this.id;
