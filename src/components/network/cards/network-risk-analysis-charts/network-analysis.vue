@@ -161,8 +161,10 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         if (this.bucketSize === '24H') {
             this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets![0].hidden!;
             this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets![1].hidden!;
-            this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2] ? this.hour24ChartDataSets![2].hidden! : false;
-            this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
+            if (this.setType === 'blocking') {
+                this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2] ? this.hour24ChartDataSets![2].hidden! : false;
+                this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
+            }
         }
         if (toBucketSize === '24H') {
             this.hour24ChartDataSets![0].hidden! = this.aggregatedDataSets[0].hidden!;
@@ -395,7 +397,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetFilteredSize']
+                            y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'Set' + ((this.canBeFiltered ? 'Filtered' : '')) + 'Size']
                         };
                     });
                     break;
@@ -404,7 +406,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetISPFilteredSize']
+                            y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetISP' + ((this.canBeFiltered ? 'Filtered' : '')) + 'Size']
                         };
                     });
                     break;
@@ -413,7 +415,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                         return {
                             x: stat.time,
                             //@ts-ignore
-                            y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetCountryFilteredSize']
+                            y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetCountry' + ((this.canBeFiltered ? 'Filtered' : '')) + 'Size']
                         };
                     });
                     break;
