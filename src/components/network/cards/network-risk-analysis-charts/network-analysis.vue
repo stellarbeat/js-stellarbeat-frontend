@@ -137,11 +137,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
     animated: boolean = false;
     protected showModal: boolean = false;
     protected aggregatedDataSets!: ChartDataSets[];
-    protected hour24ChartDataSets:ChartDataSets[]|undefined;
-    protected ispHidden:boolean = true;
-    protected countryHidden: boolean = true;
-    protected nodeHidden: boolean = true;
-    protected organizationHidden: boolean = true;
+    protected hour24ChartDataSets: ChartDataSets[] | undefined;
 
     get setType() {
         return this.analysisType === 'safety' ? 'splitting' : 'blocking';
@@ -161,23 +157,25 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
             await this.updateHours24Chart();
     }
 
-    updateHiddenStatus(toBucketSize: string){
-        if(this.bucketSize === '24H'){
+    updateHiddenStatus(toBucketSize: string) {
+        if (this.bucketSize === '24H') {
             this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets![0].hidden!;
             this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets![1].hidden!;
             this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2] ? this.hour24ChartDataSets![2].hidden! : false;
-            this.aggregatedDataSets[9].hidden =  this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
+            this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
         }
-        if(toBucketSize === '24H'){
+        if (toBucketSize === '24H') {
             this.hour24ChartDataSets![0].hidden! = this.aggregatedDataSets[0].hidden!;
             this.hour24ChartDataSets![1].hidden! = this.aggregatedDataSets[3].hidden!;
-            this.hour24ChartDataSets![2].hidden!  = this.aggregatedDataSets[6] ? this.aggregatedDataSets[6].hidden! : false;
-            this.hour24ChartDataSets![3].hidden! =  this.aggregatedDataSets[9] ? this.aggregatedDataSets[9].hidden! : false;
+            if (this.setType === 'blocking') {
+                this.hour24ChartDataSets![2].hidden! = this.aggregatedDataSets[6] ? this.aggregatedDataSets[6].hidden! : false;
+                this.hour24ChartDataSets![3].hidden! = this.aggregatedDataSets[9] ? this.aggregatedDataSets[9].hidden! : false;
+            }
         }
     }
 
     async select1YView(time?: Date) {
-        this.updateHiddenStatus("1Y");
+        this.updateHiddenStatus('1Y');
         if (time instanceof Date)
             this.selectedDate = moment(time).startOf('hour').toDate();
 
@@ -500,7 +498,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
     }
 
     async select24HView(time?: Date) {
-        if(!this.hour24ChartDataSets)
+        if (!this.hour24ChartDataSets)
             this.hour24ChartDataSets = this.getHour24ChartDataSets();
         this.updateHiddenStatus('24H');
         if (time instanceof Date)
