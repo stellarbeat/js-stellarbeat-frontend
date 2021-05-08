@@ -48,7 +48,7 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
                     return {
                         x: stat.time,
                         //@ts-ignore
-                        y: stat.crawlCount !== 0 ? stat[this.statsProperty] : 0.1
+                        y: stat.crawlCount !== 0 ? Math.round(stat[this.statsProperty]) : 0.1
                     };
                 }),
             }];
@@ -133,7 +133,8 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
                     yAxes: [{
                         display: false,
                         ticks: {
-                            beginAtZero: false
+                            beginAtZero: false,
+                            stepSize: 12
                         }
                     }]
                 }

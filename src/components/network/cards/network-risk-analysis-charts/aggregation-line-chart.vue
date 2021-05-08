@@ -116,6 +116,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     legend: {
+                        onClick: (e, legendItem) => {
+                            let ci = that.chart;
+                            let meta = ci.getDatasetMeta(legendItem.datasetIndex!);
+                            //@ts-ignore
+                            meta.hidden = meta.hidden === null ? !ci.data.datasets[legendItem.datasetIndex].hidden : null;
+                            this.chartDataSets[legendItem.datasetIndex!].hidden = meta.hidden;
+                            ci.update();
+                        },
                         display: true,
                         position: 'top',
                         labels: {

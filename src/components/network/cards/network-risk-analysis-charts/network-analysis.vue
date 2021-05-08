@@ -41,13 +41,15 @@
             <div class="w-100 h-100" :class="dimmerClass">
                 <div class="loader"></div>
                 <div v-if="initialDataLoaded" style="height: 240px" class="dimmer-content">
-                    <aggregation-line-chart ref="yearChart" v-if="bucketSize === '1Y'" :chartDataSets="yearChartDataSets"
+                    <aggregation-line-chart ref="yearChart" v-if="bucketSize === '1Y'"
+                                            :chartDataSets="aggregatedDataSets"
                                             :chartLabels="getAggregatedLabels" :unit="'month'"
                                             :tooltip-time-format="'MMM YYYY'"
                                             :time-display-formats="{'month': 'MMM YYYY'}" :step-size="1"
                                             :chartLabelFilter="aggregatedChartLabelFilter"
                                             :key="'1'" @click-date="select30DayView"/>
-                    <aggregation-line-chart ref="monthChart" v-if="bucketSize === '30D'" :chartDataSets="day30ChartDataSets"
+                    <aggregation-line-chart ref="monthChart" v-if="bucketSize === '30D'"
+                                            :chartDataSets="aggregatedDataSets"
                                             :chartLabels="getAggregatedLabels" :unit="'day'"
                                             :tooltip-time-format="'D-M-YYYY'"
                                             :time-display-formats="{'day': 'D-M-YYYY'}" :step-size="2"
@@ -135,6 +137,11 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
     animated: boolean = false;
     protected showModal: boolean = false;
     protected aggregatedDataSets!: ChartDataSets[];
+    protected hour24ChartDataSets:ChartDataSets[]|undefined;
+    protected ispHidden:boolean = true;
+    protected countryHidden: boolean = true;
+    protected nodeHidden: boolean = true;
+    protected organizationHidden: boolean = true;
 
     get setType() {
         return this.analysisType === 'safety' ? 'splitting' : 'blocking';
@@ -154,7 +161,23 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
             await this.updateHours24Chart();
     }
 
+    updateHiddenStatus(toBucketSize: string){
+        if(this.bucketSize === '24H'){
+            this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets![0].hidden!;
+            this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets![1].hidden!;
+            this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2] ? this.hour24ChartDataSets![2].hidden! : false;
+            this.aggregatedDataSets[9].hidden =  this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
+        }
+        if(toBucketSize === '24H'){
+            this.hour24ChartDataSets![0].hidden! = this.aggregatedDataSets[0].hidden!;
+            this.hour24ChartDataSets![1].hidden! = this.aggregatedDataSets[3].hidden!;
+            this.hour24ChartDataSets![2].hidden!  = this.aggregatedDataSets[6] ? this.aggregatedDataSets[6].hidden! : false;
+            this.hour24ChartDataSets![3].hidden! =  this.aggregatedDataSets[9] ? this.aggregatedDataSets[9].hidden! : false;
+        }
+    }
+
     async select1YView(time?: Date) {
+        this.updateHiddenStatus("1Y");
         if (time instanceof Date)
             this.selectedDate = moment(time).startOf('hour').toDate();
 
@@ -190,16 +213,16 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                     dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetOrgs' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
                     break;
                 case 'max(|Organization|)':
-                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetOrgs' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
+                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetOrgs' + (this.canBeFiltered ? 'Filtered' : '') + 'Max');
                     break;
                 case 'Node':
-                    dataSet.data = this.getAggregatedData(statisticsAggregation, "min" + this.capitalizeFirstLetter(this.setType) + "Set" + (this.canBeFiltered ? 'Filtered' : '') + "Average");
+                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'Set' + (this.canBeFiltered ? 'Filtered' : '') + 'Average');
                     break;
                 case 'min(|Node|)':
                     dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'Set' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
                     break;
                 case 'max(|Node|)':
-                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'Set' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
+                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'Set' + (this.canBeFiltered ? 'Filtered' : '') + 'Max');
                     break;
                 case 'Country':
                     dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetCountry' + (this.canBeFiltered ? 'Filtered' : '') + 'Average');
@@ -208,7 +231,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                     dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetCountry' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
                     break;
                 case 'max(|Country|)':
-                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetCountry' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
+                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetCountry' + (this.canBeFiltered ? 'Filtered' : '') + 'Max');
                     break;
                 case 'ISP':
                     dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetISP' + (this.canBeFiltered ? 'Filtered' : '') + 'Average');
@@ -217,7 +240,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                     dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetISP' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
                     break;
                 case 'max(|ISP|)':
-                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetISP' + (this.canBeFiltered ? 'Filtered' : '') + 'Min');
+                    dataSet.data = this.getAggregatedData(statisticsAggregation, 'min' + this.capitalizeFirstLetter(this.setType) + 'SetISP' + (this.canBeFiltered ? 'Filtered' : '') + 'Max');
                     break;
             }
         });
@@ -357,14 +380,6 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         return stats;
     }
 
-    get day30ChartDataSets(): ChartDataSets[] {
-        return this.aggregatedDataSets;
-    }
-
-    get yearChartDataSets(): ChartDataSets[] {
-        return this.aggregatedDataSets;
-    }
-
     updateDataInDataSets(dataSets: ChartDataSets[]) {
         dataSets.forEach(dataSet => {
             switch (dataSet.label) {
@@ -375,7 +390,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                             //@ts-ignore
                             y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetOrgs' + ((this.canBeFiltered ? 'Filtered' : '')) + 'Size']
                         };
-                    })
+                    });
                     break;
                 case 'Node':
                     dataSet.data = this.hour24Statistics.map(stat => {
@@ -384,7 +399,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                             //@ts-ignore
                             y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetFilteredSize']
                         };
-                    })
+                    });
                     break;
                 case 'ISP':
                     dataSet.data = this.hour24Statistics.map(stat => {
@@ -393,7 +408,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                             //@ts-ignore
                             y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetISPFilteredSize']
                         };
-                    })
+                    });
                     break;
                 case 'Country':
                     dataSet.data = this.hour24Statistics.map(stat => {
@@ -402,55 +417,62 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                             //@ts-ignore
                             y: stat['min' + this.capitalizeFirstLetter(this.setType) + 'SetCountryFilteredSize']
                         };
-                    })
+                    });
                     break;
             }
         });
     }
 
-    get hour24ChartDataSets(): ChartDataSets[] {
-        return [
-            {
-                label: 'Organization',
-                borderColor: 'rgba(25, 151, 198,1)', // primary blue
-                backgroundColor: 'rgba(25, 151, 198,0.6)', // primary blue
-                borderWidth: 2,
-                steppedLine: true,
-                fill: false,
-                type: 'line',
-                radius: 0, hitRadius: 5
-            },
-            {
-                label: 'Node',
-                borderColor: 'rgba(27, 201, 142, 1)', // success green
-                backgroundColor: 'rgba(27, 201, 142, 1)', // success green
-                borderWidth: 2,
-                steppedLine: true,
-                fill: false,
-                type: 'line',
-                radius: 0, hitRadius: 5
-            },
-            {
-                label: 'ISP',
-                borderColor: 'rgba(236, 228, 114, 1)', // success green
-                backgroundColor: 'rgba(236, 228, 114, 1)', // success green
-                borderWidth: 2,
-                steppedLine: true,
-                fill: false,
-                type: 'line',
-                radius: 0, hitRadius: 5,
-            },
-            {
-                label: 'Country',
-                borderColor: 'rgba(159, 134, 255, 1)', // success green
-                backgroundColor: 'rgba(159, 134, 255, 1)', // success green
-                borderWidth: 2,
-                steppedLine: true,
-                fill: false,
-                type: 'line',
-                radius: 0, hitRadius: 5,
-            },
-        ];
+    getHour24ChartDataSets(): ChartDataSets[] {
+        let sets =
+            [
+                {
+                    label: 'Organization',
+                    borderColor: 'rgba(25, 151, 198,1)', // primary blue
+                    backgroundColor: 'rgba(25, 151, 198,0.6)', // primary blue
+                    borderWidth: 2,
+                    steppedLine: true,
+                    fill: false,
+                    type: 'line',
+                    radius: 0, hitRadius: 5
+                },
+                {
+                    label: 'Node',
+                    borderColor: 'rgba(27, 201, 142, 1)', // success green
+                    backgroundColor: 'rgba(27, 201, 142, 1)', // success green
+                    borderWidth: 2,
+                    steppedLine: true,
+                    fill: false,
+                    type: 'line',
+                    radius: 0, hitRadius: 5
+                }];
+        if (this.setType === 'blocking') {
+            sets.push(...
+                [
+                    {
+                        label: 'ISP',
+                        borderColor: 'rgba(236, 228, 114, 1)', // success green
+                        backgroundColor: 'rgba(236, 228, 114, 1)', // success green
+                        borderWidth: 2,
+                        steppedLine: true,
+                        fill: false,
+                        type: 'line',
+                        radius: 0, hitRadius: 5
+                    },
+                    {
+                        label: 'Country',
+                        borderColor: 'rgba(159, 134, 255, 1)', // success green
+                        backgroundColor: 'rgba(159, 134, 255, 1)', // success green
+                        borderWidth: 2,
+                        steppedLine: true,
+                        fill: false,
+                        type: 'line',
+                        radius: 0, hitRadius: 5
+                    },
+                ]);
+        }
+
+        return sets;
     }
 
     getAggregatedLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
@@ -470,6 +492,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
     }
 
     async select30DayView(time?: Date) {
+        this.updateHiddenStatus('30D');
         if (time instanceof Date)
             this.selectedDate = time;
         await this.updateDays30Chart();
@@ -477,6 +500,9 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
     }
 
     async select24HView(time?: Date) {
+        if(!this.hour24ChartDataSets)
+            this.hour24ChartDataSets = this.getHour24ChartDataSets();
+        this.updateHiddenStatus('24H');
         if (time instanceof Date)
             this.selectedDate = time;
 
@@ -507,9 +533,9 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         }
         this.isLoading = false;
         this.$nextTick(() => {
-            if(this.$refs['yearChart'])
+            if (this.$refs['yearChart'])
                 (this.$refs['yearChart'] as AggregationLineChart).updateData();//for some reason watcher doesn't trigger
-        })
+        });
     }
 
     async updateDays30Chart() {
@@ -526,9 +552,9 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         }
         this.isLoading = false;
         this.$nextTick(() => {
-            if(this.$refs['monthChart'])
+            if (this.$refs['monthChart'])
                 (this.$refs['monthChart'] as AggregationLineChart).updateData();//for some reason watcher doesn't trigger
-        })
+        });
     }
 
     async updateHours24Chart() {
@@ -538,15 +564,15 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         try {
             this.failed = false;
             this.hour24Statistics = await this.store.networkMeasurementStore.getStatistics('stellar-public', startOfDay, tomorrow);
-            this.updateDataInDataSets(this.hour24ChartDataSets);
+            this.updateDataInDataSets(this.hour24ChartDataSets!);
         } catch (e) {
             this.failed = true;
         }
         this.isLoading = false;
         this.$nextTick(() => {
-            if(this.$refs['dayChart'])
+            if (this.$refs['dayChart'])
                 (this.$refs['dayChart'] as AggregationLineChart).updateData();//for some reason watcher doesn't trigger
-        })
+        });
     }
 
     public created() {
