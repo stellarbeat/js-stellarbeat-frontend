@@ -15,7 +15,7 @@
                 <div class="dimmer-content">
                     <div v-if="hasResult">
                         <div class="accordion" role="tablist">
-                            <b-card no-body class="mb-1 border-0">
+                            <b-card v-if="quorumIntersectionAnalyzed" no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
                                     <b-button block v-b-toggle.accordion-quorum variant="outline-primary-sb">Quorum
                                         intersection
@@ -29,8 +29,8 @@
                                                 <div class="d-flex justify-content-between align-items-baseline">
                                                     <h3>
                                                         <b-badge
-                                                                :variant="hasQuorumIntersection ? 'success' : 'danger'">
-                                                            {{hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection'}}
+                                                            :variant="hasQuorumIntersection ? 'success' : 'danger'">
+                                                            {{ hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection' }}
                                                         </b-badge>
                                                     </h3>
                                                     <b-button size="sm" @click="showModal=true">
@@ -45,7 +45,7 @@
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
-                            <b-card no-body class="mb-1 border-0">
+                            <b-card v-if="livenessAnalyzed" no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
                                     <b-button block v-b-toggle.accordion-liveness variant="outline-primary-sb">Liveness
                                         risk
@@ -57,11 +57,11 @@
                                                   :items="blockingSets">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
-                                                    <h3 v-if="blockingSetsMinLength <=0 ">
+                                                    <h3 v-if="blockingSetsMinSize <=0 ">
                                                         Network halted.
                                                     </h3>
                                                     <h3 v-else>
-                                                        Found set(s) of size {{blockingSetsMinLength}}
+                                                        Found set(s) of size {{ blockingSetsMinSize }}
                                                         that could
                                                         impact liveness.
                                                     </h3>
@@ -77,7 +77,7 @@
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
-                            <b-card no-body class="mb-1 border-0">
+                            <b-card v-if="safetyAnalyzed" no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
                                     <b-button block v-b-toggle.accordion-safety variant="outline-primary-sb">Safety risk
                                     </b-button>
@@ -88,9 +88,10 @@
                                                   :items="splittingSets">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
-                                                    <h3 v-if="splittingSetsMinLength <= 0">No intersection between quorums found.</h3>
+                                                    <h3 v-if="splittingSetsMinSize <= 0">No intersection between quorums
+                                                        found.</h3>
                                                     <h3 v-else>
-                                                        Found set(s) of size {{splittingSetsMinLength}}
+                                                        Found set(s) of size {{ splittingSetsMinSize }}
                                                         that could
                                                         impact safety.
                                                     </h3>
@@ -119,7 +120,7 @@
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
                                                     <h3 class="mb-0">
-                                                        Top tier has size {{topTier.length}}
+                                                        Top tier has size {{ topTier.length }}
                                                     </h3>
 
 
@@ -130,7 +131,9 @@
                                                     </b-button>
                                                     <top-tier-info/>
                                                 </div>
-                                                <b-badge variant="info">{{topTierIsSymmetric ? 'Symmetric' : 'Not symmetric'}}</b-badge>
+                                                <b-badge variant="info">
+                                                    {{ topTierIsSymmetric ? 'Symmetric' : 'Not symmetric' }}
+                                                </b-badge>
                                             </template>
                                         </analysis>
                                     </b-card-body>
@@ -141,9 +144,6 @@
                 </div>
                 <div class="mb-2">
 
-                    <b-alert show variant="warning" v-if="selectedMergeBy === MergeBy.DoNotMerge && network.nodes.length > 20">
-                        Warning: computing node results will be slow when simulating non symmetric top tiers.
-                    </b-alert>
                     <b-form-group label="Analysis target: " v-slot="{ ariaDescribedby }">
                         <b-form-radio-group
                             id="radio-group-2"
@@ -151,10 +151,22 @@
                             :aria-describedby="ariaDescribedby"
                             name="radio-sub-component"
                         >
-                            <b-form-radio v-for="merge in MergeBy" :value="merge">{{getMergeByFriendlyName(merge)}}</b-form-radio>
+                            <b-form-radio :value="MergeBy.DoNotMerge">{{ getMergeByFriendlyName(MergeBy.DoNotMerge) }}
+                            </b-form-radio>
+                            <b-form-radio :value="MergeBy.Orgs">{{ getMergeByFriendlyName(MergeBy.Orgs) }}
+                            </b-form-radio>
+                            <b-form-radio :value="MergeBy.Countries">{{ getMergeByFriendlyName(MergeBy.Countries) }}
+                            </b-form-radio>
+                            <b-form-radio :value="MergeBy.ISPs">{{ getMergeByFriendlyName(MergeBy.ISPs) }}
+                            </b-form-radio>
                         </b-form-radio-group>
                     </b-form-group>
-
+                    <b-form-group label="Analysis type: " v-slot="{ ariaDescribedby }">
+                        <b-form-checkbox v-model="analyzeQuorumIntersection">Quorum Intersection</b-form-checkbox>
+                        <b-form-checkbox v-model="analyzeLiveness">Liveness</b-form-checkbox>
+                        <b-form-checkbox v-model="analyzeSafety">Safety (slow for large non-symmetric networks)
+                        </b-form-checkbox>
+                    </b-form-group>
 
                     <b-button variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
                 </div>
@@ -185,12 +197,13 @@ import {
     BIconX,
     BPagination,
     BTable,
+    BFormCheckboxGroup,
     VBModal,
     VBToggle,
     VBTooltip
 } from 'bootstrap-vue';
 import {StoreMixin} from '@/mixins/StoreMixin';
-import FbasAnalysisWorker from 'worker-loader?name=worker/[name].js!./../../../../workers/fbas-analysis-v2.worker.ts';
+import FbasAnalysisWorker from 'worker-loader?name=worker/[name].js!../../../../workers/fbas-analysis-v3.worker.ts';
 import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
 import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
 import Analysis from '@/components/network/tools/network-analysis/analysis.vue';
@@ -199,185 +212,213 @@ import SafetyInfo from '@/components/network/tools/network-analysis/info/safety-
 import LivenessInfo from '@/components/network/tools/network-analysis/info/liveness-info.vue';
 import TopTierInfo from '@/components/network/tools/network-analysis/info/top-tier-info.vue';
 import {MergeBy} from 'stellar_analysis';
+import {FbasAnalysisWorkerResult} from '@/workers/fbas-analysis-v3.worker';
 
 const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
-    @Component({
-        components: {
-            TopTierInfo,
-            LivenessInfo,
-            SafetyInfo,
-            QuorumIntersectionInfo,
-            BIconX,
-            Analysis,
-            BFormInput,
-            BButton,
-            BAlert,
-            BFormCheckbox,
-            BFormSelect,
-            BTable,
-            BPagination,
-            BBadge,
-            BCard,
-            BCardBody,
-            BCardFooter,
-            BCardText,
-            BCollapse,
-            BCardHeader,
-            BIconInfoCircle,
-            BFormGroup,
-            BFormRadioGroup,
-            BFormRadio
-        },
-        directives: {'b-toggle': VBToggle, 'b-modal': VBModal, 'b-tooltip': VBTooltip}
-    })
-    export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
-        protected selectedMergeBy:MergeBy = MergeBy.DoNotMerge;
-        protected MergeBy:any = MergeBy;
-        protected fbasAnalysisWorker = new _FbasAnalysisWorker();
-        protected hasResult: boolean = false;
-        protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
-        protected hasQuorumIntersection: boolean = false;
-        protected minimalQuorums: { value: PublicKey[], text: string }[] = [];
-        protected minimalQuorumFields: any = [
+@Component({
+    components: {
+        TopTierInfo,
+        LivenessInfo,
+        SafetyInfo,
+        QuorumIntersectionInfo,
+        BIconX,
+        Analysis,
+        BFormInput,
+        BButton,
+        BAlert,
+        BFormCheckbox,
+        BFormCheckboxGroup,
+        BFormSelect,
+        BTable,
+        BPagination,
+        BBadge,
+        BCard,
+        BCardBody,
+        BCardFooter,
+        BCardText,
+        BCollapse,
+        BCardHeader,
+        BIconInfoCircle,
+        BFormGroup,
+        BFormRadioGroup,
+        BFormRadio
+    },
+    directives: {'b-toggle': VBToggle, 'b-modal': VBModal, 'b-tooltip': VBTooltip}
+})
+export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
+    protected selectedMergeBy: MergeBy = MergeBy.DoNotMerge;
+    protected MergeBy: any = MergeBy;
+    protected fbasAnalysisWorker = new _FbasAnalysisWorker();
+    protected hasResult: boolean = false;
+    protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
+    protected hasQuorumIntersection: boolean = false;
+    protected minimalQuorums: { value: PublicKey[], text: string }[] = [];
+    protected minimalQuorumFields: any = [
+        // A column that needs custom formatting
+        {key: 'minimalQuorums', label: 'Minimal quorums'}
+    ];
+
+    protected blockingSets: { value: PublicKey[], text: string }[] = [];
+    protected blockingSetsMinSize: number = 0;
+    protected blockingSetsFields: any = [
+        // A column that needs custom formatting
+        {key: 'blockingSets', label: 'Minimal blocking sets'}
+    ];
+
+    protected splittingSets: { value: PublicKey[], text: string }[] = [];
+    protected splittingSetsMinSize: number = 0;
+    protected splittingSetsFields: any = [
+        // A column that needs custom formatting
+        {key: 'splittingSets', label: 'Minimal splitting sets'}
+    ];
+
+    protected topTier: {topTier: string}[] = [];
+    protected topTierIsSymmetric: boolean = false;
+
+    protected analyzeQuorumIntersection: boolean = true;
+    protected quorumIntersectionAnalyzed:boolean = false;
+    protected analyzeSafety: boolean = true;
+    protected safetyAnalyzed: boolean = false;
+    protected analyzeLiveness: boolean = true;
+    protected livenessAnalyzed: boolean = false;
+
+    getMergeByFriendlyName(mergeBy = MergeBy.DoNotMerge) {
+        switch (mergeBy) {
+            case MergeBy.Countries:
+                return 'Countries';
+            case MergeBy.DoNotMerge:
+                return 'Nodes';
+            case MergeBy.ISPs:
+                return 'ISP\'s';
+            case MergeBy.Orgs:
+                return 'Organizations';
+        }
+    }
+
+    get topTierFields() {
+        return [
             // A column that needs custom formatting
-            {key: 'minimalQuorums', label: 'Minimal quorums'}
+            {key: 'topTier', label: this.getMergeByFriendlyName(this.resultMergedBy)}
         ];
+    }
 
-        protected blockingSets: { value: PublicKey[], text: string }[] = [];
-        protected blockingSetsMinLength: number = 0;
-        protected blockingSetsFields: any = [
-            // A column that needs custom formatting
-            {key: 'blockingSets', label: 'Minimal blocking sets'}
-        ];
+    get correctlyConfiguredNodes() {
+        let isNodeCorrectlyConfigured = (node: Node) => {
+            return !(node.quorumSet.validators.length === 1
+                && node.publicKey === node.quorumSet.validators[0]
+                && node.quorumSet.innerQuorumSets.length === 0);
+        };
 
-        protected splittingSets: { value: PublicKey[], text: string }[] = [];
-        protected splittingSetsMinLength: number = 0;
-        protected splittingSetsFields: any = [
-            // A column that needs custom formatting
-            {key: 'splittingSets', label: 'Minimal splitting sets'}
-        ];
+        return this.network.nodes.filter(node => isNodeCorrectlyConfigured(node));
+    }
 
-        protected topTier: string[] = [];
-        protected topTierIsSymmetric: boolean = false;
+    performAnalysis() {
+        this.isLoading = true;
+        this.fbasAnalysisWorker.postMessage({
+            nodes: this.correctlyConfiguredNodes,
+            organizations: this.network.organizations,
+            mergeBy: this.selectedMergeBy,
+            failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
+            analyzeQuorumIntersection: this.analyzeQuorumIntersection,
+            analyzeSafety: this.analyzeSafety,
+            analyzeLiveness: this.analyzeLiveness
+        });
+    }
 
-        getMergeByFriendlyName(mergeBy = MergeBy.DoNotMerge) {
-           switch (mergeBy) {
-               case MergeBy.Countries:
-                   return "Countries";
-               case MergeBy.DoNotMerge:
-                   return "Nodes";
-               case MergeBy.ISPs:
-                   return "ISP's";
-               case MergeBy.Orgs:
-                   return "Organizations";
-           }
-        }
-        get topTierFields() {
-            return [
-                // A column that needs custom formatting
-                {key: 'topTier', label: this.getMergeByFriendlyName(this.resultMergedBy)}
-            ];
-        }
+    async mounted() {
+        this.isLoading = false;
+        this.$nextTick(() => {
+            this.$scrollTo('#network-analysis-card');
+        });
+        this.fbasAnalysisWorker.onmessage = (
+            event: { data: { type: string, result: any } }
+        ) => {
+            switch (event.data.type) {
+                case 'tick': {
 
-        get correctlyConfiguredNodes(){
-            let isNodeCorrectlyConfigured = (node:Node) => {
-                return !(node.quorumSet.validators.length === 1
-                    && node.publicKey === node.quorumSet.validators[0]
-                    && node.quorumSet.innerQuorumSets.length === 0);
-            }
+                }
+                    break;
+                case 'end': {
+                    if (event.data.result) {
+                        this.hasResult = true;
+                        this.resultMergedBy = event.data.result.mergeBy;
+                        let analysisResult: FbasAnalysisWorkerResult = event.data.result.analysis;
+                        this.quorumIntersectionAnalyzed = analysisResult.quorumIntersectionAnalyzed;
+                        if (analysisResult.quorumIntersectionAnalyzed) {
+                            this.hasQuorumIntersection = analysisResult.hasQuorumIntersection!;
+                            //@ts-ignore
+                            this.minimalQuorums = analysisResult.minimalQuorums!.map((quorum: string[]) => {
+                                if (this.resultMergedBy === MergeBy.DoNotMerge)
+                                    quorum = quorum.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
+                                return {
+                                    'minimalQuorums': quorum.join(', ')
+                                };
+                            });
+                        }
 
-            return this.network.nodes.filter(node => isNodeCorrectlyConfigured(node));
-        }
-
-        performAnalysis() {
-            this.isLoading = true;
-            this.fbasAnalysisWorker.postMessage({
-                nodes: this.correctlyConfiguredNodes,
-                organizations: this.network.organizations,
-                mergeBy: this.selectedMergeBy,
-                failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey)
-            });
-        }
-
-        async mounted() {
-            this.isLoading = false;
-            this.$nextTick(() => {
-                this.$scrollTo('#network-analysis-card');
-            });
-            this.fbasAnalysisWorker.onmessage = (
-                event: { data: { type: string, result: any } }
-            ) => {
-                switch (event.data.type) {
-                    case 'tick': {
-
-                    }
-                        break;
-                    case 'end': {
-                        if (event.data.result) {
-                            this.hasResult = true;
-                            this.resultMergedBy = event.data.result.mergeBy;
-                            this.hasQuorumIntersection = event.data.result.analysis.has_intersection;
-                            this.minimalQuorums = JSON.parse(event.data.result.analysis.minimal_quorums)
-                                .map((quorum: string[]) => {
-                                    if(this.resultMergedBy === MergeBy.DoNotMerge)
-                                        quorum = quorum.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
-                                    return {
-                                        'minimalQuorums': quorum.join(', ')
-                                    };
-                                });
-                            let blockingSets = JSON.parse(event.data.result.analysis.minimal_blocking_sets);
+                        this.livenessAnalyzed = analysisResult.livenessAnalyzed;
+                        if (analysisResult.livenessAnalyzed) {
+                            let blockingSets = analysisResult.minimalBlockingSets!;
                             if (blockingSets.length > 0) {
-                                this.blockingSetsMinLength = blockingSets[0].length;
+                                this.blockingSetsMinSize = analysisResult.minimalBlockingSetsMinSize!;
+                                //@ts-ignore
                                 this.blockingSets = blockingSets
                                     .map((blockingSet: string[]) => {
-                                        if(this.resultMergedBy === MergeBy.DoNotMerge)
+                                        if (this.resultMergedBy === MergeBy.DoNotMerge)
                                             blockingSet = blockingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
                                         return {
                                             'blockingSets': blockingSet.join(', ')
                                         };
                                     });
                             }
-                            let splittingSets = JSON.parse(event.data.result.analysis.minimal_splitting_sets);
+                        }
+
+                        this.safetyAnalyzed = analysisResult.safetyAnalyzed;
+                        if (analysisResult.safetyAnalyzed) {
+                            let splittingSets = analysisResult.minimalSplittingSets!;
                             if (splittingSets.length > 0) {
-                                this.splittingSetsMinLength = splittingSets[0].length;
+                                this.splittingSetsMinSize = analysisResult.minimalSplittingSetsMinSize!;
+                                //@ts-ignore
                                 this.splittingSets = splittingSets
                                     .map((splittingSet: string[]) => {
-                                        if(this.resultMergedBy === MergeBy.DoNotMerge)
+                                        if (this.resultMergedBy === MergeBy.DoNotMerge)
                                             splittingSet = splittingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
                                         return {
                                             'splittingSets': splittingSet.join(', ')
                                         };
                                     });
                             }
-
-                            this.topTier = event.data.result.analysis.top_tier.map((top:string) => {
-                                if(this.resultMergedBy === MergeBy.DoNotMerge)
-                                    top = this.network.getNodeByPublicKey(top).displayName;
-                                return {
-                                    'topTier': top
-                                }
-                            });
-                            this.topTierIsSymmetric = event.data.result.analysis.symmetric_top_tier_exists;
                         }
 
-                        this.isLoading = false;
+                        //@ts-ignore;
+                        this.topTier = analysisResult.topTier.map((top: string) => {
+                            if (this.resultMergedBy === MergeBy.DoNotMerge)
+                                top = this.network.getNodeByPublicKey(top).displayName;
+                            return {
+                                'topTier': top
+                            };
+                        });
+                        this.topTierIsSymmetric = analysisResult.hasSymmetricTopTier;
                     }
-                        break;
+
+                    this.isLoading = false;
                 }
-            };
-        }
+                    break;
+            }
+        };
     }
+}
 </script>
 <style>
-    .my-thead tr th {
-        color: #495057;
-        text-transform: none;
-        font-size: 0.9375rem;
-        font-weight: 700;
-    }
+.my-thead tr th {
+    color: #495057;
+    text-transform: none;
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
 
-    .my-tbody tr td {
+.my-tbody tr td {
 
-    }
+}
 </style>
