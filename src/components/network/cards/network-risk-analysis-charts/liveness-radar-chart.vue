@@ -38,6 +38,17 @@
             return this.store.network;
         }
 
+        @Watch("store.networkAnalyzer.livenessAnalyzed", {immediate: false})
+        onLivenessChange(){
+            this.chart.data.datasets![0]!.data = [
+                    this.network.networkStatistics.minBlockingSetOrgsFilteredSize,
+                    this.network.networkStatistics.minBlockingSetFilteredSize,
+                    this.network.networkStatistics.minBlockingSetCountryFilteredSize,
+                    this.network.networkStatistics.minBlockingSetISPFilteredSize
+                ];
+            this.chart.update();
+        }
+
         public initializeChart() {
             let chartId = 'livenessRadarChart' + this.id;
             const context = this.$refs[chartId];

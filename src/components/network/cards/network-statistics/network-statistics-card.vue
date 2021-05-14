@@ -8,7 +8,7 @@
                     <div class="text-muted">
                         {{title}}
                     </div>
-                    <div v-if="!(isSimulationSensitive && store.isSimulation)">
+                    <div >
                         <div v-if="hasActiveElement" class="d-flex">
                             <div class="active-element-value mr-1">
                                 {{isBool ? activeElement[statsProperty] * 100 + '%' : activeElement[statsProperty]}}
@@ -28,9 +28,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else class="value">
-                        <b-badge variant="info">Simulation</b-badge>
-                    </div>
+
                 </div>
                 <b-button size="sm" @click="showModal=true" style="border: none; box-shadow: none">
                     <b-icon-info-circle v-b-tooltip:hover.top="'Click for info'" class="text-muted"/>

@@ -24,13 +24,14 @@ import {NodeSnapShot} from '@stellarbeat/js-stellar-domain/lib/node-snap-shot';
 import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-set-organizations-add';
 import LocalNetworks from '@/store/LocalNetworks';
 import {AggregateChange} from '@/services/change-queue/changes/aggregate-change';
+import NetworkAnalyzer from '@/services/NetworkAnalyzer';
 
 type NetworkId = string;
 
 export default class Store {
     protected _network?: Network;
     protected _networkChangeQueue?: NetworkChangeQueue;
-
+    protected _networkAnalyzer?: NetworkAnalyzer;
     public measurementsStartDate: Date = new Date('2019-06-01');
     public isLoading: boolean = true;
     public fetchingDataFailed: boolean = false;
@@ -79,6 +80,7 @@ export default class Store {
     setNetwork(network: Network){
         Vue.set(this, '_network', network);
         Vue.set(this, '_networkChangeQueue',  new NetworkChangeQueue(this.network));
+        Vue.set(this, '_networkAnalyzer', new NetworkAnalyzer(this.network));
         this.networkReCalculated++;
     }
 
@@ -88,6 +90,14 @@ export default class Store {
         }
 
         return this._networkChangeQueue!;
+    }
+
+    get networkAnalyzer():NetworkAnalyzer{
+        if(!this._networkAnalyzer){
+            throw new Error("Network not loaded correctly");
+        }
+
+        return this._networkAnalyzer;
     }
 
     hydrateNetwork(networkDTO: object, networkId: string){
@@ -319,6 +329,7 @@ export default class Store {
         this.changeQueue.execute(change);
         this.network.recalculateNetwork();
         this.networkReCalculated++;
+        this.networkAnalyzer.analyzeNetwork();
     }
 
     get isSimulation(): boolean {

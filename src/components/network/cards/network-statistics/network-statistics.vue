@@ -62,7 +62,7 @@
                 </template>
             </network-statistics-card>
         </div>
-        <div  v-if="!store.isSimulation" class="col-md-6 col-lg-3 col-xl-3">
+        <div  class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.nrOfActiveFullValidators" :is-loading="isLoading"
                                      title="Full validators" tooltip="Number of active full validators"
                                      :initialDataLoaded="initialDataLoaded"
@@ -109,7 +109,7 @@
                 </template>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3 col-xl-3" v-if="!store.isSimulation" >
+        <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.topTierSize" :is-loading="isLoading"
                                      title="Top tier validators" tooltip="Number of active validators in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierAverage"
@@ -127,7 +127,7 @@
                 </template>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3 col-xl-3" v-if="!store.isSimulation" >
+        <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.topTierOrgsSize" :is-loading="isLoading"
                                      title="Top tier organizations"
                                      tooltip="Number of active organizations in the top tier"
@@ -162,7 +162,7 @@
                 </template>
             </network-statistics-card>
         </div>
-        <div class="col-md-6 col-lg-3 col-xl-3" v-if="!store.isSimulation">
+        <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.hasQuorumIntersection"
                                      :is-bool="true"
                                      :is-loading="isLoading"

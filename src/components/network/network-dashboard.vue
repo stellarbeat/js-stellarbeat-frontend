@@ -32,7 +32,7 @@
                 </div>
             </LazyHydrate>
             <LazyHydrate when-visible>
-                <div class="col-lg-6" v-if="!store.isSimulation">
+                <div class="col-lg-6" >
                     <liveness-radar-chart/>
                 </div>
             </LazyHydrate>

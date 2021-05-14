@@ -164,8 +164,7 @@
                     <b-form-group label="Analysis type: " v-slot="{ ariaDescribedby }">
                         <b-form-checkbox v-model="analyzeQuorumIntersection">Quorum Intersection</b-form-checkbox>
                         <b-form-checkbox v-model="analyzeLiveness">Liveness</b-form-checkbox>
-                        <b-form-checkbox v-model="analyzeSafety">Safety (slow for large non-symmetric networks)
-                        </b-form-checkbox>
+                        <b-form-checkbox v-model="analyzeSafety">Safety</b-form-checkbox>
                     </b-form-group>
 
                     <b-button variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
@@ -316,6 +315,17 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     performAnalysis() {
         this.isLoading = true;
         this.fbasAnalysisWorker.postMessage({
+            id: 1,
+            nodes: this.correctlyConfiguredNodes,
+            organizations: this.network.organizations,
+            mergeBy: this.selectedMergeBy,
+            failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
+            analyzeQuorumIntersection: this.analyzeQuorumIntersection,
+            analyzeSafety: this.analyzeSafety,
+            analyzeLiveness: this.analyzeLiveness
+        });
+        this.fbasAnalysisWorker.postMessage({
+            id: 2,
             nodes: this.correctlyConfiguredNodes,
             organizations: this.network.organizations,
             mergeBy: this.selectedMergeBy,
