@@ -447,14 +447,14 @@ export default class Store {
     }
 
     getNetworkWarnings(): {label: string, description: string}{
-        if(!this.isSimulation && this.network.networkStatistics.minBlockingSetFilteredSize <= 2){
+        if(this.network.networkStatistics.minBlockingSetFilteredSize <= 2){
             return {
                 label: 'Liveness risk',
                 description: this.network.networkStatistics.minBlockingSetFilteredSize + ' node(s) found that could halt the network if they fail'
             }
         }
 
-        if(!this.isSimulation && this.network.networkStatistics.minBlockingSetOrgsFilteredSize && this.network.networkStatistics.minBlockingSetOrgsFilteredSize <= 1){
+        if(this.network.networkStatistics.minBlockingSetOrgsFilteredSize && this.network.networkStatistics.minBlockingSetOrgsFilteredSize <= 1){
             return {
                 label: 'Liveness risk',
                 description: 'Organization found that could halt the network if it fails'
@@ -472,7 +472,7 @@ export default class Store {
     }
 
     getNetworkDangers():{label: string, description: string}{
-        if(!this.network.networkStatistics.hasQuorumIntersection && !this.isSimulation){
+        if(!this.network.networkStatistics.hasQuorumIntersection){
             return {
                 label: 'Safety risk',
                 description: 'Network does not have quorum intersection and could have safety issues'
@@ -486,7 +486,7 @@ export default class Store {
             }
         }
 
-        if(this.network.networkStatistics.minBlockingSetFilteredSize === 0 && !this.isSimulation){
+        if(this.network.networkStatistics.minBlockingSetFilteredSize === 0){
             return {
                 label: 'Liveness risk',
                 description: 'Network could have liveness issues because all nodes in a blocking set are failing or Stellarbeat crawler is malfunctioning. Check https://dashboard.stellar.org'

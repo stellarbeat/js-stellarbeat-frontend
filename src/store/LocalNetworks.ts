@@ -220,7 +220,19 @@ export default class LocalNetworks {
                 'isValidating': true
             }
         ].map(node => Node.fromJSON(node));
-        return new Network(nodes, organizations);
+        let network = new Network(nodes, organizations);
+        network.networkStatistics.hasQuorumIntersection = false;
+        network.networkStatistics.minBlockingSetCountryFilteredSize = 2;
+        network.networkStatistics.minBlockingSetCountrySize = 2;
+        network.networkStatistics.minBlockingSetFilteredSize = 2;
+        network.networkStatistics.minBlockingSetOrgsFilteredSize = 1;
+        network.networkStatistics.minBlockingSetISPFilteredSize = 2;
+        network.networkStatistics.minSplittingSetSize = 0;
+        network.networkStatistics.minSplittingSetOrgsSize = 0;
+        network.networkStatistics.topTierSize = 6;
+        network.networkStatistics.topTierOrgsSize = 3;
+
+        return network;
     }
 
     static getFBAS2Network() {
@@ -639,7 +651,20 @@ export default class LocalNetworks {
                 'isValidating': true
             },
         ].map(node => Node.fromJSON(node));
-        return new Network(nodes, organizations);
+
+        let network = new Network(nodes, organizations);
+        network.networkStatistics.hasQuorumIntersection = true;
+        network.networkStatistics.minBlockingSetCountryFilteredSize = 2;
+        network.networkStatistics.minBlockingSetCountrySize = 2;
+        network.networkStatistics.minBlockingSetFilteredSize = 2;
+        network.networkStatistics.minBlockingSetOrgsFilteredSize = 1;
+        network.networkStatistics.minBlockingSetISPFilteredSize = 2;
+        network.networkStatistics.minSplittingSetSize = 3;
+        network.networkStatistics.minSplittingSetOrgsSize = 3;
+        network.networkStatistics.topTierSize = 9;
+        network.networkStatistics.topTierOrgsSize = 3;
+
+        return network;
     }
 
 }

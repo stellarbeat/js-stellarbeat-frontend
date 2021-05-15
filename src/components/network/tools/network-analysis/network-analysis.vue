@@ -322,17 +322,8 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeQuorumIntersection: this.analyzeQuorumIntersection,
             analyzeSafety: this.analyzeSafety,
-            analyzeLiveness: this.analyzeLiveness
-        });
-        this.fbasAnalysisWorker.postMessage({
-            id: 2,
-            nodes: this.correctlyConfiguredNodes,
-            organizations: this.network.organizations,
-            mergeBy: this.selectedMergeBy,
-            failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
-            analyzeQuorumIntersection: this.analyzeQuorumIntersection,
-            analyzeSafety: this.analyzeSafety,
-            analyzeLiveness: this.analyzeLiveness
+            analyzeLiveness: this.analyzeLiveness,
+            analyzeTopTier: true
         });
     }
 
