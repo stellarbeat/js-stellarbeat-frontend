@@ -32,6 +32,7 @@ export default class NetworkAnalyzer {
     protected ispLivenessAnalyzed: boolean = false;
     protected automaticState: AutomaticNetworkAnalysis = AutomaticNetworkAnalysis.Init;
     protected hasSymmetricTopTier: boolean = false;
+    public manualMode: boolean = false;
 
     constructor(network: Network) {
         this.network = network;
@@ -50,9 +51,11 @@ export default class NetworkAnalyzer {
                                 this.network.networkStatistics.topTierSize = analysisResult.topTierSize;
                                 this.nodeTopTierAnalyzed = true;
                                 this.hasSymmetricTopTier = analysisResult.hasSymmetricTopTier;
-                                if (this.hasSymmetricTopTier) {
+                                if (this.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 10) {
+                                    this.manualMode = false;
                                     this.analyzeNodes();
                                 } else { //the automatic network analysis stops because it will be too slow
+                                    this.manualMode = true;
                                     this.analyzeOrganizationsTopTier();
                                 }
                                 break;

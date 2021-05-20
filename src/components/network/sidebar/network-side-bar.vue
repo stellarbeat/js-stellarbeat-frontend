@@ -5,7 +5,8 @@
         </template>
         <template v-slot:sub-title>
                 Network
-            <b-badge v-if="store.networkHasDangers()" variant="danger"
+            <b-badge v-if="store.networkAnalyzer.manualMode" variant="default">Risks not analyzed</b-badge>
+            <b-badge v-else-if="store.networkHasDangers()" variant="danger"
                      style="vertical-align: bottom" v-b-tooltip.hover.right="store.getNetworkDangers().description">{{store.getNetworkDangers().label}}
             </b-badge>
             <b-badge v-else-if="store.networkHasWarnings()" variant="warning"

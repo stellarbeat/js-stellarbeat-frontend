@@ -110,7 +110,7 @@
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
-            <network-statistics-card :value="network.networkStatistics.topTierSize" :is-loading="isLoading"
+            <network-statistics-card :value="network.networkStatistics.topTierSize" :is-loading="isLoading || store.networkAnalyzer.analyzing"
                                      title="Top tier validators" tooltip="Number of active validators in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierAverage"
                                      :year-statistics="yearStatistics" :is-simulation-sensitive="true">
@@ -128,7 +128,7 @@
             </network-statistics-card>
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
-            <network-statistics-card :value="network.networkStatistics.topTierOrgsSize" :is-loading="isLoading"
+            <network-statistics-card :value="network.networkStatistics.topTierOrgsSize" :is-loading="isLoading || store.networkAnalyzer.analyzing"
                                      title="Top tier organizations"
                                      tooltip="Number of active organizations in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierOrgsAverage"
@@ -164,8 +164,9 @@
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.hasQuorumIntersection"
+                                     :unknown="store.networkAnalyzer.manualMode"
                                      :is-bool="true"
-                                     :is-loading="isLoading"
+                                     :is-loading="isLoading || store.networkAnalyzer.analyzing"
                                      title="Quorum intersection" tooltip="Does the network have quorum intersection"
                                      :initialDataLoaded="initialDataLoaded"
                                      stats-property="hasQuorumIntersectionAverage"

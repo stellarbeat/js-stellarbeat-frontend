@@ -20,7 +20,8 @@
                         <div v-else>
                             <div v-if="value !== undefined">
                                 <div v-if="isBool" class="value" style="color: #5eba00">
-                                    <b-badge :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
+                                    <b-badge v-if="!unknown" :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
+                                    <b-badge v-else variant="default">Not analyzed</b-badge>
                                 </div>
                                 <div v-else class="value">
                                     {{value}}
@@ -79,6 +80,8 @@
         isBool!: boolean;
         @Prop({default: false})
         isSimulationSensitive!: boolean;
+        @Prop({default: false})
+        unknown!: boolean;
 
         activeElement: NetworkStatisticsAggregation | null = null;
         showModal: boolean = false;
