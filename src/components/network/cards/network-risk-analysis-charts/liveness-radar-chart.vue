@@ -8,6 +8,9 @@
                 <canvas :id="'livenessRadarChart' + id" :ref="'livenessRadarChart' + id"></canvas>
             </div>
         </div>
+        <div class="m-2 pr-3 my-footer">
+            <a v-show="!store.isNetworkAnalysisVisible" href="#" v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true">Network Analysis</a>
+        </div>
     </div>
 </template>
 
@@ -131,5 +134,7 @@
 </script>
 
 <style scoped>
-
+    .my-footer{
+        text-align: right;
+    }
 </style>
