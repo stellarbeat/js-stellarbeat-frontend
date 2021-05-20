@@ -1,6 +1,7 @@
 import {NetworkChangeQueue} from "../../change-queue/network-change-queue";
 import {EntityPropertyUpdate} from "../../change-queue/changes/entity-property-update";
 import {Node, Network} from "@stellarbeat/js-stellar-domain";
+import NetworkAnalyzer from '@/services/NetworkAnalyzer';
 
 jest.mock('./../../change-queue/changes/entity-property-update');
 
@@ -11,7 +12,8 @@ describe("update manager", () => {
     let update3:EntityPropertyUpdate;
 
     beforeEach(() => {
-        myNodeUpdateManager = new NetworkChangeQueue(new Network([]));
+        let networkAnalyzerMock = {analyzeNetwork: () => {}};
+        myNodeUpdateManager = new NetworkChangeQueue(new Network([]), networkAnalyzerMock as NetworkAnalyzer);
 
         update1 =  new EntityPropertyUpdate(new Node('a'), 'a', 'true');
         update1.toString = jest.fn(()=> 'a');

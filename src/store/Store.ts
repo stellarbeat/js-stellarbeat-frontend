@@ -79,8 +79,8 @@ export default class Store {
 
     setNetwork(network: Network){
         Vue.set(this, '_network', network);
-        Vue.set(this, '_networkChangeQueue',  new NetworkChangeQueue(this.network));
         Vue.set(this, '_networkAnalyzer', new NetworkAnalyzer(this.network));
+        Vue.set(this, '_networkChangeQueue',  new NetworkChangeQueue(this.network, this.networkAnalyzer));
         this.networkReCalculated++;
     }
 
@@ -327,9 +327,7 @@ export default class Store {
 
     public processChange(change: NetworkChange) {
         this.changeQueue.execute(change);
-        this.network.recalculateNetwork();
         this.networkReCalculated++;
-        this.networkAnalyzer.analyzeNetwork();
     }
 
     get isSimulation(): boolean {
@@ -349,7 +347,6 @@ export default class Store {
             return;
         }
         this.changeQueue.undo();
-        this.network.recalculateNetwork();
         this.networkReCalculated++;
     }
 
@@ -358,7 +355,6 @@ export default class Store {
             return;
         }
         this.changeQueue.redo();
-        this.network.recalculateNetwork();
         this.networkReCalculated++;
     }
 
@@ -372,7 +368,6 @@ export default class Store {
             return;
         }
         this.changeQueue.reset();
-        this.network.recalculateNetwork();
         this.networkReCalculated++;
     }
 

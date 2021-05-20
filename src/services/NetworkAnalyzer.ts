@@ -101,7 +101,7 @@ export default class NetworkAnalyzer {
         return this.safetyAnalyzed && this.livenessAnalyzed && this.quorumIntersectionAnalyzed;
     }
 
-    initAnalysis() {
+    protected initAnalysis() {
         this.nodeTopTierAnalyzed = false;
         this.organizationTopTierAnalyzed = false;
         this.quorumIntersectionAnalyzed = false;
@@ -207,12 +207,6 @@ export default class NetworkAnalyzer {
             analyzeSafety: false,
             analyzeLiveness: true
         });
-    }
-
-    public performAnalysis(networkChange: boolean, mergeBy: MergeBy, analyzeQuorumIntersection: boolean = true, analyzeSafety: boolean = true, analyzeLiveness: boolean = true) {
-        if (this.analyzing)//only 1 analysis at a time to make use of the fbas_analyzer cache
-            return;
-
     }
 
     protected getCorrectlyConfiguredNodes(network: Network) {
