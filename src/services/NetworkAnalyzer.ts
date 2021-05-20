@@ -120,6 +120,7 @@ export default class NetworkAnalyzer {
     }
 
     protected analyzeNodesTopTier() {
+        this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingNodesTopTier;
         this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
@@ -135,6 +136,7 @@ export default class NetworkAnalyzer {
     }
 
     protected analyzeOrganizationsTopTier() {
+        this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingOrganizationTopTier;
         this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
@@ -150,6 +152,7 @@ export default class NetworkAnalyzer {
     }
 
     protected analyzeNodes() { //we run all the analysis on the nodes
+        this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingNodes;
         this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
@@ -165,6 +168,7 @@ export default class NetworkAnalyzer {
     }
 
     protected analyzeOrganizations() {
+        this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingOrganizations;
         this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
@@ -180,6 +184,7 @@ export default class NetworkAnalyzer {
     }
 
     protected analyzeCountries() {
+        this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingCountries;
         this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
@@ -195,6 +200,7 @@ export default class NetworkAnalyzer {
     }
 
     protected analyzeISPs() {
+        this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingISPs;
         this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,

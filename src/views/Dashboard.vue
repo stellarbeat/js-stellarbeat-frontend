@@ -5,6 +5,9 @@
                 <h2 class="page-title">Network explorer</h2>
                 <simulation-badge/>
                 <time-travel-badge/>
+                <div v-if="store.networkAnalyzer.analyzing">
+                    <div class="loader"></div>
+                </div>
             </div>
             <crawl-time v-if="!store.isSimulation"/>
         </div>
