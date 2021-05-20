@@ -1,8 +1,9 @@
 <template>
-    <div class="card" style="height: 320px">
+    <div class="card" style="height: 320px" :class="dimmerClass">
         <div class="text-muted mx-3 mt-3">
             Current liveness risk
         </div>
+        <div class="loader"></div>
         <div class="card-body d-flex flex-row justify-content-center p-1">
             <div class="canvas-container">
                 <canvas :id="'livenessRadarChart' + id" :ref="'livenessRadarChart' + id"></canvas>
@@ -50,6 +51,13 @@
                     this.network.networkStatistics.minBlockingSetISPFilteredSize
                 ];
             this.chart.update();
+        }
+
+        get dimmerClass() {
+            return {
+                dimmer: true,
+                active: this.store.networkAnalyzer.analyzing,
+            };
         }
 
         public initializeChart() {
