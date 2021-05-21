@@ -1,12 +1,12 @@
 <template>
     <div class="card" style="height: 320px" :class="dimmerClass">
         <div class="text-muted mx-3 mt-3">
-            Current liveness risk
+            Network analysis
         </div>
         <div class="loader"></div>
         <div class="card-body d-flex flex-row justify-content-center p-1">
             <div class="canvas-container">
-                <canvas :id="'livenessRadarChart' + id" :ref="'livenessRadarChart' + id"></canvas>
+                <canvas :id="'networkRiskRadarChart' + id" :ref="'networkRiskRadarChart' + id"></canvas>
             </div>
         </div>
         <div class="m-2 pr-3 my-footer">
@@ -16,20 +16,21 @@
 </template>
 
 <script lang="ts">
-    import Chart, {ChartDataSets} from 'chart.js';
+import Chart from 'chart.js';
 
-    import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+import Vue from 'vue';
+import {Component, Watch} from 'vue-property-decorator';
 
-    import {Network} from '@stellarbeat/js-stellar-domain';
-    import Store from '@/store/Store';
-    import {BTooltip, BIconInfoCircle, BButton, BButtonGroup} from 'bootstrap-vue';
-    import DateNavigator from '@/components/date-navigator.vue';
+import {Network} from '@stellarbeat/js-stellar-domain';
+import Store from '@/store/Store';
+import {BButton, BButtonGroup, BIconInfoCircle, BTooltip} from 'bootstrap-vue';
+import DateNavigator from '@/components/date-navigator.vue';
+import {AutomaticNetworkAnalysis} from '@/services/NetworkAnalyzer';
 
-    @Component({
+@Component({
         components: {DateNavigator, BTooltip, BIconInfoCircle, BButton, BButtonGroup}
     })
-    export default class LivenessRadarChart extends Vue {
+    export default class NetworkRiskRadarChart extends Vue {
         public chart!: Chart;
 
         id: number = this.store.getUniqueId();
@@ -42,15 +43,19 @@
             return this.store.network;
         }
 
-        @Watch("store.networkAnalyzer.livenessAnalyzed", {immediate: false})
-        onLivenessChange(){
-            this.chart.data.datasets![0]!.data = [
+        @Watch("store.networkAnalyzer.automaticState", {immediate: false})
+        onStateChange(){
+            if(this.store.networkAnalyzer.automaticState === AutomaticNetworkAnalysis.Done) {
+                console.log("changy");
+
+                this.chart.data.datasets![0]!.data = [
                     this.network.networkStatistics.minBlockingSetOrgsFilteredSize,
                     this.network.networkStatistics.minBlockingSetFilteredSize,
                     this.network.networkStatistics.minBlockingSetCountryFilteredSize,
                     this.network.networkStatistics.minBlockingSetISPFilteredSize
                 ];
-            this.chart.update();
+                this.chart.update();
+            }
         }
 
         get dimmerClass() {
@@ -61,7 +66,7 @@
         }
 
         public initializeChart() {
-            let chartId = 'livenessRadarChart' + this.id;
+            let chartId = 'networkRiskRadarChart' + this.id;
             const context = this.$refs[chartId];
             let that = this;
             this.chart = new Chart(context as HTMLCanvasElement, {
@@ -75,6 +80,7 @@
                     ],
                     datasets: [
                         {
+                            label: "Liveness",
                             data: [
                                 this.network.networkStatistics.minBlockingSetOrgsFilteredSize,
                                 this.network.networkStatistics.minBlockingSetFilteredSize,
@@ -84,6 +90,18 @@
                             fill: true,
                             borderColor: "rgba(25, 151, 198,1)",
                             backgroundColor: "rgba(25, 151, 198, 0.1)",
+                        },
+                        {
+                            label: "Safety",
+                            data: [
+                                this.network.networkStatistics.minSplittingSetOrgsSize,
+                                this.network.networkStatistics.minSplittingSetSize,
+                                this.network.networkStatistics.minSplittingSetCountrySize,
+                                this.network.networkStatistics.minSplittingSetISPSize
+                            ],
+                            fill: true,
+                            borderColor: "rgb(159, 134, 255)",
+                            backgroundColor: "rgba(159, 134, 255, 0.1)",
                         }
                     ]
                 },
@@ -101,7 +119,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     legend: {
-                        display: false
+                        display: true
                     },
                     animation: {
                         duration: 0 // general animation time

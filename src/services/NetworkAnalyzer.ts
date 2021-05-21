@@ -21,16 +21,7 @@ export default class NetworkAnalyzer {
     protected network: Network;
     protected networkAnalysisId: number = 0;
     public analyzing: boolean = false;
-    public nodeTopTierAnalyzed: boolean = false;
-    public organizationTopTierAnalyzed: boolean = false;
-    public quorumIntersectionAnalyzed: boolean = false;
-    public safetyAnalyzed: boolean = false;
-    public livenessAnalyzed: boolean = false;
-    protected nodeLivenessAnalyzed: boolean = false;
-    protected organizationLivenessAnalyzed: boolean = false;
-    protected countryLivenessAnalyzed: boolean = false;
-    protected ispLivenessAnalyzed: boolean = false;
-    protected automaticState: AutomaticNetworkAnalysis = AutomaticNetworkAnalysis.Init;
+    public automaticState: AutomaticNetworkAnalysis = AutomaticNetworkAnalysis.Init;
     protected hasSymmetricTopTier: boolean = false;
     public manualMode: boolean = false;
 
@@ -49,7 +40,6 @@ export default class NetworkAnalyzer {
                         switch (this.automaticState) {
                             case AutomaticNetworkAnalysis.AnalyzingNodesTopTier:
                                 this.network.networkStatistics.topTierSize = analysisResult.topTierSize;
-                                this.nodeTopTierAnalyzed = true;
                                 this.hasSymmetricTopTier = analysisResult.hasSymmetricTopTier;
                                 if (this.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 10) {
                                     this.manualMode = false;
@@ -61,34 +51,25 @@ export default class NetworkAnalyzer {
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingOrganizationTopTier:
                                 this.network.networkStatistics.topTierOrgsSize = analysisResult.topTierSize;
-                                this.organizationTopTierAnalyzed = true;
                                 this.automaticState = AutomaticNetworkAnalysis.Done;
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingNodes:
                                 this.network.networkStatistics.hasQuorumIntersection = analysisResult.hasQuorumIntersection;
                                 this.network.networkStatistics.minBlockingSetFilteredSize = analysisResult.minimalBlockingSetsMinSize!;
                                 this.network.networkStatistics.minSplittingSetSize = analysisResult.minimalSplittingSetsMinSize!;
-                                this.nodeLivenessAnalyzed = true;
-                                this.safetyAnalyzed = true;
-                                this.quorumIntersectionAnalyzed = true;
                                 this.analyzeOrganizations();
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingOrganizations:
                                 this.network.networkStatistics.minBlockingSetOrgsFilteredSize = analysisResult.minimalBlockingSetsMinSize;
                                 this.network.networkStatistics.topTierOrgsSize = analysisResult.topTierSize;
-                                this.organizationTopTierAnalyzed = true;
-                                this.organizationLivenessAnalyzed = true;
                                 this.analyzeCountries();
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingCountries:
                                 this.network.networkStatistics.minBlockingSetCountryFilteredSize = analysisResult.minimalBlockingSetsMinSize;
-                                this.countryLivenessAnalyzed = true;
                                 this.analyzeISPs();
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingISPs:
                                 this.network.networkStatistics.minBlockingSetISPFilteredSize = analysisResult.minimalBlockingSetsMinSize;
-                                this.countryLivenessAnalyzed = true;
-                                this.livenessAnalyzed = true;
                                 this.automaticState = AutomaticNetworkAnalysis.Done;
                                 break;
                         }
@@ -100,20 +81,7 @@ export default class NetworkAnalyzer {
         };
     }
 
-    protected isAnalysisComplete() {
-        return this.safetyAnalyzed && this.livenessAnalyzed && this.quorumIntersectionAnalyzed;
-    }
-
     protected initAnalysis() {
-        this.nodeTopTierAnalyzed = false;
-        this.organizationTopTierAnalyzed = false;
-        this.quorumIntersectionAnalyzed = false;
-        this.livenessAnalyzed = false;
-        this.nodeLivenessAnalyzed = false;
-        this.organizationLivenessAnalyzed = false;
-        this.countryLivenessAnalyzed = false;
-        this.ispLivenessAnalyzed = false;
-        this.safetyAnalyzed = false;
     }
 
     public analyzeNetwork() {
@@ -185,7 +153,7 @@ export default class NetworkAnalyzer {
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: true,
             analyzeQuorumIntersection: false,
-            analyzeSafety: false,
+            analyzeSafety: true,
             analyzeLiveness: true
         });
     }
@@ -201,7 +169,7 @@ export default class NetworkAnalyzer {
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: false,
             analyzeQuorumIntersection: false,
-            analyzeSafety: false,
+            analyzeSafety: true,
             analyzeLiveness: true
         });
     }
@@ -217,7 +185,7 @@ export default class NetworkAnalyzer {
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: false,
             analyzeQuorumIntersection: false,
-            analyzeSafety: false,
+            analyzeSafety: true,
             analyzeLiveness: true
         });
     }

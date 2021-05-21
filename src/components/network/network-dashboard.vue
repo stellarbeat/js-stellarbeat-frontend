@@ -113,11 +113,11 @@ import NetworkOrganizationUpdates from '@/components/network/cards/network-organ
 import Store from '@/store/Store';
 import LazyHydrate from 'vue-lazy-hydration';
 import NetworkHorizon from '@/components/network/cards/network-horizon.vue';
-import LivenessRadarChart from '@/components/network/cards/network-risk-analysis-charts/liveness-radar-chart.vue';
+import NetworkRiskRadarChart from '@/components/network/cards/network-risk-analysis-charts/network-risk-radar-chart.vue';
 
 @Component({
     components: {
-        LivenessRadarChart,
+        LivenessRadarChart: NetworkRiskRadarChart,
         NetworkHorizon,
         NetworkOrganizationUpdates,
         LazyHydrate,
