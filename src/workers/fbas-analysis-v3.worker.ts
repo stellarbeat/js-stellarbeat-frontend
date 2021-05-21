@@ -62,8 +62,8 @@ function performAnalysis(nodes: Node[], failingNodePublicKeys: PublicKey[], orga
         analysis.quorumIntersectionAnalyzed = false;
 
     if(analyzeTopTier){
-        let topTierAnalysis = analyze_top_tier(JSON.stringify(nodes), JSON.stringify(organizations), mergeBy);
         console.log("analyze top tier");
+        let topTierAnalysis = analyze_top_tier(JSON.stringify(nodes), JSON.stringify(organizations), mergeBy);
         analysis.hasSymmetricTopTier = topTierAnalysis.symmetric_top_tier !== null;
         analysis.topTier = topTierAnalysis.top_tier;
         analysis.topTierSize = topTierAnalysis.top_tier_size;

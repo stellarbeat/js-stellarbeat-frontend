@@ -1,10 +1,15 @@
 <template>
     <div>
+        <b-alert :show="store.networkAnalyzer.manualMode" variant="warning">
+            Network not fully analyzed because top tier is not symmetric or too large to analyze in a reasonable timeframe. <br> You can run the <a href="#" v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true">network analysis</a> manually.
+        </b-alert>
         <b-alert :show="store.networkHasDangers()" variant="danger">
             {{store.getNetworkDangers().description}}
+            <br> See <a href="#" v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true">network analysis</a> for details.
         </b-alert>
         <b-alert :show="store.networkHasWarnings()" variant="warning">
             {{store.getNetworkWarnings().description}}
+            <br> See <a href="#" v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true">network analysis</a> for details.
         </b-alert>
         <div class="row row-cards row-deck">
 
