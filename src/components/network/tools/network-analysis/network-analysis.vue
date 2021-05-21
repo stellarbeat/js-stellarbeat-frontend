@@ -167,7 +167,8 @@
                         <b-form-checkbox v-model="analyzeSafety">Safety</b-form-checkbox>
                     </b-form-group>
 
-                    <b-button variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
+                    <b-button v-if="!isLoading" variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
+                    <b-button v-else variant="danger" v-on:click="stopAnalysis">Stop analysis</b-button>
                 </div>
             </div>
         </b-card-body>
@@ -312,8 +313,13 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
         return this.network.nodes.filter(node => isNodeCorrectlyConfigured(node));
     }
 
+    stopAnalysis() {
+        this.fbasAnalysisWorker.terminate();
+        this.isLoading = false;
+    }
+
     performAnalysis() {
-        this.isLoading = true;
+       this.isLoading = true;
         this.fbasAnalysisWorker.postMessage({
             id: 1,
             nodes: this.correctlyConfiguredNodes,
