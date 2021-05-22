@@ -158,6 +158,7 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
                         'quorumSet': this.mapToBasicQuorumSet(node.quorumSet),
                         'geoData': {
                             'countryCode': node.geoData.countryCode ? node.geoData.countryCode : 'N/A',
+                            'countryName': node.geoData.countryName ? node.geoData.countryName : 'N/A'
                         },
                         'isp': node.isp ? node.isp : 'N/A'
                     };
