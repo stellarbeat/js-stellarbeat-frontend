@@ -46,8 +46,6 @@ import {AutomaticNetworkAnalysis} from '@/services/NetworkAnalyzer';
         @Watch("store.networkAnalyzer.automaticState", {immediate: false})
         onStateChange(){
             if(this.store.networkAnalyzer.automaticState === AutomaticNetworkAnalysis.Done) {
-                console.log("changy");
-
                 this.chart.data.datasets![0]!.data = [
                     this.network.networkStatistics.minBlockingSetOrgsFilteredSize,
                     this.network.networkStatistics.minBlockingSetFilteredSize,

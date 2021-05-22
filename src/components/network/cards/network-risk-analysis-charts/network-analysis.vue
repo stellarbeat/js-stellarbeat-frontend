@@ -161,18 +161,14 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         if (this.bucketSize === '24H') {
             this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets![0].hidden!;
             this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets![1].hidden!;
-            if (this.setType === 'blocking') {
-                this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2] ? this.hour24ChartDataSets![2].hidden! : false;
-                this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
-            }
+            this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2] ? this.hour24ChartDataSets![2].hidden! : false;
+            this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets![3] ? this.hour24ChartDataSets![3].hidden! : false;
         }
         if (toBucketSize === '24H') {
             this.hour24ChartDataSets![0].hidden! = this.aggregatedDataSets[0].hidden!;
             this.hour24ChartDataSets![1].hidden! = this.aggregatedDataSets[3].hidden!;
-            if (this.setType === 'blocking') {
-                this.hour24ChartDataSets![2].hidden! = this.aggregatedDataSets[6] ? this.aggregatedDataSets[6].hidden! : false;
-                this.hour24ChartDataSets![3].hidden! = this.aggregatedDataSets[9] ? this.aggregatedDataSets[9].hidden! : false;
-            }
+            this.hour24ChartDataSets![2].hidden! = this.aggregatedDataSets[6] ? this.aggregatedDataSets[6].hidden! : false;
+            this.hour24ChartDataSets![3].hidden! = this.aggregatedDataSets[9] ? this.aggregatedDataSets[9].hidden! : false;
         }
     }
 
@@ -310,72 +306,70 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                     backgroundColor: 'rgba(27, 201, 142, 0.1)', // success green
                 }
             ];
-        if (this.setType === 'blocking') {
-            stats.push(...
-                [
-                    {
-                        hidden: true,
-                        label: 'ISP',
-                        fill: false,
-                        borderWidth: 2,
-                        steppedLine: true,
-                        type: 'line',
-                        radius: 2,
-                        borderColor: 'rgb(236, 228, 114)', // success green
-                        backgroundColor: 'rgb(236, 228, 114)', // success green
-                    },
-                    {
-                        label: 'min(|ISP|)',
-                        fill: '6',
-                        borderWidth: 4,
-                        steppedLine: true,
-                        type: 'line',
-                        radius: 0, hitRadius: 0, hoverRadius: 0,
-                        borderColor: 'transparent', // success green
-                        backgroundColor: 'rgba(236, 228, 114, 0.1)', // success green
-                    },
-                    {
-                        label: 'max(|ISP|)',
-                        fill: '6',
-                        borderWidth: 4,
-                        steppedLine: true,
-                        type: 'line',
-                        radius: 0, hitRadius: 0, hoverRadius: 0,
-                        borderColor: 'transparent', // success green
-                        backgroundColor: 'rgba(236, 228, 114, 0.1)', // success green
-                    },
-                    {
-                        hidden: true,
-                        label: 'Country',
-                        fill: false,
-                        borderWidth: 2,
-                        steppedLine: true,
-                        type: 'line',
-                        radius: 2,
-                        borderColor: 'rgb(159, 134, 255)',
-                        backgroundColor: 'rgb(159, 134, 255)',
-                    },
-                    {
-                        label: 'min(|Country|)',
-                        fill: '9',
-                        borderWidth: 4,
-                        steppedLine: true,
-                        type: 'line',
-                        radius: 0, hitRadius: 0, hoverRadius: 0,
-                        borderColor: 'transparent', // success green
-                        backgroundColor: 'rgba(159, 134, 255, 0.1)', // success green
-                    },
-                    {
-                        label: 'max(|Country|)',
-                        fill: '9',
-                        borderWidth: 4,
-                        steppedLine: true,
-                        type: 'line',
-                        radius: 0, hitRadius: 0, hoverRadius: 0,
-                        borderColor: 'transparent', // success green
-                        backgroundColor: 'rgba(159, 134, 255, 0.1)', // success green
-                    }]);
-        }
+        stats.push(...
+            [
+                {
+                    hidden: true,
+                    label: 'ISP',
+                    fill: false,
+                    borderWidth: 2,
+                    steppedLine: true,
+                    type: 'line',
+                    radius: 2,
+                    borderColor: 'rgb(236, 228, 114)', // success green
+                    backgroundColor: 'rgb(236, 228, 114)', // success green
+                },
+                {
+                    label: 'min(|ISP|)',
+                    fill: '6',
+                    borderWidth: 4,
+                    steppedLine: true,
+                    type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
+                    borderColor: 'transparent', // success green
+                    backgroundColor: 'rgba(236, 228, 114, 0.1)', // success green
+                },
+                {
+                    label: 'max(|ISP|)',
+                    fill: '6',
+                    borderWidth: 4,
+                    steppedLine: true,
+                    type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
+                    borderColor: 'transparent', // success green
+                    backgroundColor: 'rgba(236, 228, 114, 0.1)', // success green
+                },
+                {
+                    hidden: true,
+                    label: 'Country',
+                    fill: false,
+                    borderWidth: 2,
+                    steppedLine: true,
+                    type: 'line',
+                    radius: 2,
+                    borderColor: 'rgb(159, 134, 255)',
+                    backgroundColor: 'rgb(159, 134, 255)',
+                },
+                {
+                    label: 'min(|Country|)',
+                    fill: '9',
+                    borderWidth: 4,
+                    steppedLine: true,
+                    type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
+                    borderColor: 'transparent', // success green
+                    backgroundColor: 'rgba(159, 134, 255, 0.1)', // success green
+                },
+                {
+                    label: 'max(|Country|)',
+                    fill: '9',
+                    borderWidth: 4,
+                    steppedLine: true,
+                    type: 'line',
+                    radius: 0, hitRadius: 0, hoverRadius: 0,
+                    borderColor: 'transparent', // success green
+                    backgroundColor: 'rgba(159, 134, 255, 0.1)', // success green
+                }]);
 
         return stats;
     }
@@ -446,31 +440,29 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
                     type: 'line',
                     radius: 0, hitRadius: 5
                 }];
-        if (this.setType === 'blocking') {
-            sets.push(...
-                [
-                    {
-                        label: 'ISP',
-                        borderColor: 'rgba(236, 228, 114, 1)', // success green
-                        backgroundColor: 'rgba(236, 228, 114, 1)', // success green
-                        borderWidth: 2,
-                        steppedLine: true,
-                        fill: false,
-                        type: 'line',
-                        radius: 0, hitRadius: 5
-                    },
-                    {
-                        label: 'Country',
-                        borderColor: 'rgba(159, 134, 255, 1)', // success green
-                        backgroundColor: 'rgba(159, 134, 255, 1)', // success green
-                        borderWidth: 2,
-                        steppedLine: true,
-                        fill: false,
-                        type: 'line',
-                        radius: 0, hitRadius: 5
-                    },
-                ]);
-        }
+        sets.push(...
+            [
+                {
+                    label: 'ISP',
+                    borderColor: 'rgba(236, 228, 114, 1)', // success green
+                    backgroundColor: 'rgba(236, 228, 114, 1)', // success green
+                    borderWidth: 2,
+                    steppedLine: true,
+                    fill: false,
+                    type: 'line',
+                    radius: 0, hitRadius: 5
+                },
+                {
+                    label: 'Country',
+                    borderColor: 'rgba(159, 134, 255, 1)', // success green
+                    backgroundColor: 'rgba(159, 134, 255, 1)', // success green
+                    borderWidth: 2,
+                    steppedLine: true,
+                    fill: false,
+                    type: 'line',
+                    radius: 0, hitRadius: 5
+                },
+            ]);
 
         return sets;
     }
