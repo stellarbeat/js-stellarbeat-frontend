@@ -10,14 +10,15 @@
             When all the nodes of a network blocking set fail, the network could halt. If the chart indicates the
             minimum size is 3, then 3 specific nodes have to fail before this will happen. To find out what these
             specific nodes are, you can time travel to that point in time, and run the network analysis tool (left
-            sidebar > tools).
+            sidebar > tools). The organizations, countries and ISP's of these nodes are also shown.
         </p>
         <h3>Limitations of the analysis</h3>
         <p class="my-4">
             Stellarbeat indicates a node as 'not validating' if it was not validating in the latest crawl, a specific
             time window. However a node could be very slow or catching up. If other (fast) nodes of a network blocking
             set are down, the slow node could catch up and the network would continue to validate. Hence this graph is a
-            risk analysis.
+            risk analysis.<br>
+            For ISP and country information of nodes we rely on the <a href="https://ipstack.com/">IPstack api</a>. This data is not guaranteed to be correct.
         </p>
         <h3>More information</h3>
         <p class="my-4">

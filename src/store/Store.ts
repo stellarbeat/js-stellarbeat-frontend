@@ -25,6 +25,7 @@ import {QuorumSetOrganizationsAdd} from '@/services/change-queue/changes/quorum-
 import LocalNetworks from '@/store/LocalNetworks';
 import {AggregateChange} from '@/services/change-queue/changes/aggregate-change';
 import NetworkAnalyzer from '@/services/NetworkAnalyzer';
+import {MergeBy} from 'stellar_analysis';
 
 type NetworkId = string;
 
@@ -49,6 +50,7 @@ export default class Store {
     public organizationMeasurementStore: OrganizationStatisticsStore = new OrganizationStatisticsStore(this.measurementStore);
     public isHaltingAnalysisVisible: boolean = false;
     public isNetworkAnalysisVisible: boolean = false;
+    public networkAnalysisMergeBy: MergeBy = MergeBy.DoNotMerge;
     public isTimeTravel: boolean = false;
     public timeTravelDate?:Date;
     public customNetwork: Network|undefined;

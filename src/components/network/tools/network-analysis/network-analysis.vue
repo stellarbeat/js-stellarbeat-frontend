@@ -147,7 +147,7 @@
                     <b-form-group label="Analysis target: " v-slot="{ ariaDescribedby }">
                         <b-form-radio-group
                             id="radio-group-2"
-                            v-model="selectedMergeBy"
+                            v-model="store.networkAnalysisMergeBy"
                             :aria-describedby="ariaDescribedby"
                             name="radio-sub-component"
                         >
@@ -247,7 +247,6 @@ const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescrip
     directives: {'b-toggle': VBToggle, 'b-modal': VBModal, 'b-tooltip': VBTooltip}
 })
 export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) {
-    protected selectedMergeBy: MergeBy = MergeBy.DoNotMerge;
     protected MergeBy: any = MergeBy;
     protected fbasAnalysisWorker = new _FbasAnalysisWorker();
     protected hasResult: boolean = false;
@@ -324,7 +323,7 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
             id: 1,
             nodes: this.correctlyConfiguredNodes,
             organizations: this.network.organizations,
-            mergeBy: this.selectedMergeBy,
+            mergeBy: this.store.networkAnalysisMergeBy,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeQuorumIntersection: this.analyzeQuorumIntersection,
             analyzeSafety: this.analyzeSafety,

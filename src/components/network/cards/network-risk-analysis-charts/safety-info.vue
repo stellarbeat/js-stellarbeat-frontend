@@ -5,7 +5,7 @@
         <p class="my-4">The network is scanned for sets of
             nodes that contains intersections of one or more quorum pairs (network splitting sets). The chart shows the
             smallest sizes of
-            these sets and, if available, the minimum and maximum for each time window.</p>
+            these sets and, if available, the minimum and maximum for each time window. The organizations, countries and ISP's of these nodes are also shown.</p>
         <h3>What does it mean?</h3>
         <p class="my-4">
             If all nodes in a network splitting set are malicious, they can cause the network to diverge and split. For
@@ -23,7 +23,8 @@
         <p class="my-4">
             If quorum intersection is failing, additional analysis is needed. Safety could still be present for the majority of the network.<br/>
             Because quorum intersection is calculated for the entire network, it could be that badly configured nodes on the edge of the network can cause quorum intersection to fail.<br/>
-            To mitigate this, stellarbeat filters out 'badly configured' nodes. At the moment these are nodes that have only themselves in their quorumset.
+            To mitigate this, stellarbeat filters out 'badly configured' nodes. At the moment these are nodes that have only themselves in their quorumset.<br>
+            For ISP and country information of nodes we rely on the <a href="https://ipstack.com/">IPstack api</a>. This data is not guaranteed to be correct.
         </p>
         <h3>More information</h3>
         <p class="my-4">

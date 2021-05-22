@@ -2,7 +2,7 @@
     <b-modal lazy id="network-analysis-top-tier-info" ref="network-analysis-top-tier-info" hide-header>
         <h3>Top tier</h3>
         <p class="my-4">
-            The top tier is the set of nodes or organizations in the network that is exclusively relevant when determining the liveness and safety "buffers" of the network.
+            The top tier is the set of nodes in the network that is exclusively relevant when determining the liveness and safety "buffers" of the network. These nodes can be grouped by organization, country and isp.
         </p>
 
         <h3>When is the top tier symmetric?</h3>
