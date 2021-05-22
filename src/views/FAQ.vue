@@ -20,7 +20,7 @@
                 <h3>Why is my node not showing up?</h3>
                 <p>
                     A common issue is a closed port (default: 11625). Send us an <a
-                        href="mailto:stellarbeatio@gmail.com"
+                        href="mailto:info@stellarbeat.io"
                         target="_blank" rel="noopener"> e-mail</a> if the problem persists.
                 </p>
                 <h3>How can I update the name of my validator?</h3>

@@ -39,7 +39,7 @@
                                                class="btn btn-sm bt btn-primary-sb" target="_blank" rel="noopener">
                                                 <github/>
                                                 Github</a>
-                                            <a href="mailto:stellarbeatio@gmail.com"
+                                            <a href="mailto:info@stellarbeat.io"
                                                class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
                                                 <b-icon-envelope/>
                                                 Mail</a>
@@ -156,7 +156,7 @@
                            class="btn btn-sm bt btn-primary-sb" target="_blank" rel="noopener">
                             <github/>
                             Github</a>
-                        <a href="mailto:stellarbeatio@gmail.com" rel="noopener"
+                        <a href="mailto:info@stellarbeat.io" rel="noopener"
                            class="btn btn-sm bt btn-primary-sb ml-2" target="_blank">
                             <b-icon-envelope/>
                             Mail</a>

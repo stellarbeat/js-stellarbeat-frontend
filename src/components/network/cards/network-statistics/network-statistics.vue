@@ -14,7 +14,7 @@
                     <h4>What if your node is missing?</h4>
                     <p>
                         A common issue is a closed port (default: 11625). Send us an <a
-                            href="mailto:stellarbeatio@gmail.com" rel="noopener"
+                            href="mailto:info@stellarbeat.io" rel="noopener"
                             target="_blank"> e-mail</a> if the problem persists.
                     </p>
 
@@ -35,7 +35,7 @@
                     <h4>What if your node not showing up?</h4>
                     <p>
                         A common issue is a closed port (default: 11625). Send us an <a
-                            href="mailto:stellarbeatio@gmail.com" rel="noopener"
+                            href="mailto:info@stellarbeat.io" rel="noopener"
                             target="_blank"> e-mail</a> if the problem persists.
                     </p>
 
