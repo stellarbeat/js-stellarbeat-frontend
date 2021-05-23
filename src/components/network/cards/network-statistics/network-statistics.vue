@@ -112,6 +112,7 @@
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.topTierSize" :is-loading="isLoading || store.networkAnalyzer.analyzing"
                                      title="Top tier validators" tooltip="Number of active validators in the top tier"
+                                     :unknown="store.networkAnalyzer.manualMode"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierAverage"
                                      :year-statistics="yearStatistics" :is-simulation-sensitive="true">
                 <template v-slot:info>
@@ -130,6 +131,7 @@
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.topTierOrgsSize" :is-loading="isLoading || store.networkAnalyzer.analyzing"
                                      title="Top tier organizations"
+                                     :unknown="store.networkAnalyzer.manualMode"
                                      tooltip="Number of active organizations in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierOrgsAverage"
                                      :year-statistics="yearStatistics"  :is-simulation-sensitive="true">

@@ -19,7 +19,7 @@
                         </div>
                         <div v-else>
                             <div v-if="value !== undefined">
-                                <div v-if="isBool" class="value" style="color: #5eba00">
+                                <div v-if="isBool || unknown" class="value" style="color: #5eba00">
                                     <b-badge v-if="!unknown" :variant="value ? 'success' : 'danger'">{{value ? 'Yes' : 'No'}}</b-badge>
                                     <b-badge v-else variant="default">Not analyzed</b-badge>
                                 </div>

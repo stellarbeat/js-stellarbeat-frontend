@@ -7,8 +7,7 @@ import {MergeBy} from 'stellar_analysis';
 
 export enum AutomaticNetworkAnalysis {
     Init,
-    AnalyzingNodesTopTier,
-    AnalyzingOrganizationTopTier,
+    AnalyzingTopTierSymmetric,
     AnalyzingNodes,
     AnalyzingOrganizations,
     AnalyzingCountries,
@@ -38,22 +37,18 @@ export default class NetworkAnalyzer {
                             return; //we ignore old/stale analysis
 
                         switch (this.automaticState) {
-                            case AutomaticNetworkAnalysis.AnalyzingNodesTopTier:
-                                this.network.networkStatistics.topTierSize = analysisResult.topTierSize;
+                            case AutomaticNetworkAnalysis.AnalyzingTopTierSymmetric:
                                 this.hasSymmetricTopTier = analysisResult.hasSymmetricTopTier;
                                 if (this.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 10) {
                                     this.manualMode = false;
                                     this.analyzeNodes();
                                 } else { //the automatic network analysis stops because it will be too slow
                                     this.manualMode = true;
-                                    this.analyzeOrganizationsTopTier();
+                                    this.analyzeNodes();
                                 }
                                 break;
-                            case AutomaticNetworkAnalysis.AnalyzingOrganizationTopTier:
-                                this.network.networkStatistics.topTierOrgsSize = analysisResult.topTierSize;
-                                this.automaticState = AutomaticNetworkAnalysis.Done;
-                                break;
-                            case AutomaticNetworkAnalysis.AnalyzingNodes:
+                           case AutomaticNetworkAnalysis.AnalyzingNodes:
+                                this.network.networkStatistics.topTierSize = analysisResult.topTierSize;
                                 this.network.networkStatistics.hasQuorumIntersection = analysisResult.hasQuorumIntersection;
                                 this.network.networkStatistics.minBlockingSetFilteredSize = analysisResult.minimalBlockingSetsMinSize!;
                                 this.network.networkStatistics.minSplittingSetSize = analysisResult.minimalSplittingSetsMinSize!;
@@ -61,15 +56,18 @@ export default class NetworkAnalyzer {
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingOrganizations:
                                 this.network.networkStatistics.minBlockingSetOrgsFilteredSize = analysisResult.minimalBlockingSetsMinSize;
+                                this.network.networkStatistics.minSplittingSetOrgsSize = analysisResult.minimalSplittingSetsMinSize;
                                 this.network.networkStatistics.topTierOrgsSize = analysisResult.topTierSize;
                                 this.analyzeCountries();
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingCountries:
                                 this.network.networkStatistics.minBlockingSetCountryFilteredSize = analysisResult.minimalBlockingSetsMinSize;
+                                this.network.networkStatistics.minSplittingSetCountrySize = analysisResult.minimalSplittingSetsMinSize;
                                 this.analyzeISPs();
                                 break;
                             case AutomaticNetworkAnalysis.AnalyzingISPs:
                                 this.network.networkStatistics.minBlockingSetISPFilteredSize = analysisResult.minimalBlockingSetsMinSize;
+                                this.network.networkStatistics.minSplittingSetISPSize = analysisResult.minimalSplittingSetsMinSize;
                                 this.automaticState = AutomaticNetworkAnalysis.Done;
                                 break;
                         }
@@ -91,13 +89,13 @@ export default class NetworkAnalyzer {
         }
         this.initAnalysis();
         this.networkAnalysisId++;
-        this.analyzeNodesTopTier();
+        this.analyzeTopTierSymmetric();
     }
 
-    protected analyzeNodesTopTier() {
+    protected analyzeTopTierSymmetric() {
         this.analyzing = true;
-        this.automaticState = AutomaticNetworkAnalysis.AnalyzingNodesTopTier;
-        this.fbasAnalysisWorker.postMessage({
+        this.automaticState = AutomaticNetworkAnalysis.AnalyzingTopTierSymmetric;
+/*        this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
             nodes: this.getCorrectlyConfiguredNodes(this.network),
             organizations: this.network.organizations,
@@ -107,23 +105,27 @@ export default class NetworkAnalyzer {
             analyzeQuorumIntersection: false,
             analyzeSafety: false,
             analyzeLiveness: false
-        });
-    }
+        });*/
+        let hashCode = (s:string) => s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
+        this.hasSymmetricTopTier = this.network.nodes //todo swap out for top tier check through worker
+            .filter(node => this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(node.publicKey))
+            .map(node => hashCode(JSON.stringify(node.quorumSet)))
+            .every((hash, index, array) => {
+                console.log(hash);
+                if(array.length === 0)
+                    return false
+                return array[0] === hash;
+            } );
 
-    protected analyzeOrganizationsTopTier() {
-        this.analyzing = true;
-        this.automaticState = AutomaticNetworkAnalysis.AnalyzingOrganizationTopTier;
-        this.fbasAnalysisWorker.postMessage({
-            jobId: this.networkAnalysisId,
-            nodes: this.getCorrectlyConfiguredNodes(this.network),
-            organizations: this.network.organizations,
-            mergeBy: MergeBy.Orgs,
-            failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
-            analyzeTopTier: true,
-            analyzeQuorumIntersection: false,
-            analyzeSafety: false,
-            analyzeLiveness: false
-        });
+        console.log(this.hasSymmetricTopTier);
+        if (this.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 10) {
+            this.manualMode = false;
+            this.analyzeNodes();
+        } else { //the automatic network analysis stops because it will be too slow
+            this.manualMode = true;
+            this.automaticState = AutomaticNetworkAnalysis.Done;
+            this.analyzing = false;
+        }
     }
 
     protected analyzeNodes() { //we run all the analysis on the nodes
@@ -135,7 +137,7 @@ export default class NetworkAnalyzer {
             organizations: this.network.organizations,
             mergeBy: MergeBy.DoNotMerge,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
-            analyzeTopTier: false, //already done
+            analyzeTopTier: true,
             analyzeQuorumIntersection: true,
             analyzeSafety: true,
             analyzeLiveness: true
