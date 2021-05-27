@@ -107,8 +107,7 @@
                                     </b-card-body>
                                 </b-collapse>
                             </b-card>
-
-                            <b-card no-body class="mb-1 border-0">
+                            <b-card v-if="topTierAnalyzed" no-body class="mb-1 border-0">
                                 <b-card-header header-tag="header" class="p-0" role="tab">
                                     <b-button block v-b-toggle.accordion-top-tier variant="outline-primary-sb">Top tier
                                     </b-button>
@@ -143,7 +142,7 @@
                     </div>
                 </div>
                 <div class="mb-2">
-
+                    <b-alert :show="!network.networkStatistics.hasSymmetricTopTier" variant="warning">Warning: top tier is not symmetric, analysis could be slow. Execution time increases exponentially with top tier size. For very large networks you can export the current network through the 'modify network' tool and run the analysis offline with the <a href="https://github.com/wiberlin/fbas_analyzer" target="_blank">fbas analyzer tool</a> </b-alert>
                     <b-form-group label="Analysis target: " v-slot="{ ariaDescribedby }">
                         <b-form-radio-group
                             id="radio-group-2"
@@ -165,6 +164,7 @@
                         <b-form-checkbox v-model="analyzeQuorumIntersection">Quorum Intersection</b-form-checkbox>
                         <b-form-checkbox v-model="analyzeLiveness">Liveness</b-form-checkbox>
                         <b-form-checkbox v-model="analyzeSafety">Safety</b-form-checkbox>
+                        <b-form-checkbox v-model="analyzeTopTier">Top Tier</b-form-checkbox>
                     </b-form-group>
 
                     <b-button v-if="!isLoading" variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
@@ -281,6 +281,8 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     protected safetyAnalyzed: boolean = false;
     protected analyzeLiveness: boolean = true;
     protected livenessAnalyzed: boolean = false;
+    protected analyzeTopTier: boolean = true;
+    protected topTierAnalyzed: boolean = false;
 
     getMergeByFriendlyName(mergeBy = MergeBy.DoNotMerge) {
         switch (mergeBy) {
@@ -328,7 +330,8 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
             analyzeQuorumIntersection: this.analyzeQuorumIntersection,
             analyzeSafety: this.analyzeSafety,
             analyzeLiveness: this.analyzeLiveness,
-            analyzeTopTier: true
+            analyzeTopTier: this.analyzeTopTier,
+            analyzeSymmetricTopTier: true,
         });
     }
 
@@ -350,7 +353,9 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                         this.hasResult = true;
                         this.resultMergedBy = event.data.result.mergeBy;
                         let analysisResult: FbasAnalysisWorkerResult = event.data.result.analysis;
+                        this.topTierIsSymmetric = analysisResult.hasSymmetricTopTier;
                         this.quorumIntersectionAnalyzed = analysisResult.quorumIntersectionAnalyzed;
+
                         if (analysisResult.quorumIntersectionAnalyzed) {
                             this.hasQuorumIntersection = analysisResult.hasQuorumIntersection!;
                             //@ts-ignore
@@ -397,15 +402,17 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                             }
                         }
 
+                        this.topTierAnalyzed = analysisResult.topTierAnalyzed;
                         //@ts-ignore;
-                        this.topTier = analysisResult.topTier.map((top: string) => {
-                            if (this.resultMergedBy === MergeBy.DoNotMerge)
-                                top = this.network.getNodeByPublicKey(top).displayName;
-                            return {
-                                'topTier': top
-                            };
-                        });
-                        this.topTierIsSymmetric = analysisResult.hasSymmetricTopTier;
+                        if(analysisResult.topTierAnalyzed) {
+                            this.topTier = analysisResult.topTier.map((top: string) => {
+                                if (this.resultMergedBy === MergeBy.DoNotMerge)
+                                    top = this.network.getNodeByPublicKey(top).displayName;
+                                return {
+                                    'topTier': top
+                                };
+                            });
+                        }
                     }
 
                     this.isLoading = false;

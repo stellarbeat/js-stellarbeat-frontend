@@ -21,7 +21,6 @@ export default class NetworkAnalyzer {
     protected networkAnalysisId: number = 0;
     public analyzing: boolean = false;
     public automaticState: AutomaticNetworkAnalysis = AutomaticNetworkAnalysis.Init;
-    protected hasSymmetricTopTier: boolean = false;
     public manualMode: boolean = false;
 
     constructor(network: Network) {
@@ -38,8 +37,8 @@ export default class NetworkAnalyzer {
 
                         switch (this.automaticState) {
                             case AutomaticNetworkAnalysis.AnalyzingTopTierSymmetric:
-                                this.hasSymmetricTopTier = analysisResult.hasSymmetricTopTier;
-                                if (this.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 10) {
+                                this.network.networkStatistics.hasSymmetricTopTier = analysisResult.hasSymmetricTopTier;
+                                if (this.network.networkStatistics.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 20) {
                                     this.manualMode = false;
                                     this.analyzeNodes();
                                 } else { //the automatic network analysis stops because it will be too slow
@@ -95,37 +94,17 @@ export default class NetworkAnalyzer {
     protected analyzeTopTierSymmetric() {
         this.analyzing = true;
         this.automaticState = AutomaticNetworkAnalysis.AnalyzingTopTierSymmetric;
-/*        this.fbasAnalysisWorker.postMessage({
+        this.fbasAnalysisWorker.postMessage({
             jobId: this.networkAnalysisId,
             nodes: this.getCorrectlyConfiguredNodes(this.network),
             organizations: this.network.organizations,
             mergeBy: MergeBy.DoNotMerge,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
-            analyzeTopTier: true,
+            analyzeTopTier: false,
             analyzeQuorumIntersection: false,
             analyzeSafety: false,
             analyzeLiveness: false
-        });*/
-        let hashCode = (s:string) => s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)
-        this.hasSymmetricTopTier = this.network.nodes //todo swap out for top tier check through worker
-            .filter(node => this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(node.publicKey))
-            .map(node => hashCode(JSON.stringify(node.quorumSet)))
-            .every((hash, index, array) => {
-                console.log(hash);
-                if(array.length === 0)
-                    return false
-                return array[0] === hash;
-            } );
-
-        console.log(this.hasSymmetricTopTier);
-        if (this.hasSymmetricTopTier || this.network.nodesTrustGraph.networkTransitiveQuorumSet.size <= 10) {
-            this.manualMode = false;
-            this.analyzeNodes();
-        } else { //the automatic network analysis stops because it will be too slow
-            this.manualMode = true;
-            this.automaticState = AutomaticNetworkAnalysis.Done;
-            this.analyzing = false;
-        }
+        });
     }
 
     protected analyzeNodes() { //we run all the analysis on the nodes

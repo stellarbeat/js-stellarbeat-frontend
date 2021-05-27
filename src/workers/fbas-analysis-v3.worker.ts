@@ -4,6 +4,7 @@ import init, {
     analyze_minimal_splitting_sets,
     analyze_top_tier,
     init_panic_hook,
+    analyze_symmetric_top_tier,
     MergeBy
 } from 'stellar_analysis';
 import {Node, Organization, PublicKey} from '@stellarbeat/js-stellar-domain';
@@ -16,6 +17,7 @@ export type FbasAnalysisWorkerResult = {
     hasQuorumIntersection: boolean | undefined,
     minimalQuorums: Array<Array<string>> | undefined,
     hasSymmetricTopTier: boolean,
+    hasSymmetricTopTierAnalyzed: boolean,
     topTier: string[],
     topTierSize: number,
     topTierAnalyzed: boolean,
@@ -37,23 +39,31 @@ ctx.addEventListener('message', (event) => {
     const analyzeSafety = event.data.analyzeSafety;
     const analyzeLiveness = event.data.analyzeLiveness;
     const analyzeTopTier = event.data.analyzeTopTier;
+    const analyzeSymmetricTopTier = event.data.analyzeSymmetricTopTier;
 
     if (!initialized) {
         init('stellar_analysis_bg.wasm').then(instance => {
             init_panic_hook();
             initialized = true;
-            performAnalysis(nodes, failingNodePublicKeys, organizations, mergeBy, analyzeQuorumIntersection, analyzeLiveness, analyzeSafety, analyzeTopTier, jobId);
+            performAnalysis(nodes, failingNodePublicKeys, organizations, mergeBy, analyzeQuorumIntersection, analyzeLiveness, analyzeSafety, analyzeTopTier, analyzeSymmetricTopTier, jobId);
         }).catch(reason => console.log(reason));
     } else {
-        performAnalysis(nodes, failingNodePublicKeys, organizations, mergeBy, analyzeQuorumIntersection, analyzeLiveness, analyzeSafety, analyzeTopTier, jobId);
+        performAnalysis(nodes, failingNodePublicKeys, organizations, mergeBy, analyzeQuorumIntersection, analyzeLiveness, analyzeSafety, analyzeTopTier, analyzeSymmetricTopTier, jobId);
     }
 });
 
-function performAnalysis(nodes: Node[], failingNodePublicKeys: PublicKey[], organizations: Organization[], mergeBy: MergeBy, analyzeQuorumIntersection: boolean, analyzeLiveness: boolean, analyzeSafety: boolean, analyzeTopTier: boolean, jobId: number) {
+function performAnalysis(nodes: Node[], failingNodePublicKeys: PublicKey[], organizations: Organization[], mergeBy: MergeBy, analyzeQuorumIntersection: boolean, analyzeLiveness: boolean, analyzeSafety: boolean, analyzeTopTier: boolean, analyzeSymmetricTopTier: boolean, jobId: number) {
     //@ts-ignore
     let analysis: FbasAnalysisWorkerResult = {};
+    if(analyzeSymmetricTopTier) {
+        console.log('analyze symmetric top tier');
+        let symmetricTopTierAnalysis = analyze_symmetric_top_tier(JSON.stringify(nodes), JSON.stringify(organizations), mergeBy);
+        analysis.hasSymmetricTopTier = symmetricTopTierAnalysis.symmetric_top_tier !== null;
+        analysis.hasSymmetricTopTierAnalyzed = true;
+    } else
+        analysis.hasSymmetricTopTierAnalyzed = false;
     if (analyzeQuorumIntersection) {
-        console.log("analyze quorum intersection");
+        console.log('analyze quorum intersection');
         let minimalQuorumsAnalysis = analyze_minimal_quorums(JSON.stringify(nodes), JSON.stringify(organizations), mergeBy);
         analysis.hasQuorumIntersection = minimalQuorumsAnalysis.quorum_intersection;
         analysis.minimalQuorums = minimalQuorumsAnalysis.result;
@@ -61,10 +71,9 @@ function performAnalysis(nodes: Node[], failingNodePublicKeys: PublicKey[], orga
     } else
         analysis.quorumIntersectionAnalyzed = false;
 
-    if(analyzeTopTier){
-        console.log("analyze top tier");
+    if (analyzeTopTier) {
+        console.log('analyze top tier');
         let topTierAnalysis = analyze_top_tier(JSON.stringify(nodes), JSON.stringify(organizations), mergeBy);
-        analysis.hasSymmetricTopTier = topTierAnalysis.symmetric_top_tier !== null;
         analysis.topTier = topTierAnalysis.top_tier;
         analysis.topTierSize = topTierAnalysis.top_tier_size;
         analysis.topTierAnalyzed = true;
@@ -72,7 +81,7 @@ function performAnalysis(nodes: Node[], failingNodePublicKeys: PublicKey[], orga
         analysis.topTierAnalyzed = false;
 
     if (analyzeLiveness) {
-        console.log("analyze liveness");
+        console.log('analyze liveness');
         let minimalBlockingSetsAnalysis = analyze_minimal_blocking_sets(JSON.stringify(nodes), JSON.stringify(organizations), JSON.stringify(failingNodePublicKeys), mergeBy);
         analysis.livenessAnalyzed = true;
         analysis.minimalBlockingSets = minimalBlockingSetsAnalysis.result;
@@ -81,7 +90,7 @@ function performAnalysis(nodes: Node[], failingNodePublicKeys: PublicKey[], orga
         analysis.livenessAnalyzed = false;
 
     if (analyzeSafety) {
-        console.log("analyze safety");
+        console.log('analyze safety');
         let minimalSplittingSetsAnalysis = analyze_minimal_splitting_sets(JSON.stringify(nodes), JSON.stringify(organizations), mergeBy);
         analysis.safetyAnalyzed = true;
         analysis.minimalSplittingSets = minimalSplittingSetsAnalysis.result;

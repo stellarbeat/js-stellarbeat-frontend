@@ -1251,10 +1251,10 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellar-domain@^2.22.5":
-  version "2.22.5"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-2.22.5.tgz#9b4025e50bfef03fe93a1597293a243044f2499f"
-  integrity sha512-lvpLWmrQz3lwvBw4f1mhe2HaGGOOido2ogvIdseXOhEX5smcshiOkbAofdmRLyTuzMklCulcWf6aaGWoroFnRw==
+"@stellarbeat/js-stellar-domain@^2.22.7":
+  version "2.22.7"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-2.22.7.tgz#dee687c8be9c33425eb7c34b5e2db495dc462e12"
+  integrity sha512-Fj6WIN9dx6zDWLeHSGxVdM2N0tmM6qIxS9Jdk6aIIHIu+amEAtFcUv2q0KCneoCoi4wSA1JG4pRbAfCDS01/PA==
   dependencies:
     "@iarna/toml" "^2.2.3"
     find-versions "^3.1.0"
@@ -10263,10 +10263,10 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
-stellar_analysis@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.4.0.tgz#be2a5742aa335ab97596be76c0a52f14937cd578"
-  integrity sha512-fTv1ne1pDNOaZrp4LA9/WlyPamPSEkWUvtfY5WvhcUacbJCKiC5zupyFFSb3cgpoVlJ0S7O9MM8KONMiXNlXLA==
+stellar_analysis@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/stellar_analysis/-/stellar_analysis-0.4.2.tgz#26b1a0f9fe9fd54173ad23b2facf8ca9738f06b4"
+  integrity sha512-pCpJ2xAY0LD8jhUERNox+8wPNOutzyLdsA2KxN+UEp2guCaPGv2WDI5ma0ZGuO4ygFhPpf13Wnpa6Z+Cux1/4w==
 
 stickybits@^3.7.7:
   version "3.7.7"
