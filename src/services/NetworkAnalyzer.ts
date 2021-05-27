@@ -43,7 +43,6 @@ export default class NetworkAnalyzer {
                                     this.analyzeNodes();
                                 } else { //the automatic network analysis stops because it will be too slow
                                     this.manualMode = true;
-                                    this.analyzeNodes();
                                 }
                                 break;
                            case AutomaticNetworkAnalysis.AnalyzingNodes:
@@ -101,6 +100,7 @@ export default class NetworkAnalyzer {
             mergeBy: MergeBy.DoNotMerge,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: false,
+            analyzeSymmetricTopTier: true,
             analyzeQuorumIntersection: false,
             analyzeSafety: false,
             analyzeLiveness: false
@@ -117,6 +117,7 @@ export default class NetworkAnalyzer {
             mergeBy: MergeBy.DoNotMerge,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: true,
+            analyzeSymmetricTopTier: false,
             analyzeQuorumIntersection: true,
             analyzeSafety: true,
             analyzeLiveness: true
@@ -133,6 +134,7 @@ export default class NetworkAnalyzer {
             mergeBy: MergeBy.Orgs,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: true,
+            analyzeSymmetricTopTier: false,
             analyzeQuorumIntersection: false,
             analyzeSafety: true,
             analyzeLiveness: true
@@ -149,6 +151,7 @@ export default class NetworkAnalyzer {
             mergeBy: MergeBy.Countries,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: false,
+            analyzeSymmetricTopTier: false,
             analyzeQuorumIntersection: false,
             analyzeSafety: true,
             analyzeLiveness: true
@@ -165,6 +168,7 @@ export default class NetworkAnalyzer {
             mergeBy: MergeBy.ISPs,
             failingNodePublicKeys: this.network.nodes.filter(node => this.network.isNodeFailing(node)).map(node => node.publicKey),
             analyzeTopTier: false,
+            analyzeSymmetricTopTier: false,
             analyzeQuorumIntersection: false,
             analyzeSafety: true,
             analyzeLiveness: true
