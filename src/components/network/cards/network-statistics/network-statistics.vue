@@ -111,12 +111,12 @@
         </div>
         <div class="col-md-6 col-lg-3 col-xl-3">
             <network-statistics-card :value="network.networkStatistics.topTierSize" :is-loading="isLoading || store.networkAnalyzer.analyzing"
-                                     title="Top tier validators" tooltip="Number of active validators in the top tier"
+                                     title="Top tier validators" tooltip="Number of validators in the top tier"
                                      :unknown="store.networkAnalyzer.manualMode"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierAverage"
                                      :year-statistics="yearStatistics" :is-simulation-sensitive="true">
                 <template v-slot:info>
-                    <h3>Top tier active validators</h3>
+                    <h3>Top tier validators</h3>
                     <p class="my-4">
                         The top tier is the set of nodes in the network that is exclusively relevant when determining the liveness and safety "buffers" of the network.
                     </p>
@@ -132,11 +132,11 @@
             <network-statistics-card :value="network.networkStatistics.topTierOrgsSize" :is-loading="isLoading || store.networkAnalyzer.analyzing"
                                      title="Top tier organizations"
                                      :unknown="store.networkAnalyzer.manualMode"
-                                     tooltip="Number of active organizations in the top tier"
+                                     tooltip="Number of organizations in the top tier"
                                      :initialDataLoaded="initialDataLoaded" stats-property="topTierOrgsAverage"
                                      :year-statistics="yearStatistics"  :is-simulation-sensitive="true">
                 <template v-slot:info>
-                    <h3>Top tier active organizations</h3>
+                    <h3>Top tier organizations</h3>
                     <p class="my-4">
                         The top tier grouped by organization.
                     </p>
