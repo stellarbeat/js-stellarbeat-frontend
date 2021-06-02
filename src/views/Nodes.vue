@@ -103,6 +103,8 @@ Age = Time since discovery
             if (this.store.isSimulation) {
                 return [{key: 'name', sortable: true},
                     {key: 'organization', sortable: true},
+                    {key: 'country', sortable: true},
+                    {key: 'isp', sortable: true},
                     {key: 'type', label: 'type', sortable: true}];
             } else {
                 return [
@@ -119,8 +121,8 @@ Age = Time since discovery
                     {key: 'validating', sortable: true},
                     {key: 'version', sortable: true},
                     {key: 'country', sortable: true},
+                    {key: 'isp', sortable: true},
                     {key: 'ip', sortable: true},
-
                     {key: 'actions', label: ''},
                 ];
             }
@@ -144,6 +146,7 @@ Age = Time since discovery
                         ip: node.key,
                         publicKey: node.publicKey,
                         country: node.geoData.countryName,
+                        isp: node.isp,
                         version: node.versionStr,
                         isFullValidator: node.isFullValidator,
                         isValidator: node.isValidator,

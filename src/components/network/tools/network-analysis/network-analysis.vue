@@ -188,6 +188,7 @@ import {
     BCardText,
     BCollapse,
     BFormCheckbox,
+    BFormCheckboxGroup,
     BFormGroup,
     BFormInput,
     BFormRadio,
@@ -197,7 +198,6 @@ import {
     BIconX,
     BPagination,
     BTable,
-    BFormCheckboxGroup,
     VBModal,
     VBToggle,
     VBTooltip
@@ -284,6 +284,9 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     protected analyzeTopTier: boolean = true;
     protected topTierAnalyzed: boolean = false;
 
+    protected nodesPartition: Map<string, number> = new Map<string, number>();
+    protected organizationsPartition: Map<string, number> = new Map<string, number>();
+
     getMergeByFriendlyName(mergeBy = MergeBy.DoNotMerge) {
         switch (mergeBy) {
             case MergeBy.Countries:
@@ -335,6 +338,42 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
         });
     }
 
+
+    updatePartitions(){ //todo should come from fbas analysis
+        let removeSpecialCharsFromGroupingName = (name: string) => { //copied from fbas analysis, to handle isp naming differences
+            name = name.replace(',','');
+            let start = name.substring(0, name.length - 1);
+            let end = name.substring(name.length - 1);
+            end = end.replace('.', '');
+            name = start + end;
+            console.log(name);
+            return name;
+        }
+        this.nodesPartition = new Map<string, number>();
+        this.organizationsPartition = new Map();
+        let processedOrganizations = new Set<string>();
+        this.network.nodes.filter(node => this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(node.publicKey)).forEach(node => {
+            let value = 'N/A';
+            if(this.resultMergedBy === MergeBy.Countries) {
+                value = node.geoData.countryName ? removeSpecialCharsFromGroupingName(node.geoData.countryName) : 'N/A';
+            } else {
+                value = node.isp ? removeSpecialCharsFromGroupingName(node.isp) : 'N/A';
+            }
+
+            let nodeCount = this.nodesPartition.has(value) ? this.nodesPartition.get(value)! : 0;
+            nodeCount ++;
+            this.nodesPartition.set(value, nodeCount);
+            console.log(node.organizationId);
+            if(!node.organizationId || processedOrganizations.has(node.organizationId + value))
+                return;
+            processedOrganizations.add(node.organizationId + value);
+            let organizationCount = this.organizationsPartition.has(value) ? this.organizationsPartition.get(value)! : 0;
+            organizationCount ++;
+            console.log(organizationCount);
+            this.organizationsPartition.set(value, organizationCount);
+        })
+    }
+
     async mounted() {
         this.isLoading = false;
         this.$nextTick(() => {
@@ -352,6 +391,7 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                     if (event.data.result) {
                         this.hasResult = true;
                         this.resultMergedBy = event.data.result.mergeBy;
+                        this.updatePartitions();
                         let analysisResult: FbasAnalysisWorkerResult = event.data.result.analysis;
                         this.topTierIsSymmetric = analysisResult.hasSymmetricTopTier;
                         this.quorumIntersectionAnalyzed = analysisResult.quorumIntersectionAnalyzed;
@@ -378,6 +418,10 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                                     .map((blockingSet: string[]) => {
                                         if (this.resultMergedBy === MergeBy.DoNotMerge)
                                             blockingSet = blockingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
+                                        else if(this.resultMergedBy === MergeBy.Countries)
+                                            blockingSet = blockingSet.map(country => country + ` (${this.nodesPartition.get(country)} nodes across ${this.organizationsPartition.get(country)} organizations)`);
+                                        else if(this.resultMergedBy === MergeBy.ISPs)
+                                            blockingSet = blockingSet.map(isp => isp + ` (${this.nodesPartition.get(isp)} nodes across ${this.organizationsPartition.get(isp)} organizations)`);
                                         return {
                                             'blockingSets': blockingSet.join(', ')
                                         };
@@ -395,6 +439,10 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                                     .map((splittingSet: string[]) => {
                                         if (this.resultMergedBy === MergeBy.DoNotMerge)
                                             splittingSet = splittingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
+                                        else if(this.resultMergedBy === MergeBy.Countries)
+                                            splittingSet = splittingSet.map(country => country + ` (${this.nodesPartition.get(country)} nodes across ${this.organizationsPartition.get(country)} organizations)`);
+                                        else if(this.resultMergedBy === MergeBy.ISPs)
+                                            splittingSet = splittingSet.map(isp => isp + ` (${this.nodesPartition.get(isp)} nodes across ${this.organizationsPartition.get(isp)} organizations)`);
                                         return {
                                             'splittingSets': splittingSet.join(', ')
                                         };
