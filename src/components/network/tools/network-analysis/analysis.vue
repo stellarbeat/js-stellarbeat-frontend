@@ -2,18 +2,16 @@
     <div class="">
         <slot name="title"></slot>
         <div>
-            <b-table id="network-analysis-table" striped hover
+            <b-table id="network-analysis-table"
                      :items="tableItems"
                      :fields="fields"
                      :per-page="perPage" thead-class="my-thead"
                      tbody-class="my-tbody" :current-page="currentPage">
                 <template #cell()="data">
                     <ul class="horizontal-list">
-                        <li v-if="showNodesPartition" class="horizontal-list-item"  v-b-tooltip.hover :title="nodesPartition.has(item) ? nodesPartition.get(item).join(', ') : 'N/A'" v-for="(item, index) in data.item.key">
-                            {{item}}{{index !== data.item.key.length - 1 ? ', ' : ''}}
-                        </li>
-                        <li v-if="!showNodesPartition" class="horizontal-list-item" v-for="(item, index) in data.item.key">
-                            {{item}}{{index !== data.item.key.length - 1 ? ', ' : ''}}
+                        <li class="horizontal-list-item" v-for="(item, index) in data.item.key">
+                            <span v-if="showNodesPartition" v-b-tooltip.hover :title="nodesPartition.has(item) ? nodesPartition.get(item).join(', ') : 'N/A'" class="tag mb-1">{{item}}</span>
+                            <span v-else class="tag mb-1">{{item}}</span>
                         </li>
                     </ul>
                 </template>
