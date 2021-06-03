@@ -23,14 +23,18 @@
                                 </b-card-header>
                                 <b-collapse id="accordion-quorum" visible accordion="my-accordion" role="tabpanel">
                                     <b-card-body class="px-0 pb-0">
-                                        <analysis :fields="minimalQuorumFields"
-                                                  :items="minimalQuorums">
+                                        <analysis title="Minimal quorums"
+                                                  :items="minimalQuorums"
+                                                  :nodesPartition="nodesPartition"
+                                                  :showNodesPartition="resultMergedBy !== MergeBy.DoNotMerge">
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
                                                     <h3>
                                                         <b-badge
                                                             :variant="hasQuorumIntersection ? 'success' : 'danger'">
-                                                            {{ hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection' }}
+                                                            {{
+                                                                hasQuorumIntersection ? 'All quorums intersect' : 'No quorum intersection'
+                                                            }}
                                                         </b-badge>
                                                     </h3>
                                                     <b-button size="sm" @click="showModal=true">
@@ -53,8 +57,11 @@
                                 </b-card-header>
                                 <b-collapse id="accordion-liveness" visible accordion="my-accordion" role="tabpanel">
                                     <b-card-body class="px-0 pb-0">
-                                        <analysis :fields="blockingSetsFields"
-                                                  :items="blockingSets">
+                                        <analysis title="Blocking sets"
+                                                  :items="blockingSets"
+                                                  :nodesPartition="nodesPartition"
+                                                  :showNodesPartition="resultMergedBy !== MergeBy.DoNotMerge"
+                                        >
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
                                                     <h3 v-if="blockingSetsMinSize <=0 ">
@@ -84,8 +91,11 @@
                                 </b-card-header>
                                 <b-collapse id="accordion-safety" visible accordion="my-accordion" role="tabpanel">
                                     <b-card-body class="px-0 pb-0">
-                                        <analysis :fields="splittingSetsFields"
-                                                  :items="splittingSets">
+                                        <analysis title="Splitting sets"
+                                                  :items="splittingSets"
+                                                  :nodesPartition="nodesPartition"
+                                                  :showNodesPartition="resultMergedBy !== MergeBy.DoNotMerge"
+                                        >
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
                                                     <h3 v-if="splittingSetsMinSize <= 0">No intersection between quorums
@@ -114,8 +124,11 @@
                                 </b-card-header>
                                 <b-collapse id="accordion-top-tier" visible accordion="my-accordion" role="tabpanel">
                                     <b-card-body class="px-0 pb-0">
-                                        <analysis :fields="topTierFields"
-                                                  :items="topTier">
+                                        <analysis title="Top tier"
+                                                  :items="topTier"
+                                                  :nodesPartition="nodesPartition"
+                                                  :showNodesPartition="resultMergedBy !== MergeBy.DoNotMerge"
+                                        >
                                             <template v-slot:title>
                                                 <div class="d-flex justify-content-between align-items-baseline">
                                                     <h3 class="mb-0">
@@ -142,7 +155,11 @@
                     </div>
                 </div>
                 <div class="mb-2">
-                    <b-alert :show="!network.networkStatistics.hasSymmetricTopTier" variant="warning">Warning: top tier is not symmetric, analysis could be slow. Execution time increases exponentially with top tier size. For very large networks you can export the current network through the 'modify network' tool and run the analysis offline with the <a href="https://github.com/wiberlin/fbas_analyzer" target="_blank">fbas analyzer tool</a> </b-alert>
+                    <b-alert :show="!network.networkStatistics.hasSymmetricTopTier" variant="warning">Warning: top tier
+                        is not symmetric, analysis could be slow. Execution time increases exponentially with top tier
+                        size. For very large networks you can export the current network through the 'modify network'
+                        tool and run the analysis offline with the <a href="https://github.com/wiberlin/fbas_analyzer"
+                                                                      target="_blank">fbas analyzer tool</a></b-alert>
                     <b-form-group label="Analysis target: " v-slot="{ ariaDescribedby }">
                         <b-form-radio-group
                             id="radio-group-2"
@@ -167,7 +184,8 @@
                         <b-form-checkbox v-model="analyzeTopTier">Top Tier</b-form-checkbox>
                     </b-form-group>
 
-                    <b-button v-if="!isLoading" variant="primary-sb" v-on:click="performAnalysis">Perform analysis</b-button>
+                    <b-button v-if="!isLoading" variant="primary-sb" v-on:click="performAnalysis">Perform analysis
+                    </b-button>
                     <b-button v-else variant="danger" v-on:click="stopAnalysis">Stop analysis</b-button>
                 </div>
             </div>
@@ -252,31 +270,16 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     protected hasResult: boolean = false;
     protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
     protected hasQuorumIntersection: boolean = false;
-    protected minimalQuorums: { value: PublicKey[], text: string }[] = [];
-    protected minimalQuorumFields: any = [
-        // A column that needs custom formatting
-        {key: 'minimalQuorums', label: 'Minimal quorums'}
-    ];
-
-    protected blockingSets: { value: PublicKey[], text: string }[] = [];
+    protected minimalQuorums: Array<Array<string>> = [];
+    protected blockingSets: Array<Array<string>> = [];
     protected blockingSetsMinSize: number = 0;
-    protected blockingSetsFields: any = [
-        // A column that needs custom formatting
-        {key: 'blockingSets', label: 'Minimal blocking sets'}
-    ];
-
-    protected splittingSets: { value: PublicKey[], text: string }[] = [];
+    protected splittingSets: Array<Array<string>> = [];
     protected splittingSetsMinSize: number = 0;
-    protected splittingSetsFields: any = [
-        // A column that needs custom formatting
-        {key: 'splittingSets', label: 'Minimal splitting sets'}
-    ];
-
-    protected topTier: {topTier: string}[] = [];
+    protected topTier: Array<Array<string>> = [];
     protected topTierIsSymmetric: boolean = false;
 
     protected analyzeQuorumIntersection: boolean = true;
-    protected quorumIntersectionAnalyzed:boolean = false;
+    protected quorumIntersectionAnalyzed: boolean = false;
     protected analyzeSafety: boolean = true;
     protected safetyAnalyzed: boolean = false;
     protected analyzeLiveness: boolean = true;
@@ -284,8 +287,7 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     protected analyzeTopTier: boolean = true;
     protected topTierAnalyzed: boolean = false;
 
-    protected nodesPartition: Map<string, number> = new Map<string, number>();
-    protected organizationsPartition: Map<string, number> = new Map<string, number>();
+    protected nodesPartition: Map<string, string[]> = new Map<string, string[]>();
 
     getMergeByFriendlyName(mergeBy = MergeBy.DoNotMerge) {
         switch (mergeBy) {
@@ -323,7 +325,7 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     }
 
     performAnalysis() {
-       this.isLoading = true;
+        this.isLoading = true;
         this.fbasAnalysisWorker.postMessage({
             id: 1,
             nodes: this.correctlyConfiguredNodes,
@@ -339,39 +341,36 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
     }
 
 
-    updatePartitions(){ //todo should come from fbas analysis
+    updatePartitions() { //todo should come from fbas analysis
         let removeSpecialCharsFromGroupingName = (name: string) => { //copied from fbas analysis, to handle isp naming differences
-            name = name.replace(',','');
+            name = name.replace(',', '');
             let start = name.substring(0, name.length - 1);
             let end = name.substring(name.length - 1);
             end = end.replace('.', '');
             name = start + end;
-            console.log(name);
+
             return name;
-        }
-        this.nodesPartition = new Map<string, number>();
-        this.organizationsPartition = new Map();
-        let processedOrganizations = new Set<string>();
+        };
+        this.nodesPartition = new Map<string, string[]>();
         this.network.nodes.filter(node => this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(node.publicKey)).forEach(node => {
             let value = 'N/A';
-            if(this.resultMergedBy === MergeBy.Countries) {
+            if (this.resultMergedBy === MergeBy.Countries) {
                 value = node.geoData.countryName ? removeSpecialCharsFromGroupingName(node.geoData.countryName) : 'N/A';
-            } else {
+            } else if (this.resultMergedBy === MergeBy.ISPs) {
                 value = node.isp ? removeSpecialCharsFromGroupingName(node.isp) : 'N/A';
+            } else if (this.resultMergedBy === MergeBy.Orgs) {
+                value = node.organizationId ? this.network.getOrganizationById(node.organizationId).name : 'N/A';
             }
 
-            let nodeCount = this.nodesPartition.has(value) ? this.nodesPartition.get(value)! : 0;
-            nodeCount ++;
-            this.nodesPartition.set(value, nodeCount);
-            console.log(node.organizationId);
-            if(!node.organizationId || processedOrganizations.has(node.organizationId + value))
-                return;
-            processedOrganizations.add(node.organizationId + value);
-            let organizationCount = this.organizationsPartition.has(value) ? this.organizationsPartition.get(value)! : 0;
-            organizationCount ++;
-            console.log(organizationCount);
-            this.organizationsPartition.set(value, organizationCount);
-        })
+            let nodes = this.nodesPartition.has(value) ? this.nodesPartition.get(value)! : [];
+            nodes.push(node.displayName);
+            this.nodesPartition.set(value, nodes);
+        });
+        console.log(this.nodesPartition);
+    }
+
+    mapPublicKeysToNames(items: Array<Array<PublicKey>>){
+        return items.map(row => row.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName));
     }
 
     async mounted() {
@@ -398,14 +397,9 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
 
                         if (analysisResult.quorumIntersectionAnalyzed) {
                             this.hasQuorumIntersection = analysisResult.hasQuorumIntersection!;
-                            //@ts-ignore
-                            this.minimalQuorums = analysisResult.minimalQuorums!.map((quorum: string[]) => {
-                                if (this.resultMergedBy === MergeBy.DoNotMerge)
-                                    quorum = quorum.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
-                                return {
-                                    'minimalQuorums': quorum.join(', ')
-                                };
-                            });
+                            this.minimalQuorums = analysisResult.minimalQuorums!;
+                            if (this.resultMergedBy === MergeBy.DoNotMerge)
+                                this.minimalQuorums = this.mapPublicKeysToNames(this.minimalQuorums)
                         }
 
                         this.livenessAnalyzed = analysisResult.livenessAnalyzed;
@@ -413,19 +407,10 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                             let blockingSets = analysisResult.minimalBlockingSets!;
                             if (blockingSets.length > 0) {
                                 this.blockingSetsMinSize = analysisResult.minimalBlockingSetsMinSize!;
-                                //@ts-ignore
-                                this.blockingSets = blockingSets
-                                    .map((blockingSet: string[]) => {
-                                        if (this.resultMergedBy === MergeBy.DoNotMerge)
-                                            blockingSet = blockingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
-                                        else if(this.resultMergedBy === MergeBy.Countries)
-                                            blockingSet = blockingSet.map(country => country + ` (${this.nodesPartition.get(country)} nodes across ${this.organizationsPartition.get(country)} organizations)`);
-                                        else if(this.resultMergedBy === MergeBy.ISPs)
-                                            blockingSet = blockingSet.map(isp => isp + ` (${this.nodesPartition.get(isp)} nodes across ${this.organizationsPartition.get(isp)} organizations)`);
-                                        return {
-                                            'blockingSets': blockingSet.join(', ')
-                                        };
-                                    });
+                                this.blockingSets = analysisResult.minimalBlockingSets!;
+                                if (this.resultMergedBy === MergeBy.DoNotMerge) {
+                                    this.blockingSets = this.mapPublicKeysToNames(this.blockingSets);
+                                }
                             }
                         }
 
@@ -434,32 +419,18 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
                             let splittingSets = analysisResult.minimalSplittingSets!;
                             if (splittingSets.length > 0) {
                                 this.splittingSetsMinSize = analysisResult.minimalSplittingSetsMinSize!;
-                                //@ts-ignore
-                                this.splittingSets = splittingSets
-                                    .map((splittingSet: string[]) => {
-                                        if (this.resultMergedBy === MergeBy.DoNotMerge)
-                                            splittingSet = splittingSet.map(publicKey => this.network.getNodeByPublicKey(publicKey).displayName);
-                                        else if(this.resultMergedBy === MergeBy.Countries)
-                                            splittingSet = splittingSet.map(country => country + ` (${this.nodesPartition.get(country)} nodes across ${this.organizationsPartition.get(country)} organizations)`);
-                                        else if(this.resultMergedBy === MergeBy.ISPs)
-                                            splittingSet = splittingSet.map(isp => isp + ` (${this.nodesPartition.get(isp)} nodes across ${this.organizationsPartition.get(isp)} organizations)`);
-                                        return {
-                                            'splittingSets': splittingSet.join(', ')
-                                        };
-                                    });
+                                this.splittingSets = analysisResult.minimalSplittingSets!;
+                                if (this.resultMergedBy === MergeBy.DoNotMerge)
+                                    this.splittingSets = this.mapPublicKeysToNames(this.splittingSets);
                             }
                         }
 
                         this.topTierAnalyzed = analysisResult.topTierAnalyzed;
                         //@ts-ignore;
-                        if(analysisResult.topTierAnalyzed) {
-                            this.topTier = analysisResult.topTier.map((top: string) => {
+                        if (analysisResult.topTierAnalyzed) {
+                            this.topTier = analysisResult.topTier.map(member => [member]);
                                 if (this.resultMergedBy === MergeBy.DoNotMerge)
-                                    top = this.network.getNodeByPublicKey(top).displayName;
-                                return {
-                                    'topTier': top
-                                };
-                            });
+                                   this.topTier = this.mapPublicKeysToNames(this.topTier);
                         }
                     }
 
@@ -469,6 +440,7 @@ export default class NetworkAnalysis extends Mixins(StoreMixin, IsLoadingMixin) 
             }
         };
     }
+
 }
 </script>
 <style>

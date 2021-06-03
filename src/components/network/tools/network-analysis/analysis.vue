@@ -2,12 +2,20 @@
     <div class="">
         <slot name="title"></slot>
         <div>
-            <b-table id="network-analysis-table" striped hover :fields="fields"
-                     :items="items"
+            <b-table id="network-analysis-table" striped hover
+                     :items="tableItems"
+                     :fields="fields"
                      :per-page="perPage" thead-class="my-thead"
                      tbody-class="my-tbody" :current-page="currentPage">
-                <template v-slot:head(minimalQuorums)="data">
-                    <span class="dl-header">{{data.label}}</span>
+                <template #cell()="data">
+                    <ul class="horizontal-list">
+                        <li v-if="showNodesPartition" class="horizontal-list-item"  v-b-tooltip.hover :title="nodesPartition.has(item) ? nodesPartition.get(item).join(', ') : 'N/A'" v-for="(item, index) in data.item.key">
+                            {{item}}{{index !== data.item.key.length - 1 ? ', ' : ''}}
+                        </li>
+                        <li v-if="!showNodesPartition" class="horizontal-list-item" v-for="(item, index) in data.item.key">
+                            {{item}}{{index !== data.item.key.length - 1 ? ', ' : ''}}
+                        </li>
+                    </ul>
                 </template>
             </b-table>
             <b-pagination
@@ -36,7 +44,8 @@
         BCardText,
         BCollapse,
         VBToggle,
-        BCardHeader
+        BCardHeader,
+        VBTooltip
     } from 'bootstrap-vue';
     import {Node, PublicKey} from '@stellarbeat/js-stellar-domain';
     import {StoreMixin} from '@/mixins/StoreMixin';
@@ -57,16 +66,32 @@
             BCollapse,
             BCardHeader
         },
-        directives: {'b-toggle': VBToggle}
+        directives: {'b-toggle': VBToggle, 'b-tooltip': VBTooltip}
     })
     export default class Analysis extends Mixins(StoreMixin) {
         @Prop()
-        items!: any;
+        items!: Array<Array<string>>;
         @Prop()
-        fields: any;
+        title!: string;
+        @Prop()
+        nodesPartition!: Map<string, string[]>;
+        @Prop({default: false})
+        showNodesPartition!: boolean;
 
+        protected fields:any = [{
+            key: 'key',
+            label: this.title
+        }];
         protected perPage: number = 5;
         protected currentPage: number = 1;
+
+        get tableItems() {
+            return this.items.map(item => {
+                return {
+                    "key": item
+                }
+            })
+        }
 
         get rows() {
             return this.items.length;
@@ -84,5 +109,16 @@
 
     .my-tbody tr td {
 
+    }
+    .horizontal-list {
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        padding-bottom: 0px;
+        margin-bottom: 0px;
+        padding-left: 0px;
+    }
+    .horizontal-list-item {
+        margin-right: 4px;
     }
 </style>
