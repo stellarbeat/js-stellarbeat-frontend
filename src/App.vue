@@ -100,11 +100,11 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <router-link active-class="active" class="nav-link"
-                                                     :to="{ name: 'api', query: { view: $route.query.view, network: $route.query.network, at: $route.query.at} }">
+                                        <a class="nav-link" target="_blank" href="https://api.stellarbeat.io/docs"
+                                           rel="noopener">
                                             <b-icon-code class="mr-1" scale="0.9"/>
                                             API
-                                        </router-link>
+                                        </a>
                                     </li>
                                     <li class="nav-item">
                                         <router-link active-class="active" class="nav-link"
