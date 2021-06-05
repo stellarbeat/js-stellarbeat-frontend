@@ -229,6 +229,8 @@ export default class LocalNetworks {
         network.networkStatistics.minBlockingSetISPFilteredSize = 2;
         network.networkStatistics.minSplittingSetSize = 0;
         network.networkStatistics.minSplittingSetOrgsSize = 0;
+        network.networkStatistics.minSplittingSetCountrySize = 0;
+        network.networkStatistics.minSplittingSetISPSize = 0;
         network.networkStatistics.topTierSize = 6;
         network.networkStatistics.topTierOrgsSize = 3;
 
@@ -661,6 +663,8 @@ export default class LocalNetworks {
         network.networkStatistics.minBlockingSetISPFilteredSize = 2;
         network.networkStatistics.minSplittingSetSize = 3;
         network.networkStatistics.minSplittingSetOrgsSize = 3;
+        network.networkStatistics.minSplittingSetCountrySize = 3;
+        network.networkStatistics.minSplittingSetISPSize = 3;
         network.networkStatistics.topTierSize = 9;
         network.networkStatistics.topTierOrgsSize = 3;
 
