@@ -155,7 +155,7 @@
                 .filter(node => node.geoData.latitude)
                 .map(geoNode => {
                     return {
-                        'latLng': latLng(geoNode.geoData.latitude!, geoNode.geoData.longitude!),
+                        'latLng': latLng(geoNode.geoData.latitude ? geoNode.geoData.latitude : 0, geoNode.geoData.longitude ? geoNode.geoData.longitude : 0),
                         'node': geoNode,
                         'color': !this.network.isNodeFailing(geoNode) ? '#1997c6' : '#cd201f'
                     };
@@ -164,7 +164,7 @@
 
         get center(): any {
             if (this.selectedNode && this.selectedNode.geoData.longitude && this.selectedNode.geoData.latitude) {
-                return latLng(this.selectedNode.geoData.latitude, this.selectedNode.geoData.longitude);
+                return latLng(this.selectedNode.geoData.latitude ? this.selectedNode.geoData.latitude : 0, this.selectedNode.geoData.longitude ? this.selectedNode.geoData.latitude : 0);
             } else
                 return latLng(25.505, -0.09);
         }
