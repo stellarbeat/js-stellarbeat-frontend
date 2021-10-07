@@ -1,6 +1,6 @@
 {
   "name": "stellarbeat-frontend",
-  "version": "0.1.0",
+  "version": "0.3.0-0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -18,7 +18,7 @@
     "@sentry/integrations": "^5.30.0",
     "@sentry/node": "^5.30.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellar-domain": "^2.22.7",
+    "@stellarbeat/js-stellar-domain": "^3.0.0-3",
     "ajv-formats": "^1.5.1",
     "axios": "^0.21.1",
     "bootstrap-vue": "2.21.2",
@@ -78,9 +78,9 @@
     "mini-css-extract-plugin": "^1.3.1",
     "miragejs": "^0.1.34",
     "moment-locales-webpack-plugin": "^1.2.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.1",
     "prerender-spa-plugin": "^3.4.0",
-    "sass-loader": "^10.1.0",
+    "sass-loader": "^10.0.0",
     "ts-jest": "^24.3.0",
     "typescript": "^3.9.7",
     "vue-cli-plugin-prerender-spa": "^1.1.6",
@@ -93,6 +93,6 @@
     "worker-loader": "^2.0.0"
   },
   "engines": {
-    "node": "10.x"
+    "node": ">=0.12"
   }
 }

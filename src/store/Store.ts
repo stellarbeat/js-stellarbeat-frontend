@@ -102,7 +102,7 @@ export default class Store {
         return this._networkAnalyzer;
     }
 
-    hydrateNetwork(networkDTO: object, networkId: string){
+    hydrateNetwork(networkDTO: Record<string, unknown>, networkId: string){
         let network = Network.fromJSON(networkDTO);
         this.networkId = networkId;
         if(['fbas', 'fbas2'].includes(this.networkId)){
@@ -145,7 +145,7 @@ export default class Store {
         params['at'] = this.network.crawlDate;
         let result = await axios.get(this.getApiUrl() + '/v1/node/' + id + '/snapshots', {params});
         if (result.data) {
-            return result.data.map((item:object) => NodeSnapShot.fromJSON(item));
+            return result.data.map((item:Record<string, unknown>) => NodeSnapShot.fromJSON(item));
         }
 
         return [];
@@ -156,7 +156,7 @@ export default class Store {
         params['at'] = this.network.crawlDate;
         let result = await axios.get(this.getApiUrl() + '/v1/node-snapshots', {params});
         if (result.data) {
-            return result.data.map((item:object) => NodeSnapShot.fromJSON(item));
+            return result.data.map((item:Record<string, unknown>) => NodeSnapShot.fromJSON(item));
         }
 
         return [];
@@ -167,7 +167,7 @@ export default class Store {
         params['at'] = this.network.crawlDate;
         let result = await axios.get(this.getApiUrl() + '/v1/organization/' + id + '/snapshots', {params});
         if (result.data) {
-            return result.data.map((item:object) => OrganizationSnapShot.fromJSON(item));
+            return result.data.map((item:Record<string, unknown>) => OrganizationSnapShot.fromJSON(item));
         }
 
         return [];
@@ -178,7 +178,7 @@ export default class Store {
         params['at'] = this.network.crawlDate;
         let result = await axios.get(this.getApiUrl() + '/v1/organization-snapshots', {params});
         if (result.data) {
-            return result.data.map((item:object) => OrganizationSnapShot.fromJSON(item));
+            return result.data.map((item:Record<string, unknown>) => OrganizationSnapShot.fromJSON(item));
         }
 
         return [];

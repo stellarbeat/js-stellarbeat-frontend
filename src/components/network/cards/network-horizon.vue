@@ -33,7 +33,7 @@ export default class NetworkHorizon extends Vue {
     }
 
     get horizons() {
-        return this.network.organizations.filter(organization => organization.horizonUrl !== undefined).map(organization => {
+        return this.network.organizations.filter(organization => organization.horizonUrl).map(organization => {
             return {
                 name: organization.name,
                 url: organization.horizonUrl
