@@ -96,7 +96,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import NodesCountryDistribution from '@/components/network/cards/nodes-country-distribution.vue';
 import NodesVersions from '@/components/network/cards/nodes-versions.vue';
 import ValidatorsServerLoad from '@/components/network/cards/validator-load.vue';

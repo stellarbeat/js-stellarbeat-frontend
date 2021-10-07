@@ -14,7 +14,6 @@ import VueClipboard from 'vue-clipboard2';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import {Vue as VueIntegration} from '@sentry/integrations';
-import {Network} from '@stellarbeat/js-stellar-domain';
 //import AsyncComputedPlugin from 'vue-async-computed';
 
 const isProd = process.env.NODE_ENV === 'production';

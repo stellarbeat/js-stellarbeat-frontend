@@ -1,5 +1,4 @@
 import moment from 'moment';
-import Store from '@/store/Store';
 
 export default class StatisticsDateTimeNavigator {
 

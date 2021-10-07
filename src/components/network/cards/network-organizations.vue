@@ -23,7 +23,7 @@
 <script lang="ts">
     import {Component, Prop} from 'vue-property-decorator';
     import Vue from 'vue';
-    import {Network, Node, Organization, QuorumSet} from '@stellarbeat/js-stellar-domain';
+    import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import NodesTable from '@/components/node/nodes-table.vue';
     import {BBadge, BIconSearch} from 'bootstrap-vue';
@@ -65,7 +65,6 @@
         getFailAt(organization: Organization) {
             let nrOfValidatingNodes = organization.validators
                 .map(validator => this.network.getNodeByPublicKey(validator))
-                .filter(validator => validator !== undefined)
                 .filter(node => !this.network.isNodeFailing(node)).length;
 
             return nrOfValidatingNodes - organization.subQuorumThreshold + 1;

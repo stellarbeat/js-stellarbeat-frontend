@@ -80,8 +80,8 @@
         }
 
         loadSlices() {
-            let generator = new QuorumSlicesGenerator(false);
-            let quorumSetWithSelf = new QuorumSet('temp', 2, [this.selectedNode.publicKey], [this.selectedNode.quorumSet]) ;
+            let generator = new QuorumSlicesGenerator();
+            let quorumSetWithSelf = new QuorumSet( 2, [this.selectedNode.publicKey], [this.selectedNode.quorumSet]) ;
             this.items = generator.getSlices(quorumSetWithSelf).map(slice => { return {"slice": Array.from(new Set(slice))}});
         }
     }

@@ -15,7 +15,7 @@
     import Chart from 'chart.js';
 
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Watch} from 'vue-property-decorator';
 
     import {Network} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
@@ -46,11 +46,11 @@
                 .filter(this.store.watcherNodeFilter)
                 .filter(node => node.geoData.countryName)
                 .map(node => node.geoData.countryName)
-                .reduce((accumulator: any, currentValue: string | undefined) => {
-                    if (currentValue === undefined) {
+                .reduce((accumulator: any, currentValue: string | null) => {
+                    if (currentValue === null) {
                         return accumulator;
                     }
-                    if (accumulator[currentValue] === undefined)
+                    if (!accumulator[currentValue])
                         accumulator[currentValue] = 1;
                     else
                         accumulator[currentValue]++;

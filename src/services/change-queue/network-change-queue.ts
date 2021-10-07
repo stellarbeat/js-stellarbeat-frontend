@@ -1,4 +1,3 @@
-import {EntityPropertyUpdate} from "@/services/change-queue/changes/entity-property-update";
 import {Network} from '@stellarbeat/js-stellar-domain';
 import NetworkAnalyzer from '@/services/NetworkAnalyzer';
 

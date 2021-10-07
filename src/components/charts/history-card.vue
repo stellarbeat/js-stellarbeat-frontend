@@ -64,7 +64,6 @@
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
     import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import moment from 'moment';

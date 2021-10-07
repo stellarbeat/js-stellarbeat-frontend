@@ -6,7 +6,7 @@ import {
     OrganizationId,
     OrganizationSnapShot,
     PublicKey,
-    QuorumSet, QuorumSetService, TrustGraphBuilder
+    QuorumSet, QuorumSetService
 } from '@stellarbeat/js-stellar-domain';
 import {NetworkChange, NetworkChangeQueue} from '@/services/change-queue/network-change-queue';
 import {EntityPropertyUpdate} from '@/services/change-queue/changes/entity-property-update';
@@ -395,17 +395,10 @@ export default class Store {
         this.isLoading = false;
     }
 
-    public capitalize(word: string) {
-        if (typeof word !== 'string') return '';
-        return word.charAt(0).toUpperCase() + word.slice(1);
-    };
-
-
-
     //todo: needs better location
     getOrganizationFailingReason(organization: Organization){
         if(this.network.isOrganizationBlocked(organization)){
-            return 'Organization blocked: Validators not reaching quorumset thresholds'
+            return 'Organization blocked: Validators not reaching quorumSet thresholds'
         } else {
             return 'More then 50% of its validators are failing';
         }

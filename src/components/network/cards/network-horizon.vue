@@ -13,9 +13,9 @@
     </div>
 </template>
 <script lang="ts">
-import {Component, Prop} from 'vue-property-decorator';
+import {Component} from 'vue-property-decorator';
 import Vue from 'vue';
-import {Network, Organization} from '@stellarbeat/js-stellar-domain';
+import {Network} from '@stellarbeat/js-stellar-domain';
 import Store from '@/store/Store';
 import {BListGroup, BListGroupItem} from 'bootstrap-vue';
 

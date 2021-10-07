@@ -71,11 +71,9 @@ Age = Time since discovery
 </template>
 
 <script lang="ts">
-    import Vue from 'vue';
-    import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
-    import {Network, Node} from '@stellarbeat/js-stellar-domain';
+    import {Component, Mixins, Prop} from 'vue-property-decorator';
+    import {Node} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
-    import Store from '@/store/Store';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import NodesTable from '@/components/node/nodes-table.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';

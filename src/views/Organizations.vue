@@ -28,10 +28,9 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Prop, Watch} from 'vue-property-decorator';
-    import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
+import {Component, Mixins, Prop} from 'vue-property-decorator';
+    import {Organization} from '@stellarbeat/js-stellar-domain';
     import CrawlTime from '@/components/crawl-time.vue';
-    import Store from '@/store/Store';
     import SimulationBadge from '@/components/simulation-badge.vue';
     import TimeTravelBadge from '@/components/time-travel-badge.vue';
     import {BCol, BFormInput, BIconInfoCircle, BIconShield, BPagination, BRow, BTable, VBTooltip} from 'bootstrap-vue';

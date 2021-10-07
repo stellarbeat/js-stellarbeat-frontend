@@ -36,7 +36,7 @@
 
 <script lang="ts">
     import {Component, Prop, Mixins} from 'vue-property-decorator';
-    import {Node, Organization} from '@stellarbeat/js-stellar-domain';
+    import {Organization} from '@stellarbeat/js-stellar-domain';
     import NavLink from '@/components/side-bar/nav-link.vue';
     import {DropdownMixin} from '@/components/side-bar/dropdown-mixin';
     import NavPagination from '@/components/side-bar/nav-pagination.vue';

@@ -10,8 +10,6 @@ import {Component, Mixins, Prop} from 'vue-property-decorator';
 import {BTooltip, BIconInfoCircle} from 'bootstrap-vue';
 import Chart from 'chart.js';
 import {StoreMixin} from '@/mixins/StoreMixin';
-import {IsLoadingMixin} from '@/mixins/IsLoadingMixin';
-import moment from 'moment';
 import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
 
 @Component({

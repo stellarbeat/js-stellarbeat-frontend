@@ -1,4 +1,4 @@
-import StatisticsStore, {StatisticsAggregation, Statistics} from '@/store/StatisticsStore';
+import StatisticsStore from '@/store/StatisticsStore';
 import NetworkStatisticsAggregation from '@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation';
 import NetworkStatistics from '@stellarbeat/js-stellar-domain/lib/network-statistics';
 

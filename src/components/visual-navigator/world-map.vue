@@ -91,7 +91,7 @@
 
     export default class WorldMap extends Vue {
         protected url: string = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        protected attribution: string = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+        protected attribution: string = '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors';
         protected zoom: number = 2;
         protected isMounted:boolean = false;
 

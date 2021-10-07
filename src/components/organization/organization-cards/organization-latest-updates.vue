@@ -9,7 +9,7 @@
         </div>
         <div class="card-body py-0 overflow-auto">
             <b-list-group v-if="!isLoading" flush class="w-100 mb-4">
-                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date.getTime()"
+                <b-list-group-item v-for="updatesOnDate in updatesPerDate" :key="updatesOnDate.date"
                                    class="px-0 pb-0">
                     <div class="d-flex justify-content-between flex-wrap">
                         <div class="w-75">
@@ -91,11 +91,10 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
     import Vue from 'vue';
     import {
         Network,
-        Node, NodeSnapShot,
+        NodeSnapShot,
         Organization,
         OrganizationSnapShot,
-        PublicKey,
-        QuorumSet
+        PublicKey
     } from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     //import AsyncComputed from 'vue-async-computed-decorator';
@@ -236,10 +235,6 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
 </script>
 
 <style scoped>
-    .changed {
-        background: #5eba00;
-    }
-
     .this-card {
         min-height: 200px;
         max-height: 910px;

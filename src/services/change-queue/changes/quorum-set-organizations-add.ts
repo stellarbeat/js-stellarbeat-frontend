@@ -20,6 +20,6 @@ export class QuorumSetOrganizationsAdd implements NetworkChange {
     }
 
     revert(): void {
-        this._organizations.forEach(organization => this._quorumSet.innerQuorumSets.pop());
+        this._organizations.forEach(() => this._quorumSet.innerQuorumSets.pop());
     }
 }

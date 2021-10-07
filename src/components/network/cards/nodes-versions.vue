@@ -15,7 +15,7 @@
     import Chart from 'chart.js';
 
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Watch} from 'vue-property-decorator';
 
     import {Network} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';

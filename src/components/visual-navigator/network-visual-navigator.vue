@@ -105,7 +105,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Prop} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import NetworkGraphCard from '@/components/visual-navigator/network-graph-card.vue';
     import SimulationBadge from '@/components/simulation-badge.vue';
@@ -121,7 +121,6 @@
     import Graph from '@/components/visual-navigator/graph/graph.vue';
     import GraphLegend from '@/components/visual-navigator/graph/graph-legend.vue';
     import ClientOnly from 'vue-client-only';
-    import WorldMap from '@/components/visual-navigator/world-map.vue';
 
     @Component({
         name: 'network-visual-navigator',

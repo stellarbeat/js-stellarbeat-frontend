@@ -1,5 +1,4 @@
 import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
-import Vue from 'vue';
 
 export default class LocalNetworks {
 

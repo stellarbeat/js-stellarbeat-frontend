@@ -182,7 +182,7 @@ export default class NetworkAnalysis extends Mixins(IsLoadingMixin, StoreMixin) 
         this.bucketSize = '1Y';
     }
 
-    aggregatedChartLabelFilter(legendItem: ChartLegendLabelItem, data: ChartData): any {
+    aggregatedChartLabelFilter(legendItem: ChartLegendLabelItem): any {
         if ([0, 3, 6, 9].includes(legendItem.datasetIndex as number))
             return true; //don't show labels for the min max as they are auxiliary lines
     }

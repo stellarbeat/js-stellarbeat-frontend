@@ -22,7 +22,7 @@
                                     {{snapshot.organization.name}}
                                 </router-link>
                             </div>
-                            <b-badge v-if="snapshot.startDate.getTime() === new Date(snapshot.organization.dateDiscovered).getTime()" variant="success">New</b-badge>
+                            <b-badge v-if="snapshot.startDate.getTime() === snapshot.organization.dateDiscovered.getTime()" variant="success">New</b-badge>
                         </div>
                     </b-list-group-item>
                 </b-list-group>

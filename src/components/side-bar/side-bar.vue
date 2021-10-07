@@ -57,7 +57,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Prop} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import UndoRedo from '@/components/node/tools/simulation/UndoRedo.vue';
     import stickybits from 'stickybits';

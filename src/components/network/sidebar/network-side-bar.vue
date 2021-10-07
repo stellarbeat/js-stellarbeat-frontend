@@ -69,7 +69,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
@@ -97,7 +97,6 @@
     export default class NetworkSideBar extends Vue {
         protected validatorsExpanded: boolean = this.networkTransitiveQuorumSetOrganizations.length === 0;
         protected organizationsExpanded: boolean = true;
-        protected modifyNetworkModalVisible: boolean = false;
 
         get store(): Store {
             return this.$root.$data.store;

@@ -1,4 +1,4 @@
-import {QuorumSet, Node} from '@stellarbeat/js-stellar-domain';
+import {QuorumSet} from '@stellarbeat/js-stellar-domain';
 import {NetworkChange} from '@/services/change-queue/network-change-queue';
 
 export class InnerQuorumSetDelete implements NetworkChange {

@@ -15,7 +15,7 @@
                     {{ organization.subQuorumAvailable ? 'Halt this organization' : 'Start validating' }}
                 </b-dropdown-item>
                 <b-dropdown-text v-else>
-                    Organization blocked: not enough validators are reaching their quorumset threshold.
+                    Organization blocked: not enough validators are reaching their quorumSet threshold.
                 </b-dropdown-text>
             </div>
             <b-dropdown-item v-if="supportsDelete" v-on:click="store.removeOrganizationFromOrganization(organization, store.selectedOrganization)" @click.prevent.stop>
@@ -58,7 +58,6 @@ import {
 } from 'bootstrap-vue';
 
 import {Organization} from '@stellarbeat/js-stellar-domain';
-import Store from '@/store/Store';
 import AddOrganizationsTable from '@/components/node/tools/simulation/add-organizations-table.vue';
 import {StoreMixin} from '@/mixins/StoreMixin';
 
@@ -109,7 +108,7 @@ export default class OrganizationActions extends Mixins(StoreMixin) {
             .filter((organization) => this.trustedOrganizationIds.indexOf(organization.id) < 0);
     }
 
-    organizationsToAddModalOk(bvEvent: any, modalId: string) {
+    organizationsToAddModalOk() {
         if (this.organizationsToAdd.length > 0) {
             this.store.addOrganizationsToOrganization(this.organizationsToAdd, this.organization);
         }

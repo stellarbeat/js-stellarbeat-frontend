@@ -15,7 +15,7 @@
 
                             <router-link
                                     :to="{ name: 'node-dashboard', params: { 'publicKey': validator.publicKey }, query: { 'center': '1', 'view': $route.query.view, 'network': $route.query.network}, 'at': $route.query.at}">
-                                {{ validator.displayName | truncate(30)}}
+                                {{ validator.displayName }}
                             </router-link>
                             <span v-if="network.isNodeFailing(validator)"
                                   class="badge sb-badge badge-danger ml-1"
@@ -86,7 +86,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import {Component, Prop} from 'vue-property-decorator';
-    import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
+    import {Organization} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
 
     import {BBadge, BIconInfoCircle, BIconShield, BPagination, BTable, VBTooltip} from 'bootstrap-vue';

@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import {Mixins, Component, Prop, Watch} from 'vue-property-decorator';
-import {Network} from '@stellarbeat/js-stellar-domain';
-import Store from '../store/Store';
+import {Component} from 'vue-property-decorator';
+
 
 @Component({})
 export class IsLoadingMixin extends Vue {

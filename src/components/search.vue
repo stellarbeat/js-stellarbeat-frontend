@@ -18,7 +18,7 @@
                     @click.prevent.stop="navigate(match)"
                     :class="{ 'active': i === arrowCounter }">
                 <div class="w-100">
-                    <h5 class="mb-1 mr-2 name">{{ match.name | truncate(30) }}</h5>
+                    <h5 class="mb-1 mr-2 name">{{ match.name }}</h5>
                 </div>
                 <small>{{match.type}}</small>
             </a>
@@ -33,9 +33,9 @@
 <script lang="ts">
 
     import Vue from 'vue';
-    import {Component, Prop} from 'vue-property-decorator';
+    import {Component} from 'vue-property-decorator';
 
-    import {Network, Node, Organization} from '@stellarbeat/js-stellar-domain';
+    import {Network} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
     import {RawLocation} from 'vue-router';
     import {BIconSearch, BFormInput} from 'bootstrap-vue';

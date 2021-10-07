@@ -196,8 +196,8 @@ import {Component, Prop, Watch} from 'vue-property-decorator';
                 snapshots = await this.store.fetchNodeSnapshotsByPublicKey(this.node.publicKey!);
                 snapshots = snapshots.map((snapshot: any) => {
                     let quorumSet:QuorumSet;
-                    if (snapshot.node.quorumSet === undefined)
-                        quorumSet = new QuorumSet('empty', 0);
+                    if (!snapshot.node.quorumSet)
+                        quorumSet = new QuorumSet( 0);
                     else
                         quorumSet = this.mapValidatorsToNames(snapshot.node.quorumSet);
 

@@ -104,7 +104,7 @@
         }
 
         @Watch('datePickerDate', {})
-        async onDatePickerDateChanged(to: string, from: string) {
+        async onDatePickerDateChanged(to: string, from: string|null) {
             if (this.datePickerDate && from !== null && this.selectedDate !== this.datePickerDate) {
                 this.time = moment(this.datePickerDate).format('HH:mm');
                 this.timeKey = this.time;

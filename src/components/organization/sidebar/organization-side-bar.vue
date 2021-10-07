@@ -61,7 +61,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component} from 'vue-property-decorator';
     import Store from '@/store/Store';
     import StellarCoreConfigurationGenerator
         from '@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator';
@@ -114,7 +114,6 @@
 
         get failAt() {
             let nrOfValidatingNodes = this.validators
-                .filter(validator => validator !== undefined)
                 .filter(node => node!.isValidating).length;
 
             return nrOfValidatingNodes - this.selectedOrganization!.subQuorumThreshold + 1;

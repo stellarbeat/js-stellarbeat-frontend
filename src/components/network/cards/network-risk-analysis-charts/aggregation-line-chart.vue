@@ -8,7 +8,7 @@
     import Chart, {ChartDataSets} from 'chart.js';
 
     import Vue from 'vue';
-    import {Component, Prop, Watch} from 'vue-property-decorator';
+    import {Component, Prop} from 'vue-property-decorator';
 
     import {Network} from '@stellarbeat/js-stellar-domain';
     import Store from '@/store/Store';
@@ -120,7 +120,7 @@
                             let ci = that.chart;
                             let meta = ci.getDatasetMeta(legendItem.datasetIndex!);
                             //@ts-ignore
-                            meta.hidden = meta.hidden === null ? !ci.data.datasets[legendItem.datasetIndex].hidden : null;
+                            meta.hidden = meta.hidden === undefined ? !ci.data.datasets[legendItem.datasetIndex].hidden : null;
                             this.chartDataSets[legendItem.datasetIndex!].hidden = meta.hidden;
                             ci.update();
                         },

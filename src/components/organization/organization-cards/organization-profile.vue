@@ -66,7 +66,7 @@
                        v-b-tooltip.hover title="Keybase"
                        target="_blank" class="social-link"
                     >
-                        <img class="mb-2" width="19px" src="../../../assets/keybase-brands-grey.svg">
+                        <img class="mb-2" width="19px" src="../../../assets/keybase-brands-grey.svg" alt="keybase">
                     </a>
                 </li>
                 <li v-if="organization.horizonUrl" class="list-inline-item">
@@ -122,7 +122,7 @@
             return this.organization.validators
                 .map(validator => this.$root.$data.store.network.getNodeByPublicKey(validator)!)
                 .some(validator => {
-                    return (validator.historyUrl !== undefined && !validator.isFullValidator);
+                    return (validator.historyUrl !== null && !validator.isFullValidator);
                 });
         }
 
@@ -136,7 +136,6 @@
     }
 
     hr {
-        margin: 0;
-        margin-bottom: 4px;
+      margin: 0 0 4px;
     }
 </style>
