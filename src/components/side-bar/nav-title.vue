@@ -1,69 +1,84 @@
 <template functional>
-    <div class="sb-nav-title" :class="(props.hasDanger && props.completeDanger ? 'sb-danger ': '') + props.classes">
-        {{props.title}}
-        <b-icon-exclamation-triangle :title="props.danger" v-if="props.hasDanger" v-b-tooltip.topleft:hover="props.danger" class="sb-danger mr-1"/>
-        <b-icon-exclamation-triangle :title="props.warnings" v-else-if="props.hasWarnings" v-b-tooltip.topleft:hover="props.warnings" class="sb-alert mr-1"/>
-    </div>
+  <div
+    class="sb-nav-title"
+    :class="
+      (props.hasDanger && props.completeDanger ? 'sb-danger ' : '') +
+      props.classes
+    "
+  >
+    {{ props.title }}
+    <b-icon-exclamation-triangle
+      :title="props.danger"
+      v-if="props.hasDanger"
+      v-b-tooltip.topleft:hover="props.danger"
+      class="sb-danger mr-1"
+    />
+    <b-icon-exclamation-triangle
+      :title="props.warnings"
+      v-else-if="props.hasWarnings"
+      v-b-tooltip.topleft:hover="props.warnings"
+      class="sb-alert mr-1"
+    />
+  </div>
 </template>
 <script lang="ts">
-    import {BIconExclamationTriangle, VBTooltip} from 'bootstrap-vue';
-    import Vue from "vue";
+import { BIconExclamationTriangle, VBTooltip } from "bootstrap-vue";
+import Vue from "vue";
 
-    Vue.component("b-icon-exclamation-triangle", BIconExclamationTriangle);
-    Vue.directive('b-tooltip', VBTooltip);
-    export default{
-        props: {
-            title: {
-                type: String,
-                default: ''
-            },
-            hasWarnings: {
-                type: Boolean,
-                default: false
-            },
-            warnings: {
-                type: String,
-                default: ''
-            },
-            hasDanger: {
-                type: Boolean,
-                default: false
-            },
-            danger: {
-                type: String,
-                default: ''
-            },
-            completeDanger: {
-                type: Boolean,
-                default: true
-            },
-            classes: {
-                type: String,
-                default: ''
-            }
-        }
-
-    };
+Vue.component("b-icon-exclamation-triangle", BIconExclamationTriangle);
+Vue.directive("b-tooltip", VBTooltip);
+export default {
+  props: {
+    title: {
+      type: String,
+      default: "",
+    },
+    hasWarnings: {
+      type: Boolean,
+      default: false,
+    },
+    warnings: {
+      type: String,
+      default: "",
+    },
+    hasDanger: {
+      type: Boolean,
+      default: false,
+    },
+    danger: {
+      type: String,
+      default: "",
+    },
+    completeDanger: {
+      type: Boolean,
+      default: true,
+    },
+    classes: {
+      type: String,
+      default: "",
+    },
+  },
+};
 </script>
 
 <style scoped>
-    .sb-nav-title {
-        padding-top: 2px;
-    }
+.sb-nav-title {
+  padding-top: 2px;
+}
 
-    .sb-danger {
-        color: #cd201f;
-    }
+.sb-danger {
+  color: #cd201f;
+}
 
-    .sb-alert {
-        color: #fec601;
-    }
+.sb-alert {
+  color: #fec601;
+}
 
-    .secondary {
-        font-size: 14px;
-    }
+.secondary {
+  font-size: 14px;
+}
 
-    .m-height {
-        min-height: 26px;
-    }
+.m-height {
+  min-height: 26px;
+}
 </style>

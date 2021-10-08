@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
-describe("views", () => {
-    /*test("toml-config-viewer", async () => {
+describe('views', () => {
+	/*test("toml-config-viewer", async () => {
         let browser = await puppeteer.launch({
             headless: true
         });

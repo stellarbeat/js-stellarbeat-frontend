@@ -2,80 +2,79 @@
 todo: migrate to sass
  */
 @keyframes highlight {
-    0% {
-        background: #cacacd;
-    }
-    100% {
-        background: white;
-    }
+  0% {
+    background: #cacacd;
+  }
+  100% {
+    background: white;
+  }
 }
 .page-title {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 .page-header {
-    margin-top: 10px!important;
-    margin-bottom: 10px!important;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
 }
 
-.table.b-table > thead > tr > [aria-sort]:not(.b-table-sort-icon-left), .table.b-table > tfoot > tr > [aria-sort]:not(.b-table-sort-icon-left) {
-    background-position: right calc(0.75rem / 2) bottom;
-    /* padding-right: calc(0.75rem + 0.65em); */
-    /* padding-bottom: 0px; */
-    /* margin-bottom: 6px; */
-    background-position-y: bottom 12px;
+.table.b-table > thead > tr > [aria-sort]:not(.b-table-sort-icon-left),
+.table.b-table > tfoot > tr > [aria-sort]:not(.b-table-sort-icon-left) {
+  background-position: right calc(0.75rem / 2) bottom;
+  /* padding-right: calc(0.75rem + 0.65em); */
+  /* padding-bottom: 0px; */
+  /* margin-bottom: 6px; */
+  background-position-y: bottom 12px;
 }
 
 .sb-nav-pagination .page-link {
-    border: none!important;
+  border: none !important;
 }
 .sb-nav-pagination .page-item.active .page-link {
-    font-weight: bolder;
-    background-color: transparent!important;
-    color: inherit;
-    opacity: 1;
+  font-weight: bolder;
+  background-color: transparent !important;
+  color: inherit;
+  opacity: 1;
 }
 
 .page-item.active .page-link {
-    background-color: #1997c6!important;
-    border-color: #1997c6!important;
+  background-color: #1997c6 !important;
+  border-color: #1997c6 !important;
 }
-
-
 
 .fade-enter-active,
 .fade-leave-active {
-    transition-duration: 0.2s;
-    transition-timing-function: ease;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
 }
 
 .fade-enter,
 .fade-leave-to {
-    opacity: 0
+  opacity: 0;
 }
 
 .sb-navbar-heading {
-    font-size: .6875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    text-align: left;
-    letter-spacing: .04em;
-    color: #868c97;
-    display: block;
-    margin-bottom: 8px;
-    padding-left: 5px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: left;
+  letter-spacing: 0.04em;
+  color: #868c97;
+  display: block;
+  margin-bottom: 8px;
+  padding-left: 5px;
 }
 
 .sb-nav-item {
-    width: 100%;
-    color: rgba(0, 0, 0, .55);
-    font-weight: 400;
-    font-size: 100%;
-    text-decoration: none;
-    list-style: none;
-    margin-bottom: 1px;
-    margin-top: 1px;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.55);
+  font-weight: 400;
+  font-size: 100%;
+  text-decoration: none;
+  list-style: none;
+  margin-bottom: 1px;
+  margin-top: 1px;
 }
 
 .sb-nav-dropdown {
-    margin-left: 0em;
+  margin-left: 0em;
 }

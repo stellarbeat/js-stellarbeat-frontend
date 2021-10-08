@@ -1,33 +1,38 @@
-import Vue from 'vue';
-import {Component, Prop} from 'vue-property-decorator';
-import {Network} from '@stellarbeat/js-stellar-domain';
-import Store from '../../store/Store';
+import Vue from "vue";
+import { Component, Prop } from "vue-property-decorator";
+import { Network } from "@stellarbeat/js-stellar-domain";
+import Store from "../../store/Store";
 
 @Component({})
 export class DropdownMixin extends Vue {
-    @Prop({default: false})
-    expand!: boolean;
+  @Prop({ default: false })
+  expand!: boolean;
 
-    protected currentPage: number = 1;
-    protected perPage: number = 10;
-    protected showing: boolean = this.expand;
+  protected currentPage = 1;
+  protected perPage = 10;
+  protected showing!: boolean;
 
-    get store(): Store {
-        return this.$root.$data.store;
-    }
+  get store(): Store {
+    return this.$root.$data.store;
+  }
 
-    get network(): Network {
-        return this.store.network;
-    }
+  get network(): Network {
+    return this.store.network;
+  }
 
-    paginate(items:any[]) {
-        return items.slice(
-            (this.currentPage - 1) * this.perPage, this.currentPage * this.perPage
-        );
-    }
+  paginate(items: any[]) {
+    return items.slice(
+      (this.currentPage - 1) * this.perPage,
+      this.currentPage * this.perPage
+    );
+  }
 
-    toggleShow(): void {
-        this.showing = !this.showing;
-        this.$emit("toggleExpand");
-    }
+  toggleShow(): void {
+    this.showing = !this.showing;
+    this.$emit("toggleExpand");
+  }
+
+  created() {
+    this.showing = this.expand;
+  }
 }

@@ -1,25 +1,24 @@
-import {NetworkChange} from '@/services/change-queue/network-change-queue';
+import { NetworkChange } from "@/services/change-queue/network-change-queue";
 
-export class AggregateChange implements NetworkChange{
-    protected changes: NetworkChange[];
-    constructor(changes: NetworkChange[]){
-        this.changes = changes;
-    }
+export class AggregateChange implements NetworkChange {
+  protected changes: NetworkChange[];
+  constructor(changes: NetworkChange[]) {
+    this.changes = changes;
+  }
 
+  execute(): void {
+    this.changes.forEach((change) => {
+      change.execute();
+    });
+  }
 
-    execute(): void {
-        this.changes.forEach(change => {
-            change.execute();
-        })
-    }
+  revert(): void {
+    this.changes.forEach((change) => {
+      change.revert();
+    });
+  }
 
-    revert(): void {
-        this.changes.forEach(change => {
-            change.revert();
-        })
-    }
-
-    toString(): string {
-        return 'updates';
-    }
+  toString(): string {
+    return "updates";
+  }
 }

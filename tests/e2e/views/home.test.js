@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
-describe("views", () => {
-    /*test("home", async () => {
+describe('views', () => {
+	/*test("home", async () => {
         let browser = await puppeteer.launch({
             headless: true
         });

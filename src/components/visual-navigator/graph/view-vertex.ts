@@ -1,39 +1,51 @@
-import {
-    Network,
-    TrustGraph,
-    Vertex
-} from '@stellarbeat/js-stellar-domain';
+import { Network, TrustGraph, Vertex } from "@stellarbeat/js-stellar-domain";
 
 export default class ViewVertex {
-    key: string;
-    label: string;
-    x: number = 0;
-    y: number = 0;
-    isPartOfTransitiveQuorumSet: boolean;
-    isTrustingSelectedVertex: boolean = false;
-    isTrustedBySelectedVertex: boolean = false;
-    selected: boolean = false;
-    isFailing: boolean = false;
+  key: string;
+  label: string;
+  x = 0;
+  y = 0;
+  isPartOfTransitiveQuorumSet: boolean;
+  isTrustingSelectedVertex = false;
+  isTrustedBySelectedVertex = false;
+  selected = false;
+  isFailing = false;
 
-    constructor(key: string, label: string, isPartOfTransitiveQuorumSet: boolean) {
-        this.key = key;
-        this.label = label;
-        this.isPartOfTransitiveQuorumSet = isPartOfTransitiveQuorumSet;
-    }
+  constructor(
+    key: string,
+    label: string,
+    isPartOfTransitiveQuorumSet: boolean
+  ) {
+    this.key = key;
+    this.label = label;
+    this.isPartOfTransitiveQuorumSet = isPartOfTransitiveQuorumSet;
+  }
 
-    static fromVertex(vertex: Vertex, trustGraph: TrustGraph, network: Network) {
-        let viewVertex = new ViewVertex(vertex.key, vertex.label, trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
-        let node = network.getNodeByPublicKey(vertex.key);
-        viewVertex.isFailing = network.isNodeFailing(node);
+  static fromVertex(vertex: Vertex, trustGraph: TrustGraph, network: Network) {
+    const viewVertex = new ViewVertex(
+      vertex.key,
+      vertex.label,
+      trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key)
+    );
+    const node = network.getNodeByPublicKey(vertex.key);
+    viewVertex.isFailing = network.isNodeFailing(node);
 
-        return viewVertex;
-    }
+    return viewVertex;
+  }
 
-    static fromOrganization(vertex: Vertex, trustGraph: TrustGraph, network: Network) {
-        let viewVertex = new ViewVertex(vertex.key, vertex.label, trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key));
-        let organization = network.getOrganizationById(vertex.key)
-        viewVertex.isFailing = !organization.subQuorumAvailable;
+  static fromOrganization(
+    vertex: Vertex,
+    trustGraph: TrustGraph,
+    network: Network
+  ) {
+    const viewVertex = new ViewVertex(
+      vertex.key,
+      vertex.label,
+      trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key)
+    );
+    const organization = network.getOrganizationById(vertex.key);
+    viewVertex.isFailing = !organization.subQuorumAvailable;
 
-        return viewVertex;
-    }
+    return viewVertex;
+  }
 }
