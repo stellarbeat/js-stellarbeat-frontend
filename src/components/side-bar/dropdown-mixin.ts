@@ -1,5 +1,6 @@
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Prop } from "vue-property-decorator";
+import Component from "vue-class-component";
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "../../store/Store";
 
@@ -10,7 +11,7 @@ export class DropdownMixin extends Vue {
 
   protected currentPage = 1;
   protected perPage = 10;
-  protected showing!: boolean;
+  protected showing = false;
 
   get store(): Store {
     return this.$root.$data.store;
@@ -20,7 +21,7 @@ export class DropdownMixin extends Vue {
     return this.store.network;
   }
 
-  paginate(items: any[]) {
+  paginate<T>(items: T[]): T[] {
     return items.slice(
       (this.currentPage - 1) * this.perPage,
       this.currentPage * this.perPage
@@ -32,7 +33,7 @@ export class DropdownMixin extends Vue {
     this.$emit("toggleExpand");
   }
 
-  created() {
+  mounted() {
     this.showing = this.expand;
   }
 }

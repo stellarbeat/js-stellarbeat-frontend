@@ -61,6 +61,7 @@ let Vue2LeafletMarkerCluster: any;
 let Vue2Leaflet: any;
 const isBrowser = typeof window !== "undefined";
 if (isBrowser) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const leaflet = require("leaflet");
   icon = leaflet.Icon;
   point = leaflet.point;
@@ -73,6 +74,7 @@ if (isBrowser) {
     iconUrl: require("leaflet/dist/images/marker-icon.png"),
     shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
   });
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   latLng = require("leaflet").latLng;
   require("leaflet-sleep");
   Vue2Leaflet = require("vue2-leaflet");

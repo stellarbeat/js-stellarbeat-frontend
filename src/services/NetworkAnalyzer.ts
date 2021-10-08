@@ -95,14 +95,11 @@ export default class NetworkAnalyzer {
     };
   }
 
-  protected initAnalysis() {}
-
   public analyzeNetwork() {
     if (this.analyzing) {
       this.fbasAnalysisWorker.terminate();
       console.log("terminate");
     }
-    this.initAnalysis();
     this.networkAnalysisId++;
     this.analyzeTopTierSymmetric();
   }

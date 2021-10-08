@@ -101,6 +101,8 @@ export default class ValidatorsDropdown extends Mixins(DropdownMixin) {
       )
     )
       return "Some history archives not up-to-date";
+
+    return "";
   }
 
   public selectNode(node: Node) {

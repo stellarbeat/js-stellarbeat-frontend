@@ -285,10 +285,6 @@ export default class HaltingAnalysis extends Vue {
       data: { type: string; failures: any };
     }) => {
       switch (event.data.type) {
-        case "tick":
-          {
-          }
-          break;
         case "end":
           {
             this.nodeFailures = event.data.failures.map(

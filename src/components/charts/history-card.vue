@@ -174,6 +174,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
 
   async updateSelectedDate(newDate: string) {
     this.selectedDate = new Date(newDate);
+    console.log(this.selectedDate);
     if (this.chartView === "30D") await this.updateDayHistoryChart();
     else await this.update24HourHistoryChart();
   }

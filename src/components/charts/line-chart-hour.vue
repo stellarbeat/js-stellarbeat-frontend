@@ -60,7 +60,6 @@ export default class LineChartHour extends Vue {
   mounted() {
     let chartId = "lineChart" + this.id;
     let context = (this.$refs[chartId] as HTMLCanvasElement).getContext("2d");
-    let that = this;
     this.lineChart = new Chart(context as CanvasRenderingContext2D, {
       type: "line",
       data: {
@@ -82,20 +81,26 @@ export default class LineChartHour extends Vue {
 
       // Configuration options go here
       options: {
-        onHover(event: MouseEvent, activeElements: Array<{}>): any {
+        onHover(
+          event: MouseEvent,
+          activeElements: Array<Record<string, unknown>>
+        ): any {
           (event.target! as any).style.cursor = activeElements[0]
             ? "pointer"
             : "default";
         },
-        onClick(event?: MouseEvent, activeElements?: Array<{}>): any {
+        onClick: (
+          event?: MouseEvent,
+          activeElements?: Array<Record<string, unknown>>
+        ): void => {
           if (
             activeElements &&
             activeElements[0] &&
             (activeElements[0] as any)._index >= 0
           )
-            that.$emit(
+            this.$emit(
               "click-date",
-              that.data[(activeElements[0] as any)._index].t
+              this.data[(activeElements[0] as any)._index].t.getTime()
             );
         },
         tooltips: {

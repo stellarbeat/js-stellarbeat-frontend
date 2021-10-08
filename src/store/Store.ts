@@ -588,7 +588,7 @@ export default class Store {
   }
 
   copyAndModifyObject(
-    myObject: object,
+    myObject: Record<string, unknown>,
     propsToModifyOrAdd: { key: string; value: any }[] = [],
     propsToDelete: string[] = []
   ) {

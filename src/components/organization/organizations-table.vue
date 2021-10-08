@@ -15,7 +15,10 @@
     >
       <template v-slot:cell(validators)="row">
         <ul class="validator-list">
-          <li v-for="validator in row.item.validators">
+          <li
+            v-for="validator in row.item.validators"
+            :key="validator.publicKey"
+          >
             <div class="">
               <span
                 v-if="validator.isFullValidator"

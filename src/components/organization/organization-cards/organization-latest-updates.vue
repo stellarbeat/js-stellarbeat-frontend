@@ -11,7 +11,7 @@
       <b-list-group v-if="!isLoading" flush class="w-100 mb-4">
         <b-list-group-item
           v-for="updatesOnDate in updatesPerDate"
-          :key="updatesOnDate.date"
+          :key="updatesOnDate.date.getTime()"
           class="px-0 pb-0"
         >
           <div class="d-flex justify-content-between flex-wrap">
@@ -160,7 +160,7 @@ export default class OrganizationLatestUpdates extends Vue {
   protected diffModalHtml = "<p>No update selected</p>";
   protected deltas: Map<string, Delta | undefined> = new Map();
   protected updatesPerDate: {
-    date: string;
+    date: Date;
     updates: Update[];
     snapshot: any;
   }[] = [];

@@ -3,7 +3,7 @@
     <b-dropdown
       ref="dropdown"
       boundary="viewport"
-      v-on:click.prevent.stop="&quot;#&quot;;"
+      v-on:click.prevent.stop=""
       right
       text="More"
       class="p-0 m-0"
@@ -13,10 +13,7 @@
       <template slot="button-content">
         <b-icon-three-dots-vertical scale="0.9" />
       </template>
-      <b-dropdown-header
-        id="dropdown-header-label"
-        v-on:click.prevent.stop="&quot;#&quot;;"
-      >
+      <b-dropdown-header id="dropdown-header-label" v-on:click.prevent.stop="">
         Simulation options
       </b-dropdown-header>
       <b-dropdown-item
@@ -48,7 +45,7 @@
         <b-icon-x-circle class="dropdown-icon" scale="0.9" />
         Delete QuorumSet
       </b-dropdown-item>
-      <b-dropdown-form inline v-on:click.prevent.stop="&quot;#&quot;;">
+      <b-dropdown-form inline v-on:click.prevent.stop="">
         <div class="d-flex align-items-center">
           <b-icon-pencil class="dropdown-icon" scale="0.9" />
           <b-form-group
@@ -195,7 +192,7 @@ export default class QuorumSetActions extends Vue {
   public level!: number;
 
   public editingThreshold = false;
-  public newThreshold: number = this.quorumSet.threshold;
+  public newThreshold!: number;
   public id: number = Math.ceil(Math.random() * 1000);
   public validatorsToAdd: string[] = [];
   public organizationsToAdd: Organization[] = [];
@@ -301,6 +298,10 @@ export default class QuorumSetActions extends Vue {
     this.tomlNodesExport = stellarCoreConfigurationGenerator.quorumSetToToml(
       this.quorumSet
     );
+  }
+
+  created() {
+    this.newThreshold = this.quorumSet.threshold;
   }
 }
 </script>

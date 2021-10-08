@@ -100,21 +100,46 @@
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 import { StoreMixin } from "@/mixins/StoreMixin";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const validate = require("@stellarbeat/js-stellar-domain/lib/network-schema");
 import {
-  BFormTextarea,
   BButton,
   BButtonGroup,
-  BModal,
+  BFormTextarea,
   BIconX,
-  BListGroupItem,
   BListGroup,
+  BListGroupItem,
+  BModal,
   VBModal,
 } from "bootstrap-vue";
 import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import { ModifyNetwork as ModifyNetworkChange } from "@/services/change-queue/changes/modify-network";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const validate = require("@stellarbeat/js-stellar-domain/lib/network-schema");
+
+type BasicQuorumSet = {
+  validators: string[];
+  threshold: number;
+  innerQuorumSets: BasicQuorumSet[];
+};
+type BasicOrganization = {
+  id: string;
+  name: string;
+  validators: string[];
+  subQuorumAvailable: boolean;
+};
+
+type BasicNode = {
+  publicKey: string;
+  name: string;
+  quorumSet: BasicQuorumSet;
+  geoData: {
+    countryCode: string;
+    countryName: string;
+  };
+  isp: string;
+  isValidating: boolean;
+  active: boolean;
+};
 
 @Component({
   components: {
@@ -133,12 +158,13 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
 
   modifiedNetworkString = "";
   modifiedNetwork: {
-    nodes: any[];
-    organizations: any[];
+    nodes: BasicNode[];
+    organizations: BasicOrganization[];
   } = { nodes: [], organizations: [] };
   isValid = false;
   modified = false;
-  validationErrors: { dataPath?: string; message: string; params: any }[] = [];
+  validationErrors: { dataPath?: string; message: string; params: unknown }[] =
+    [];
 
   showModal() {
     this.initModifiedNetworkString();
@@ -201,44 +227,52 @@ export default class CustomNetwork extends Mixins(StoreMixin) {
     );
   }
 
-  mapToBasicQuorumSet(quorumSet: QuorumSet) {
-    let qSet: any = {};
-    qSet.threshold = quorumSet.threshold;
-    qSet.validators = quorumSet.validators;
-    qSet.innerQuorumSets = quorumSet.innerQuorumSets.map((innerQSet) =>
-      this.mapToBasicQuorumSet(innerQSet)
-    );
+  mapToBasicQuorumSet(quorumSet: QuorumSet): BasicQuorumSet {
+    return {
+      threshold: quorumSet.threshold,
+      validators: quorumSet.validators,
+      innerQuorumSets: quorumSet.innerQuorumSets.map((innerQSet) =>
+        this.mapToBasicQuorumSet(innerQSet)
+      ),
+    };
+  }
 
-    return qSet;
+  mapToBasicNode(node: Node): BasicNode {
+    return {
+      publicKey: node.publicKey,
+      name: node.displayName,
+      quorumSet: this.mapToBasicQuorumSet(node.quorumSet),
+      geoData: {
+        countryCode: node.geoData.countryCode
+          ? node.geoData.countryCode
+          : "N/A",
+        countryName: node.geoData.countryName
+          ? node.geoData.countryName
+          : "N/A",
+      },
+      isp: node.isp ? node.isp : "N/A",
+      active: node.active,
+      isValidating: node.isValidating,
+    };
+  }
+
+  mapToBasicOrganization(organization: Organization): BasicOrganization {
+    return {
+      id: organization.id,
+      name: organization.name,
+      validators: organization.validators,
+      subQuorumAvailable: organization.subQuorumAvailable,
+    };
   }
 
   initModifiedNetworkString() {
     this.modifiedNetwork = {
       nodes: this.network.nodes
         .filter((node) => node.isValidator)
-        .map((node) => {
-          return {
-            publicKey: node.publicKey,
-            name: node.displayName,
-            quorumSet: this.mapToBasicQuorumSet(node.quorumSet),
-            geoData: {
-              countryCode: node.geoData.countryCode
-                ? node.geoData.countryCode
-                : "N/A",
-              countryName: node.geoData.countryName
-                ? node.geoData.countryName
-                : "N/A",
-            },
-            isp: node.isp ? node.isp : "N/A",
-          };
-        }),
-      organizations: this.network.organizations.map((organization) => {
-        return {
-          id: organization.id,
-          name: organization.name,
-          validators: organization.validators,
-        };
-      }),
+        .map((node) => this.mapToBasicNode(node)),
+      organizations: this.network.organizations.map((organization) =>
+        this.mapToBasicOrganization(organization)
+      ),
     };
     this.modifiedNetworkString = JSON.stringify(this.modifiedNetwork, null, 2);
     this.isValid = true;

@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from "vue-property-decorator";
 import { BTooltip, BIconInfoCircle } from "bootstrap-vue";
-import Chart from "chart.js";
+import { Chart } from "chart.js";
 import { StoreMixin } from "@/mixins/StoreMixin";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
 
@@ -71,13 +71,18 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
 
       // Configuration options go here
       options: {
-        onHover: (event: MouseEvent, activeElements): void => {
+        onHover: (
+          event: MouseEvent,
+          activeElements: Record<string, unknown>[]
+        ): void => {
           if (!event.target) return;
           if (!(event.target instanceof HTMLElement)) return;
           event.target.style.cursor = "pointer";
-          if (activeElements.length === 1 && activeElements[0]) {
-            console.log(activeElements[0]);
-            //@ts-ignore
+          if (
+            activeElements.length === 1 &&
+            activeElements[0] &&
+            typeof activeElements[0]._index === "number"
+          ) {
             this.$emit("hover", this.yearStatistics[activeElements[0]._index]);
           } else this.$emit("hover", null);
         },

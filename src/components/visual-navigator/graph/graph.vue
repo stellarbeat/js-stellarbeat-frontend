@@ -69,14 +69,15 @@
               :greatest="true"
               :vertex-coordinates="viewGraph.transitiveQuorumSetCoordinates"
             />
-            <graph-strongly-connected-component
-              v-if="!optionTransitiveQuorumSetOnly"
-              :key="index"
-              v-for="(
-                sccCoordinates, index
-              ) in viewGraph.stronglyConnectedComponentCoordinates"
-              :vertex-coordinates="sccCoordinates"
-            />
+            <g v-if="!optionTransitiveQuorumSetOnly">
+              <graph-strongly-connected-component
+                :key="index"
+                v-for="(
+                  sccCoordinates, index
+                ) in viewGraph.stronglyConnectedComponentCoordinates"
+                :vertex-coordinates="sccCoordinates"
+              />
+            </g>
             <g
               :transform="getVertexTransform(vertex)"
               class="vertex"
@@ -88,6 +89,7 @@
                   vertex.isPartOfTransitiveQuorumSet ||
                   !optionTransitiveQuorumSetOnly
               )"
+              :key="vertex.key"
               v-on:click="vertexSelected(vertex)"
             >
               <circle :r="5" v-bind:class="getVertexClassObject(vertex)">

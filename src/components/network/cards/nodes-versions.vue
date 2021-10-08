@@ -47,7 +47,7 @@ export default class NodesVersions extends Vue {
           .versionStr!.replace("stellar-core ", "")
           .replace("v", "")
           .replace(/ \(.*$/, "")
-          .replace(/\-.*$/, "")
+          .replace(/-.*$/, "")
       )
       .reduce((accumulator: any, currentValue: string) => {
         if (accumulator[currentValue] === undefined)

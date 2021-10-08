@@ -261,11 +261,10 @@
               >fbas analyzer tool</a
             ></b-alert
           >
-          <b-form-group label="Analysis target: " v-slot="{ ariaDescribedby }">
+          <b-form-group label="Analysis target: ">
             <b-form-radio-group
               id="radio-group-2"
               v-model="store.networkAnalysisMergeBy"
-              :aria-describedby="ariaDescribedby"
               name="radio-sub-component"
             >
               <b-form-radio :value="MergeBy.DoNotMerge"
@@ -282,7 +281,7 @@
               </b-form-radio>
             </b-form-radio-group>
           </b-form-group>
-          <b-form-group label="Analysis type: " v-slot="{ ariaDescribedby }">
+          <b-form-group label="Analysis type: ">
             <b-form-checkbox v-model="analyzeQuorumIntersection"
               >Quorum Intersection</b-form-checkbox
             >
@@ -530,10 +529,6 @@ export default class NetworkAnalysis extends Mixins(
       data: { type: string; result: any };
     }) => {
       switch (event.data.type) {
-        case "tick":
-          {
-          }
-          break;
         case "end":
           {
             if (event.data.result) {

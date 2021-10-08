@@ -16,6 +16,7 @@
             <li
               class="horizontal-list-item"
               v-for="(item, index) in data.item.key"
+              :key="index"
             >
               <span
                 v-if="showNodesPartition"

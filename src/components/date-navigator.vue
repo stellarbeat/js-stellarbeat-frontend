@@ -98,9 +98,9 @@ export default class DateNavigator extends Vue {
 
   protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
 
-  datePickerDate!: Date;
-  time!: string;
-  timeKey!: string;
+  datePickerDate: Date = new Date();
+  time = "00:00";
+  timeKey = "00:00";
 
   canGoBack() {
     return this.statisticsDateTimeNavigator.canGoBack(
@@ -133,8 +133,8 @@ export default class DateNavigator extends Vue {
     });
   }
 
-  @Watch("selectedDate", { deep: true })
-  async onSelectedDateChanged(to: string, from: string) {
+  @Watch("selectedDate")
+  async onSelectedDateChanged() {
     this.datePickerDate = this.selectedDate;
     this.time = moment(this.selectedDate).format("HH:mm");
     this.timeKey = this.time;
