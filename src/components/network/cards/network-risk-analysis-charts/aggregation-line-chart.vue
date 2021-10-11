@@ -106,8 +106,8 @@ export default class AggregationLineChart extends Vue {
           activeElements?: Array<Record<string, unknown>>
         ): void => {
           if (!activeElements || !activeElements[0]) return;
-          let index = Number((activeElements[0] as any)._index);
-          let dataSetIndex = Number((activeElements[0] as any)._datasetIndex);
+          let index = Number(activeElements[0]._index);
+          let dataSetIndex = Number(activeElements[0]._datasetIndex);
           let dataSet = this.chartDataSets[dataSetIndex];
           if (!dataSet) return;
           //@ts-ignore
@@ -143,15 +143,16 @@ export default class AggregationLineChart extends Vue {
         maintainAspectRatio: false,
         legend: {
           onClick: (e, legendItem) => {
+            if (!legendItem.datasetIndex) return;
             let ci = this.chart;
-            let meta = ci.getDatasetMeta(legendItem.datasetIndex!);
+            let meta = ci.getDatasetMeta(legendItem.datasetIndex);
             //@ts-ignore
             meta.hidden =
               meta.hidden === undefined
                 ? //@ts-ignore
                   !ci.data.datasets[legendItem.datasetIndex].hidden
                 : null;
-            this.chartDataSets[legendItem.datasetIndex!].hidden = meta.hidden;
+            this.chartDataSets[legendItem.datasetIndex].hidden = meta.hidden;
             ci.update();
           },
           display: true,

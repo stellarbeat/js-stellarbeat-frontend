@@ -48,7 +48,7 @@ import Vue from "vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
 import Store from "@/store/Store";
-
+/* eslint-disable */
 //ssr voodoo because leaflet uses window global only available in browser
 let divIcon: any,
   latLng: any,
@@ -284,7 +284,7 @@ export default class WorldMap extends Vue {
   }
 
   beforeDestroy() {
-    (this.$refs.myMap as any) = {};
+    this.$refs.myMap = undefined;
   }
 }
 </script>

@@ -163,6 +163,7 @@ import {
   BIconLink,
   BIconMap,
   BIconShield,
+  BIconPhone,
   VBTooltip,
   BIconEnvelope,
 } from "bootstrap-vue";
@@ -180,6 +181,7 @@ import Stellar from "@/components/organization/logo/stellar.vue";
     BIconShield: BIconShield,
     BIconMap: BIconMap,
     BIconEnvelope,
+    BIconPhone,
   },
   directives: { "b-tooltip": VBTooltip },
 })
@@ -197,9 +199,8 @@ export default class OrganizationProfile extends Vue {
 
   get notAllArchivesUpToDate() {
     return this.organization.validators
-      .map(
-        (validator) =>
-          this.$root.$data.store.network.getNodeByPublicKey(validator)!
+      .map((validator) =>
+        this.$root.$data.store.network.getNodeByPublicKey(validator)
       )
       .some((validator) => {
         return validator.historyUrl !== null && !validator.isFullValidator;

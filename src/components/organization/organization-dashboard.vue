@@ -107,9 +107,9 @@ import { BAlert } from "bootstrap-vue";
   },
 })
 export default class OrganizationDashboard extends Vue {
-  get validators(): (Node | any)[] {
+  get validators(): Node[] {
     return this.organization.validators
-      .map((publicKey) => this.network.getNodeByPublicKey(publicKey)!)
+      .map((publicKey) => this.network.getNodeByPublicKey(publicKey))
       .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
   }
 
@@ -118,7 +118,9 @@ export default class OrganizationDashboard extends Vue {
   }
 
   get organization(): Organization {
-    return this.store.selectedOrganization!;
+    if (!this.store.selectedOrganization)
+      throw new Error("No organization selected");
+    return this.store.selectedOrganization;
   }
 
   get network(): Network {
@@ -127,7 +129,7 @@ export default class OrganizationDashboard extends Vue {
 
   get failAt() {
     let nrOfValidatingNodes = this.organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator)!)
+      .map((validator) => this.network.getNodeByPublicKey(validator))
       .filter((node) => node.isValidating).length;
 
     return nrOfValidatingNodes - this.organization.subQuorumThreshold + 1;

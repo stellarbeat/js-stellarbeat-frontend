@@ -82,7 +82,8 @@ import { StoreMixin } from "@/mixins/StoreMixin";
 })
 export default class SafetyInfo extends Mixins(StoreMixin) {
   hideModal() {
-    (this.$refs["network-analysis-safety-info"] as any).hide();
+    //@ts-ignore
+    this.$refs["network-analysis-safety-info"].hide();
   }
 }
 </script>

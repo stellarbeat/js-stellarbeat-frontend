@@ -17,7 +17,7 @@
           <div class="d-flex justify-content-between flex-wrap">
             <div class="w-75">
               <div class="text-muted mb-1" style="font-size: small">
-                {{ new Date(updatesOnDate.date).toLocaleString() }}
+                {{ updatesOnDate.date.toLocaleString() }}
               </div>
               <div class="mb-2">
                 <div v-for="update in updatesOnDate.updates" :key="update.key">
@@ -108,13 +108,11 @@ import { Component, Prop, Watch } from "vue-property-decorator";
 import Vue from "vue";
 import {
   Network,
-  NodeSnapShot,
   Organization,
   OrganizationSnapShot,
   PublicKey,
 } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
-//import AsyncComputed from 'vue-async-computed-decorator';
 import { Delta, formatters, create, DiffPatcher } from "jsondiffpatch";
 import "jsondiffpatch/dist/formatters-styles/html.css";
 
@@ -136,7 +134,24 @@ import {
 
 interface Update {
   key: string;
-  value: any;
+  value: unknown;
+}
+
+interface SnapshotForDelta {
+  validators: string[];
+  startDate: Date;
+  endDate: Date;
+  id: string;
+  name: string;
+  dba: string | null;
+  url: string | null;
+  officialEmail: string | null;
+  phoneNumber: string | null;
+  physicalAddress: string | null;
+  twitter: string | null;
+  github: string | null;
+  description: string | null;
+  keybase: string | null;
 }
 
 @Component({
@@ -162,21 +177,21 @@ export default class OrganizationLatestUpdates extends Vue {
   protected updatesPerDate: {
     date: Date;
     updates: Update[];
-    snapshot: any;
+    snapshot: SnapshotForDelta;
   }[] = [];
   protected isLoading = true;
   protected failed = false;
-  protected snapShots: NodeSnapShot[] = [];
+  protected snapShots: SnapshotForDelta[] = [];
   @Prop()
   protected organization!: Organization;
   @Watch("organization")
   async onOrganizationChanged() {
     await this.getSnapshots();
   }
-  showDiff(snapShot: any) {
+  showDiff(snapShot: SnapshotForDelta) {
     formatters.html.showUnchanged(true);
     this.diffModalHtml = formatters.html.format(
-      this.deltas.get(snapShot.startDate)!,
+      this.deltas.get(snapShot.startDate.toISOString()) as Delta,
       snapShot
     );
     (this.$refs["modal-diff"] as BModal).show();
@@ -187,20 +202,20 @@ export default class OrganizationLatestUpdates extends Vue {
   }
 
   async getSnapshots() {
-    let snapshots: any = [];
+    let snapshots: SnapshotForDelta[] = [];
     try {
       this.deltas = new Map();
       this.updatesPerDate = [];
-      snapshots = await this.store.fetchOrganizationSnapshotsById(
+      let fetchedSnapshots = await this.store.fetchOrganizationSnapshotsById(
         this.organization.id
       );
-      snapshots = snapshots.map((snapshot: OrganizationSnapShot) => {
+      snapshots = fetchedSnapshots.map((snapshot: OrganizationSnapShot) => {
         return {
           validators: snapshot.organization.validators.map(
             (validator: PublicKey) =>
               this.network.getNodeByPublicKey(validator) &&
-              this.network.getNodeByPublicKey(validator)!.name
-                ? this.network.getNodeByPublicKey(validator)!.name
+              this.network.getNodeByPublicKey(validator).name
+                ? (this.network.getNodeByPublicKey(validator).name as string)
                 : validator
           ),
           startDate: snapshot.startDate,
@@ -238,11 +253,13 @@ export default class OrganizationLatestUpdates extends Vue {
             key === "validators"
               ? JSON.stringify(snapshots[i][key].sort(validatorSort)) !==
                 JSON.stringify(snapshots[i + 1][key].sort(validatorSort))
-              : snapshots[i][key] !== snapshots[i + 1][key]
+              : //@ts-ignore
+                snapshots[i][key] !== snapshots[i + 1][key]
           )
           .forEach((changedKey) =>
             updates.push({
               key: changedKey,
+              //@ts-ignore
               value: snapshots[i][changedKey],
             })
           );
@@ -261,7 +278,7 @@ export default class OrganizationLatestUpdates extends Vue {
         });
 
         this.deltas.set(
-          snapshots[i].startDate,
+          snapshots[i].startDate.toISOString(),
           this.differ.diff(snapshots[i + 1], snapshots[i])
         );
       }
@@ -276,9 +293,9 @@ export default class OrganizationLatestUpdates extends Vue {
     return snapshots;
   }
 
-  async timeTravel(update: any) {
+  async timeTravel(snapshot: SnapshotForDelta) {
     this.store.isLoading = true;
-    await this.store.initializeNetwork(new Date(update.startDate));
+    await this.store.initializeNetwork(snapshot.startDate);
     this.store.isLoading = false;
   }
 

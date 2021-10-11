@@ -105,7 +105,7 @@ export default class Search extends Vue {
     let matchedNodes = this.network.nodes
       .filter((node) => {
         return (
-          match(node.displayName) || match(node.publicKey!) || match(node.key)
+          match(node.displayName) || match(node.publicKey) || match(node.key)
         );
       })
       .map((node) => {
@@ -114,7 +114,7 @@ export default class Search extends Vue {
           type: node.isValidator ? "validator node" : "watcher node",
           route: {
             name: "node-dashboard",
-            params: { publicKey: node.publicKey! },
+            params: { publicKey: node.publicKey },
             query: {
               center: "1",
               "no-scroll": "1",
@@ -152,8 +152,6 @@ export default class Search extends Vue {
     }
 
     this.arrowCounter = -1;
-
-    (this.$refs.searchInput as any).blur();
   }
 }
 </script>

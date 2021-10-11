@@ -30,6 +30,7 @@ import LocalNetworks from "@/store/LocalNetworks";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "stellar_analysis";
+import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 type NetworkId = string;
 
@@ -150,7 +151,7 @@ export default class Store {
   }
 
   async fetchNodeSnapshotsByPublicKey(id: PublicKey): Promise<NodeSnapShot[]> {
-    const params: any = {};
+    const params: Record<string, unknown> = {};
     params["at"] = this.network.crawlDate;
     const result = await axios.get(
       this.getApiUrl() + "/v1/node/" + id + "/snapshots",
@@ -166,7 +167,7 @@ export default class Store {
   }
 
   async fetchNodeSnapshots(): Promise<NodeSnapShot[]> {
-    const params: any = {};
+    const params: Record<string, unknown> = {};
     params["at"] = this.network.crawlDate;
     const result = await axios.get(this.getApiUrl() + "/v1/node-snapshots", {
       params,
@@ -182,8 +183,8 @@ export default class Store {
 
   async fetchOrganizationSnapshotsById(
     id: OrganizationId
-  ): Promise<Record<string, unknown>[]> {
-    const params: any = {};
+  ): Promise<OrganizationSnapShot[]> {
+    const params: Record<string, unknown> = {};
     params["at"] = this.network.crawlDate;
     const result = await axios.get(
       this.getApiUrl() + "/v1/organization/" + id + "/snapshots",
@@ -199,7 +200,7 @@ export default class Store {
   }
 
   async fetchOrganizationSnapshots(): Promise<OrganizationSnapShot[]> {
-    const params: any = {};
+    const params: Record<string, unknown> = {};
     params["at"] = this.network.crawlDate;
     const result = await axios.get(
       this.getApiUrl() + "/v1/organization-snapshots",
@@ -220,7 +221,7 @@ export default class Store {
     if (this.networkId === "fbas") {
       this.loadFBAS();
       this.isLocalNetwork = true;
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         resolve();
       });
     }
@@ -228,7 +229,7 @@ export default class Store {
     if (this.networkId === "fbas2") {
       this.loadFBAS2();
       this.isLocalNetwork = true;
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         resolve();
       });
     }
@@ -239,14 +240,14 @@ export default class Store {
       else this.loadFBAS2();
 
       this.isLocalNetwork = true;
-      return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve) {
         resolve();
       });
     }
 
     this.isLocalNetwork = false;
     try {
-      const params: any = {};
+      const params: Record<string, unknown> = {};
       if (at) {
         params["at"] = at.toISOString();
         this.isTimeTravel = true;
@@ -317,7 +318,7 @@ export default class Store {
 
   public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
     this.processChange(
-      new QuorumSetValidatorDelete(quorumSet, validator.publicKey!)
+      new QuorumSetValidatorDelete(quorumSet, validator.publicKey)
     );
   }
 
@@ -483,7 +484,7 @@ export default class Store {
   }
   public organizationHasOutOfDateHistoryArchives(organization: Organization) {
     return organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator)!)
+      .map((validator) => this.network.getNodeByPublicKey(validator))
       .some((validator) => validator.historyUrl && !validator.isFullValidator);
   }
 
@@ -506,8 +507,7 @@ export default class Store {
   getOrganizationFailAt(organization: Organization) {
     const nrOfValidatingNodes = organization.validators
       .map((validator) => this.network.getNodeByPublicKey(validator))
-      .filter((validator) => validator !== undefined)
-      .filter((node) => !this.network.isNodeFailing(node!)).length;
+      .filter((node) => !this.network.isNodeFailing(node)).length;
 
     return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
   }
@@ -578,8 +578,8 @@ export default class Store {
     return this.getNetworkDangers().label !== "Ok";
   }
 
-  getDateFromParam(date: any) {
-    if (date === undefined || date === null) return undefined;
+  getDateFromParam(date: unknown) {
+    if (!isString(date)) return undefined;
 
     const timestamp = Date.parse(date);
 
@@ -589,10 +589,10 @@ export default class Store {
 
   copyAndModifyObject(
     myObject: Record<string, unknown>,
-    propsToModifyOrAdd: { key: string; value: any }[] = [],
+    propsToModifyOrAdd: { key: string; value: unknown }[] = [],
     propsToDelete: string[] = []
   ) {
-    const copy: any = Object.assign({}, myObject);
+    const copy: Record<string, unknown> = Object.assign({}, myObject);
     propsToModifyOrAdd.forEach((prop) => {
       copy[prop.key] = prop.value;
     });

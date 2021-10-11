@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import Store from "@/store/Store";
 import {
   BIconArrowClockwise,
@@ -70,7 +70,7 @@ export default class UndoRedo extends Vue {
   protected resetRouteIfNoSelectedNode() {
     if (
       this.store.selectedNode &&
-      !this.store.network.getNodeByPublicKey(this.store.selectedNode.publicKey!)
+      !this.store.network.getNodeByPublicKey(this.store.selectedNode.publicKey)
     ) {
       this.$router.push({
         name: "network-dashboard",

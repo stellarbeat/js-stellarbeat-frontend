@@ -91,8 +91,10 @@ export default class QuorumSlices extends Mixins(StoreMixin) {
   protected selectedNode!: Node;
   protected perPage = 10;
   protected currentPage = 1;
-  protected items: any[] = [];
-  protected fields: any = [{ key: "slice", label: "slices" }];
+  protected items: { slice: string[] }[] = [];
+  protected fields: { key: string; label: string }[] = [
+    { key: "slice", label: "slices" },
+  ];
 
   get rows() {
     return this.items.length;

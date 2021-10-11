@@ -64,7 +64,8 @@ import { StoreMixin } from "@/mixins/StoreMixin";
 })
 export default class QuorumIntersectionInfo extends Mixins(StoreMixin) {
   hideModal() {
-    (this.$refs["network-analysis-qi-info"] as any).hide();
+    //@ts-ignore
+    this.$refs["network-analysis-qi-info"].hide();
   }
 }
 </script>

@@ -34,8 +34,9 @@ export default class NodesVersions extends Vue {
 
   @Watch("store.includeWatcherNodes")
   protected onWatcherNodesOptionChanged() {
-    this.chart!.data.datasets![0].data = this.chartData;
-    this.chart!.update();
+    if (!this.chart || !this.chart.data.datasets) return;
+    this.chart.data.datasets[0].data = this.chartData;
+    this.chart.update();
   }
 
   get sortedVersions() {
@@ -43,8 +44,8 @@ export default class NodesVersions extends Vue {
       .filter(this.$root.$data.store.watcherNodeFilter)
       .filter((node) => node.versionStr)
       .map((node) =>
-        node
-          .versionStr!.replace("stellar-core ", "")
+        (node.versionStr as string)
+          .replace("stellar-core ", "")
           .replace("v", "")
           .replace(/ \(.*$/, "")
           .replace(/-.*$/, "")

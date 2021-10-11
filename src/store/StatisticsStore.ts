@@ -1,5 +1,9 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import Store from "@/store/Store";
+import {
+  isArray,
+  isObject,
+} from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 export interface StatisticsAggregation {
   crawlCount: number;
@@ -12,8 +16,10 @@ export interface Statistics {
 type route = string;
 type parametersKey = string;
 export default class StatisticsStore {
-  protected statisticsCache: Map<route, Map<parametersKey, Promise<any>>> =
-    new Map();
+  protected statisticsCache: Map<
+    route,
+    Map<parametersKey, Promise<AxiosResponse<unknown>>>
+  > = new Map();
   protected store: Store;
 
   public constructor(store: Store) {
@@ -25,7 +31,7 @@ export default class StatisticsStore {
     from: Date,
     to: Date,
     route: string
-  ) {
+  ): Promise<unknown[]> {
     let statisticsCache = this.statisticsCache.get(
       this.store.getApiUrl() + route
     );
@@ -34,7 +40,7 @@ export default class StatisticsStore {
       this.statisticsCache.set(this.store.getApiUrl() + route, statisticsCache);
     }
 
-    const params: any = {};
+    const params: Record<string, unknown> = {};
     params.from = from.toISOString();
     params.to = to.toISOString();
     let result;
@@ -49,6 +55,12 @@ export default class StatisticsStore {
       result = await promise;
     }
 
+    if (!isObject(result) || !result.data)
+      throw new Error("Response missing data property");
+
+    if (!isArray(result.data))
+      throw new Error("Invalid statistics data returned from API");
+
     return result.data;
   }
 
@@ -59,8 +71,11 @@ export default class StatisticsStore {
     route: string
   ): Promise<a[]> {
     const stats = await this.fetchStatisticsCached(id, from, to, route);
-    stats.forEach((stat: any) => (stat.time = new Date(stat.time))); //todo: handle in fromJson domain object
+    stats.forEach((stat: unknown) => {
+      if (!isObject(stat)) throw new Error("Invalid statistics");
+      if (typeof stat.time === "string") stat.time = new Date(stat.time);
+    }); //todo: handle in fromJson domain object
 
-    return stats;
+    return stats as a[];
   }
 }

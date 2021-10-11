@@ -12,6 +12,7 @@ describe("update manager", () => {
   let update3: EntityPropertyUpdate;
 
   beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const networkAnalyzerMock = { analyzeNetwork: () => {} };
     myNodeUpdateManager = new NetworkChangeQueue(
       new Network([]),

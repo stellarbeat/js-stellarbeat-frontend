@@ -1,4 +1,4 @@
-import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
 
 describe("quorum set add organization", () => {

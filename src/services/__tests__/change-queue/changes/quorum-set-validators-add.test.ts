@@ -1,5 +1,4 @@
-import { Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
-import { EntityPropertyUpdate } from "../../../change-queue/changes/entity-property-update";
+import { QuorumSet } from "@stellarbeat/js-stellar-domain";
 import { QuorumSetValidatorsAdd } from "@/services/change-queue/changes/quorum-set-validators-add";
 
 describe("quorum set add validators", () => {

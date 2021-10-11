@@ -88,6 +88,7 @@ import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BBreadcrumb, BAlert } from "bootstrap-vue";
 import LazyHydrate from "vue-lazy-hydration";
+import { Route } from "vue-router";
 
 @Component({
   name: "dashboard",
@@ -114,7 +115,7 @@ export default class Dashboard extends Vue {
   public view!: string;
 
   @Watch("$route", { immediate: true })
-  public onRouteChanged(to: any) {
+  public onRouteChanged(to: Route) {
     if (to.params.publicKey) {
       this.store.selectedNode = this.network.getNodeByPublicKey(
         to.params.publicKey
@@ -146,7 +147,7 @@ export default class Dashboard extends Vue {
       }
     } else this.store.selectedOrganization = undefined;
 
-    if (to.query.center === "1" || to.query.center === undefined) {
+    if (to.query.center === "1" || !to.query.center) {
       this.store.centerNode = this.store.selectedNode;
     }
   }
@@ -177,7 +178,7 @@ export default class Dashboard extends Vue {
         crumbs.push({
           text: this.network.getOrganizationById(
             this.selectedNode.organizationId
-          )!.name,
+          ).name,
           to: {
             name: "organization-dashboard",
             params: {

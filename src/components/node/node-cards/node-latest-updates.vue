@@ -15,7 +15,7 @@
       >
         <b-list-group-item
           v-for="updatesOnDate in updatesPerDate"
-          :key="updatesOnDate.date.getTime()"
+          :key="new Date(updatesOnDate.date).getTime()"
           class="px-0 pb-0 dimmer-content"
         >
           <div class="d-flex justify-content-between flex-wrap">
@@ -34,7 +34,7 @@
                     {{ update.value || "empty" }}
                   </div>
                   <div v-else-if="update.key === 'quorumSet'">
-                    Quorumset updated
+                    QuorumSet updated
                   </div>
                   <div v-else-if="update.key === 'ledgerVersion'">
                     Ledger updated to version
@@ -169,12 +169,37 @@ import {
   BIconClock,
   BButtonToolbar,
 } from "bootstrap-vue";
+import { isArray } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 interface Update {
   key: string;
-  value: any;
+  value: string;
 }
 
+interface SnapshotForDelta {
+  startDate: Date;
+  endDate: Date;
+  publicKey: string;
+  ip: string | null;
+  port: number | null;
+  host: string | null;
+  name: string | null;
+  homeDomain: string | null;
+  historyUrl: string | null;
+  alias: string | null;
+  isp: string | null;
+  ledgerVersion: number | null;
+  overlayVersion: number | null;
+  overlayMinVersion: number | null;
+  versionStr: string | null;
+  countryCode: string | null;
+  countryName: string | null;
+  longitude: number | null;
+  latitude: number | null;
+  organizationId: string | null;
+  quorumSet: QuorumSet;
+  quorumSetHashKey: string | null;
+}
 @Component({
   components: {
     BTable,
@@ -197,7 +222,7 @@ export default class NodeLatestUpdates extends Vue {
   protected updatesPerDate: {
     date: string;
     updates: Update[];
-    snapshot: any;
+    snapshot: SnapshotForDelta;
   }[] = [];
   protected isLoading = true;
   protected failed = false;
@@ -205,10 +230,10 @@ export default class NodeLatestUpdates extends Vue {
   @Prop()
   protected node!: Node;
 
-  showDiff(snapShot: any) {
+  showDiff(snapShot: SnapshotForDelta) {
     formatters.html.showUnchanged(true);
     this.diffModalHtml = formatters.html.format(
-      this.deltas.get(snapShot.startDate)!,
+      this.deltas.get(snapShot.startDate.toISOString()) as Delta,
       snapShot
     );
     (this.$refs["modal-diff"] as BModal).show();
@@ -221,8 +246,8 @@ export default class NodeLatestUpdates extends Vue {
   mapValidatorsToNames(quorumSet: QuorumSet) {
     quorumSet.validators = quorumSet.validators.map((validator: PublicKey) =>
       this.network.getNodeByPublicKey(validator) &&
-      this.network.getNodeByPublicKey(validator)!.name
-        ? this.network.getNodeByPublicKey(validator)!.name
+      this.network.getNodeByPublicKey(validator).name
+        ? this.network.getNodeByPublicKey(validator).name
         : validator
     ) as [];
 
@@ -238,14 +263,14 @@ export default class NodeLatestUpdates extends Vue {
     await this.getSnapshots();
   }
   async getSnapshots() {
-    let snapshots: any = [];
+    let snapshots: SnapshotForDelta[] = [];
     try {
       this.deltas = new Map();
       this.updatesPerDate = [];
-      snapshots = await this.store.fetchNodeSnapshotsByPublicKey(
-        this.node.publicKey!
+      let fetchedSnapshots = await this.store.fetchNodeSnapshotsByPublicKey(
+        this.node.publicKey
       );
-      snapshots = snapshots.map((snapshot: any) => {
+      snapshots = fetchedSnapshots.map((snapshot) => {
         let quorumSet: QuorumSet;
         if (!snapshot.node.quorumSet) quorumSet = new QuorumSet(0);
         else quorumSet = this.mapValidatorsToNames(snapshot.node.quorumSet);
@@ -272,6 +297,7 @@ export default class NodeLatestUpdates extends Vue {
           latitude: snapshot.node.geoData.latitude,
           organizationId: snapshot.node.organizationId,
           quorumSet: quorumSet,
+          quorumSetHashKey: snapshot.node.quorumSetHashKey,
         };
       });
 
@@ -299,13 +325,15 @@ export default class NodeLatestUpdates extends Vue {
         ]
           .filter((key) =>
             key !== "quorumSet"
-              ? snapshots[i][key] !== snapshots[i + 1][key]
-              : snapshots[i].quorumSet.hashKey !==
-                snapshots[i + 1].quorumSet.hashKey
+              ? //@ts-ignore
+                snapshots[i][key] !== snapshots[i + 1][key]
+              : snapshots[i].quorumSetHashKey !==
+                snapshots[i + 1].quorumSetHashKey
           )
           .forEach((changedKey) =>
             updates.push({
               key: changedKey,
+              //@ts-ignore
               value: snapshots[i][changedKey],
             })
           );
@@ -318,12 +346,12 @@ export default class NodeLatestUpdates extends Vue {
         }
 
         this.updatesPerDate.push({
-          date: snapshots[i].startDate,
+          date: snapshots[i].startDate.toISOString(),
           updates: updates,
           snapshot: snapshots[i],
         });
         this.deltas.set(
-          snapshots[i].startDate,
+          snapshots[i].startDate.toISOString(),
           this.differ.diff(snapshots[i + 1], snapshots[i])
         );
       }
@@ -336,17 +364,17 @@ export default class NodeLatestUpdates extends Vue {
     return snapshots;
   }
 
-  async timeTravel(update: any) {
+  async timeTravel(snapshot: SnapshotForDelta) {
     this.store.isLoading = true;
-    await this.store.initializeNetwork(new Date(update.startDate));
+    await this.store.initializeNetwork(snapshot.startDate);
     this.store.isLoading = false;
   }
 
   async mounted() {
     this.differ = create({
-      objectHash(obj: any) {
-        if (obj && obj.hashKey) {
-          return obj.hashKey;
+      objectHash(obj: Record<string, unknown>) {
+        if (isArray(obj.validators)) {
+          return obj.validators.join("");
         }
       },
       /*propertyFilter: function (name: string, context: any) {

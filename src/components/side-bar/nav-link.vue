@@ -132,18 +132,18 @@ export default class NavLink extends Vue {
 
   hover = false;
 
-  get titleClass(): any {
+  get titleClass() {
     return {
       secondary: this.secondary,
     };
   }
 
-  get chevronDirection(): any {
+  get chevronDirection() {
     if (this.dropDownShowing) return "chevron-down";
     else return "chevron-right";
   }
 
-  get classObject(): any {
+  get classObject() {
     return {
       "sb-nav-dropdown-toggle": false,
       "sb-nav-link": !this.isLinkInDropdown,
@@ -151,7 +151,7 @@ export default class NavLink extends Vue {
     };
   }
 
-  get dropdownClass(): any {
+  get dropdownClass() {
     return {
       "right-end": !this.showDropdownToggle,
       right: this.showDropdownToggle,

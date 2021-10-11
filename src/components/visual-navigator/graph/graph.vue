@@ -14,24 +14,24 @@
             <path
               class="edge"
               v-for="edge in viewGraph.regularEdges.filter(
-                (edge) =>
-                  (!edge.isFailing || optionShowFailingEdges) &&
-                  (edge.isPartOfTransitiveQuorumSet ||
+                (mEdge) =>
+                  (!mEdge.isFailing || optionShowFailingEdges) &&
+                  (mEdge.isPartOfTransitiveQuorumSet ||
                     !optionTransitiveQuorumSetOnly)
               )"
-              :key="edge.source.key + edge.target.key"
+              :key="edge.key"
               v-bind:d="getEdgePath(edge)"
               :class="getEdgeClassObject(edge)"
             />
             <path
               class="edge"
               v-for="edge in viewGraph.stronglyConnectedEdges.filter(
-                (edge) =>
-                  (!edge.isFailing || optionShowFailingEdges) &&
-                  (edge.isPartOfTransitiveQuorumSet ||
+                (mEdge) =>
+                  (!mEdge.isFailing || optionShowFailingEdges) &&
+                  (mEdge.isPartOfTransitiveQuorumSet ||
                     !optionTransitiveQuorumSetOnly)
               )"
-              :key="edge.source.key + edge.target.key"
+              :key="edge.key"
               v-bind:d="getEdgePath(edge)"
               :class="getEdgeClassObject(edge)"
             />
@@ -41,12 +41,12 @@
               <path
                 class="edge incoming"
                 v-for="edge in viewGraph.trustingEdges.filter(
-                  (edge) =>
-                    (!edge.isFailing || optionShowFailingEdges) &&
-                    (edge.isPartOfTransitiveQuorumSet ||
+                  (mEdge) =>
+                    (!mEdge.isFailing || optionShowFailingEdges) &&
+                    (mEdge.isPartOfTransitiveQuorumSet ||
                       !optionTransitiveQuorumSetOnly)
                 )"
-                :key="edge.source.key + edge.target.key"
+                :key="edge.key + edge.key"
                 v-bind:d="getEdgePath(edge)"
               />
             </g>
@@ -56,12 +56,12 @@
               <path
                 class="edge outgoing"
                 v-for="edge in viewGraph.trustedEdges.filter(
-                  (edge) =>
-                    (!edge.isFailing || optionShowFailingEdges) &&
-                    (edge.isPartOfTransitiveQuorumSet ||
+                  (mEdge) =>
+                    (!mEdge.isFailing || optionShowFailingEdges) &&
+                    (mEdge.isPartOfTransitiveQuorumSet ||
                       !optionTransitiveQuorumSetOnly)
                 )"
-                :key="edge.source.key + edge.target.key"
+                :key="edge.key + edge.key"
                 v-bind:d="getEdgePath(edge)"
               />
             </g>
@@ -85,8 +85,8 @@
               v-for="vertex in Array.from(
                 viewGraph.viewVertices.values()
               ).filter(
-                (vertex) =>
-                  vertex.isPartOfTransitiveQuorumSet ||
+                (mVertex) =>
+                  mVertex.isPartOfTransitiveQuorumSet ||
                   !optionTransitiveQuorumSetOnly
               )"
               :key="vertex.key"
@@ -132,12 +132,13 @@ import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 
 import * as zoom from "d3-zoom";
-import { select } from "d3-selection";
+import { select, Selection } from "d3-selection";
 import GraphStronglyConnectedComponent from "@/components/visual-navigator/graph/graph-strongly-connected-component.vue";
 import { StoreMixin } from "@/mixins/StoreMixin";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
+import { isObject } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 @Component({
   components: {
@@ -147,7 +148,7 @@ import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 })
 export default class Graph extends Mixins(StoreMixin) {
   @Prop()
-  public centerVertex!: ViewVertex;
+  public centerVertex!: ViewVertex | undefined;
   @Prop()
   public selectedVertices!: ViewVertex[];
 
@@ -175,8 +176,9 @@ export default class Graph extends Mixins(StoreMixin) {
   @Prop()
   public viewGraph!: ViewGraph;
 
-  public d3svg!: any;
-  public d3Grid!: any; //used for zooming and panning
+  public d3svg!: Selection<Element, null, null, undefined>;
+  public d3Grid!: Selection<Element, null, null, undefined>;
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   public graphZoom!: any;
 
   @Watch("centerVertex")
@@ -204,9 +206,8 @@ export default class Graph extends Mixins(StoreMixin) {
   }
 
   getVertexTextRectWidth(vertex: ViewVertex) {
-    return (
-      (this.$options!.filters!.truncate(vertex.label, 10).length / 10) * 70
-    );
+    if (!this.$options.filters) return 10;
+    return (this.$options.filters.truncate(vertex.label, 10).length / 10) * 70;
   }
 
   getVertexTextRectWidthPx(vertex: ViewVertex) {
@@ -246,7 +247,9 @@ export default class Graph extends Mixins(StoreMixin) {
         this.viewGraph.viewEdges.get(vertex.key + ":" + selectedVertex.key)
       )
       .filter((edge) => edge !== undefined);
-    let allEdgesAreFailing = edges.every((edge) => edge!.isFailing);
+    let allEdgesAreFailing = edges.every(
+      (edge) => (edge as ViewEdge).isFailing
+    );
 
     if (edges.length <= 0) return false;
 
@@ -265,7 +268,9 @@ export default class Graph extends Mixins(StoreMixin) {
         this.viewGraph.viewEdges.get(selectedVertex.key + ":" + vertex.key)
       )
       .filter((edge) => edge !== undefined);
-    let allEdgesAreFailing = edges.every((edge) => edge!.isFailing);
+    let allEdgesAreFailing = edges.every(
+      (edge) => (edge as ViewEdge).isFailing
+    );
 
     if (edges.length <= 0) return false;
 
@@ -293,8 +298,8 @@ export default class Graph extends Mixins(StoreMixin) {
 
   public centerCorrectVertex() {
     if (this.centerVertex !== undefined) {
-      const realVertexX = -this.centerVertex!.x + this.width() / 2;
-      const realVertexY = -this.centerVertex!.y + this.height() / 2;
+      const realVertexX = -this.centerVertex.x + this.width() / 2;
+      const realVertexY = -this.centerVertex.y + this.height() / 2;
 
       let transform = zoom.zoomIdentity
         .translate(realVertexX, realVertexY)
@@ -330,6 +335,10 @@ export default class Graph extends Mixins(StoreMixin) {
   }
 
   getEdgePath(edge: ViewEdge) {
+    if (!isObject(edge.source))
+      throw new Error("Edge source not transformed into object by D3");
+    if (!isObject(edge.target))
+      throw new Error("Edge target not transformed into object by D3");
     return (
       "M" +
       edge.source.x +

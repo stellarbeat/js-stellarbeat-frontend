@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from "vue-property-decorator";
-import { Organization } from "@stellarbeat/js-stellar-domain";
+import { Node, Organization } from "@stellarbeat/js-stellar-domain";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
@@ -83,7 +83,7 @@ import { StoreMixin } from "@/mixins/StoreMixin";
 export default class Organizations extends Mixins(StoreMixin) {
   public filter = "";
 
-  get fields(): any {
+  get fields() {
     if (this.store.isSimulation) {
       return [
         { key: "name", sortable: true },
@@ -113,7 +113,7 @@ export default class Organizations extends Mixins(StoreMixin) {
   @Prop()
   public isLoading!: boolean;
 
-  get organizations(): any[] {
+  get organizations() {
     return this.network.organizations.map((organization) => {
       return {
         name: organization.name,
@@ -140,7 +140,7 @@ export default class Organizations extends Mixins(StoreMixin) {
       .map((publicKey) => {
         return this.network.getNodeByPublicKey(publicKey);
       })
-      .sort((a: any, b: any) => a.displayName.localeCompare(b.displayName));
+      .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
   }
 }
 </script>

@@ -108,13 +108,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import Store from "@/store/Store";
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
 import QuorumSetDropdown from "@/components/node/sidebar/quorum-set-dropdown.vue";
 import NavLink from "@/components/side-bar/nav-link.vue";
 import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-node.vue";
-import { Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellar-domain";
 import OrganizationsDropdown from "@/components/network/sidebar/organizations-dropdown.vue";
 import OrganizationValidatorsDropdown from "@/components/node/sidebar/organization-validators-dropdown.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
@@ -146,6 +146,7 @@ export default class NodeSideBar extends Vue {
   }
 
   get selectedNode() {
+    if (!this.store.selectedNode) throw new Error("No node selected");
     return this.store.selectedNode;
   }
 
@@ -160,7 +161,7 @@ export default class NodeSideBar extends Vue {
   get organization() {
     if (this.hasOrganization && this.selectedNode)
       return this.network.getOrganizationById(
-        this.selectedNode.organizationId!
+        this.selectedNode.organizationId as string
       );
     else return null;
   }
@@ -170,8 +171,8 @@ export default class NodeSideBar extends Vue {
   }
 
   get nodeType() {
-    return this.selectedNode!.isValidator
-      ? this.selectedNode!.isFullValidator
+    return this.selectedNode.isValidator
+      ? this.selectedNode.isFullValidator
         ? "Full Validator"
         : "Validator"
       : "Watcher";
@@ -181,16 +182,14 @@ export default class NodeSideBar extends Vue {
     let stellarCoreConfigurationGenerator =
       new StellarCoreConfigurationGenerator(this.network);
     this.tomlNodesExport = stellarCoreConfigurationGenerator.nodesToToml([
-      this.selectedNode!,
+      this.selectedNode,
     ]);
   }
 
   getDisplayName(node: Node) {
     if (node.name) return node.name;
 
-    return (
-      node.publicKey!.substr(0, 7) + "..." + node.publicKey!.substr(50, 100)
-    );
+    return node.publicKey.substr(0, 7) + "..." + node.publicKey.substr(50, 100);
   }
 }
 </script>

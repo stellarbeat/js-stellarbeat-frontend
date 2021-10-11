@@ -207,15 +207,15 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
     return undefined;
   }
 
-  mapViewGraph(vertices: any, edges: any) {
-    vertices.forEach((updatedVertex: any) => {
+  mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
+    vertices.forEach((updatedVertex: ViewVertex) => {
       let vertex = this.viewGraph.viewVertices.get(updatedVertex.key);
       if (!vertex) return;
       vertex.x = updatedVertex.x;
       vertex.y = updatedVertex.y;
     });
 
-    edges.forEach((updatedEdge: any) => {
+    edges.forEach((updatedEdge: ViewEdge) => {
       let edge = this.viewGraph.viewEdges.get(updatedEdge.key);
       if (!edge) return;
       edge.source = updatedEdge.source;

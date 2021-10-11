@@ -195,7 +195,7 @@ export default class OrganizationsTable extends Vue {
   @Prop({ default: "" })
   public filter!: string;
   @Prop()
-  public fields!: any;
+  public fields!: unknown;
   @Prop()
   public organizations!: Organization[];
   @Prop({ default: 200 })

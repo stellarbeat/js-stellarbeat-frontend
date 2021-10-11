@@ -73,6 +73,7 @@ import {
   BButtonGroup,
 } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
+import { Dictionary } from "vue-router/types/router";
 
 @Component({
   name: "date-navigator",
@@ -179,7 +180,7 @@ export default class DateNavigator extends Vue {
     this.$router.push({
       name: this.$route.name ? this.$route.name : undefined,
       params: this.$route.params,
-      query: query,
+      query: query as Dictionary<string>,
     });
   }
 

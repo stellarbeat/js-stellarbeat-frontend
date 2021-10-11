@@ -134,7 +134,7 @@ import {
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
 
-const _HaltingAnalysisWorker: any = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
+const _HaltingAnalysisWorker = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 
 @Component({
   name: "halting-analysis",
@@ -261,7 +261,7 @@ export default class HaltingAnalysis extends Vue {
         this.network.getNodeByPublicKey(vertex.key)
       )
         ? this.mapQuorumSetToNetworkQuorumSet(
-            this.network.getNodeByPublicKey(vertex.key)!.quorumSet
+            this.network.getNodeByPublicKey(vertex.key).quorumSet
           )
         : undefined,
     } as NetworkGraphNode;
@@ -282,7 +282,7 @@ export default class HaltingAnalysis extends Vue {
 
   mounted() {
     this.haltingAnalysisWorker.onmessage = (event: {
-      data: { type: string; failures: any };
+      data: { type: string; failures: PublicKey[][] };
     }) => {
       switch (event.data.type) {
         case "end":
@@ -293,9 +293,8 @@ export default class HaltingAnalysis extends Vue {
                   value: failure,
                   text: failure
                     .map((publicKey) =>
-                      this.network.getNodeByPublicKey(publicKey)!.name
-                        ? this.network.getNodeByPublicKey(publicKey)!
-                            .displayName
+                      this.network.getNodeByPublicKey(publicKey).name
+                        ? this.network.getNodeByPublicKey(publicKey).displayName
                         : publicKey.substr(0, 5)
                     )
                     .join(", "),

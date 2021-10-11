@@ -55,17 +55,13 @@ export default class OrganizationValidatorsDropdown extends Mixins(
   }
 
   getDisplayName(node: Node) {
-    if (node.name) return node.name;
-
-    return (
-      node.publicKey!.substr(0, 7) + "..." + node.publicKey!.substr(50, 100)
-    );
+    return node.displayName;
   }
 
   public selectValidator(validator: Node) {
     this.$router.push({
       name: "node-dashboard",
-      params: { publicKey: validator.publicKey! },
+      params: { publicKey: validator.publicKey },
       query: {
         center: "1",
         "no-scroll": "0",

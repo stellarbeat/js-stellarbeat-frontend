@@ -67,7 +67,7 @@ export default class OrganizationValidatorsDropdown extends Mixins(
   get trustedOrganizations() {
     let trustedOrganizations = new Set<Organization>();
     this.organization.validators.forEach((publicKey) => {
-      let validator = this.network.getNodeByPublicKey(publicKey)!;
+      let validator = this.network.getNodeByPublicKey(publicKey);
       this.network
         .getTrustedOrganizations(validator.quorumSet)
         .forEach((org) => {

@@ -65,10 +65,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch } from "vue-property-decorator";
+import { Component, Prop, Mixins } from "vue-property-decorator";
 import {
   Node,
-  Organization,
   QuorumSet,
   QuorumSetService,
 } from "@stellarbeat/js-stellar-domain";
@@ -106,8 +105,9 @@ export default class QuorumSetDropdown extends Mixins(DropdownMixin) {
   }
 
   get quorumSetDangers() {
+    if (!this.store.selectedNode) throw new Error("No node selected");
     return QuorumSetService.getQuorumSetDangers(
-      this.store.selectedNode!,
+      this.store.selectedNode,
       this.quorumSet,
       this.network
     );
@@ -122,7 +122,7 @@ export default class QuorumSetDropdown extends Mixins(DropdownMixin) {
     return QuorumSetService.quorumSetHasWarnings(this.quorumSet, this.network);
   }
 
-  get classObject(): any {
+  get classObject() {
     return {
       "pl-3": this.level === 1,
       "pl-4": this.level === 2,
@@ -156,7 +156,7 @@ export default class QuorumSetDropdown extends Mixins(DropdownMixin) {
 
     this.$router.push({
       name: "node-dashboard",
-      params: { publicKey: node.publicKey! },
+      params: { publicKey: node.publicKey },
       query: {
         center: "1",
         "no-scroll": "0",
@@ -178,9 +178,7 @@ export default class QuorumSetDropdown extends Mixins(DropdownMixin) {
   getDisplayName(node: Node) {
     if (node.name) return node.name;
 
-    return (
-      node.publicKey!.substr(0, 7) + "..." + node.publicKey!.substr(50, 100)
-    );
+    return node.publicKey.substr(0, 7) + "..." + node.publicKey.substr(50, 100);
   }
 
   public isOrganizationSubQuorum(quorumSet: QuorumSet): boolean {
@@ -195,8 +193,9 @@ export default class QuorumSetDropdown extends Mixins(DropdownMixin) {
     }
     let organizationId = this.network.getNodeByPublicKey(
       quorumSet.validators[0]
-    )!.organizationId!;
-    return this.network.getOrganizationById(organizationId)!.name;
+    ).organizationId as string;
+
+    return this.network.getOrganizationById(organizationId).name;
   }
 }
 </script>

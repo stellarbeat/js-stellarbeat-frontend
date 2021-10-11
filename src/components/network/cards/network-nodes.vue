@@ -48,7 +48,7 @@ export default class NetworkNodes extends Vue {
 
   protected filter = "";
 
-  get fields(): any {
+  get fields() {
     let fields = [{ key: "name", label: "Node", sortable: true }];
     if (!this.store.isSimulation) {
       fields.push({ key: "index", label: "Index", sortable: true });

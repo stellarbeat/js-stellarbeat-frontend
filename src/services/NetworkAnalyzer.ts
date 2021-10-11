@@ -1,9 +1,10 @@
 import FbasAnalysisWorker from "worker-loader?name=worker/[name].js!../workers/fbas-analysis-v3.worker.ts";
 
-const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
+const _FbasAnalysisWorker = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import { MergeBy } from "stellar_analysis";
+import { isNumber } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 export enum AutomaticNetworkAnalysis {
   Init,
@@ -27,7 +28,10 @@ export default class NetworkAnalyzer {
   constructor(network: Network) {
     this.network = network;
     this.fbasAnalysisWorker.onmessage = (event: {
-      data: { type: string; result: any };
+      data: {
+        type: string;
+        result: { analysis: FbasAnalysisWorkerResult; jobId: number };
+      };
     }) => {
       switch (event.data.type) {
         case "end": {
@@ -57,10 +61,14 @@ export default class NetworkAnalyzer {
                   analysisResult.topTierSize;
                 this.network.networkStatistics.hasQuorumIntersection =
                   analysisResult.hasQuorumIntersection;
+                if (!isNumber(analysisResult.minimalBlockingSetsMinSize))
+                  throw new Error(
+                    "minimalBlockingSetsMinSize cannot be empty in automatic analysis"
+                  );
                 this.network.networkStatistics.minBlockingSetFilteredSize =
-                  analysisResult.minimalBlockingSetsMinSize!;
+                  analysisResult.minimalBlockingSetsMinSize;
                 this.network.networkStatistics.minSplittingSetSize =
-                  analysisResult.minimalSplittingSetsMinSize!;
+                  analysisResult.minimalSplittingSetsMinSize;
                 this.analyzeOrganizations();
                 break;
               case AutomaticNetworkAnalysis.AnalyzingOrganizations:

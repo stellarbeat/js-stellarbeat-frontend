@@ -21,7 +21,7 @@ export default class LocalNetworks {
         validators: ["sdf1", "sdf2"],
         subQuorumAvailable: true,
       },
-    ].map((organization) => Organization.fromJSON(organization)!);
+    ].map((organization) => Organization.fromJSON(organization));
     const nodes = [
       {
         ip: "localhost",
@@ -223,7 +223,7 @@ export default class LocalNetworks {
         validators: ["sdf1", "sdf2", "sdf3"],
         subQuorumAvailable: true,
       },
-    ].map((organization) => Organization.fromJSON(organization)!);
+    ].map((organization) => Organization.fromJSON(organization));
     const nodes = [
       {
         ip: "localhost",

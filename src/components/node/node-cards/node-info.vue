@@ -118,7 +118,7 @@ export default class NodeInfo extends Vue {
   }
 
   copyPublicKey() {
-    this.$copyText(this.node.publicKey!);
+    this.$copyText(this.node.publicKey);
   }
 }
 </script>

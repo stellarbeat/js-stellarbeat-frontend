@@ -2,8 +2,8 @@ import { Edge, Network, TrustGraph } from "@stellarbeat/js-stellar-domain";
 
 export default class ViewEdge {
   key: string;
-  source: any; //key is replaced by object in d3
-  target: any; //key is replaced by object in d3
+  source: Record<string, unknown> | string; //key is replaced by object in d3
+  target: Record<string, unknown> | string; //key is replaced by object in d3
   parent: string;
   child: string;
   isPartOfStronglyConnectedComponent = false;
@@ -11,6 +11,8 @@ export default class ViewEdge {
   highlightAsTrusting = false;
   highlightAsTrusted = false;
   isFailing = false;
+  x?: number;
+  y?: number;
 
   constructor(source: string, target: string) {
     this.source = source;
@@ -29,10 +31,11 @@ export default class ViewEdge {
 
     return viewEdge;
   }
+
   static fromNodeEdge(edge: Edge, trustGraph: TrustGraph, network: Network) {
     const viewEdge = ViewEdge.fromEdge(edge, trustGraph);
-    const source = network.getNodeByPublicKey(edge.parent.key)!;
-    const target = network.getNodeByPublicKey(edge.child.key)!;
+    const source = network.getNodeByPublicKey(edge.parent.key);
+    const target = network.getNodeByPublicKey(edge.child.key);
     if (network.isNodeFailing(source) || network.isNodeFailing(target))
       viewEdge.isFailing = true;
 
@@ -46,8 +49,8 @@ export default class ViewEdge {
   ) {
     const viewEdge = ViewEdge.fromEdge(edge, trustGraph);
 
-    const source = network.getOrganizationById(edge.parent.key)!;
-    const target = network.getOrganizationById(edge.child.key)!;
+    const source = network.getOrganizationById(edge.parent.key);
+    const target = network.getOrganizationById(edge.child.key);
     if (!(source.subQuorumAvailable && target.subQuorumAvailable))
       viewEdge.isFailing = true;
 

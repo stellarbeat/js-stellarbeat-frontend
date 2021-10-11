@@ -122,7 +122,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { Network, Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 
 import {
@@ -148,7 +148,7 @@ export default class NodesTable extends Vue {
   @Prop({ default: "" })
   public filter!: string;
   @Prop()
-  public fields!: any;
+  public fields!: unknown;
   @Prop()
   public nodes!: Node[];
   @Prop({ default: 200 })

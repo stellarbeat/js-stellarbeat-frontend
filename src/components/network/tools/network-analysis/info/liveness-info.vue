@@ -78,7 +78,8 @@ import { StoreMixin } from "@/mixins/StoreMixin";
 })
 export default class LivenessInfo extends Mixins(StoreMixin) {
   hideModal() {
-    (this.$refs["network-analysis-liveness-info"] as any).hide();
+    //@ts-ignore
+    this.$refs["network-analysis-liveness-info"].hide();
   }
 }
 </script>

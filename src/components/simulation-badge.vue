@@ -13,19 +13,16 @@
 <script lang="ts">
 import Store from "@/store/Store";
 import { BIconX } from "bootstrap-vue";
+import Vue from "vue";
+import { Component } from "vue-property-decorator";
 
-export default {
-  name: "simulation-badge",
+@Component({
   components: { BIconX: BIconX },
-  computed: {
-    store(): Store {
-      return (this as any).$root.$data.store;
-    },
-  },
-};
-</script>
-<style scoped>
-.tag-close-btn {
-  text-decoration: none;
+})
+export default class SimulationBadge extends Vue {
+  get store(): Store {
+    return this.$root.$data.store;
+  }
 }
-</style>
+</script>
+<style scoped></style>

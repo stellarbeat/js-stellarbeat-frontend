@@ -127,7 +127,7 @@ export default class OrganizationActions extends Mixins(StoreMixin) {
   get trustedOrganizationIds() {
     let trustedOrganizationIds = new Set<string>();
     this.organization.validators.forEach((publicKey) => {
-      let validator = this.network.getNodeByPublicKey(publicKey)!;
+      let validator = this.network.getNodeByPublicKey(publicKey);
       this.network
         .getTrustedOrganizations(validator.quorumSet)
         .forEach((org) => {

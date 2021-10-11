@@ -97,7 +97,7 @@ export default class NodeActions extends Vue {
   }
 
   copyPublicKey() {
-    this.$copyText(this.node.publicKey!);
+    this.$copyText(this.node.publicKey);
   }
 }
 </script>

@@ -16,7 +16,7 @@ import NodesTable from "@/components/node/nodes-table.vue";
 export default class OrganizationValidators extends Vue {
   @Prop()
   organization!: Organization;
-  get fields(): any[] {
+  get fields() {
     let fields = [{ key: "name", label: "Validator" }, "country", "isp"];
     if (!this.store.isSimulation) {
       fields.push(
@@ -39,7 +39,7 @@ export default class OrganizationValidators extends Vue {
 
   get validators() {
     return this.organization.validators
-      .map((publicKey) => this.network.getNodeByPublicKey(publicKey)!)
+      .map((publicKey) => this.network.getNodeByPublicKey(publicKey))
       .map((validator) => {
         return {
           isFullValidator: validator.isFullValidator,

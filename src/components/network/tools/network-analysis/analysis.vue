@@ -63,7 +63,6 @@ import {
   BCardHeader,
   VBTooltip,
 } from "bootstrap-vue";
-import { Node, PublicKey } from "@stellarbeat/js-stellar-domain";
 import { StoreMixin } from "@/mixins/StoreMixin";
 
 @Component({
@@ -94,7 +93,7 @@ export default class Analysis extends Mixins(StoreMixin) {
   @Prop({ default: false })
   showNodesPartition!: boolean;
 
-  protected fields: any = [
+  protected fields = [
     {
       key: "key",
       label: this.title,

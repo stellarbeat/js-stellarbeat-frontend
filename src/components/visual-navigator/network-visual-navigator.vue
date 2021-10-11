@@ -282,7 +282,7 @@ export default class NetworkVisualNavigator extends Vue {
         crumbs.push({
           text: this.network.getOrganizationById(
             this.selectedNode.organizationId
-          )!.name,
+          ).name,
           to: {
             name: "organization-dashboard",
             params: {

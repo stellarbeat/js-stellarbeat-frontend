@@ -12,12 +12,7 @@
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
 import Vue from "vue";
-import {
-  Network,
-  Node,
-  Organization,
-  QuorumSet,
-} from "@stellarbeat/js-stellar-domain";
+import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge } from "bootstrap-vue";
@@ -29,7 +24,7 @@ export default class NodeTrustedBy extends Vue {
   @Prop()
   node!: Node;
 
-  get fields(): any {
+  get fields() {
     let fields = [{ key: "name", label: "Node", sortable: true }];
 
     if (!this.store.isSimulation)

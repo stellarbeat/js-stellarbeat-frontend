@@ -116,7 +116,7 @@ export default class Nodes extends Mixins(StoreMixin) {
   public optionShowWatchers = false;
   public filter = "";
 
-  get fields(): any {
+  get fields() {
     if (this.store.isSimulation) {
       return [
         { key: "name", sortable: true },
@@ -159,7 +159,7 @@ export default class Nodes extends Mixins(StoreMixin) {
     }
   }
 
-  get nodes(): any[] {
+  get nodes() {
     return this.network.nodes
       .filter((node) => node.active || this.optionShowInactive)
       .filter((node) => node.isValidator || this.optionShowWatchers)

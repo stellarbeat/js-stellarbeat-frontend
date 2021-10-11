@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop, Model } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 import { Node } from "@stellarbeat/js-stellar-domain";
 import {
@@ -95,7 +95,7 @@ export default class AddValidatorsTable extends Vue {
     { key: "version", sortable: true },
   ];
 
-  get nodes(): any[] {
+  get nodes() {
     return this.validators.map((node) => {
       return {
         name: node.displayName,
@@ -111,10 +111,12 @@ export default class AddValidatorsTable extends Vue {
     this.$emit("validators-selected", items);
   }
 
-  public onFiltered = (filteredItems: any[]) => {
+  public onFiltered = (filteredItems: unknown[]) => {
     this.totalRows = 1;
-    (this.$refs.paginator as any)._data.currentPage = 1;
-    (this.$refs.paginator as any)._data.localNumPages = Math.round(
+    //@ts-ignore
+    this.$refs.paginator._data.currentPage = 1;
+    //@ts-ignore
+    this.$refs.paginator._data.localNumPages = Math.round(
       filteredItems.length / this.perPage
     );
     //reactivity doesn't work on currentPage and totalRows. why?

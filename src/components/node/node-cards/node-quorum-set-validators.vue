@@ -34,12 +34,7 @@
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
 import Vue from "vue";
-import {
-  Network,
-  Node,
-  Organization,
-  QuorumSet,
-} from "@stellarbeat/js-stellar-domain";
+import { Network, Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
@@ -53,7 +48,7 @@ export default class NodeQuorumSetValidators extends Vue {
 
   protected filter = "";
 
-  get fields(): any {
+  get fields() {
     if (!this.store.isSimulation) {
       return [
         { key: "name", label: "Quorumset validator", sortable: true },
@@ -91,7 +86,7 @@ export default class NodeQuorumSetValidators extends Vue {
 
   get validators() {
     return QuorumSet.getAllValidators(this.node.quorumSet)
-      .map((publicKey) => this.network.getNodeByPublicKey(publicKey)!)
+      .map((publicKey) => this.network.getNodeByPublicKey(publicKey))
       .map((validator) => {
         return {
           isFullValidator: validator.isFullValidator,

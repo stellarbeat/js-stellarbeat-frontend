@@ -77,9 +77,9 @@ export default class OrganizationValidatorsDropdown extends Mixins(
     if (validator.name) return validator.name;
 
     return (
-      validator.publicKey!.substr(0, 7) +
+      validator.publicKey.substr(0, 7) +
       "..." +
-      validator.publicKey!.substr(50, 100)
+      validator.publicKey.substr(50, 100)
     );
   }
 
@@ -92,7 +92,7 @@ export default class OrganizationValidatorsDropdown extends Mixins(
 
     this.$router.push({
       name: "node-dashboard",
-      params: { publicKey: validator.publicKey! },
+      params: { publicKey: validator.publicKey },
       query: {
         center: "1",
         "no-scroll": "1",

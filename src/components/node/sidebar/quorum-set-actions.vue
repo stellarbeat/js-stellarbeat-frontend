@@ -226,11 +226,13 @@ export default class QuorumSetActions extends Vue {
   }
 
   public get possibleValidatorsToAdd() {
+    const selectedNode = this.store.selectedNode;
+    if (!selectedNode) throw new Error("No selected node");
     return this.store.network.nodes.filter(
       (node: Node) =>
         node.isValidator &&
-        QuorumSet.getAllValidators(this.store.selectedNode!.quorumSet).indexOf(
-          node.publicKey!
+        QuorumSet.getAllValidators(selectedNode.quorumSet).indexOf(
+          node.publicKey
         ) < 0
     );
   }
@@ -262,7 +264,8 @@ export default class QuorumSetActions extends Vue {
 
     this.inputState = null;
     this.editingThreshold = false;
-    (this.$refs.dropdown as any).hide(true);
+    //@ts-ignore
+    this.$refs.dropdown.hide(true);
     this.store.editQuorumSetThreshold(
       this.quorumSet,
       Number(this.newThreshold)
@@ -271,7 +274,7 @@ export default class QuorumSetActions extends Vue {
 
   onValidatorsSelected(validators: Node[]) {
     this.validatorsToAdd = validators.map(
-      (validator: Node) => validator.publicKey!
+      (validator: Node) => validator.publicKey
     );
   }
 
@@ -279,14 +282,14 @@ export default class QuorumSetActions extends Vue {
     this.organizationsToAdd = organizations;
   }
 
-  validatorsToAddModalOk(bvEvent: any, modalId: string) {
+  validatorsToAddModalOk() {
     if (this.validatorsToAdd.length > 0) {
       this.addValidatorsToQuorumSet(this.quorumSet, this.validatorsToAdd);
       this.$emit("expand");
     }
   }
 
-  organizationsToAddModalOk(bvEvent: any, modalId: string) {
+  organizationsToAddModalOk() {
     if (this.organizationsToAdd.length > 0) {
       this.addOrganizationsToQuorumSet(this.quorumSet, this.organizationsToAdd);
     }

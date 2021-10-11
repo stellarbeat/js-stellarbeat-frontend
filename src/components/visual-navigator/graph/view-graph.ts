@@ -1,8 +1,4 @@
-import {
-  Network,
-  TrustGraph,
-  TrustGraphBuilder,
-} from "@stellarbeat/js-stellar-domain";
+import { Network, TrustGraph } from "@stellarbeat/js-stellar-domain";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 
@@ -47,8 +43,12 @@ export default class ViewGraph {
     trustGraph.vertices.forEach((vertex) => {
       const viewVertex = ViewVertex.fromVertex(vertex, trustGraph, network);
       if (mergeWithGraph && mergeWithGraph.viewVertices.has(viewVertex.key)) {
-        viewVertex.x = mergeWithGraph.viewVertices.get(viewVertex.key)!.x;
-        viewVertex.y = mergeWithGraph.viewVertices.get(viewVertex.key)!.y;
+        viewVertex.x = (
+          mergeWithGraph.viewVertices.get(viewVertex.key) as ViewVertex
+        ).x;
+        viewVertex.y = (
+          mergeWithGraph.viewVertices.get(viewVertex.key) as ViewVertex
+        ).y;
       }
 
       viewGraph.viewVertices.set(viewVertex.key, viewVertex);
@@ -62,7 +62,9 @@ export default class ViewGraph {
           .filter(
             (vertexKey) => !trustGraph.networkTransitiveQuorumSet.has(vertexKey)
           )
-          .map((vertexKey) => viewGraph.viewVertices.get(vertexKey)!);
+          .map(
+            (vertexKey) => viewGraph.viewVertices.get(vertexKey) as ViewVertex
+          );
       });
 
     return viewGraph;
@@ -93,8 +95,10 @@ export default class ViewGraph {
         network
       );
       if (mergeWithGraph && mergeWithGraph.viewVertices.has(viewVertex.key)) {
-        viewVertex.x = mergeWithGraph.viewVertices.get(viewVertex.key)!.x;
-        viewVertex.y = mergeWithGraph.viewVertices.get(viewVertex.key)!.y;
+        const mergeVertex = mergeWithGraph.viewVertices.get(viewVertex.key);
+        if (!mergeVertex) throw Error("Could not merge with graph");
+        viewVertex.x = mergeVertex.x;
+        viewVertex.y = mergeVertex.y;
       }
       viewGraph.viewVertices.set(vertex.key, viewVertex);
       viewGraph.classifyVertex(viewVertex, selectedKeys);
@@ -107,7 +111,9 @@ export default class ViewGraph {
           .filter(
             (vertexKey) => !trustGraph.networkTransitiveQuorumSet.has(vertexKey)
           )
-          .map((vertexKey) => viewGraph.viewVertices.get(vertexKey)!);
+          .map(
+            (vertexKey) => viewGraph.viewVertices.get(vertexKey) as ViewVertex
+          );
       });
 
     return viewGraph;

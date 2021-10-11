@@ -66,7 +66,8 @@ import { StoreMixin } from "@/mixins/StoreMixin";
 })
 export default class TopTierInfo extends Mixins(StoreMixin) {
   hideModal() {
-    (this.$refs["network-analysis-top-tier-info"] as any).hide();
+    //@ts-ignore
+    this.$refs["network-analysis-top-tier-info"].hide();
   }
 }
 </script>

@@ -140,6 +140,7 @@
 
 <script lang="ts">
 import {
+  Chart,
   ChartData,
   ChartDataSets,
   ChartLegendLabelItem,
@@ -219,24 +220,25 @@ export default class NetworkAnalysis extends Mixins(
   }
 
   updateHiddenStatus(toBucketSize: string) {
+    if (!this.hour24ChartDataSets) return;
     if (this.bucketSize === "24H") {
-      this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets![0].hidden!;
-      this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets![1].hidden!;
-      this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets![2]
-        ? this.hour24ChartDataSets![2].hidden!
+      this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets[0].hidden;
+      this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets[1].hidden;
+      this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets[2]
+        ? this.hour24ChartDataSets[2].hidden
         : false;
-      this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets![3]
-        ? this.hour24ChartDataSets![3].hidden!
+      this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets[3]
+        ? this.hour24ChartDataSets[3].hidden
         : false;
     }
     if (toBucketSize === "24H") {
-      this.hour24ChartDataSets![0].hidden! = this.aggregatedDataSets[0].hidden!;
-      this.hour24ChartDataSets![1].hidden! = this.aggregatedDataSets[3].hidden!;
-      this.hour24ChartDataSets![2].hidden! = this.aggregatedDataSets[6]
-        ? this.aggregatedDataSets[6].hidden!
+      this.hour24ChartDataSets[0].hidden = this.aggregatedDataSets[0].hidden;
+      this.hour24ChartDataSets[1].hidden = this.aggregatedDataSets[3].hidden;
+      this.hour24ChartDataSets[2].hidden = this.aggregatedDataSets[6]
+        ? this.aggregatedDataSets[6].hidden
         : false;
-      this.hour24ChartDataSets![3].hidden! = this.aggregatedDataSets[9]
-        ? this.aggregatedDataSets[9].hidden!
+      this.hour24ChartDataSets[3].hidden = this.aggregatedDataSets[9]
+        ? this.aggregatedDataSets[9].hidden
         : false;
     }
   }
@@ -251,7 +253,7 @@ export default class NetworkAnalysis extends Mixins(
     this.bucketSize = "1Y";
   }
 
-  aggregatedChartLabelFilter(legendItem: ChartLegendLabelItem): any {
+  aggregatedChartLabelFilter(legendItem: ChartLegendLabelItem) {
     if ([0, 3, 6, 9].includes(legendItem.datasetIndex as number)) return true; //don't show labels for the min max as they are auxiliary lines
   }
 
@@ -671,23 +673,29 @@ export default class NetworkAnalysis extends Mixins(
   }
 
   getAggregatedLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
-    let avg =
-      //@ts-ignore
-      data.datasets[tooltipItem.datasetIndex]!.data![tooltipItem.index!]!.y;
-    let min =
-      //@ts-ignore
-      data.datasets[tooltipItem.datasetIndex + 1]!.data![tooltipItem.index!]!.y;
-    let max =
-      //@ts-ignore
-      data.datasets[tooltipItem.datasetIndex + 2]!.data![tooltipItem.index!]!.y;
+    if (!data.datasets || !tooltipItem.datasetIndex || !tooltipItem.index)
+      return;
+    let dataSet = data.datasets[tooltipItem.datasetIndex];
+    if (!dataSet.data) return;
+    let avg = (dataSet.data[tooltipItem.index] as Chart.ChartPoint).y;
+    let dataSet2 = data.datasets[tooltipItem.datasetIndex];
+    if (!dataSet2.data) return;
+    let min = (dataSet2.data[tooltipItem.index] as Chart.ChartPoint).y;
+    let dataSet3 = data.datasets[tooltipItem.datasetIndex];
+    if (!dataSet3.data) return;
+    let max = (dataSet3.data[tooltipItem.index] as Chart.ChartPoint).y;
 
     return `Average: ${avg}; Min: ${min}; Max: ${max}`;
   }
 
   getLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
-    //@ts-ignore
-    return data.datasets![tooltipItem.datasetIndex]!.data![tooltipItem.index!]!
-      .y;
+    if (!data.datasets || !tooltipItem.datasetIndex || !tooltipItem.index)
+      return;
+    let dataSet = data.datasets[tooltipItem.datasetIndex];
+
+    if (dataSet.data === undefined) return;
+
+    return (dataSet.data[tooltipItem.index] as Chart.ChartPoint).y;
   }
 
   async select30DayView(time?: Date) {
@@ -790,7 +798,7 @@ export default class NetworkAnalysis extends Mixins(
           startOfDay,
           tomorrow
         );
-      this.updateDataInDataSets(this.hour24ChartDataSets!);
+      this.updateDataInDataSets(this.hour24ChartDataSets as ChartDataSets[]);
     } catch (e) {
       this.failed = true;
     }

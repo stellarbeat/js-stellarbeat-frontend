@@ -129,17 +129,19 @@ export default class OrganizationSideBar extends Vue {
   }
 
   get selectedOrganization() {
+    if (!this.store.selectedOrganization)
+      throw new Error("No organization selected");
     return this.store.selectedOrganization;
   }
 
   get validators() {
-    return this.selectedOrganization!.validators.map(
-      (validator) => this.network.getNodeByPublicKey(validator)!
+    return this.selectedOrganization.validators.map((validator) =>
+      this.network.getNodeByPublicKey(validator)
     );
   }
 
   get organizationType() {
-    return this.selectedOrganization!.isTierOneOrganization
+    return this.selectedOrganization.isTierOneOrganization
       ? "T1 Organization"
       : "Organization";
   }
@@ -156,11 +158,11 @@ export default class OrganizationSideBar extends Vue {
 
   get failAt() {
     let nrOfValidatingNodes = this.validators.filter(
-      (node) => node!.isValidating
+      (node) => node.isValidating
     ).length;
 
     return (
-      nrOfValidatingNodes - this.selectedOrganization!.subQuorumThreshold + 1
+      nrOfValidatingNodes - this.selectedOrganization.subQuorumThreshold + 1
     );
   }
 }

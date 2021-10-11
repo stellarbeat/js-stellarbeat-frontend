@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 import { mixins } from "vue-class-component";
 import { Organization } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
@@ -58,11 +58,6 @@ import OrganizationActions from "@/components/organization/sidebar/organization-
 export default class OrganizationsDropdown extends mixins(DropdownMixin) {
   @Prop()
   public organizations!: Organization[];
-
-  @Watch("showing", { deep: true })
-  onShow(prev: boolean) {
-    console.log(3);
-  }
 
   get paginatedOrganizations() {
     return this.paginate(this.organizations).sort(
@@ -93,13 +88,9 @@ export default class OrganizationsDropdown extends mixins(DropdownMixin) {
   public getFailAt(organization: Organization) {
     let nrOfValidatingNodes = organization.validators
       .map((validator) => this.network.getNodeByPublicKey(validator))
-      .filter((validator) => validator !== undefined)
-      .filter((node) => node!.isValidating).length;
+      .filter((node) => node.isValidating).length;
 
     return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
-  }
-  mounted() {
-    console.log(this.showing);
   }
 }
 </script>

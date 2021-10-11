@@ -173,7 +173,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+import { Component } from "vue-property-decorator";
 import HistoryCard from "@/components/charts/history-card.vue";
 import Store from "@/store/Store";
 import NodeInfo from "@/components/node/node-cards/node-info.vue";
@@ -189,7 +189,7 @@ import NodeTrustedBy from "@/components/node/node-cards/node-trusted-by.vue";
 import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
-import { Network, QuorumSetService } from "@stellarbeat/js-stellar-domain";
+import { Network } from "@stellarbeat/js-stellar-domain";
 
 @Component({
   components: {

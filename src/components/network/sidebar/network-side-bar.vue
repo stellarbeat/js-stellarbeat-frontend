@@ -134,7 +134,7 @@ export default class NetworkSideBar extends Vue {
   get networkTransitiveQuorumSetNodes() {
     return Array.from(
       this.network.nodesTrustGraph.networkTransitiveQuorumSet
-    ).map((publicKey) => this.network.getNodeByPublicKey(publicKey)!);
+    ).map((publicKey) => this.network.getNodeByPublicKey(publicKey));
   }
 
   //todo: move to domain
@@ -144,7 +144,7 @@ export default class NetworkSideBar extends Vue {
         this.networkTransitiveQuorumSetNodes
           .filter((node) => node && node.organizationId)
           .map((node) =>
-            this.network.getOrganizationById(node!.organizationId!)
+            this.network.getOrganizationById(node.organizationId as string)
           )
       ),
     ];
