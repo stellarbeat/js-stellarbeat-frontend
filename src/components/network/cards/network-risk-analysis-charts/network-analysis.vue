@@ -197,7 +197,7 @@ export default class NetworkAnalysis extends Mixins(
   protected hour24Statistics: NetworkStatistics[] = [];
   protected initialDataLoaded = false;
   protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
-  protected bucketSize!: string;
+  protected bucketSize = "30D";
   protected failed = false;
   animated = false;
   protected showModal = false;
@@ -678,10 +678,10 @@ export default class NetworkAnalysis extends Mixins(
     let dataSet = data.datasets[tooltipItem.datasetIndex];
     if (!dataSet.data) return;
     let avg = (dataSet.data[tooltipItem.index] as Chart.ChartPoint).y;
-    let dataSet2 = data.datasets[tooltipItem.datasetIndex];
+    let dataSet2 = data.datasets[tooltipItem.datasetIndex + 1];
     if (!dataSet2.data) return;
     let min = (dataSet2.data[tooltipItem.index] as Chart.ChartPoint).y;
-    let dataSet3 = data.datasets[tooltipItem.datasetIndex];
+    let dataSet3 = data.datasets[tooltipItem.datasetIndex + 2];
     if (!dataSet3.data) return;
     let max = (dataSet3.data[tooltipItem.index] as Chart.ChartPoint).y;
 
@@ -699,9 +699,9 @@ export default class NetworkAnalysis extends Mixins(
   }
 
   async select30DayView(time?: Date) {
-    this.updateHiddenStatus("30D");
     if (time instanceof Date) this.selectedDate = time;
     await this.updateDays30Chart();
+    this.updateHiddenStatus("30D");
     this.bucketSize = "30D";
   }
 
