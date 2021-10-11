@@ -90,7 +90,7 @@ import moment from "moment";
 import DateNavigator from "@/components/date-navigator.vue";
 import BarChartDay from "@/components/charts/bar-chart-day.vue";
 import LineChartHour from "@/components/charts/line-chart-hour.vue";
-import { StatisticsAggregation, Statistics } from "@/store/StatisticsStore";
+import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
 
 import { BButton, BButtonGroup, BIconExclamationCircle } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
@@ -112,11 +112,11 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   @Prop()
   subject!: string;
   @Prop()
-  fetchDayMeasurements!: (
+  fetchDayMeasurements!: <T extends StatisticsAggregation>(
     id: string,
     from: Date,
     to: Date
-  ) => Promise<Statistics[]>;
+  ) => Promise<T[]>;
   @Prop()
   fetchMeasurements!: (
     id: string,
@@ -132,7 +132,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   @Prop({ default: false })
   inverted!: boolean;
 
-  thirtyDayMeasurements: Statistics[] = [];
+  thirtyDayMeasurements: StatisticsAggregation[] = [];
   twentyFourHourMeasurements: Statistics[] = [];
   statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
     this.store.measurementsStartDate
@@ -174,7 +174,6 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
 
   async updateSelectedDate(newDate: string) {
     this.selectedDate = new Date(newDate);
-    console.log(this.selectedDate);
     if (this.chartView === "30D") await this.updateDayHistoryChart();
     else await this.update24HourHistoryChart();
   }
@@ -196,22 +195,6 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
 
   get store(): Store {
     return this.$root.$data.store;
-  }
-
-  async goBack() {
-    this.selectedDate = this.statisticsDateTimeNavigator.goBack(
-      this.chartView,
-      this.selectedDate
-    );
-    await this.updateCharts();
-  }
-
-  async goForward() {
-    this.selectedDate = this.statisticsDateTimeNavigator.goForward(
-      this.chartView,
-      this.selectedDate
-    );
-    await this.updateCharts();
   }
 
   async updateCharts() {
@@ -255,6 +238,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   }
 
   get thirtyDaysBarChartData(): { t: Date; y: number }[] {
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     return this.thirtyDayMeasurements.map((measurement: any) => {
       if (!this.inverted) {
         return {
@@ -285,15 +269,15 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
 
   get twentyFourHourBarChartData(): { t: Date; y: number }[] {
     let twentyFourHourMap = new Map<string, number[]>();
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
     this.twentyFourHourMeasurements.forEach((measurement: any) => {
       let hourBucketString = moment(measurement.time)
         .startOf("hour")
         .toISOString();
-      if (!twentyFourHourMap.get(hourBucketString))
-        twentyFourHourMap.set(hourBucketString, []);
-      twentyFourHourMap
-        .get(hourBucketString)!
-        .push(measurement[this.measurementProperty]);
+      let twentyFourHourValue = twentyFourHourMap.get(hourBucketString);
+      if (twentyFourHourValue === undefined) twentyFourHourValue = [];
+      twentyFourHourValue.push(measurement[this.measurementProperty]);
+      twentyFourHourMap.set(hourBucketString, twentyFourHourValue);
     });
 
     let twentyFourHourAverages: { t: Date; y: number }[] = [];
@@ -357,8 +341,4 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   }
 }
 </script>
-<style scoped>
-.dimmer.active .dimmer-content {
-  opacity: 0.4;
-}
-</style>
+<style scoped></style>

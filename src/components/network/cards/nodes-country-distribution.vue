@@ -37,8 +37,10 @@ export default class NodesCountryDistribution extends Vue {
 
   @Watch("store.includeWatcherNodes")
   protected onWatcherNodesOptionChanged() {
-    this.chart!.data.datasets![0].data = this.chartData;
-    this.chart!.update();
+    if (!this.chart || !this.chart.data.datasets) return;
+
+    this.chart.data.datasets[0].data = this.chartData;
+    this.chart.update();
   }
 
   get sortedCountries() {
@@ -89,7 +91,7 @@ export default class NodesCountryDistribution extends Vue {
     return labels;
   }
 
-  initializeDoghnut() {
+  initializeDoughnut() {
     if (this.sortedCountries.length === 0) {
       return;
     }
@@ -148,7 +150,7 @@ export default class NodesCountryDistribution extends Vue {
   }
 
   mounted() {
-    this.initializeDoghnut();
+    this.initializeDoughnut();
   }
 
   beforeDestroy() {

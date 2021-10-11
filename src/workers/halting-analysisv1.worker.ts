@@ -1,6 +1,7 @@
 import { haltingAnalysis } from "@stellar/halting-analysis/src";
 
-const ctx: Worker = self as any;
+// @ts-ignore
+const ctx: Worker = self;
 
 ctx.addEventListener("message", (event) => {
   const networkGraphNodes = event.data.networkGraphNodes;

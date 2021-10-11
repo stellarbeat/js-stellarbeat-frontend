@@ -4,10 +4,29 @@ import {
   forceLink,
   forceX,
   forceY,
+  SimulationLinkDatum,
+  SimulationNodeDatum,
 } from "d3-force";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
+import ViewEdge from "@/components/visual-navigator/graph/view-edge";
+import { isObject } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
-const ctx: Worker = self as any;
+//@ts-ignore
+const ctx: Worker = self;
+
+function isViewEdge(edge: unknown): edge is ViewEdge {
+  if (isObject(edge))
+    return (
+      typeof edge.isPartOfTransitiveQuorumSet === "boolean" &&
+      typeof edge.isPartOfStronglyConnectedComponent === "boolean"
+    );
+  return false;
+}
+
+function isViewVertex(vertex: unknown): vertex is ViewVertex {
+  if (isObject(vertex)) return typeof vertex.key === "string";
+  return false;
+}
 
 ctx.addEventListener("message", (event) => {
   const vertices = event.data.vertices;
@@ -27,7 +46,8 @@ ctx.addEventListener("message", (event) => {
     .force(
       "link",
       forceLink(edges)
-        .strength((edge: any) => {
+        .strength((edge: SimulationLinkDatum<SimulationNodeDatum>) => {
+          if (!isViewEdge(edge)) throw new Error("Not a view edge");
           if (edge.isPartOfTransitiveQuorumSet) {
             return (1 / nrOfTransitiveVertices) * 0.17;
           } else if (edge.isPartOfStronglyConnectedComponent) {
@@ -36,7 +56,8 @@ ctx.addEventListener("message", (event) => {
             return 0.001113;
           }
         })
-        .id((d: any) => {
+        .id((d) => {
+          if (!isViewVertex(d)) throw new Error("Not a ViewVertex");
           return d.key;
         })
     )

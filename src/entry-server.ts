@@ -1,5 +1,6 @@
 import createApp from "./app";
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export default (context: any) => {
   // since there could potentially be asynchronous route hooks or components,
   // we will be returning a Promise so that the server can wait until
@@ -10,7 +11,8 @@ export default (context: any) => {
     const meta = app.$meta();
 
     // set server-side router's location
-    router.push(context.url).catch((err) => {});
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    router.push(context.url).catch(() => {});
     context.meta = meta;
     // wait until router has resolved possible async components and hooks
     router.onReady(() => {

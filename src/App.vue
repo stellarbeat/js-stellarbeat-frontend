@@ -303,6 +303,8 @@ import {
   BBadge,
 } from "bootstrap-vue";
 import Store from "@/store/Store";
+import { Route } from "vue-router";
+import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 @Component({
   name: "app",
@@ -370,7 +372,7 @@ export default class App extends Vue {
   }
 
   @Watch("$route", { immediate: false })
-  async onRouteChanged(to: any) {
+  async onRouteChanged(to: Route) {
     let networkId = this.store.networkId;
     let timeTravelDate = this.store.getDateFromParam(to.query.at);
     let timeTravel = false;
@@ -385,7 +387,10 @@ export default class App extends Vue {
     )
       timeTravel = true;
 
-    if (this.store.availableNetworks.includes(to.query.network))
+    if (
+      isString(to.query.network) &&
+      this.store.availableNetworks.includes(to.query.network)
+    )
       networkId = to.query.network;
 
     if (networkId !== this.store.networkId || timeTravel) {
@@ -429,7 +434,7 @@ export default class App extends Vue {
         name: "network-dashboard",
         query: { network: networkId },
       })
-      .catch((e) => {
+      .catch(() => {
         //this triggers a navigation guard error that we can safely ignore. See router beforeEach
       });
   }

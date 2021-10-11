@@ -33,13 +33,14 @@ export default class LineChartHour extends Vue {
 
   @Watch("data")
   onDataChanged() {
-    this.lineChart.data.datasets![0].data = this.data;
+    if (!this.lineChart.data.datasets) return;
+    this.lineChart.data.datasets[0].data = this.data;
     if (!this.inverted) {
-      this.lineChart.data.datasets![0].pointBackgroundColor = this.pointColors;
-      this.lineChart.data.datasets![0].pointBorderColor = this.pointColors;
+      this.lineChart.data.datasets[0].pointBackgroundColor = this.pointColors;
+      this.lineChart.data.datasets[0].pointBorderColor = this.pointColors;
     } else {
-      this.lineChart.data.datasets![0].pointBackgroundColor = this.pointColors;
-      this.lineChart.data.datasets![0].pointBorderColor = this.pointColors;
+      this.lineChart.data.datasets[0].pointBackgroundColor = this.pointColors;
+      this.lineChart.data.datasets[0].pointBorderColor = this.pointColors;
     }
 
     this.lineChart.update();
@@ -84,10 +85,10 @@ export default class LineChartHour extends Vue {
         onHover(
           event: MouseEvent,
           activeElements: Array<Record<string, unknown>>
-        ): any {
-          (event.target! as any).style.cursor = activeElements[0]
-            ? "pointer"
-            : "default";
+        ) {
+          if (!event.target) return;
+          //@ts-ignore
+          event.target.style.cursor = activeElements[0] ? "pointer" : "default";
         },
         onClick: (
           event?: MouseEvent,
@@ -96,19 +97,18 @@ export default class LineChartHour extends Vue {
           if (
             activeElements &&
             activeElements[0] &&
-            (activeElements[0] as any)._index >= 0
+            //@ts-ignore
+            activeElements[0]._index >= 0
           )
             this.$emit(
               "click-date",
-              this.data[(activeElements[0] as any)._index].t.getTime()
+              //@ts-ignore
+              this.data[activeElements[0]._index].t.getTime()
             );
         },
         tooltips: {
           callbacks: {
-            label(
-              tooltipItem: Chart.ChartTooltipItem,
-              data: Chart.ChartData
-            ): string | string[] {
+            label(tooltipItem: Chart.ChartTooltipItem): string | string[] {
               return tooltipItem.value === "1" ? "Yes" : "No";
             },
           },
@@ -179,7 +179,7 @@ export default class LineChartHour extends Vue {
                 fontSize: 10,
                 beginAtZero: true,
                 stepSize: 10,
-                callback: function (value, index, values) {
+                callback: function (value) {
                   return value ? "Yes" : "No";
                 },
               },

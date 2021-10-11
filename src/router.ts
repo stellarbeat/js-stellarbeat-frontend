@@ -1,9 +1,6 @@
 import Vue from "vue";
-import Router, { Route } from "vue-router";
+import Router from "vue-router";
 import Dashboard from "./views/Dashboard.vue";
-import FAQ from "./views/FAQ.vue";
-import Api from "./views/Api.vue";
-import TermsAndConditions from "./views/TermsAndConditions.vue";
 
 Vue.use(Router);
 
@@ -26,11 +23,11 @@ export function createRouter() {
               dashboard: () =>
                 import(
                   /* webpackChunkName: "network-dashboard" */ "@/components/network/network-dashboard.vue"
-                ) as any,
+                ),
               sideBar: () =>
                 import(
                   /* webpackChunkName: "network-dashboard" */ "@/components/network/sidebar/network-side-bar.vue"
-                ) as any,
+                ),
             },
             props: (route) => ({ view: route.query.view }),
             children: [],
@@ -43,11 +40,11 @@ export function createRouter() {
               dashboard: () =>
                 import(
                   /* webpackChunkName: "node-dashboard" */ "@/components/node/node-dashboard.vue"
-                ) as any,
+                ),
               sideBar: () =>
                 import(
                   /* webpackChunkName: "node-dashboard" */ "@/components/node/sidebar/node-side-bar.vue"
-                ) as any,
+                ),
             },
             props: (route) => ({ view: route.query.view }),
           },
@@ -58,11 +55,11 @@ export function createRouter() {
               dashboard: () =>
                 import(
                   /* webpackChunkName: "organization-dashboard" */ "@/components/organization/organization-dashboard.vue"
-                ) as any,
+                ),
               sideBar: () =>
                 import(
                   /* webpackChunkName: "organization-dashboard" */ "@/components/organization/sidebar/organization-side-bar.vue"
-                ) as any,
+                ),
             },
             props: (route) => ({ view: route.query.view }),
           },
@@ -72,7 +69,7 @@ export function createRouter() {
         name: "nodes",
         path: "/nodes",
         component: () =>
-          import(/* webpackChunkName: "nodes" */ "@/views/Nodes.vue") as any,
+          import(/* webpackChunkName: "nodes" */ "@/views/Nodes.vue"),
       },
       {
         name: "organizations",
@@ -80,20 +77,20 @@ export function createRouter() {
         component: () =>
           import(
             /* webpackChunkName: "organizations" */ "@/views/Organizations.vue"
-          ) as any,
+          ),
       },
 
       {
         name: "faq",
         path: "/faq",
         component: () =>
-          import(/* webpackChunkName: "faq" */ "@/views/FAQ.vue") as any,
+          import(/* webpackChunkName: "faq" */ "@/views/FAQ.vue"),
       },
       {
         name: "api",
         path: "/api",
         component: () =>
-          import(/* webpackChunkName: "api" */ "@/views/Api.vue") as any,
+          import(/* webpackChunkName: "api" */ "@/views/Api.vue"),
       },
       {
         name: "terms-and-conditions",
@@ -101,7 +98,7 @@ export function createRouter() {
         component: () =>
           import(
             /* webpackChunkName: "tac" */ "@/views/TermsAndConditions.vue"
-          ) as any,
+          ),
       },
     ],
 

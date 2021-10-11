@@ -53,7 +53,7 @@ export default class NetworkOrganizations extends Vue {
 
   protected filter = "";
 
-  get fields(): any {
+  get fields() {
     let fields = [{ key: "name", label: "Node", sortable: true }];
     //@ts-ignore
     fields.push();
@@ -98,7 +98,7 @@ export default class NetworkOrganizations extends Vue {
     ).length;
   }
 
-  get organizations(): any[] {
+  get organizations() {
     return this.network.organizations.map((organization) => {
       return {
         name: organization.name,

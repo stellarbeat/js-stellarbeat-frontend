@@ -9,7 +9,8 @@ import init, {
 } from "stellar_analysis";
 import { Node, Organization, PublicKey } from "@stellarbeat/js-stellar-domain";
 
-const ctx: Worker = self as any;
+//@ts-ignore
+const ctx: Worker = self;
 let initialized = false;
 
 export type FbasAnalysisWorkerResult = {
@@ -43,7 +44,7 @@ ctx.addEventListener("message", (event) => {
 
   if (!initialized) {
     init("stellar_analysis_bg.wasm")
-      .then((instance) => {
+      .then(() => {
         init_panic_hook();
         initialized = true;
         performAnalysis(

@@ -91,7 +91,7 @@ export default class NodesVersions extends Vue {
     return labels;
   }
 
-  initializeDoghnut() {
+  initializeDoughnut() {
     let context = (this.$refs.versionGraph as HTMLCanvasElement).getContext(
       "2d"
     );
@@ -146,7 +146,7 @@ export default class NodesVersions extends Vue {
   }
 
   mounted() {
-    this.initializeDoghnut();
+    this.initializeDoughnut();
   }
 
   beforeDestroy() {
