@@ -93,6 +93,30 @@ export function createRouter() {
           import(/* webpackChunkName: "api" */ "@/views/Api.vue"),
       },
       {
+        path: "/notify",
+        component: () =>
+          import(/* webpackChunkName: "api" */ "@/views/Notify.vue"),
+
+        children: [
+          {
+            name: "subscribe",
+            path: "",
+            component: () =>
+              import(
+                /* webpackChunkName: "notify-subscribe" */ "@/components/notify/subscribe.vue"
+              ),
+          },
+          {
+            name: "confirm",
+            path: ":pendingSubscriptionId/confirm",
+            component: () =>
+              import(
+                /* webpackChunkName: "notify-subscription-confirmed" */ "@/components/notify/confirm.vue"
+              ),
+          },
+        ],
+      },
+      {
         name: "terms-and-conditions",
         path: "/terms-and-conditions",
         component: () =>
