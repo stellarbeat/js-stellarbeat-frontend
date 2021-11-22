@@ -5,7 +5,11 @@
 </template>
 
 <script lang="ts">
-import Chart, { ChartDataSets, ChartPoint, instances } from "chart.js";
+import Chart, {
+  ChartDataSets,
+  ChartLegendLabelItem,
+  ChartPoint,
+} from "chart.js";
 
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
@@ -19,10 +23,6 @@ import {
   BButtonGroup,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
-import {
-  isObject,
-  isString,
-} from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 @Component({
   components: {
@@ -43,10 +43,10 @@ export default class AggregationLineChart extends Vue {
   chartDataSets!: ChartDataSets[];
 
   @Prop()
-  chartLabels!: any;
+  chartLabels!: ChartLegendLabelItem;
 
   @Prop({ default: false })
-  chartLabelFilter!: any;
+  chartLabelFilter!: never;
 
   @Prop({ default: "minute" })
   unit!:

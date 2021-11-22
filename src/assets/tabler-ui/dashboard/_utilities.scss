@@ -1,5 +1,5 @@
 @each $color, $value in $colors {
-  @include bg-variant(".bg-#{$color}", $value);
+  @include bg-variant(".bg-#{$color}", $value, true);
 
   .text-#{$color} {
     color: $value !important;
