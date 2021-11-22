@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import Chart, { ChartDataSets } from "chart.js";
+import Chart, { ChartDataSets, ChartPoint, instances } from "chart.js";
 
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
@@ -19,6 +19,10 @@ import {
   BButtonGroup,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
+import {
+  isObject,
+  isString,
+} from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 @Component({
   components: {
@@ -109,9 +113,10 @@ export default class AggregationLineChart extends Vue {
           let index = Number(activeElements[0]._index);
           let dataSetIndex = Number(activeElements[0]._datasetIndex);
           let dataSet = this.chartDataSets[dataSetIndex];
-          if (!dataSet) return;
-          //@ts-ignore
-          this.$emit("click-date", new Date(dataSet.data[index].x));
+          if (!dataSet || !dataSet.data) return;
+          const dataAtIndex = dataSet.data[index] as ChartPoint;
+          const x = dataAtIndex.x as string;
+          this.$emit("click-date", new Date(x));
         },
         tooltips: {
           callbacks: {
@@ -143,12 +148,16 @@ export default class AggregationLineChart extends Vue {
         maintainAspectRatio: false,
         legend: {
           onClick: (e, legendItem) => {
-            if (!legendItem.datasetIndex) return;
+            if (
+              legendItem.datasetIndex === null ||
+              legendItem.datasetIndex === undefined
+            )
+              return;
             let ci = this.chart;
             let meta = ci.getDatasetMeta(legendItem.datasetIndex);
             //@ts-ignore
             meta.hidden =
-              meta.hidden === undefined
+              meta.hidden === undefined || meta.hidden === null
                 ? //@ts-ignore
                   !ci.data.datasets[legendItem.datasetIndex].hidden
                 : null;
