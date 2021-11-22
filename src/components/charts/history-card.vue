@@ -139,7 +139,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   );
 
   rendered = false;
-  selectedDate!: Date;
+  selectedDate: Date = new Date();
   failed = false;
   chartView = "30D";
   animated = false;
