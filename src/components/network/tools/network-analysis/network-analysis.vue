@@ -345,8 +345,7 @@ import LivenessInfo from "@/components/network/tools/network-analysis/info/liven
 import TopTierInfo from "@/components/network/tools/network-analysis/info/top-tier-info.vue";
 import { MergeBy } from "stellar_analysis";
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
-
-const _FbasAnalysisWorker: any = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
+const _FbasAnalysisWorker = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
 @Component({
   components: {
@@ -386,7 +385,12 @@ export default class NetworkAnalysis extends Mixins(
   StoreMixin,
   IsLoadingMixin
 ) {
-  protected MergeBy: any = MergeBy;
+  protected MergeBy: {
+    DoNotMerge: number;
+    Orgs: number;
+    ISPs: number;
+    Countries: number;
+  } = MergeBy; //for use in template as enums not supported
   protected fbasAnalysisWorker = new _FbasAnalysisWorker();
   protected hasResult = false;
   protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
@@ -421,16 +425,6 @@ export default class NetworkAnalysis extends Mixins(
       case MergeBy.Orgs:
         return "Organizations";
     }
-  }
-
-  get topTierFields() {
-    return [
-      // A column that needs custom formatting
-      {
-        key: "topTier",
-        label: this.getMergeByFriendlyName(this.resultMergedBy),
-      },
-    ];
   }
 
   get correctlyConfiguredNodes() {
@@ -526,7 +520,14 @@ export default class NetworkAnalysis extends Mixins(
       this.$scrollTo("#network-analysis-card");
     });
     this.fbasAnalysisWorker.onmessage = (event: {
-      data: { type: string; result: any };
+      data: {
+        type: string;
+        result: {
+          analysis: FbasAnalysisWorkerResult;
+          mergeBy: MergeBy;
+          jobId: number;
+        };
+      };
     }) => {
       switch (event.data.type) {
         case "end":

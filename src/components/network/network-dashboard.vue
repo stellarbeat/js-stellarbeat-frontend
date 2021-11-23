@@ -53,11 +53,11 @@
         </div>
       </LazyHydrate>
 
-      <!--LazyHydrate when-visible>
+      <LazyHydrate when-visible>
         <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
           <ValidatorsServerLoad />
         </div>
-      </LazyHydrate!-->
+      </LazyHydrate>
     </div>
     <div class="row row-cards row-deck">
       <LazyHydrate when-visible>

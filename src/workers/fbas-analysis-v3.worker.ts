@@ -153,7 +153,7 @@ function performAnalysis(
 
   ctx.postMessage({
     type: "end",
-    result: { analysis: analysis, mergeBy: mergeBy, jobId },
+    result: { analysis: analysis, mergeBy: mergeBy, jobId: jobId },
   });
 }
 
