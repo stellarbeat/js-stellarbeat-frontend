@@ -2,7 +2,10 @@
   <div class="card">
     <div class="text-muted mx-3 mt-3">Countries</div>
     <div class="card-body d-flex flex-row justify-content-center p-1">
-      <div class="canvas-container">
+      <div
+        class="canvas-container"
+        style="position: relative; height: 150px; width: 250px"
+      >
         <canvas
           id="countryDistributionGraph"
           ref="countryDistributionGraph"
@@ -13,7 +16,13 @@
 </template>
 
 <script lang="ts">
-import Chart from "chart.js";
+import {
+  ArcElement,
+  Chart,
+  DoughnutController,
+  Legend,
+  Tooltip,
+} from "chart.js";
 
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
@@ -48,18 +57,25 @@ export default class NodesCountryDistribution extends Vue {
       .filter(this.store.watcherNodeFilter)
       .filter((node) => node.geoData.countryName)
       .map((node) => node.geoData.countryName)
-      .reduce((accumulator: any, currentValue: string | null) => {
-        if (currentValue === null) {
+      .reduce(
+        (
+          accumulator: Record<string, number | undefined>,
+          currentValue: string | null
+        ) => {
+          if (currentValue === null) {
+            return accumulator;
+          }
+          if (!accumulator[currentValue]) accumulator[currentValue] = 1;
+          else (accumulator[currentValue] as number)++;
           return accumulator;
-        }
-        if (!accumulator[currentValue]) accumulator[currentValue] = 1;
-        else accumulator[currentValue]++;
-        return accumulator;
-      }, {});
+        },
+        {}
+      );
 
-    let sortedCountries = [];
+    let sortedCountries: [string, number][] = [];
     for (let countryName in countries) {
-      sortedCountries.push([countryName, countries[countryName]]);
+      if (countries[countryName])
+        sortedCountries.push([countryName, countries[countryName] as number]);
     }
 
     return sortedCountries.sort(function (a, b) {
@@ -98,6 +114,7 @@ export default class NodesCountryDistribution extends Vue {
     let context = (
       this.$refs.countryDistributionGraph as HTMLCanvasElement
     ).getContext("2d");
+    Chart.register(Tooltip, Legend, ArcElement, DoughnutController);
     this.chart = new Chart(context as CanvasRenderingContext2D, {
       type: "doughnut",
       // The data for our dataset
@@ -110,11 +127,13 @@ export default class NodesCountryDistribution extends Vue {
               "rgba(25, 151, 198,0.7)", // primary blue
               "rgba(27, 201, 141,0.7)", // success green
               "rgba(228, 216, 54,0.7)", // warning yellow
+              "#e5e5e5",
             ],
             borderColor: [
               "rgba(25, 151, 198,1)", // primary blue
               "#1bc98e", // success green
               "#e4d836", // warning yellow
+              "#e5e5e5",
             ],
             borderWidth: 0,
             data: this.chartData,
@@ -126,21 +145,18 @@ export default class NodesCountryDistribution extends Vue {
       options: {
         layout: {
           padding: {
-            left: 20,
-            right: 20,
+            left: 0,
+            right: 0,
           },
         },
-        title: {
-          text: "Node countries",
-          display: false,
-          fontSize: 20,
-        },
         responsive: true,
-        maintainAspectRatio: true,
-        cutoutPercentage: 50,
-        legend: {
-          display: true,
-          position: "bottom",
+        maintainAspectRatio: false,
+        cutout: "50%",
+        plugins: {
+          legend: {
+            display: true,
+            position: "bottom",
+          },
         },
         animation: {
           duration: 0, // general animation time
@@ -161,7 +177,4 @@ export default class NodesCountryDistribution extends Vue {
 }
 </script>
 
-<style scoped>
-.canvas-container {
-}
-</style>
+<style scoped></style>

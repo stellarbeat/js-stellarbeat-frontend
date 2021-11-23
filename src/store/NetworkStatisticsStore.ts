@@ -22,7 +22,11 @@ export default class NetworkStatisticsStore {
         "/v1/month-statistics"
       );
     return stats.map((stat) => {
-      return NetworkStatisticsAggregation.fromJSON(JSON.stringify(stat));
+      const statObject = NetworkStatisticsAggregation.fromJSON(
+        JSON.stringify(stat)
+      );
+      statObject.time = new Date(statObject.time);
+      return statObject;
     }); //todo handle better, but needs refactoring of node and organization stats
   }
 
@@ -39,7 +43,11 @@ export default class NetworkStatisticsStore {
         "/v1/day-statistics"
       );
     return stats.map((stat) => {
-      return NetworkStatisticsAggregation.fromJSON(JSON.stringify(stat));
+      const statObject = NetworkStatisticsAggregation.fromJSON(
+        JSON.stringify(stat)
+      );
+      statObject.time = new Date(statObject.time);
+      return statObject;
     }); //todo handle better, but needs refactoring of node and organization stats
   }
 

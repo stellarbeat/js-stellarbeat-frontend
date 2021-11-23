@@ -504,7 +504,7 @@ export default class NetworkAnalysis extends Mixins(
         }
 
         let nodes = this.nodesPartition.has(value)
-          ? this.nodesPartition.get(value)!
+          ? (this.nodesPartition.get(value) as string[])
           : [];
         nodes.push(node.displayName);
         this.nodesPartition.set(value, nodes);
@@ -543,8 +543,9 @@ export default class NetworkAnalysis extends Mixins(
 
               if (analysisResult.quorumIntersectionAnalyzed) {
                 this.hasQuorumIntersection =
-                  analysisResult.hasQuorumIntersection!;
-                this.minimalQuorums = analysisResult.minimalQuorums!;
+                  analysisResult.hasQuorumIntersection as boolean;
+                this.minimalQuorums =
+                  analysisResult.minimalQuorums as string[][];
                 if (this.resultMergedBy === MergeBy.DoNotMerge)
                   this.minimalQuorums = this.mapPublicKeysToNames(
                     this.minimalQuorums
@@ -553,11 +554,13 @@ export default class NetworkAnalysis extends Mixins(
 
               this.livenessAnalyzed = analysisResult.livenessAnalyzed;
               if (analysisResult.livenessAnalyzed) {
-                let blockingSets = analysisResult.minimalBlockingSets!;
+                let blockingSets =
+                  analysisResult.minimalBlockingSets as string[][];
                 if (blockingSets.length > 0) {
                   this.blockingSetsMinSize =
-                    analysisResult.minimalBlockingSetsMinSize!;
-                  this.blockingSets = analysisResult.minimalBlockingSets!;
+                    analysisResult.minimalBlockingSetsMinSize as number;
+                  this.blockingSets =
+                    analysisResult.minimalBlockingSets as string[][];
                   if (this.resultMergedBy === MergeBy.DoNotMerge) {
                     this.blockingSets = this.mapPublicKeysToNames(
                       this.blockingSets
@@ -568,11 +571,13 @@ export default class NetworkAnalysis extends Mixins(
 
               this.safetyAnalyzed = analysisResult.safetyAnalyzed;
               if (analysisResult.safetyAnalyzed) {
-                let splittingSets = analysisResult.minimalSplittingSets!;
+                let splittingSets =
+                  analysisResult.minimalSplittingSets as string[][];
                 if (splittingSets.length > 0) {
                   this.splittingSetsMinSize =
-                    analysisResult.minimalSplittingSetsMinSize!;
-                  this.splittingSets = analysisResult.minimalSplittingSets!;
+                    analysisResult.minimalSplittingSetsMinSize as number;
+                  this.splittingSets =
+                    analysisResult.minimalSplittingSets as string[][];
                   if (this.resultMergedBy === MergeBy.DoNotMerge)
                     this.splittingSets = this.mapPublicKeysToNames(
                       this.splittingSets

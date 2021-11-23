@@ -237,12 +237,12 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
     this.isLoading = false;
   }
 
-  get thirtyDaysBarChartData(): { t: Date; y: number }[] {
+  get thirtyDaysBarChartData(): { x: Date; y: number }[] {
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     return this.thirtyDayMeasurements.map((measurement: any) => {
       if (!this.inverted) {
         return {
-          t: measurement.time as Date,
+          x: measurement.time as Date,
           y: Number(
             (
               (measurement[this.dayMeasurementProperty] /
@@ -253,7 +253,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
         };
       } else {
         return {
-          t: measurement.time as Date,
+          x: measurement.time as Date,
           y: Number(
             (
               ((measurement.crawlCount -
@@ -267,7 +267,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
     });
   }
 
-  get twentyFourHourBarChartData(): { t: Date; y: number }[] {
+  get twentyFourHourBarChartData(): { x: Date; y: number }[] {
     let twentyFourHourMap = new Map<string, number[]>();
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     this.twentyFourHourMeasurements.forEach((measurement: any) => {
@@ -280,11 +280,11 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
       twentyFourHourMap.set(hourBucketString, twentyFourHourValue);
     });
 
-    let twentyFourHourAverages: { t: Date; y: number }[] = [];
+    let twentyFourHourAverages: { x: Date; y: number }[] = [];
     twentyFourHourMap.forEach((measurements, hourString) => {
       if (this.inverted) {
         twentyFourHourAverages.push({
-          t: new Date(hourString),
+          x: new Date(hourString),
           y: Number(
             (
               100 -
@@ -295,7 +295,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
         });
       } else {
         twentyFourHourAverages.push({
-          t: new Date(hourString),
+          x: new Date(hourString),
           y: Number(
             (
               (measurements.reduce((a, b) => a + b, 0) / measurements.length) *
@@ -309,7 +309,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
     return twentyFourHourAverages;
   }
 
-  get oneHourLineChartData(): { t: Date; y: number }[] {
+  get oneHourLineChartData(): { x: Date; y: number }[] {
     return this.twentyFourHourMeasurements
       .filter(
         (measurement) =>
@@ -319,12 +319,12 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
       .map((measurement: any) => {
         if (!this.inverted) {
           return {
-            t: measurement.time as Date,
+            x: measurement.time as Date,
             y: measurement[this.measurementProperty],
           };
         } else {
           return {
-            t: measurement.time as Date,
+            x: measurement.time as Date,
             y: measurement[this.measurementProperty],
           };
         }

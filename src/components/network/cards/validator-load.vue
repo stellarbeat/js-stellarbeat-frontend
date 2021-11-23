@@ -8,8 +8,11 @@
                 A validator has a high load when it disconnects due to 'high load' most of the time during the last 30 days.
             </b-tooltip>
         </div!-->
-    <div class="card-body d-flex flex-row justify-content-center h-75 p-1">
-      <div class="canvas-container">
+    <div class="card-body d-flex flex-row justify-content-center p-1">
+      <div
+        class="canvas-container"
+        style="position: relative; height: 150px; width: 150px"
+      >
         <canvas id="overLoadedBarChart" ref="overLoadedBarChart"></canvas>
       </div>
     </div>
@@ -17,7 +20,15 @@
 </template>
 
 <script lang="ts">
-import Chart from "chart.js";
+import {
+  Chart,
+  BarController,
+  BarElement,
+  Legend,
+  DoughnutController,
+  ArcElement,
+  Tooltip,
+} from "chart.js";
 
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
@@ -63,6 +74,14 @@ export default class ValidatorsServerLoad extends Vue {
 
   public initializeBarChart() {
     const context = this.$refs.overLoadedBarChart;
+    Chart.register(
+      BarController,
+      BarElement,
+      Legend,
+      ArcElement,
+      DoughnutController,
+      Tooltip
+    );
     this.chart = new Chart(context as HTMLCanvasElement, {
       type: "doughnut",
       // The data for our dataset
@@ -87,22 +106,18 @@ export default class ValidatorsServerLoad extends Vue {
       options: {
         layout: {
           padding: {
-            left: 20,
-            right: 20,
-            bottom: 22,
+            left: 0,
+            right: 0,
           },
         },
-        title: {
-          text: "Validator loads",
-          display: false,
-          fontSize: 20,
-        },
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: true,
-        cutoutPercentage: 50,
-        legend: {
-          display: true,
-          position: "bottom",
+        cutout: "50%",
+        plugins: {
+          legend: {
+            display: true,
+            position: "bottom",
+          },
         },
         animation: {
           duration: 0, // general animation time
@@ -123,7 +138,4 @@ export default class ValidatorsServerLoad extends Vue {
 }
 </script>
 
-<style scoped>
-.canvas-container {
-}
-</style>
+<style scoped></style>

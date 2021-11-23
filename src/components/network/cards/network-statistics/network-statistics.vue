@@ -289,7 +289,7 @@
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 import { BTooltip, BIconInfoCircle, BBadge } from "bootstrap-vue";
-import Chart from "chart.js";
+import { Chart } from "chart.js";
 import { StoreMixin } from "@/mixins/StoreMixin";
 import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
 import moment from "moment";

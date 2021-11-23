@@ -11,7 +11,17 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Store from "@/store/Store";
-import Chart from "chart.js";
+import {
+  ActiveElement,
+  Chart,
+  ChartEvent,
+  Filler,
+  LineController,
+  LineElement,
+  PointElement,
+  ScatterDataPoint,
+  TooltipItem,
+} from "chart.js";
 
 @Component({
   name: "line-chart-hour",
@@ -20,7 +30,7 @@ export default class LineChartHour extends Vue {
   @Prop()
   width!: string;
   @Prop()
-  data!: { t: Date; y: number }[];
+  data!: ScatterDataPoint[];
   @Prop({ default: false })
   inverted!: boolean;
 
@@ -36,10 +46,14 @@ export default class LineChartHour extends Vue {
     if (!this.lineChart.data.datasets) return;
     this.lineChart.data.datasets[0].data = this.data;
     if (!this.inverted) {
+      //@ts-ignore
       this.lineChart.data.datasets[0].pointBackgroundColor = this.pointColors;
+      //@ts-ignore
       this.lineChart.data.datasets[0].pointBorderColor = this.pointColors;
     } else {
+      //@ts-ignore
       this.lineChart.data.datasets[0].pointBackgroundColor = this.pointColors;
+      //@ts-ignore
       this.lineChart.data.datasets[0].pointBorderColor = this.pointColors;
     }
 
@@ -61,12 +75,16 @@ export default class LineChartHour extends Vue {
   mounted() {
     let chartId = "lineChart" + this.id;
     let context = (this.$refs[chartId] as HTMLCanvasElement).getContext("2d");
+    Chart.register(LineController, LineElement, PointElement, Filler);
     this.lineChart = new Chart(context as CanvasRenderingContext2D, {
       type: "line",
       data: {
         datasets: [
           {
             label: "Validating",
+            fill: {
+              target: "origin",
+            },
             backgroundColor: this.inverted
               ? "rgba(255,0,0,0.4)"
               : "rgba(94,186,0,0.4)",
@@ -82,109 +100,94 @@ export default class LineChartHour extends Vue {
 
       // Configuration options go here
       options: {
-        onHover(
-          event: MouseEvent,
-          activeElements: Array<Record<string, unknown>>
-        ) {
-          if (!event.target) return;
+        onHover(event: ChartEvent, activeElements: ActiveElement[]) {
           //@ts-ignore
-          event.target.style.cursor = activeElements[0] ? "pointer" : "default";
+          event.native.target.style.cursor = activeElements[0]
+            ? "pointer"
+            : "default";
         },
-        onClick: (
-          event?: MouseEvent,
-          activeElements?: Array<Record<string, unknown>>
-        ): void => {
-          if (
-            activeElements &&
-            activeElements[0] &&
-            //@ts-ignore
-            activeElements[0]._index >= 0
-          )
+        onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+          if (activeElements[0] && activeElements[0].index >= 0)
             this.$emit(
               "click-date",
               //@ts-ignore
-              this.data[activeElements[0]._index].t.getTime()
+              this.data[activeElements[0].index].x.getTime()
             );
         },
-        tooltips: {
-          callbacks: {
-            label(tooltipItem: Chart.ChartTooltipItem): string | string[] {
-              return tooltipItem.value === "1" ? "Yes" : "No";
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label(tooltipItem: TooltipItem<"line">): string | string[] {
+                return tooltipItem.formattedValue === "1" ? "Yes" : "No";
+              },
             },
           },
+          legend: {
+            display: false,
+          },
         },
+
         responsive: false,
-        legend: {
-          display: false,
-        },
+
         animation: {
           duration: 0, // general animation time
         },
-        hover: {
-          animationDuration: 0, // duration of animations when hovering an item
-        },
         responsiveAnimationDuration: 0, // animation duration after a resize
         scales: {
-          gridLines: {
+          grid: {
             display: false,
-            drawTicks: false,
           },
           ticks: {
             display: false,
           },
-          scaleLabel: {
-            fontColor: "#f5f7fb",
-            fontSize: 3,
+          x: {
+            grid: {
+              display: true,
+              drawTicks: false,
+              drawBorder: true,
+              drawOnChartArea: false,
+            },
+            stacked: true,
+            display: true,
+            //@ts-ignore
+            type: "time",
+            time: {
+              unit: "minute",
+              displayFormats: {
+                minute: "HH:mm",
+              },
+            },
+            distribution: "series",
+            ticks: {
+              font: {
+                size: 10,
+              },
+              padding: 8,
+            },
+            beginAtZero: true,
           },
-          xAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawTicks: false,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              stacked: true,
+          y: {
+            grid: {
               display: true,
-              type: "time",
-              time: {
-                unit: "minute",
-                displayFormats: {
-                  minute: "HH:mm",
-                },
+              drawTicks: false,
+              drawBorder: true,
+              drawOnChartArea: false,
+            },
+            stacked: true,
+            display: true,
+            bounds: "data",
+            ticks: {
+              padding: 8,
+              font: {
+                size: 10,
               },
-              distribution: "series",
-              ticks: {
-                fontColor: "#aaa",
-                fontSize: 10,
-                padding: 8,
-                beginAtZero: true,
+              stepSize: 10,
+              callback: function (value) {
+                return value ? "Yes" : "No";
               },
             },
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawTicks: false,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              stacked: true,
-              display: true,
-              bounds: "data",
-              ticks: {
-                padding: 8,
-                fontColor: "#aaa",
-                fontSize: 10,
-                beginAtZero: true,
-                stepSize: 10,
-                callback: function (value) {
-                  return value ? "Yes" : "No";
-                },
-              },
-            },
-          ],
+            beginAtZero: true,
+          },
         },
       },
     });

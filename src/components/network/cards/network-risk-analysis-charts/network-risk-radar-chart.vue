@@ -51,7 +51,16 @@
 </template>
 
 <script lang="ts">
-import Chart, { ChartData, ChartTooltipItem } from "chart.js";
+import {
+  TooltipItem,
+  Chart,
+  PointElement,
+  RadarController,
+  RadialLinearScale,
+  ActiveElement,
+  ChartEvent,
+  LineElement,
+} from "chart.js";
 
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
@@ -101,17 +110,18 @@ export default class NetworkRiskRadarChart extends Vue {
       this.store.networkAnalyzer.automaticState ===
       AutomaticNetworkAnalysis.Done
     ) {
-      this.chart.data.datasets![0]!.data = [
-        this.network.networkStatistics.minBlockingSetOrgsFilteredSize,
-        this.network.networkStatistics.minBlockingSetFilteredSize,
-        this.network.networkStatistics.minBlockingSetCountryFilteredSize,
-        this.network.networkStatistics.minBlockingSetISPFilteredSize,
+      this.chart.data.datasets[0].data = [
+        this.network.networkStatistics.minBlockingSetOrgsFilteredSize as number,
+        this.network.networkStatistics.minBlockingSetFilteredSize as number,
+        this.network.networkStatistics
+          .minBlockingSetCountryFilteredSize as number,
+        this.network.networkStatistics.minBlockingSetISPFilteredSize as number,
       ];
-      this.chart.data.datasets![1]!.data = [
-        this.network.networkStatistics.minSplittingSetOrgsSize,
-        this.network.networkStatistics.minSplittingSetSize,
-        this.network.networkStatistics.minSplittingSetCountrySize,
-        this.network.networkStatistics.minSplittingSetISPSize,
+      this.chart.data.datasets[1].data = [
+        this.network.networkStatistics.minSplittingSetOrgsSize as number,
+        this.network.networkStatistics.minSplittingSetSize as number,
+        this.network.networkStatistics.minSplittingSetCountrySize as number,
+        this.network.networkStatistics.minSplittingSetISPSize as number,
       ];
       this.chart.update();
     }
@@ -127,6 +137,14 @@ export default class NetworkRiskRadarChart extends Vue {
   public initializeChart() {
     let chartId = "networkRiskRadarChart" + this.id;
     const context = this.$refs[chartId];
+    Chart.register(
+      RadialLinearScale,
+      LineElement,
+      RadarController,
+      RadialLinearScale,
+      PointElement
+    );
+    //@ts-ignore
     this.chart = new Chart(context as HTMLCanvasElement, {
       type: "radar",
       data: {
@@ -161,24 +179,16 @@ export default class NetworkRiskRadarChart extends Vue {
 
       // Configuration options go here
       options: {
-        onHover(
-          event: MouseEvent,
-          activeElements: Array<Record<string, unknown>>
-        ): any {
-          (event.target! as any).style.cursor = activeElements[0]
+        animation: false,
+        onHover(event: ChartEvent, activeElements: ActiveElement[]) {
+          //@ts-ignore
+          event.native.target.style.cursor = activeElements[0]
             ? "pointer"
             : "default";
         },
-        onClick: (
-          event?: MouseEvent,
-          activeElements?: Array<Record<string, unknown>>
-        ): void => {
-          if (
-            activeElements &&
-            activeElements[0] &&
-            Number((activeElements[0] as any)._index) >= 0
-          ) {
-            switch ((activeElements[0] as any)._index) {
+        onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+          if (activeElements[0] && activeElements[0].index >= 0) {
+            switch (activeElements[0].index) {
               case 0:
                 this.store.networkAnalysisMergeBy = MergeBy.Orgs;
                 break;
@@ -210,33 +220,32 @@ export default class NetworkRiskRadarChart extends Vue {
         },
         responsive: true,
         maintainAspectRatio: false,
-        legend: {
-          display: true,
-          position: "bottom",
-        },
-        animation: {
-          duration: 0, // general animation time
-        },
-        tooltips: {
-          callbacks: {
-            title: function (tooltipItem, data) {
-              const id = tooltipItem[0].index;
-              return data.labels![id!] as string;
-            },
-            label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
-              let size =
-                //@ts-ignore
-                data.datasets![tooltipItem.datasetIndex]!.data![
-                  tooltipItem.index!
-                ]!;
-              let type = tooltipItem.datasetIndex === 0 ? "liveness" : "safety";
-              return `Set of size ${size} found that could impact ${type}`;
-            },
+        scales: {
+          r: {
+            beginAtZero: true,
           },
         },
-        scale: {
-          ticks: {
-            beginAtZero: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: "bottom",
+          },
+          tooltip: {
+            enabled: true,
+            yAlign: "bottom",
+            callbacks: {
+              title: function (
+                tooltipItems: TooltipItem<"radar">[]
+              ): string | string[] {
+                return tooltipItems[0].label;
+              },
+              label: (tooltipItem: TooltipItem<"radar">) => {
+                let size = tooltipItem.dataset.data[tooltipItem.dataIndex];
+                let type =
+                  tooltipItem.datasetIndex === 0 ? "liveness" : "safety";
+                return `Set of size ${size} found that could impact ${type}`;
+              },
+            },
           },
         },
       },

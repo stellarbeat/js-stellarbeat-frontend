@@ -16,7 +16,7 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Store from "@/store/Store";
-import Chart from "chart.js";
+import { Chart, DoughnutController, ArcElement, LinearScale } from "chart.js";
 
 @Component({})
 export default class Gauge extends Vue {
@@ -56,6 +56,7 @@ export default class Gauge extends Vue {
 
   mounted() {
     let canvas = this.$refs.chart as HTMLCanvasElement;
+    Chart.register(DoughnutController, ArcElement, LinearScale);
     this.chart = new Chart(canvas, {
       type: "doughnut",
 
@@ -74,22 +75,27 @@ export default class Gauge extends Vue {
       },
       // Configuration options go here
       options: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            enabled: false,
+          },
+        },
         animation: {
           duration: 0, // general animation time
         },
-        responsiveAnimationDuration: 0, // animation duration after a resize
-        legend: {
-          display: false,
+        hover: {
+          //@ts-ignore
+          mode: null,
         },
-        tooltips: {
-          enabled: false,
-        },
-        hover: { mode: undefined },
         responsive: false,
-        cutoutPercentage: 75,
+        cutout: "75%",
         maintainAspectRatio: true,
       },
     });
+    this.chart.options.animation = false; // disables all animations
   }
 
   public beforeDestroy() {

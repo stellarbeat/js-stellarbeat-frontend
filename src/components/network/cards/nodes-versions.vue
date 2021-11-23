@@ -2,7 +2,10 @@
   <div class="card h-100">
     <div class="text-muted mx-3 mt-3">Versions</div>
     <div class="card-body d-flex flex-row justify-content-center p-1">
-      <div class="canvas-container">
+      <div
+        class="canvas-container"
+        style="position: relative; height: 150px; width: 200px"
+      >
         <canvas id="versionGraph" ref="versionGraph" />
       </div>
     </div>
@@ -10,7 +13,13 @@
 </template>
 
 <script lang="ts">
-import Chart from "chart.js";
+import {
+  Chart,
+  ArcElement,
+  DoughnutController,
+  Legend,
+  Tooltip,
+} from "chart.js";
 
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
@@ -40,7 +49,7 @@ export default class NodesVersions extends Vue {
   }
 
   get sortedVersions() {
-    let versions = this.network.nodes
+    let versions: Record<string, number | undefined> = this.network.nodes
       .filter(this.$root.$data.store.watcherNodeFilter)
       .filter((node) => node.versionStr)
       .map((node) =>
@@ -50,19 +59,29 @@ export default class NodesVersions extends Vue {
           .replace(/ \(.*$/, "")
           .replace(/-.*$/, "")
       )
-      .reduce((accumulator: any, currentValue: string) => {
-        if (accumulator[currentValue] === undefined)
-          accumulator[currentValue] = 1;
-        else accumulator[currentValue]++;
-        return accumulator;
-      }, {});
+      .reduce(
+        (
+          accumulator: Record<string, number | undefined>,
+          currentValue: string
+        ) => {
+          if (accumulator[currentValue] === undefined)
+            accumulator[currentValue] = 1;
+          else (accumulator[currentValue] as number)++;
+          return accumulator;
+        },
+        {}
+      );
 
-    let sortedVersions = [];
+    let sortedVersions: [string, number][] = [];
     for (let versionStr in versions) {
-      sortedVersions.push([versionStr, versions[versionStr]]);
+      if (versions[versionStr] !== undefined)
+        sortedVersions.push([versionStr, versions[versionStr] as number]);
     }
 
-    return sortedVersions.sort(function (a: Array<number>, b: Array<number>) {
+    return sortedVersions.sort(function (
+      a: [string, number],
+      b: [string, number]
+    ) {
       return b[1] - a[1];
     });
   }
@@ -96,6 +115,7 @@ export default class NodesVersions extends Vue {
     let context = (this.$refs.versionGraph as HTMLCanvasElement).getContext(
       "2d"
     );
+    Chart.register(Tooltip, ArcElement, DoughnutController, Legend);
     this.chart = new Chart(context as CanvasRenderingContext2D, {
       type: "doughnut",
       data: {
@@ -107,11 +127,13 @@ export default class NodesVersions extends Vue {
               "rgba(25, 151, 198,0.7)", // primary blue
               "rgba(27, 201, 141,0.7)", // success green
               "rgba(228, 216, 54,0.7)", // warning yellow
+              "#e5e5e5",
             ],
             borderColor: [
               "rgba(25, 151, 198,1)", // primary blue
               "#1bc98e", // success green
               "#e4d836", // warning yellow
+              "#e5e5e5",
             ],
             borderWidth: 0,
             data: this.chartData,
@@ -123,21 +145,18 @@ export default class NodesVersions extends Vue {
       options: {
         layout: {
           padding: {
-            left: 20,
-            right: 20,
+            left: 0,
+            right: 0,
           },
         },
-        title: {
-          text: "Node versions",
-          display: false,
-          fontSize: 20,
-        },
         responsive: true,
-        maintainAspectRatio: true,
-        cutoutPercentage: 50,
-        legend: {
-          display: true,
-          position: "bottom",
+        maintainAspectRatio: false,
+        cutout: "50%",
+        plugins: {
+          legend: {
+            display: true,
+            position: "bottom",
+          },
         },
         animation: {
           duration: 0, // general animation time

@@ -39,6 +39,8 @@
           <network-statistics :network="network" />
         </div>
       </LazyHydrate>
+    </div>
+    <div class="row row-cards row-deck gauges">
       <LazyHydrate when-visible>
         <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
           <NodesCountryDistribution />
@@ -51,11 +53,13 @@
         </div>
       </LazyHydrate>
 
-      <LazyHydrate when-visible>
+      <!--LazyHydrate when-visible>
         <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
           <ValidatorsServerLoad />
         </div>
-      </LazyHydrate>
+      </LazyHydrate!-->
+    </div>
+    <div class="row row-cards row-deck">
       <LazyHydrate when-visible>
         <div class="col-lg-6" v-if="!store.networkAnalyzer.manualMode">
           <liveness-radar-chart />

@@ -11,12 +11,20 @@
 import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Store from "@/store/Store";
-import Chart from "chart.js";
-
-interface BarChartDayData {
-  t: Date;
-  y: number;
-}
+import {
+  Chart,
+  BarController,
+  CategoryScale,
+  BarElement,
+  TimeScale,
+  ChartEvent,
+  ActiveElement,
+  ScatterDataPoint,
+  Tooltip,
+  Legend,
+  TooltipItem,
+} from "chart.js";
+import "chartjs-adapter-moment";
 
 export type timeUnit = "day" | "hour";
 
@@ -27,7 +35,7 @@ export default class BarChartDay extends Vue {
   @Prop()
   width!: string;
   @Prop()
-  data!: BarChartDayData[];
+  data!: ScatterDataPoint[];
   @Prop()
   unit!: timeUnit;
 
@@ -57,7 +65,7 @@ export default class BarChartDay extends Vue {
     );
     this.barChart.data.datasets[1].data = this.data.map((data) => {
       return {
-        t: data.t,
+        x: data.x,
         y: 100 - data.y,
       };
     });
@@ -67,6 +75,14 @@ export default class BarChartDay extends Vue {
   mounted() {
     let chartId = "lineChart" + this.id;
     let context = (this.$refs[chartId] as HTMLCanvasElement).getContext("2d");
+    Chart.register(
+      BarController,
+      CategoryScale,
+      BarElement,
+      TimeScale,
+      Tooltip,
+      Legend
+    );
     this.barChart = new Chart(context as CanvasRenderingContext2D, {
       type: "bar",
       data: {
@@ -85,121 +101,109 @@ export default class BarChartDay extends Vue {
             borderColor: "#1997c6",
             data: this.data.map((data) => {
               return {
-                t: data.t,
+                x: data.x,
                 y: 100 - data.y,
               };
             }),
-            fill: "origin",
           },
         ],
       },
 
       // Configuration options go here
       options: {
-        onHover: (
-          event: MouseEvent,
-          activeElements: Array<Record<string, unknown>>
-        ): void => {
-          if (!event.target) return;
-          //@ts-ignore
-          event.target.style.cursor = activeElements[0] ? "pointer" : "default";
+        layout: {
+          padding: 0,
         },
-        onClick: (
-          event?: MouseEvent,
-          activeElements?: Array<Record<string, unknown>>
-        ): void => {
-          if (
-            activeElements &&
-            activeElements[0] &&
-            Number(activeElements[0]._index) >= 0
-          ) {
-            this.$emit(
-              "click-date",
-              this.data[Number(activeElements[0]._index)].t
-            );
+        onHover: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+          //@ts-ignore
+          event.native.target.style.cursor = activeElements[0]
+            ? "pointer"
+            : "default";
+        },
+        onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+          if (activeElements[0] && activeElements[0].index >= 0) {
+            this.$emit("click-date", this.data[activeElements[0].index].x);
           }
         },
-        tooltips: {
-          callbacks: {
-            label: (tooltipItem: Chart.ChartTooltipItem): string | string[] => {
-              return " " + tooltipItem.value + "%";
+        plugins: {
+          tooltip: {
+            enabled: true,
+            callbacks: {
+              label: (tooltipItem: TooltipItem<"bar">): string | string[] => {
+                return " " + tooltipItem.formattedValue + "%";
+              },
             },
           },
+          legend: {
+            display: false,
+          },
         },
+
         responsive: false,
-        legend: {
-          display: false,
-        },
+
         animation: {
           duration: 0, // general animation time
         },
-        hover: {
-          animationDuration: 0, // duration of animations when hovering an item
-        },
         responsiveAnimationDuration: 0, // animation duration after a resize
         scales: {
-          gridLines: {
+          grid: {
             display: false,
-            drawTicks: false,
           },
           ticks: {
             display: false,
           },
-          scaleLabel: {
-            fontColor: "#f5f7fb",
-            fontSize: 3,
+          x: {
+            grid: {
+              display: true,
+              drawTicks: false,
+              drawBorder: true,
+              drawOnChartArea: false,
+            },
+            distribution: "linear",
+            stacked: true,
+            display: true,
+            //@ts-ignore
+            type: "time",
+            time: {
+              unit: this.unit,
+              displayFormats: this.displayFormat,
+              stepSize: 2,
+            },
+            ticks: {
+              font: {
+                size: 10,
+              },
+              color: "#aaa",
+              padding: 2,
+            },
+            beginAtZero: true,
           },
-          xAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawTicks: false,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              stacked: true,
+
+          y: {
+            grid: {
               display: true,
-              type: "time",
-              time: {
-                unit: this.unit,
-                displayFormats: this.displayFormat,
-                tooltipFormat: this.timeFormat,
-                stepSize: 2,
+              drawTicks: false,
+              drawBorder: true,
+              drawOnChartArea: false,
+            },
+            min: 0,
+            max: 100,
+            stacked: true,
+            display: true,
+            bounds: "data",
+            ticks: {
+              padding: 0,
+              font: {
+                size: 8,
               },
-              distribution: "linear",
-              ticks: {
-                fontColor: "#aaa",
-                fontSize: 10,
-                padding: 8,
-                beginAtZero: true,
+              color: "#aaa",
+              stepSize: 50,
+              callback: function (value) {
+                return value + "%";
               },
             },
-          ],
-          yAxes: [
-            {
-              gridLines: {
-                display: true,
-                drawTicks: false,
-                drawBorder: true,
-                drawOnChartArea: false,
-              },
-              stacked: true,
-              display: true,
-              bounds: "data",
-              ticks: {
-                padding: 8,
-                min: 0,
-                max: 100,
-                fontColor: "#aaa",
-                fontSize: 10,
-                beginAtZero: true,
-                stepSize: 50,
-                callback: function (value) {
-                  return value + "%";
-                },
-              },
-            },
-          ],
+            beginAtZero: true,
+          },
         },
       },
     });

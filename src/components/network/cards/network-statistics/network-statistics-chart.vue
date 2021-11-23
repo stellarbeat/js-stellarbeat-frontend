@@ -11,7 +11,19 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from "vue-property-decorator";
 import { BTooltip, BIconInfoCircle } from "bootstrap-vue";
-import { Chart } from "chart.js";
+import {
+  ActiveElement,
+  Chart,
+  ChartEvent,
+  Filler,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  TimeScale,
+  TooltipItem,
+} from "chart.js";
+import "chartjs-adapter-moment";
 import { StoreMixin } from "@/mixins/StoreMixin";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
 
@@ -39,6 +51,8 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
   getAggregatedDataSets(statisticsAggregation: NetworkStatisticsAggregation[]) {
     return [
       {
+        fill: "origin",
+        tension: 0.5,
         borderColor: "rgba(25, 151, 198,1)",
         backgroundColor: "rgba(25, 151, 198,0.3)", // primary blue
         borderWidth: 2,
@@ -62,6 +76,15 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
   public initializeBarChart() {
     const chartId = "networkStatisticsChart" + this.id;
     const context = this.$refs[chartId];
+    Chart.register(
+      Filler,
+      PointElement,
+      LineController,
+      LineElement,
+      LinearScale,
+      TimeScale
+    );
+    //@ts-ignore
     this.chart = new Chart(context as HTMLCanvasElement, {
       type: "line",
       // The data for our dataset
@@ -71,38 +94,35 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
 
       // Configuration options go here
       options: {
-        onHover: (
-          event: MouseEvent,
-          activeElements: Record<string, unknown>[]
-        ): void => {
-          if (!event.target) return;
-          if (!(event.target instanceof HTMLElement)) return;
-          event.target.style.cursor = "pointer";
-          if (
-            activeElements.length === 1 &&
-            activeElements[0] &&
-            typeof activeElements[0]._index === "number"
-          ) {
-            this.$emit("hover", this.yearStatistics[activeElements[0]._index]);
+        onHover: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+          //@ts-ignore
+          event.native.target.style.cursor = "pointer";
+          if (activeElements.length === 1 && activeElements[0]) {
+            this.$emit("hover", this.yearStatistics[activeElements[0].index]);
           } else this.$emit("hover", null);
         },
         hover: {
           mode: "nearest",
           intersect: false,
         },
-        tooltips: {
-          enabled: false,
-          mode: "index",
-          intersect: false,
-          caretSize: 0,
-          displayColors: false,
-          callbacks: {
-            title: function () {
-              //Return value for title
-              return "";
-            },
-            label: function (tooltipItems) {
-              return tooltipItems.label + ": " + tooltipItems.value;
+        plugins: {
+          legend: {
+            display: false,
+          },
+          tooltip: {
+            enabled: false,
+            mode: "index",
+            intersect: false,
+            caretSize: 0,
+            displayColors: false,
+            callbacks: {
+              title: function () {
+                //Return value for title
+                return "";
+              },
+              label: function (tooltipItem: TooltipItem<"line">) {
+                return tooltipItem.label + ": " + tooltipItem.formattedValue;
+              },
             },
           },
         },
@@ -124,35 +144,30 @@ export default class NetworkStatisticsChart extends Mixins(StoreMixin) {
         },
         responsive: true,
         maintainAspectRatio: false,
-        legend: {
-          display: false,
-        },
+
         animation: {
           duration: 0, // general animation time
         },
         scales: {
-          xAxes: [
-            {
-              offset: false,
-              display: false,
-              type: "time",
-              distribution: "series",
-              time: {
-                unit: "year",
-                stepSize: 1,
-                tooltipFormat: "MMM YYYY",
-              },
+          x: {
+            offset: false,
+            display: false,
+            //@ts-ignore
+            type: "time",
+            distribution: "series",
+            time: {
+              unit: "year",
+              stepSize: 1,
+              tooltipFormat: "MMM YYYY",
             },
-          ],
-          yAxes: [
-            {
-              display: false,
-              ticks: {
-                beginAtZero: false,
-                stepSize: 12,
-              },
+          },
+          y: {
+            display: false,
+            ticks: {
+              stepSize: 12,
             },
-          ],
+            beginAtZero: false,
+          },
         },
       },
     });

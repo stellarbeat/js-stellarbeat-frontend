@@ -140,11 +140,11 @@
 
 <script lang="ts">
 import {
-  Chart,
-  ChartData,
-  ChartDataSets,
-  ChartLegendLabelItem,
-  ChartTooltipItem,
+  ChartDataset,
+  ChartTypeRegistry,
+  LegendItem,
+  ScatterDataPoint,
+  TooltipItem,
 } from "chart.js";
 import { Component, Mixins, Prop } from "vue-property-decorator";
 import {
@@ -201,8 +201,8 @@ export default class NetworkAnalysis extends Mixins(
   protected failed = false;
   animated = false;
   protected showModal = false;
-  protected aggregatedDataSets!: ChartDataSets[];
-  protected hour24ChartDataSets: ChartDataSets[] | undefined;
+  protected aggregatedDataSets!: ChartDataset[];
+  protected hour24ChartDataSets: ChartDataset[] | undefined;
 
   get setType() {
     return this.analysisType === "safety" ? "splitting" : "blocking";
@@ -253,26 +253,27 @@ export default class NetworkAnalysis extends Mixins(
     this.bucketSize = "1Y";
   }
 
-  aggregatedChartLabelFilter(legendItem: ChartLegendLabelItem) {
+  aggregatedChartLabelFilter(legendItem: LegendItem) {
     if ([0, 3, 6, 9].includes(legendItem.datasetIndex as number)) return true; //don't show labels for the min max as they are auxiliary lines
   }
 
   getAggregatedData(
     statisticsAggregation: NetworkStatisticsAggregation[],
     prop: string
-  ) {
-    return statisticsAggregation.map((stat) => {
-      if (stat.crawlCount === 0) return {};
-      return {
-        x: stat.time,
-        //@ts-ignore
-        y: stat[prop],
-      };
-    });
+  ): ScatterDataPoint[] {
+    return statisticsAggregation
+      .filter((stat) => stat.crawlCount > 0)
+      .map((stat) => {
+        return {
+          x: stat.time.getTime(),
+          //@ts-ignore
+          y: stat[prop] as number,
+        };
+      });
   }
 
   updateAggregatedDataInDataSets(
-    dataSets: ChartDataSets[],
+    dataSets: ChartDataset[],
     statisticsAggregation: NetworkStatisticsAggregation[]
   ) {
     dataSets.forEach((dataSet) => {
@@ -402,161 +403,155 @@ export default class NetworkAnalysis extends Mixins(
   }
 
   getAggregatedDataSets() {
-    let stats: ChartDataSets[] = [
+    const lineType: keyof ChartTypeRegistry = "line";
+    let stats: ChartDataset[] = [
       {
         label: "Organization",
         borderColor: "rgba(25, 151, 198,1)", // primary blue
         backgroundColor: "rgba(25, 151, 198,0.6)", // primary blue
         borderWidth: 2,
-        steppedLine: true,
         fill: false,
-        type: "line",
-        radius: 2,
+        type: lineType,
+        data: [],
       },
       {
         label: "min(|Organization|)",
         borderWidth: 4,
         borderColor: "transparent", // primary blue
         backgroundColor: "rgba(25,151,198,0.1)",
-        steppedLine: true,
         fill: "0", //relative to dataset with index zero
-        type: "line",
-        radius: 0,
-        hitRadius: 0,
-        hoverRadius: 0,
+        type: lineType,
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
       },
       {
         label: "max(|Organization|)",
         borderWidth: 4,
         borderColor: "transparent", // primary blue
         backgroundColor: "rgba(25,151,198,0.1)",
-        steppedLine: true,
         fill: "0",
-        type: "line",
-        radius: 0,
-        hitRadius: 0,
-        hoverRadius: 0,
+        type: lineType,
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
       },
       {
         label: "Node",
         fill: false,
         borderWidth: 2,
-        steppedLine: true,
-        type: "line",
-        radius: 2,
+        type: lineType,
         borderColor: "rgba(27, 201, 142, 1)", // success green
         backgroundColor: "rgba(27, 201, 142, 1)", // success green
+        data: [],
       },
       {
         label: "min(|Node|)",
         fill: "3",
         borderWidth: 4,
-        steppedLine: true,
-        type: "line",
-        radius: 0,
-        hitRadius: 0,
-        hoverRadius: 0,
+        type: lineType,
         borderColor: "transparent", // success green
         backgroundColor: "rgba(27, 201, 142, 0.1)", // success green
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
       },
       {
         label: "max(|Node|)",
         fill: "3",
         borderWidth: 4,
-        steppedLine: true,
-        type: "line",
-        radius: 0,
-        hitRadius: 0,
-        hoverRadius: 0,
+        type: lineType,
         borderColor: "transparent", // success green
         backgroundColor: "rgba(27, 201, 142, 0.1)", // success green
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
+      },
+
+      {
+        hidden: true,
+        label: "ISP",
+        fill: false,
+        borderWidth: 2,
+        type: lineType as "line", //?
+        borderColor: "rgb(236, 228, 114)", // success green
+        backgroundColor: "rgb(236, 228, 114)", // success green
+        data: [],
+      },
+      {
+        label: "min(|ISP|)",
+        fill: "6",
+        borderWidth: 4,
+        type: lineType,
+        borderColor: "transparent", // success green
+        backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
+      },
+      {
+        label: "max(|ISP|)",
+        fill: "6",
+        borderWidth: 4,
+        type: lineType,
+        borderColor: "transparent", // success green
+        backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
+      },
+      {
+        hidden: true,
+        label: "Country",
+        fill: false,
+        borderWidth: 2,
+        type: lineType,
+        borderColor: "rgb(159, 134, 255)",
+        backgroundColor: "rgb(159, 134, 255)",
+        data: [],
+      },
+      {
+        label: "min(|Country|)",
+        fill: "9",
+        borderWidth: 4,
+        type: lineType,
+        borderColor: "transparent", // success green
+        backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
+      },
+      {
+        label: "max(|Country|)",
+        fill: "9",
+        borderWidth: 4,
+        type: "line",
+        borderColor: "transparent", // success green
+        backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 0,
+        pointHoverRadius: 0,
       },
     ];
-    stats.push(
-      ...[
-        {
-          hidden: true,
-          label: "ISP",
-          fill: false,
-          borderWidth: 2,
-          steppedLine: true,
-          type: "line",
-          radius: 2,
-          borderColor: "rgb(236, 228, 114)", // success green
-          backgroundColor: "rgb(236, 228, 114)", // success green
-        },
-        {
-          label: "min(|ISP|)",
-          fill: "6",
-          borderWidth: 4,
-          steppedLine: true,
-          type: "line",
-          radius: 0,
-          hitRadius: 0,
-          hoverRadius: 0,
-          borderColor: "transparent", // success green
-          backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
-        },
-        {
-          label: "max(|ISP|)",
-          fill: "6",
-          borderWidth: 4,
-          steppedLine: true,
-          type: "line",
-          radius: 0,
-          hitRadius: 0,
-          hoverRadius: 0,
-          borderColor: "transparent", // success green
-          backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
-        },
-        {
-          hidden: true,
-          label: "Country",
-          fill: false,
-          borderWidth: 2,
-          steppedLine: true,
-          type: "line",
-          radius: 2,
-          borderColor: "rgb(159, 134, 255)",
-          backgroundColor: "rgb(159, 134, 255)",
-        },
-        {
-          label: "min(|Country|)",
-          fill: "9",
-          borderWidth: 4,
-          steppedLine: true,
-          type: "line",
-          radius: 0,
-          hitRadius: 0,
-          hoverRadius: 0,
-          borderColor: "transparent", // success green
-          backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
-        },
-        {
-          label: "max(|Country|)",
-          fill: "9",
-          borderWidth: 4,
-          steppedLine: true,
-          type: "line",
-          radius: 0,
-          hitRadius: 0,
-          hoverRadius: 0,
-          borderColor: "transparent", // success green
-          backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
-        },
-      ]
-    );
 
     return stats;
   }
 
-  updateDataInDataSets(dataSets: ChartDataSets[]) {
+  updateDataInDataSets(dataSets: ChartDataset[]) {
     dataSets.forEach((dataSet) => {
       switch (dataSet.label) {
         case "Organization":
           dataSet.data = this.hour24Statistics.map((stat) => {
             return {
-              x: stat.time,
+              x: stat.time.getTime(),
               //@ts-ignore
               y: stat[
                 "min" +
@@ -571,7 +566,7 @@ export default class NetworkAnalysis extends Mixins(
         case "Node":
           dataSet.data = this.hour24Statistics.map((stat) => {
             return {
-              x: stat.time,
+              x: stat.time.getTime(),
               //@ts-ignore
               y: stat[
                 "min" +
@@ -586,7 +581,7 @@ export default class NetworkAnalysis extends Mixins(
         case "ISP":
           dataSet.data = this.hour24Statistics.map((stat) => {
             return {
-              x: stat.time,
+              x: stat.time.getTime(),
               //@ts-ignore
               y: stat[
                 "min" +
@@ -601,7 +596,7 @@ export default class NetworkAnalysis extends Mixins(
         case "Country":
           dataSet.data = this.hour24Statistics.map((stat) => {
             return {
-              x: stat.time,
+              x: stat.time.getTime(),
               //@ts-ignore
               y: stat[
                 "min" +
@@ -617,29 +612,30 @@ export default class NetworkAnalysis extends Mixins(
     });
   }
 
-  getHour24ChartDataSets(): ChartDataSets[] {
-    let sets = [
+  getHour24ChartDataSets(): ChartDataset[] {
+    const lineType: keyof ChartTypeRegistry = "line";
+    let sets: ChartDataset[] = [
       {
         label: "Organization",
         borderColor: "rgba(25, 151, 198,1)", // primary blue
         backgroundColor: "rgba(25, 151, 198,0.6)", // primary blue
         borderWidth: 2,
-        steppedLine: true,
         fill: false,
-        type: "line",
-        radius: 0,
-        hitRadius: 5,
+        type: lineType,
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 5,
       },
       {
         label: "Node",
         borderColor: "rgba(27, 201, 142, 1)", // success green
         backgroundColor: "rgba(27, 201, 142, 1)", // success green
         borderWidth: 2,
-        steppedLine: true,
         fill: false,
-        type: "line",
-        radius: 0,
-        hitRadius: 5,
+        type: lineType,
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 5,
       },
     ];
     sets.push(
@@ -649,22 +645,22 @@ export default class NetworkAnalysis extends Mixins(
           borderColor: "rgba(236, 228, 114, 1)", // success green
           backgroundColor: "rgba(236, 228, 114, 1)", // success green
           borderWidth: 2,
-          steppedLine: true,
           fill: false,
-          type: "line",
-          radius: 0,
-          hitRadius: 5,
+          type: lineType,
+          data: [],
+          pointRadius: 0,
+          pointHitRadius: 5,
         },
         {
           label: "Country",
           borderColor: "rgba(159, 134, 255, 1)", // success green
           backgroundColor: "rgba(159, 134, 255, 1)", // success green
           borderWidth: 2,
-          steppedLine: true,
           fill: false,
-          type: "line",
-          radius: 0,
-          hitRadius: 5,
+          type: lineType,
+          data: [],
+          pointRadius: 0,
+          pointHitRadius: 5,
         },
       ]
     );
@@ -672,30 +668,23 @@ export default class NetworkAnalysis extends Mixins(
     return sets;
   }
 
-  getAggregatedLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
-    if (!data.datasets || !tooltipItem.datasetIndex || !tooltipItem.index)
-      return;
-    let dataSet = data.datasets[tooltipItem.datasetIndex];
+  getAggregatedLabels(tooltipItem: TooltipItem<"line">) {
+    let dataSet = this.aggregatedDataSets[tooltipItem.datasetIndex];
     if (!dataSet.data) return;
-    let avg = (dataSet.data[tooltipItem.index] as Chart.ChartPoint).y;
-    let dataSet2 = data.datasets[tooltipItem.datasetIndex + 1];
+    let avg = (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+    let dataSet2 = this.aggregatedDataSets[tooltipItem.datasetIndex + 1];
     if (!dataSet2.data) return;
-    let min = (dataSet2.data[tooltipItem.index] as Chart.ChartPoint).y;
-    let dataSet3 = data.datasets[tooltipItem.datasetIndex + 2];
+    let min = (dataSet2.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+    let dataSet3 = this.aggregatedDataSets[tooltipItem.datasetIndex + 2];
     if (!dataSet3.data) return;
-    let max = (dataSet3.data[tooltipItem.index] as Chart.ChartPoint).y;
-
+    let max = (dataSet3.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
     return `Average: ${avg}; Min: ${min}; Max: ${max}`;
   }
 
-  getLabels(tooltipItem: ChartTooltipItem, data: ChartData) {
-    if (!data.datasets || !tooltipItem.datasetIndex || !tooltipItem.index)
-      return;
-    let dataSet = data.datasets[tooltipItem.datasetIndex];
-
-    if (dataSet.data === undefined) return;
-
-    return (dataSet.data[tooltipItem.index] as Chart.ChartPoint).y;
+  getLabels(tooltipItem: TooltipItem<"line">) {
+    if (this.hour24ChartDataSets === undefined) return;
+    const dataSet = this.hour24ChartDataSets[tooltipItem.datasetIndex];
+    return (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
   }
 
   async select30DayView(time?: Date) {
@@ -798,7 +787,7 @@ export default class NetworkAnalysis extends Mixins(
           startOfDay,
           tomorrow
         );
-      this.updateDataInDataSets(this.hour24ChartDataSets as ChartDataSets[]);
+      this.updateDataInDataSets(this.hour24ChartDataSets as ChartDataset[]);
     } catch (e) {
       this.failed = true;
     }
@@ -833,9 +822,4 @@ export default class NetworkAnalysis extends Mixins(
 }
 </script>
 
-<style scoped>
-.canvas-container {
-  height: 400px;
-  width: 100%;
-}
-</style>
+<style scoped></style>
