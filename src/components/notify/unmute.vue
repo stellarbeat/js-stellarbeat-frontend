@@ -21,9 +21,8 @@
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
 import { StoreMixin } from "@/mixins/StoreMixin";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
-import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 @Component({ components: { BAlert, BButton } })
 export default class Confirm extends Mixins(StoreMixin) {
