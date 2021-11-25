@@ -334,7 +334,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   async mounted() {
     this.selectedDate = this.statisticsDateTimeNavigator.getInitialSelectedDate(
       this.chartView,
-      this.store.network.crawlDate
+      this.store.network.time
     );
     await this.updateDayHistoryChart();
     this.rendered = true;

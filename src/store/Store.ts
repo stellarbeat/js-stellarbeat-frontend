@@ -152,7 +152,7 @@ export default class Store {
 
   async fetchNodeSnapshotsByPublicKey(id: PublicKey): Promise<NodeSnapShot[]> {
     const params: Record<string, unknown> = {};
-    params["at"] = this.network.crawlDate;
+    params["at"] = this.network.time;
     const result = await axios.get(
       this.getApiUrl() + "/v1/node/" + id + "/snapshots",
       { params }
@@ -168,7 +168,7 @@ export default class Store {
 
   async fetchNodeSnapshots(): Promise<NodeSnapShot[]> {
     const params: Record<string, unknown> = {};
-    params["at"] = this.network.crawlDate;
+    params["at"] = this.network.time;
     const result = await axios.get(this.getApiUrl() + "/v1/node-snapshots", {
       params,
     });
@@ -185,7 +185,7 @@ export default class Store {
     id: OrganizationId
   ): Promise<OrganizationSnapShot[]> {
     const params: Record<string, unknown> = {};
-    params["at"] = this.network.crawlDate;
+    params["at"] = this.network.time;
     const result = await axios.get(
       this.getApiUrl() + "/v1/organization/" + id + "/snapshots",
       { params }
@@ -201,7 +201,7 @@ export default class Store {
 
   async fetchOrganizationSnapshots(): Promise<OrganizationSnapShot[]> {
     const params: Record<string, unknown> = {};
-    params["at"] = this.network.crawlDate;
+    params["at"] = this.network.time;
     const result = await axios.get(
       this.getApiUrl() + "/v1/organization-snapshots",
       { params }

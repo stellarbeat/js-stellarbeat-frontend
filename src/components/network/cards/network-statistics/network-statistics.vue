@@ -316,12 +316,12 @@ export default class NetworkStatistics extends Mixins(
 
   public async mounted() {
     if (!this.store.isSimulation) {
-      let oneYearAgo = moment(this.network.crawlDate).subtract(1, "y").toDate();
+      let oneYearAgo = moment(this.network.time).subtract(1, "y").toDate();
       this.yearStatistics =
         await this.store.networkMeasurementStore.getMonthStatistics(
           "stellar-public",
           oneYearAgo,
-          this.network.crawlDate
+          this.network.time
         );
     }
     this.isLoading = false;

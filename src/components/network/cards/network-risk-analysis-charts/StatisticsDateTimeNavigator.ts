@@ -70,45 +70,43 @@ export default class StatisticsDateTimeNavigator {
   }
 
   //todo: could be cleaner
-  getInitialSelectedDate(bucketSize: string, crawlDate: Date) {
+  getInitialSelectedDate(bucketSize: string, time: Date) {
     if (bucketSize === "30D") {
       if (
-        moment(crawlDate).subtract(30, "d") <
+        moment(time).subtract(30, "d") <
         moment(this.statisticsTrackingStartDate)
       ) {
         return moment(this.statisticsTrackingStartDate)
           .add(30, "d")
           .startOf("day")
           .toDate();
-      } else return moment(crawlDate).startOf("day").toDate();
+      } else return moment(time).startOf("day").toDate();
     } else if (bucketSize === "12H") {
       if (
-        moment(crawlDate).subtract(24, "h") <
+        moment(time).subtract(24, "h") <
         moment(this.statisticsTrackingStartDate)
       ) {
         return moment(this.statisticsTrackingStartDate).add(12, "h").toDate();
-      } else return crawlDate;
+      } else return time;
     } else if (bucketSize === "24H") {
       if (
-        moment(crawlDate).subtract(24, "h") <
+        moment(time).subtract(24, "h") <
         moment(this.statisticsTrackingStartDate)
       ) {
         return moment(this.statisticsTrackingStartDate).add(24, "h").toDate();
-      } else return crawlDate;
+      } else return time;
     } else if (bucketSize === "1H") {
       if (
-        moment(crawlDate).subtract(1, "h") <
-        moment(this.statisticsTrackingStartDate)
+        moment(time).subtract(1, "h") < moment(this.statisticsTrackingStartDate)
       ) {
         return moment(this.statisticsTrackingStartDate).add(1, "h").toDate();
-      } else return crawlDate;
+      } else return time;
     } else if (bucketSize === "1Y") {
       if (
-        moment(crawlDate).subtract(1, "y") <
-        moment(this.statisticsTrackingStartDate)
+        moment(time).subtract(1, "y") < moment(this.statisticsTrackingStartDate)
       ) {
         return moment(this.statisticsTrackingStartDate).add(1, "y").toDate();
-      } else return crawlDate;
+      } else return time;
     } else throw new Error("unknown bucket size");
   }
 }

@@ -809,9 +809,9 @@ export default class NetworkAnalysis extends Mixins(
     );
     if (this.defaultBucketSize === "30D")
       await this.updateSelectedDate(
-        moment(this.network.crawlDate).subtract(29, "d").toDate()
+        moment(this.network.time).subtract(29, "d").toDate()
       );
-    else await this.updateSelectedDate(this.network.crawlDate);
+    else await this.updateSelectedDate(this.network.time);
 
     this.initialDataLoaded = true;
   }

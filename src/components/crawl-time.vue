@@ -4,7 +4,7 @@
       <!--Needs to be client only because date rendering is based on locale!-->
       <b-form-datepicker
         size="sm"
-        v-model="crawlDate"
+        v-model="time"
         class="date-picker p-0"
         :date-format-options="{
           year: 'numeric',
@@ -64,8 +64,8 @@ import {
   directives: { "b-tooltip": VBTooltip },
 })
 export default class CrawlTime extends Vue {
-  protected crawlDate: Date = new Date(this.store.network.crawlDate.getTime());
-  protected crawlTime: string = moment(this.crawlDate).format("HH:mm:ss");
+  protected time: Date = new Date(this.store.network.time.getTime());
+  protected crawlTime: string = moment(this.time).format("HH:mm:ss");
   protected minSelectedDate: Date = this.store.measurementsStartDate;
 
   get store(): Store {
@@ -80,7 +80,7 @@ export default class CrawlTime extends Vue {
         view: this.$route.query.view,
         "no-scroll": "1",
         network: this.$route.query.network,
-        at: moment(this.crawlDate)
+        at: moment(this.time)
           .hours(Number(this.crawlTime.substr(0, 2)))
           .minutes(Number(this.crawlTime.substr(3, 2)))
           .toISOString(),

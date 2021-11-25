@@ -19,9 +19,7 @@
             <div class="text-muted mb-0" style="font-size: small">
               {{ snapshot.startDate.toLocaleString() }}
               <b-badge
-                v-if="
-                  snapshot.startDate.getTime() === network.crawlDate.getTime()
-                "
+                v-if="snapshot.startDate.getTime() === network.time.getTime()"
                 variant="info"
                 >current crawl</b-badge
               >
