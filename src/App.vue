@@ -159,7 +159,12 @@
                   </li>
                   <li
                     class="nav-item"
-                    v-if="store.networkId === 'public' && !store.isSimulation"
+                    v-if="
+                      !store.isLoading &&
+                      !store.fetchingDataFailed &&
+                      store.networkId === 'public' &&
+                      !store.isSimulation
+                    "
                   >
                     <router-link
                       active-class="active"
