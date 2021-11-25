@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="confirming">
-      <h4>Confirming subscription</h4>
+    <div v-if="requesting">
+      <h4>Requesting subscription</h4>
       <div>
         <div class="loader"></div>
       </div>
@@ -9,7 +9,7 @@
     <div v-else>
       <h4>Notify me about</h4>
       <b-form @submit="onSubmit" @reset="onReset">
-        <b-alert variant="success" :show="subscribed"
+        <b-alert variant="success" :show="requested"
           >Subscription request received, you will receive an email
           shortly.</b-alert
         >
@@ -67,7 +67,7 @@
             id="network-checkbox"
             v-model="networkSubscription"
             name="network-checkbox"
-            value="subscribed"
+            value="requested"
             unchecked-value="not_subscribed"
           >
             Network events
@@ -139,8 +139,8 @@ type SelectedOrganization = {
 })
 export default class NotifySubscribe extends Mixins(StoreMixin) {
   protected emailAddress = "";
-  protected subscribed = false;
-  protected confirming = false;
+  protected requested = false;
+  protected requesting = false;
   protected subscribeError = false;
   protected networkSubscription = false;
   protected selectedNodes: SelectNode[] | null = null;
@@ -176,6 +176,10 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
 
   onReset(event: Event) {
     event.preventDefault();
+    this.resetForm();
+  }
+
+  resetForm() {
     this.emailAddress = "";
     this.selectedOrganizations = null;
     this.selectedNodes = null;
@@ -217,10 +221,10 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
   async onSubmit(event: Event) {
     event.preventDefault();
     this.subscribeError = false;
-    this.subscribed = false;
+    this.requested = false;
     if (this.emailAddressState !== true) return;
     try {
-      this.confirming = true;
+      this.requesting = true;
       await axios.post(
         process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription",
         {
@@ -228,11 +232,11 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
           eventSourceIds: this.getSelectedEventSourceIds(),
         }
       );
-      this.subscribed = true;
-      this.confirming = false;
-      this.emailAddress = "";
+      this.requested = true;
+      this.requesting = false;
+      this.resetForm();
     } catch (e) {
-      this.confirming = false;
+      this.requesting = false;
       this.subscribeError = true;
       console.log(e);
     }

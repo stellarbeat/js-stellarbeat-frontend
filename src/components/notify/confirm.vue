@@ -10,9 +10,7 @@
       <b-alert variant="success" show>Subscription confirmed!</b-alert>
     </div>
     <div v-else>
-      <b-alert variant="warning" show
-        >Cannot find a pending subscription, did you already confirm?</b-alert
-      >
+      <b-alert variant="warning" show>Stale confirmation link</b-alert>
     </div>
   </div>
   <div v-else>
