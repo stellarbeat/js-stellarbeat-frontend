@@ -157,6 +157,27 @@
                       Organizations
                     </router-link>
                   </li>
+                  <li
+                    class="nav-item"
+                    v-if="store.networkId === 'public' && !store.isSimulation"
+                  >
+                    <router-link
+                      active-class="active"
+                      class="nav-link"
+                      :to="{
+                        name: 'subscribe',
+                        query: {
+                          view: $route.query.view,
+                          network: $route.query.network,
+                          at: $route.query.at,
+                        },
+                      }"
+                      exact
+                    >
+                      <b-icon-bell class="mr-1" scale="0.9" />
+                      Notify
+                    </router-link>
+                  </li>
                   <li class="nav-item">
                     <a
                       class="nav-link"
@@ -301,6 +322,7 @@ import {
   BDropdownItem,
   BIconNewspaper,
   BBadge,
+  BIconBell,
 } from "bootstrap-vue";
 import Store from "@/store/Store";
 import { Route } from "vue-router";
@@ -309,6 +331,7 @@ import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 @Component({
   name: "app",
   components: {
+    BIconBell,
     Github,
     CustomNetwork,
     UndoRedo,
