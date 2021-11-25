@@ -243,6 +243,7 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
   }
 
   mounted() {
+    console.log(this.network.id);
     this.nodes = this.network.nodes.map((node) => {
       return {
         name: node.displayName,
