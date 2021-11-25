@@ -194,7 +194,7 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
     }
 
     if (this.selectedNodes !== null) {
-      this.nodes.forEach((node: SelectNode) => {
+      this.selectedNodes.forEach((node: SelectNode) => {
         eventSourceIds.push({
           type: "node",
           id: node.publicKey,

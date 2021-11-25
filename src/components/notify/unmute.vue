@@ -25,7 +25,7 @@ import axios from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
 
 @Component({ components: { BAlert, BButton } })
-export default class Confirm extends Mixins(StoreMixin) {
+export default class Unmute extends Mixins(StoreMixin) {
   private unmuting = true;
   private error = true;
   private errorMessage = "Something went wrong";

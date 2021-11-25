@@ -122,6 +122,14 @@ export function createRouter() {
                 /* webpackChunkName: "notify-subscription-unmute" */ "@/components/notify/unmute.vue"
               ),
           },
+          {
+            name: "unsubscribe",
+            path: ":subscriberRef/unsubscribe",
+            component: () =>
+              import(
+                /* webpackChunkName: "notify-subscription-unsubscribe" */ "@/components/notify/unsubscribe.vue"
+              ),
+          },
         ],
       },
       {
