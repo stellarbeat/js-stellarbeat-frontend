@@ -194,7 +194,7 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
     }
 
     if (this.selectedNodes !== null) {
-      this.selectedNodes.forEach((node: SelectNode) => {
+      this.nodes.forEach((node: SelectNode) => {
         eventSourceIds.push({
           type: "node",
           id: node.publicKey,
@@ -224,7 +224,7 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
       await axios.post(
         process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription",
         {
-          emailAddress: "frontend@stellarbeat.io",
+          emailAddress: this.emailAddress,
           eventSourceIds: this.getSelectedEventSourceIds(),
         }
       );
