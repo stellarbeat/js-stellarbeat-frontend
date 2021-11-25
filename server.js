@@ -1,7 +1,7 @@
-import express from "express";
-import history from "connect-history-api-fallback";
-
+const express = require("express");
 const app = express();
+const history = require("connect-history-api-fallback");
+
 let port = process.env.PORT || 3000;
 
 app.use(
