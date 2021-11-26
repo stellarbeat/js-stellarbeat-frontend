@@ -157,7 +157,7 @@
                       Organizations
                     </router-link>
                   </li>
-                  <li
+                  <!--li
                     class="nav-item"
                     v-if="
                       !store.isLoading &&
@@ -182,7 +182,7 @@
                       <b-icon-bell class="mr-1" scale="0.9" />
                       Notify
                     </router-link>
-                  </li>
+                  </li!-->
                   <li class="nav-item">
                     <a
                       class="nav-link"
