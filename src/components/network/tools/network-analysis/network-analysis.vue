@@ -49,11 +49,7 @@
                     >
                       <template v-slot:title>
                         <div
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-baseline
-                          "
+                          class="d-flex justify-content-between align-items-baseline"
                         >
                           <h3>
                             <b-badge
@@ -108,11 +104,7 @@
                     >
                       <template v-slot:title>
                         <div
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-baseline
-                          "
+                          class="d-flex justify-content-between align-items-baseline"
                         >
                           <h3 v-if="blockingSetsMinSize <= 0">
                             Network halted.
@@ -162,11 +154,7 @@
                     >
                       <template v-slot:title>
                         <div
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-baseline
-                          "
+                          class="d-flex justify-content-between align-items-baseline"
                         >
                           <h3 v-if="splittingSetsMinSize <= 0">
                             No intersection between quorums found.
@@ -216,11 +204,7 @@
                     >
                       <template v-slot:title>
                         <div
-                          class="
-                            d-flex
-                            justify-content-between
-                            align-items-baseline
-                          "
+                          class="d-flex justify-content-between align-items-baseline"
                         >
                           <h3 class="mb-0">
                             Top tier has size

@@ -1,15 +1,7 @@
 <template>
   <div class="card card-profile">
     <div
-      class="
-        card-body
-        pb-2
-        d-flex
-        flex-column
-        text-center
-        justify-content-center
-        align-items-center
-      "
+      class="card-body pb-2 d-flex flex-column text-center justify-content-center align-items-center"
     >
       <h3 class="my-1">
         <span

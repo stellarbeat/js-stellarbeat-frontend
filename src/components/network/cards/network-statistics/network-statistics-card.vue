@@ -2,14 +2,7 @@
   <div class="card" :class="dimmerClass">
     <div class="loader"></div>
     <div
-      class="
-        card-body
-        p-0
-        d-flex
-        flex-column
-        justify-content-between
-        dimmer-content
-      "
+      class="card-body p-0 d-flex flex-column justify-content-between dimmer-content"
     >
       <div class="d-flex justify-content-between align-items-start pt-3 px-3">
         <div class="">

@@ -4,14 +4,7 @@
       <transition name="fade" mode="out-in">
         <div :key="stickyKey">
           <div
-            class="
-              card-header
-              sb-card-header
-              d-flex
-              inverted
-              d-flex
-              align-items-start
-            "
+            class="card-header sb-card-header d-flex inverted d-flex align-items-start"
           >
             <div class="d-flex align-items-start">
               <h3 class="title-icon">

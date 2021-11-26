@@ -1551,13 +1551,12 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellar-domain@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-3.0.1.tgz#103a74b7b9346e82ba257c59b26bfa056febfbe5"
-  integrity sha512-5DXRkVufiHUqCsuY8T6yVqyyjD117CC8IA2swsEyUCZ+oI+WKbNbJPrbJRZJH+pzmx8cPU0S+VfYKew9/MyFEA==
+"@stellarbeat/js-stellar-domain@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-3.1.0.tgz#e1fa2b8d70214d91a0fcabce728314d17dd99c88"
+  integrity sha512-eYCY7BomU3BW1kxSWvFVMvanGm1UzdSR7L6xATujx+PUEYBJ2AIUjaNIxHcZrp2zmw5s3dUVao3L4bIdmfjxAA==
   dependencies:
     "@iarna/toml" "^2.2.5"
-    find-versions "^3.2.0"
     latest-semver "^3.0.0"
     semver "^7.3.5"
     semver-compare "^1.0.0"
@@ -5883,13 +5882,6 @@ find-up@^4.0.0, find-up@^4.1.0:
   dependencies:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
-
-find-versions@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/find-versions/-/find-versions-3.2.0.tgz#10297f98030a786829681690545ef659ed1d254e"
-  integrity sha512-P8WRou2S+oe222TOCHitLy8zj+SIsVJh52VP4lvXkaFVnOFFdoWv1H1Jjvel1aI6NCFOAaeAVm8qrI0odiLcww==
-  dependencies:
-    semver-regex "^2.0.0"
 
 flat-cache@^2.0.1:
   version "2.0.1"
@@ -11355,11 +11347,6 @@ semver-compare@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/semver-compare/-/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
   integrity sha1-De4hahyUGrN+nvsXiPavxf9VN/w=
-
-semver-regex@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/semver-regex/-/semver-regex-2.0.0.tgz#a93c2c5844539a770233379107b38c7b4ac9d338"
-  integrity sha512-mUdIBBvdn0PLOeP3TEkMH7HHeUP3GjsXCwKarjv/kGmUFOYg1VqEemKhoQpWMu6X2I8kHeuVdGibLGkVK+/5Qw==
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.5, semver@^5.5.0, semver@^5.6.0:
   version "5.7.1"

@@ -54,17 +54,7 @@
       Error fetching data
     </div>
     <div
-      class="
-        card-body
-        d-flex
-        flex-column
-        justify-content-center
-        align-items-center
-        h-100
-        px-0
-        pt-0
-        pb-3
-      "
+      class="card-body d-flex flex-column justify-content-center align-items-center h-100 px-0 pt-0 pb-3"
     >
       <div class="w-100 h-100" :class="dimmerClass">
         <div class="loader"></div>
