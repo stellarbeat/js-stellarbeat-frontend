@@ -2,11 +2,9 @@ import Vue from "vue";
 import App from "./App.vue";
 import { createRouter } from "./router";
 import VueTruncate from "vue-truncate-filter";
-//import './assets/tabler-ui-light.css';
 import "./assets/custom.scss";
 import Meta from "vue-meta";
 import * as Sentry from "@sentry/browser";
-// Importing the global css file
 import "@/assets/global.css";
 import VueScrollTo from "vue-scrollto";
 import Store from "@/store/Store";
@@ -15,7 +13,6 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
-//import AsyncComputedPlugin from 'vue-async-computed';
 
 const isProd = process.env.NODE_ENV === "production";
 
