@@ -93,7 +93,7 @@
           v-if="selectedNode.isValidator"
         >
           <history-card
-            :subject="'Full validator'"
+            :subject="'History Archive'"
             :entityId="selectedNode.publicKey"
             :fetchDayMeasurements="
               (publicKey, from, to) =>
