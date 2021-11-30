@@ -157,9 +157,10 @@
                       Organizations
                     </router-link>
                   </li>
-                  <!--li
+                  <li
                     class="nav-item"
                     v-if="
+                      enableNotify &&
                       !store.isLoading &&
                       !store.fetchingDataFailed &&
                       store.networkId === 'public' &&
@@ -182,7 +183,7 @@
                       <b-icon-bell class="mr-1" scale="0.9" />
                       Notify
                     </router-link>
-                  </li!-->
+                  </li>
                   <li class="nav-item">
                     <a
                       class="nav-link"
@@ -373,6 +374,7 @@ export default class App extends Vue {
   protected errorMessage =
     "Could not connect to stellarbeat.io api, please refresh the page";
   protected navCollapsed = false;
+  protected enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === 1;
 
   async created() {
     let networkId = this.$route.query.network;
