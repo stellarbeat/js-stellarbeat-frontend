@@ -374,7 +374,7 @@ export default class App extends Vue {
   protected errorMessage =
     "Could not connect to stellarbeat.io api, please refresh the page";
   protected navCollapsed = false;
-  protected enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === 1;
+  protected enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === "1";
 
   async created() {
     let networkId = this.$route.query.network;
