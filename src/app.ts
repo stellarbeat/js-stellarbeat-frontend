@@ -13,6 +13,7 @@ import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
+import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -25,6 +26,11 @@ if (isProd) {
   });
 } else {
   //makeServer();
+}
+
+if (typeof window !== "undefined") {
+  //needed for chartjs3.x compatibility with older browsers
+  window.ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill;
 }
 
 //Vue.use(AsyncComputedPlugin);
