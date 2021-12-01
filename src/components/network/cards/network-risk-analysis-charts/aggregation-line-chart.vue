@@ -12,6 +12,7 @@ import {
   ChartEvent,
   Legend,
   LegendItem,
+  LinearScale,
   LineController,
   LineElement,
   Point,
@@ -98,7 +99,14 @@ export default class AggregationLineChart extends Vue {
   public initializeBarChart() {
     let chartId = "livenessChart" + this.id;
     const context = this.$refs[chartId];
-    Chart.register(TimeScale, LineElement, LineController, Legend, Tooltip);
+    Chart.register(
+      TimeScale,
+      LineElement,
+      LineController,
+      Legend,
+      Tooltip,
+      LinearScale
+    );
     this.chart = new Chart(context as HTMLCanvasElement, {
       type: "line",
       // The data for our dataset
