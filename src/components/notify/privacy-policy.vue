@@ -23,7 +23,10 @@
       Your email address will be deleted when you unsubscribe to all your event
       subscriptions.
     </p>
-    <p>If you have any questions, send an email to privacy@stellarbeat.io</p>
+    <p>
+      If you have any questions, send an email to
+      <a href="mailto:privacy@stellarbeat.io">privacy@stellarbeat.io</a>.
+    </p>
   </div>
 </template>
 
