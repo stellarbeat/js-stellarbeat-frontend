@@ -178,7 +178,6 @@
                           at: $route.query.at,
                         },
                       }"
-                      exact
                     >
                       <b-icon-bell class="mr-1" scale="0.9" />
                       Notify

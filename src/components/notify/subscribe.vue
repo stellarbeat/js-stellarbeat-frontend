@@ -7,7 +7,7 @@
       </div>
     </div>
     <div v-else>
-      <h4>Notify me about</h4>
+      <h4>Subscribe to</h4>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-alert variant="success" :show="requested"
           >Subscription request received, you will receive an email
@@ -21,7 +21,7 @@
           id="nodes-group"
           label="Node events"
           label-for="nodes-select"
-          description="Validating status, history archives up-to-date,..."
+          description="Triggered when inactive, not validating or history archive not up-to-date for three consecutive updates"
         >
           <multiselect
             id="nodes-select"
@@ -43,7 +43,7 @@
           id="organizations-group"
           label="Organization events"
           label-for="organization-select"
-          description="Organization availability"
+          description="Triggered when organization unavailable for three consecutive updates"
         >
           <multiselect
             id="organization-select"
@@ -60,7 +60,7 @@
         </b-form-group>
         <b-form-group
           id="network-group"
-          description="Important network topology changes, liveness or danger risks below
+          description="Triggered when transitive quorumSet changes, when liveness or danger risks drop below
             thresholds."
         >
           <b-form-checkbox
@@ -87,11 +87,52 @@
           type="submit"
           variant="primary"
           :disabled="!(emailAddressState === true)"
-          >Create or update subscription</b-button
+          >Create or update subscriptions</b-button
         >
         <b-button type="reset" variant="default">Clear form</b-button>
       </b-form>
     </div>
+    <b-alert class="mt-5" variant="info" :show="true"
+      ><ul>
+        <li>
+          Events are triggered when they first occur. For example a node that is
+          down for three days, will only trigger one event at the start.
+        </li>
+        <li>
+          To prevent notification overload, notifications for a specific event
+          are muted (not sent) for 24H after it is first sent. You can however
+          unmute event notifications by following the link in the notification
+          email. For example if you resolve a reported issue with your node, and
+          wish to be notified immediately when the issue should reappear.
+        </li>
+        <li>
+          This service is provided best effort. If network issues are reported,
+          be sure to check the
+          <a href="https://dashboard.stellar.org" target="_blank"
+            >official Stellar network dashboard</a
+          >. There could be an issue with the Stellarbeat crawler, which itself
+          is in essence a Watcher node.
+        </li>
+        <li>
+          To improve the chances of the Stellarbeat crawler connecting to your
+          node, add the crawler public keys to your PREFERRED_PEER_KEYS in your
+          <a
+            href="https://github.com/stellar/stellar-core/blob/ecd0a7462c84bd1d2445cdfd48aa9b38b1bbfd20/docs/stellar-core_example.cfg#L170"
+            target="_blank"
+            >Stellar core configuration file. </a
+          >: GCMFBFXLCVWMYZL64U75DTRT6YNPFTG5ZV5P2PL2GTI3GNMEV4WC53JC and
+          GAK7ZMDHKKEOYGZH3OSZQERK6UG5UDG5WEJV7GTN3Z4OIFXS3DXPUCRY
+        </li>
+        <li>
+          The Stellarbeat notification service does not replace the monitoring
+          setup advised in the
+          <a
+            href="https://developers.stellar.org/docs/run-core-node/monitoring/"
+            >Stellar monitoring docs</a
+          >.
+        </li>
+      </ul>
+    </b-alert>
   </div>
 </template>
 
@@ -243,7 +284,6 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
   }
 
   mounted() {
-    console.log(this.network.id);
     this.nodes = this.network.nodes.map((node) => {
       return {
         name: node.displayName,

@@ -130,6 +130,14 @@ export function createRouter() {
                 /* webpackChunkName: "notify-subscription-unsubscribe" */ "@/components/notify/unsubscribe.vue"
               ),
           },
+          {
+            name: "privacy",
+            path: "privacy",
+            component: () =>
+              import(
+                /* webpackChunkName: "notify-subscription-unsubscribe" */ "@/components/notify/privacy-policy.vue"
+              ),
+          },
         ],
       },
       {
