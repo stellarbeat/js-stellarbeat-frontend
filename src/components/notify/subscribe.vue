@@ -100,10 +100,11 @@
         </li>
         <li>
           To prevent notification overload, notifications for a specific event
-          are muted (not sent) for 24H after it is first sent. You can however
-          unmute event notifications by following the link in the notification
-          email. For example if you resolve a reported issue with your node, and
-          wish to be notified immediately when the issue should reappear.
+          are muted (not sent) for 24H after they are first sent. You can
+          however unmute event notifications by following the link in the
+          notification email. For example if you resolve a reported issue with
+          your node, and wish to be notified immediately when the issue should
+          reappear.
         </li>
         <li>
           This service is provided best effort. If network issues are reported,
