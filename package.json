@@ -21,6 +21,7 @@
     "@sentry/node": "^6.15.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
     "@stellarbeat/js-stellar-domain": "^3.1.0",
+    "@vue/composition-api": "^1.4.1",
     "ajv-formats": "^2.1.1",
     "axios": "^0.24.0",
     "bootstrap-vue": "2.21.2",
@@ -40,6 +41,7 @@
     "leaflet-sleep": "^0.5.2",
     "lru-cache": "^6.0.0",
     "moment": "^2.29.1",
+    "neverthrow": "^4.3.1",
     "regenerator-runtime": "^0.13.3",
     "stellar_analysis": "^0.4.2",
     "stickybits": "^3.7.9",
@@ -57,6 +59,7 @@
     "vue-scrollto": "^2.20.0",
     "vue-server-renderer": "^2.6.14",
     "vue-truncate-filter": "^1.1.7",
+    "vue2-helpers": "^1.1.6",
     "vue2-leaflet": "^2.7.1",
     "vue2-leaflet-markercluster": "^3.1.0"
   },

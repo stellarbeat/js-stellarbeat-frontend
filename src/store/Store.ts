@@ -31,6 +31,7 @@ import { AggregateChange } from "@/services/change-queue/changes/aggregate-chang
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "stellar_analysis";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { StellarBeatNetworkV1Repository } from "@/repositories/StellarBeatNetworkV1Repository";
 
 type NetworkId = string;
 
@@ -63,7 +64,7 @@ export default class Store {
   public isTimeTravel = false;
   public timeTravelDate?: Date;
   public customNetwork: Network | undefined;
-
+  protected networkRepository: StellarBeatNetworkV1Repository;
   public includeWatcherNodes = false;
   public watcherNodeFilter = (node: Node) => {
     return this.includeWatcherNodes || node.isValidator;
@@ -74,6 +75,14 @@ export default class Store {
   protected _uniqueId = 0;
 
   constructor() {
+    const baseApiUrls = new Map<string, string>(); //todo cleanup and config
+    if (!process.env["VUE_APP_PUBLIC_API_URL"])
+      throw new Error("VUE_APP_PUBLIC_API_URL not set");
+    baseApiUrls.set("public", this.getApiUrl("public"));
+    if (process.env["VUE_APP_TEST_API_URL"])
+      baseApiUrls.set("test", this.getApiUrl("test"));
+    this.networkRepository = new StellarBeatNetworkV1Repository(baseApiUrls);
+
     this.availableNetworksPretty = new Map();
     this.availableNetworksPretty.set("public", "Public network");
     this.availableNetworksPretty.set("test", "Testnet");
@@ -142,10 +151,12 @@ export default class Store {
     return this._haltingAnalysisPublicKey;
   }
 
-  getApiUrl(): string {
-    const key = "VUE_APP_" + this.networkId.toUpperCase() + "_API_URL";
+  getApiUrl(networkId: string = this.networkId): string {
+    const key = "VUE_APP_" + networkId.toUpperCase() + "_API_URL";
     const url = process.env[key];
-    if (!url) return "";
+
+    if (!url)
+      throw new Error(`Network API URL not defined in env variables: ${key}`);
 
     return url;
   }
@@ -246,32 +257,24 @@ export default class Store {
     }
 
     this.isLocalNetwork = false;
-    try {
-      const params: Record<string, unknown> = {};
-      if (at) {
-        params["at"] = at.toISOString();
-        this.isTimeTravel = true;
-        this.timeTravelDate = at;
-      } else {
-        this.isTimeTravel = false;
-        this.timeTravelDate = undefined;
-      }
-
-      this.isLoading = true;
-      const result = await axios.get(this.getApiUrl() + "/v1", { params });
-      if (result.data) {
-        const network = Network.fromJSON(result.data);
-        this.setNetwork(network);
-        this.isLoading = false;
-        return;
-      } else {
-        this.fetchingDataFailed = true;
-        this.isLoading = false;
-      }
-    } catch (error) {
-      this.fetchingDataFailed = true;
-      this.isLoading = false;
+    if (at) {
+      this.isTimeTravel = true;
+      this.timeTravelDate = at;
+    } else {
+      this.isTimeTravel = false;
+      this.timeTravelDate = undefined;
     }
+
+    this.isLoading = true;
+    const networkResult = await this.networkRepository.find(this.networkId, at);
+    if (networkResult.isOk()) {
+      this.setNetwork(networkResult.value);
+      this.isLoading = false;
+      return;
+    }
+    console.log(networkResult.error);
+    this.fetchingDataFailed = true;
+    this.isLoading = false;
   }
 
   public toggleOrganizationAvailability(organization: Organization) {

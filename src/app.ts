@@ -1,4 +1,5 @@
 import Vue from "vue";
+import VueCompositionAPI from "@vue/composition-api";
 import App from "./App.vue";
 import { createRouter } from "./router";
 import VueTruncate from "vue-truncate-filter";
@@ -35,6 +36,7 @@ if (typeof window !== "undefined") {
 
 //Vue.use(AsyncComputedPlugin);
 VueClipboard.config.autoSetContainer = true;
+Vue.use(VueCompositionAPI);
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);

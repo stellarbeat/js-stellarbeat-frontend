@@ -304,10 +304,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
 import Search from "@/components/search.vue";
-import UndoRedo from "@/components/node/tools/simulation/UndoRedo.vue";
 import Github from "@/components/organization/logo/github.vue";
 import CustomNetwork from "@/components/network/tools/modify-network.vue";
 import {
@@ -321,25 +318,29 @@ import {
   BIconQuestionCircle,
   BIconEnvelope,
   BNavbarToggle,
-  BFormSelect,
-  BIconGlobe2,
   BNavItemDropdown,
   BDropdownItem,
   BIconNewspaper,
-  BBadge,
   BIconBell,
 } from "bootstrap-vue";
 import Store from "@/store/Store";
-import { Route } from "vue-router";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import {
+  ComputedRef,
+  nextTick,
+  defineComponent,
+  getCurrentInstance,
+  computed,
+  onBeforeMount,
+  watch,
+} from "@vue/composition-api";
+import { useRoute, useRouter } from "vue2-helpers/vue-router";
 
-@Component({
-  name: "app",
+export default defineComponent({
   components: {
     BIconBell,
     Github,
     CustomNetwork,
-    UndoRedo,
     Search,
     BNavbar,
     BNavItemDropdown,
@@ -353,10 +354,7 @@ import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
     BIconQuestionCircle,
     BIconEnvelope,
     BNavbarToggle,
-    BFormSelect,
-    BIconGlobe2,
     BIconNewspaper,
-    BBadge,
   },
   metaInfo: {
     title: "Stellarbeat.io - Stellar network visibility",
@@ -368,106 +366,117 @@ import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
       },
     ],
   },
-})
-export default class App extends Vue {
-  protected errorMessage =
-    "Could not connect to stellarbeat.io api, please refresh the page";
-  protected navCollapsed = false;
-  protected enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === "1";
 
-  async created() {
-    let networkId = this.$route.query.network;
-    if (
-      "string" === typeof networkId &&
-      this.store.availableNetworks.includes(networkId)
-    ) {
-      this.store.networkId = networkId;
-    }
-    let timeAt = this.store.getDateFromParam(this.$route.query.at);
-    await this.store.initializeNetwork(timeAt);
-  }
+  setup() {
+    const errorMessage =
+      "Could not connect to stellarbeat.io api, please refresh the page";
+    const navCollapsed = false;
+    const enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === "1";
 
-  serverPrefetch() {
-    let networkId = this.$route.query.network;
-    if (
-      "string" === typeof networkId &&
-      this.store.availableNetworks.includes(networkId)
-    ) {
-      this.store.networkId = networkId;
-    }
-    let timeAt = this.store.getDateFromParam(this.$route.query.at);
+    const instance = getCurrentInstance(); //refactor to getStore
+    //@ts-ignore
+    const store: ComputedRef<Store> = computed(() => instance?.root.data.store);
+    const route = useRoute();
+    const router = useRouter();
 
-    return this.store.initializeNetwork(timeAt);
-  }
+    onBeforeMount(async () => {
+      let networkId = route.query.network;
+      if (
+        "string" === typeof networkId &&
+        store.value.availableNetworks.includes(networkId)
+      ) {
+        store.value.networkId = networkId;
+      }
+      let timeAt = store.value.getDateFromParam(route.query.at);
+      await store.value.initializeNetwork(timeAt);
+    });
 
-  @Watch("$route", { immediate: false })
-  async onRouteChanged(to: Route) {
-    let networkId = this.store.networkId;
-    let timeTravelDate = this.store.getDateFromParam(to.query.at);
-    let timeTravel = false;
-    if (!timeTravelDate && this.store.isTimeTravel)
-      //time travel reset
-      timeTravel = true;
-    if (timeTravelDate && !this.store.timeTravelDate) timeTravel = true;
-    if (
-      timeTravelDate &&
-      this.store.timeTravelDate &&
-      timeTravelDate.getTime() !== this.store.timeTravelDate.getTime()
-    )
-      timeTravel = true;
+    const network = computed(() => store.value.network);
 
-    if (
-      isString(to.query.network) &&
-      this.store.availableNetworks.includes(to.query.network)
-    )
-      networkId = to.query.network;
+    const showError = computed(() => store.value.fetchingDataFailed);
 
-    if (networkId !== this.store.networkId || timeTravel) {
-      this.store.networkId = networkId;
-      this.store.isLoading = true;
-      await this.$nextTick(async () => {
-        //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
-        await this.store.initializeNetwork(
-          timeTravel ? timeTravelDate : undefined
-        );
-      });
-    }
-  }
+    const homeActiveClass = computed(() => {
+      return {
+        active:
+          route.name === "network-dashboard" ||
+          route.name === "node-dashboard" ||
+          route.name === "organization-dashboard",
+      };
+    });
 
-  get store(): Store {
-    return this.$root.$data.store;
-  }
-
-  get network() {
-    return this.store.network;
-  }
-
-  get showError() {
-    return this.store.fetchingDataFailed;
-  }
-
-  get homeActiveClass() {
-    return {
-      active:
-        this.$route.name === "network-dashboard" ||
-        this.$route.name === "node-dashboard" ||
-        this.$route.name === "organization-dashboard",
+    const navigateToNetwork = (networkId: string) => {
+      if (networkId === store.value.networkId) return;
+      router
+        .push({
+          name: "network-dashboard",
+          query: { network: networkId },
+        })
+        .catch(() => {
+          //this triggers a navigation guard error that we can safely ignore. See router beforeEach
+        });
     };
-  }
 
-  navigateToNetwork(networkId: string) {
-    if (networkId === this.store.networkId) return;
+    const networkQuery = computed(() => route.query.network);
+    const at = computed(() => route.query.at);
 
-    this.$router
-      .push({
-        name: "network-dashboard",
-        query: { network: networkId },
-      })
-      .catch(() => {
-        //this triggers a navigation guard error that we can safely ignore. See router beforeEach
-      });
-  }
-}
+    watch(
+      [networkQuery, at],
+      async (to) => {
+        const networkQuery = to[0];
+        const at = to[1];
+        let networkId = store.value.networkId;
+        let timeTravelDate = store.value.getDateFromParam(at);
+        let timeTravel = false;
+        if (!timeTravelDate && store.value.isTimeTravel)
+          //time travel reset
+          timeTravel = true;
+        if (timeTravelDate && !store.value.timeTravelDate) timeTravel = true;
+        if (
+          timeTravelDate &&
+          store.value.timeTravelDate &&
+          timeTravelDate.getTime() !== store.value.timeTravelDate.getTime()
+        )
+          timeTravel = true;
+
+        if (
+          isString(networkQuery) &&
+          store.value.availableNetworks.includes(networkQuery)
+        )
+          networkId = networkQuery;
+
+        if (networkId !== store.value.networkId || timeTravel) {
+          store.value.networkId = networkId;
+          store.value.isLoading = true;
+          await nextTick(async () => {
+            //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
+            await store.value.initializeNetwork(
+              timeTravel ? timeTravelDate : undefined
+            );
+          });
+        }
+      },
+      { immediate: false }
+    );
+
+    return {
+      errorMessage,
+      navCollapsed,
+      enableNotify,
+      store,
+      network,
+      showError,
+      homeActiveClass,
+      navigateToNetwork,
+    };
+  },
+});
+/*export default class App extends Vue {
+
+
+
+
+
+}*/
 </script>
 
 <style scoped>
