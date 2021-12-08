@@ -24,13 +24,14 @@ import Vue from "vue";
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import { BListGroup, BListGroupItem } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   components: { BListGroup, BListGroupItem },
 })
 export default class NetworkHorizon extends Vue {
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

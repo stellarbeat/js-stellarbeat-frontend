@@ -26,6 +26,7 @@ import { Component, Watch } from "vue-property-decorator";
 
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
+import useStore from "@/useStore";
 
 @Component({
   name: "nodes-versions",
@@ -34,7 +35,7 @@ export default class NodesVersions extends Vue {
   public chart: Chart | null = null;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {
@@ -50,7 +51,7 @@ export default class NodesVersions extends Vue {
 
   get sortedVersions() {
     let versions: Record<string, number | undefined> = this.network.nodes
-      .filter(this.$root.$data.store.watcherNodeFilter)
+      .filter(useStore().watcherNodeFilter)
       .filter((node) => node.versionStr)
       .map((node) =>
         (node.versionStr as string)

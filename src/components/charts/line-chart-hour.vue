@@ -22,6 +22,7 @@ import {
   ScatterDataPoint,
   TooltipItem,
 } from "chart.js";
+import useStore from "@/useStore";
 
 @Component({
   name: "line-chart-hour",
@@ -38,7 +39,7 @@ export default class LineChartHour extends Vue {
   id: number = this.store.getUniqueId();
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   @Watch("data")

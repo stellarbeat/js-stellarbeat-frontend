@@ -26,6 +26,7 @@ import Vue from "vue";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import Gauge from "@/components/charts/gauge.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: { Gauge },
@@ -35,7 +36,7 @@ export default class NodeStatistics30DOverloaded extends Vue {
   protected node!: Node;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

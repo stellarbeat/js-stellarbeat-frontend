@@ -329,12 +329,12 @@ import {
   ComputedRef,
   nextTick,
   defineComponent,
-  getCurrentInstance,
   computed,
   onBeforeMount,
   watch,
 } from "@vue/composition-api";
 import { useRoute, useRouter } from "vue2-helpers/vue-router";
+import useStore from "@/useStore";
 
 export default defineComponent({
   components: {
@@ -373,9 +373,7 @@ export default defineComponent({
     const navCollapsed = false;
     const enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === "1";
 
-    const instance = getCurrentInstance(); //refactor to getStore
-    //@ts-ignore
-    const store: ComputedRef<Store> = computed(() => instance?.root.data.store);
+    const store: ComputedRef<Store> = computed(() => useStore());
     const route = useRoute();
     const router = useRouter();
 

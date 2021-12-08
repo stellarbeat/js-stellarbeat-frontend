@@ -17,6 +17,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Store from "@/store/Store";
 import { Chart, DoughnutController, ArcElement, LinearScale } from "chart.js";
+import useStore from "@/useStore";
 
 @Component({})
 export default class Gauge extends Vue {
@@ -40,7 +41,7 @@ export default class Gauge extends Vue {
   chart!: Chart;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   @Watch("value")

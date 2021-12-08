@@ -36,6 +36,7 @@ import { Component } from "vue-property-decorator";
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import { BTooltip, BIconInfoCircle } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   name: "validators-server-load",
@@ -45,7 +46,7 @@ export default class ValidatorsServerLoad extends Vue {
   public chart: Chart | null = null;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

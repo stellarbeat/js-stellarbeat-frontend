@@ -43,6 +43,7 @@ import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import Store from "@/store/Store";
 import { BIconSearch } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -60,7 +61,7 @@ export default class OrganizationValidatorsDropdown extends Mixins(
   public organization!: Organization;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

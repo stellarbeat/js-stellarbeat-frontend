@@ -30,8 +30,7 @@
 <script lang="ts">
 import { Component, Prop } from "vue-property-decorator";
 import Vue from "vue";
-import { Network, Organization } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+import { Organization } from "@stellarbeat/js-stellar-domain";
 import Gauge from "@/components/charts/gauge.vue";
 import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
 
@@ -42,14 +41,6 @@ import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
 export default class OrganizationStatistics30DSubQuorumAvailability extends Vue {
   @Prop()
   protected organization!: Organization;
-
-  get store(): Store {
-    return this.$root.$data.store;
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
 }
 </script>
 

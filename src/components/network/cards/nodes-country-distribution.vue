@@ -29,6 +29,7 @@ import { Component, Watch } from "vue-property-decorator";
 
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
+import useStore from "@/useStore";
 
 @Component({
   name: "nodes-country-distribution",
@@ -37,7 +38,7 @@ export default class NodesCountryDistribution extends Vue {
   public chart: Chart | null = null;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

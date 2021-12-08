@@ -170,6 +170,7 @@ import {
   BButtonToolbar,
 } from "bootstrap-vue";
 import { isArray } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import useStore from "@/useStore";
 
 interface Update {
   key: string;
@@ -240,7 +241,7 @@ export default class NodeLatestUpdates extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   mapValidatorsToNames(quorumSet: QuorumSet) {

@@ -38,6 +38,7 @@ import { Network, Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   components: { NodesTable, BIconSearch: BIconSearch, BBadge: BBadge },
@@ -77,7 +78,7 @@ export default class NodeQuorumSetValidators extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

@@ -227,6 +227,7 @@ import {
 import Graph from "@/components/visual-navigator/graph/graph.vue";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 import ClientOnly from "vue-client-only";
+import useStore from "@/useStore";
 
 @Component({
   name: "network-visual-navigator",
@@ -323,7 +324,7 @@ export default class NetworkVisualNavigator extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get selectedNode() {

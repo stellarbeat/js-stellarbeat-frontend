@@ -25,6 +25,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-moment";
+import useStore from "@/useStore";
 
 export type timeUnit = "day" | "hour";
 
@@ -43,7 +44,7 @@ export default class BarChartDay extends Vue {
   id: number = this.store.getUniqueId();
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get timeFormat() {

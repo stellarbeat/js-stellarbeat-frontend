@@ -91,6 +91,7 @@ import OrganizationStatisticsSubQuorum30DAvailability from "@/components/organiz
 import OrganizationLatestUpdates from "@/components/organization/organization-cards/organization-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
+import useStore from "@/useStore";
 @Component({
   components: {
     LazyHydrate,
@@ -114,7 +115,7 @@ export default class OrganizationDashboard extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get organization(): Organization {

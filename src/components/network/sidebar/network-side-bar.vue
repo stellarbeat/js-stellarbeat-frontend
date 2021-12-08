@@ -102,6 +102,7 @@ import SideBar from "@/components/side-bar/side-bar.vue";
 
 import { BIconX, BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -123,7 +124,7 @@ export default class NetworkSideBar extends Vue {
   protected organizationsExpanded = true;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network() {

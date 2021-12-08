@@ -131,6 +131,7 @@ import {
   BButtonToolbar,
   BIconExclamationTriangle,
 } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 interface Update {
   key: string;
@@ -198,7 +199,7 @@ export default class OrganizationLatestUpdates extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   async getSnapshots() {

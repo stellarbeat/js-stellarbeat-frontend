@@ -160,6 +160,7 @@ import {
 } from "bootstrap-vue";
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -200,7 +201,7 @@ export default class QuorumSetActions extends Vue {
   protected tomlNodesExport = "";
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

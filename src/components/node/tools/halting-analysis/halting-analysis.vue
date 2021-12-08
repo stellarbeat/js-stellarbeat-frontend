@@ -133,6 +133,7 @@ import {
 } from "bootstrap-vue";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
+import useStore from "@/useStore";
 
 const _HaltingAnalysisWorker = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 
@@ -164,7 +165,7 @@ export default class HaltingAnalysis extends Vue {
   protected haltingAnalysisWorker = new _HaltingAnalysisWorker();
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

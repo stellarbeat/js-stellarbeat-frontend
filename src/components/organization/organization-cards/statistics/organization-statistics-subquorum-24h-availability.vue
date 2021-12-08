@@ -34,6 +34,7 @@ import { Network, Organization } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import Gauge from "@/components/charts/gauge.vue";
 import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   components: { Gauge, BIconInfoCircle },
@@ -44,7 +45,7 @@ export default class OrganizationStatistics24HSubQuorumAvailability extends Vue 
   protected organization!: Organization;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

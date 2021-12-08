@@ -38,6 +38,7 @@ import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import OrganizationsTable from "@/components/organization/organizations-table.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -77,7 +78,7 @@ export default class NetworkOrganizations extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

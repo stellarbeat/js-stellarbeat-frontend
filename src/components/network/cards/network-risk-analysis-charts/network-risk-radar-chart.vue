@@ -78,6 +78,7 @@ import {
 import DateNavigator from "@/components/date-navigator.vue";
 import { AutomaticNetworkAnalysis } from "@/services/NetworkAnalyzer";
 import { MergeBy } from "stellar_analysis";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -97,7 +98,7 @@ export default class NetworkRiskRadarChart extends Vue {
   id: number = this.store.getUniqueId();
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

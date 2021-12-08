@@ -145,6 +145,7 @@ import Store from "@/store/Store";
 import LazyHydrate from "vue-lazy-hydration";
 import NetworkHorizon from "@/components/network/cards/network-horizon.vue";
 import NetworkRiskRadarChart from "@/components/network/cards/network-risk-analysis-charts/network-risk-radar-chart.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -171,11 +172,11 @@ import NetworkRiskRadarChart from "@/components/network/cards/network-risk-analy
 })
 export default class NetworkDashboard extends Vue {
   get network(): Network {
-    return this.$root.$data.store.network;
+    return this.store.network;
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 }
 </script>

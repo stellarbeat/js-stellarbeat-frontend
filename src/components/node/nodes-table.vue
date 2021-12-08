@@ -133,6 +133,7 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -160,7 +161,7 @@ export default class NodesTable extends Vue {
   public currentPage = 1;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network() {

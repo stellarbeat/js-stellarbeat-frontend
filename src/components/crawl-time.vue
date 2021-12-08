@@ -51,6 +51,7 @@ import {
   BFormDatepicker,
   VBTooltip,
 } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   name: "crawl-time",
@@ -69,7 +70,7 @@ export default class CrawlTime extends Vue {
   protected minSelectedDate: Date = this.store.measurementsStartDate;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   public timeTravel() {

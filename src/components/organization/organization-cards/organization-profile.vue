@@ -160,6 +160,7 @@ import {
   BIconEnvelope,
 } from "bootstrap-vue";
 import Stellar from "@/components/organization/logo/stellar.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -182,18 +183,16 @@ export default class OrganizationProfile extends Vue {
   organization!: Organization;
 
   get network(): Network {
-    return this.$root.$data.store.network;
+    return this.store.network;
   }
 
   get store() {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get notAllArchivesUpToDate() {
     return this.organization.validators
-      .map((validator) =>
-        this.$root.$data.store.network.getNodeByPublicKey(validator)
-      )
+      .map((validator) => this.network.getNodeByPublicKey(validator))
       .some((validator) => {
         return validator.historyUrl !== null && !validator.isFullValidator;
       });

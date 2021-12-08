@@ -12,13 +12,14 @@ import Vue from "vue";
 import { BIconX } from "bootstrap-vue";
 import { Component } from "vue-property-decorator";
 import { Dictionary } from "vue-router/types/router";
+import useStore from "@/useStore";
 
 @Component({
   components: { BIconX: BIconX },
 })
 export default class TimeTravelBadge extends Vue {
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   resetTimeTravel() {

@@ -120,6 +120,7 @@ import OrganizationValidatorsDropdown from "@/components/node/sidebar/organizati
 import SideBar from "@/components/side-bar/side-bar.vue";
 import { BBadge, BModal, VBModal } from "bootstrap-vue";
 import QuorumSlices from "@/components/node/tools/quorum-slices.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -142,7 +143,7 @@ export default class NodeSideBar extends Vue {
   protected tomlNodesExport = "";
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get selectedNode() {

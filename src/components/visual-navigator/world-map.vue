@@ -92,6 +92,7 @@ type Marker = {
 };
 
 import ClientOnly from "vue-client-only";
+import useStore from "@/useStore";
 
 @Component({
   name: "world-map",
@@ -120,7 +121,7 @@ export default class WorldMap extends Vue {
     this.isMounted = true;
   }
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   @Watch("fullScreen")

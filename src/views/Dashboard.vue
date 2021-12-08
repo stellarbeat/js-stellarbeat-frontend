@@ -89,6 +89,7 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BBreadcrumb, BAlert } from "bootstrap-vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { Route } from "vue-router";
+import useStore from "@/useStore";
 
 @Component({
   name: "dashboard",
@@ -200,7 +201,7 @@ export default class Dashboard extends Vue {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get selectedNode() {
@@ -212,7 +213,7 @@ export default class Dashboard extends Vue {
   }
 
   get network(): Network {
-    return this.$root.$data.store.network;
+    return useStore().network;
   }
 
   get isSimulation(): boolean {

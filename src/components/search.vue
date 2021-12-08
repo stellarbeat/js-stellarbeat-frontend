@@ -51,6 +51,7 @@ import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import { RawLocation } from "vue-router";
 import { BIconSearch, BFormInput } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 type Match = { name: string; type: string; route: RawLocation };
 @Component({
@@ -62,7 +63,7 @@ export default class Search extends Vue {
   protected arrowCounter = -1;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

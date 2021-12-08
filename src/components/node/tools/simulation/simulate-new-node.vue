@@ -22,6 +22,7 @@ import Store from "@/store/Store";
 import { Node } from "@stellarbeat/js-stellar-domain";
 
 import { BFormInput, BModal } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   components: { BFormInput, BModal },
@@ -30,7 +31,7 @@ export default class SimulateNewNode extends Vue {
   protected newNodeName = "";
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   public simulateNewNode() {

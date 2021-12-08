@@ -39,6 +39,7 @@ import {
   BIconArrowCounterclockwise,
   VBTooltip,
 } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   name: "UndoRedo",
@@ -50,7 +51,7 @@ import {
 })
 export default class UndoRedo extends Vue {
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   protected onUndoUpdate() {

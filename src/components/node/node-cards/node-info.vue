@@ -92,6 +92,7 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -110,7 +111,7 @@ export default class NodeInfo extends Vue {
   protected node!: Node;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

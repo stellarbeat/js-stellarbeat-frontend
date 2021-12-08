@@ -15,13 +15,14 @@ import Store from "@/store/Store";
 import { BIconX } from "bootstrap-vue";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import useStore from "@/useStore";
 
 @Component({
   components: { BIconX: BIconX },
 })
 export default class SimulationBadge extends Vue {
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 }
 </script>

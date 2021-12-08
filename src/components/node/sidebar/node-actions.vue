@@ -63,6 +63,7 @@ import {
 
 import { Network, Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -89,7 +90,7 @@ export default class NodeActions extends Vue {
   public supportsHaltingAnalysis!: boolean;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

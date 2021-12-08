@@ -110,6 +110,7 @@ import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-nod
 import SideBar from "@/components/side-bar/side-bar.vue";
 import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import TrustedOrganizationsDropdown from "@/components/organization/sidebar/trusted-organizations-dropdown.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -125,7 +126,7 @@ import TrustedOrganizationsDropdown from "@/components/organization/sidebar/trus
 })
 export default class OrganizationSideBar extends Vue {
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get selectedOrganization() {

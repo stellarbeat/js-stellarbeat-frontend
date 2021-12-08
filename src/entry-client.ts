@@ -1,14 +1,15 @@
 import createApp from "@/app";
 
-const { app, router, store } = createApp();
+const { app, router } = createApp();
 
 // @ts-ignore
-if (window.__INITIAL_STATE__) {
-  // We initialize the store state with the data injected from the server
-  // @ts-ignore
-  const state = JSON.parse(window.__INITIAL_STATE__);
-  store.hydrateNetwork(state.network, state.networkId);
-}
+//if (window.__INITIAL_STATE__) {
+// We initialize the store state with the data injected from the server
+// @ts-ignore
+// const state = JSON.parse(window.__INITIAL_STATE__);
+//const store = useStore();
+//store.hydrateNetwork(state.network, state.networkId);
+//}
 
 router.onReady(() => {
   app.$mount("#app");

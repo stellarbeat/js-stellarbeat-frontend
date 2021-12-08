@@ -76,6 +76,7 @@ import {
   BIconBullseye,
   BIconBuilding,
 } from "bootstrap-vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -98,7 +99,7 @@ export default class SideBar extends Vue {
   hasExploreSection!: boolean;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get selectedNode() {

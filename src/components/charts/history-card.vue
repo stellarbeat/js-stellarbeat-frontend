@@ -88,6 +88,7 @@ import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
 import { BButton, BButtonGroup, BIconExclamationCircle } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
+import useStore from "@/useStore";
 
 @Component({
   name: "history-card",
@@ -187,7 +188,7 @@ export default class HistoryCard extends Mixins(IsLoadingMixin) {
   }
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   async updateCharts() {

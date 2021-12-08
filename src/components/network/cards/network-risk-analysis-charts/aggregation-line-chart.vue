@@ -34,6 +34,7 @@ import {
   BButtonGroup,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -84,7 +85,7 @@ export default class AggregationLineChart extends Vue {
   id: number = this.store.getUniqueId();
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

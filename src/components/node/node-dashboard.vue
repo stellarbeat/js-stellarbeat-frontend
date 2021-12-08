@@ -190,6 +190,7 @@ import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import { Network } from "@stellarbeat/js-stellar-domain";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -211,7 +212,7 @@ import { Network } from "@stellarbeat/js-stellar-domain";
 })
 export default class NodeDashboard extends Vue {
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network(): Network {

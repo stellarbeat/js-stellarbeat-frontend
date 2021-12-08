@@ -179,6 +179,7 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
+import useStore from "@/useStore";
 
 @Component({
   components: {
@@ -207,7 +208,7 @@ export default class OrganizationsTable extends Vue {
   public currentPage = 1;
 
   get store(): Store {
-    return this.$root.$data.store;
+    return useStore();
   }
 
   get network() {
