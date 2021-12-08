@@ -34,7 +34,7 @@ import {
   BButtonGroup,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

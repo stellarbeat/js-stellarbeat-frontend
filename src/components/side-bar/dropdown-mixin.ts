@@ -3,7 +3,7 @@ import { Prop } from "vue-property-decorator";
 import Component from "vue-class-component";
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "../../store/Store";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({})
 export class DropdownMixin extends Vue {

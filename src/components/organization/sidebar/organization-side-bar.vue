@@ -110,7 +110,7 @@ import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-nod
 import SideBar from "@/components/side-bar/side-bar.vue";
 import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import TrustedOrganizationsDropdown from "@/components/organization/sidebar/trusted-organizations-dropdown.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

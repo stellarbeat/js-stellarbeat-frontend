@@ -170,7 +170,7 @@ import {
   BButtonToolbar,
 } from "bootstrap-vue";
 import { isArray } from "@stellarbeat/js-stellar-domain/lib/typeguards";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 interface Update {
   key: string;

@@ -102,7 +102,7 @@ import SideBar from "@/components/side-bar/side-bar.vue";
 
 import { BIconX, BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

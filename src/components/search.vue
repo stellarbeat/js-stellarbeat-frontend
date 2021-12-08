@@ -51,7 +51,7 @@ import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import { RawLocation } from "vue-router";
 import { BIconSearch, BFormInput } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 type Match = { name: string; type: string; route: RawLocation };
 @Component({

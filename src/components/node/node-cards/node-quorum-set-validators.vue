@@ -38,7 +38,7 @@ import { Network, Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { NodesTable, BIconSearch: BIconSearch, BBadge: BBadge },

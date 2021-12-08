@@ -190,7 +190,7 @@ import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import { Network } from "@stellarbeat/js-stellar-domain";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

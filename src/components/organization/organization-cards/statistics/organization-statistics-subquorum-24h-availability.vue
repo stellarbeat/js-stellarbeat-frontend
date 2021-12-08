@@ -34,7 +34,7 @@ import { Network, Organization } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import Gauge from "@/components/charts/gauge.vue";
 import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { Gauge, BIconInfoCircle },

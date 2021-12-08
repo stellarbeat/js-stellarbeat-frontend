@@ -133,7 +133,7 @@ import {
 } from "bootstrap-vue";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 const _HaltingAnalysisWorker = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 

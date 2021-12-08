@@ -91,7 +91,7 @@ import OrganizationStatisticsSubQuorum30DAvailability from "@/components/organiz
 import OrganizationLatestUpdates from "@/components/organization/organization-cards/organization-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 @Component({
   components: {
     LazyHydrate,

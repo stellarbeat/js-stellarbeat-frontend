@@ -89,7 +89,7 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BBreadcrumb, BAlert } from "bootstrap-vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { Route } from "vue-router";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "dashboard",

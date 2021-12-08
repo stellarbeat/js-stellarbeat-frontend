@@ -145,7 +145,7 @@ import Store from "@/store/Store";
 import LazyHydrate from "vue-lazy-hydration";
 import NetworkHorizon from "@/components/network/cards/network-horizon.vue";
 import NetworkRiskRadarChart from "@/components/network/cards/network-risk-analysis-charts/network-risk-radar-chart.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

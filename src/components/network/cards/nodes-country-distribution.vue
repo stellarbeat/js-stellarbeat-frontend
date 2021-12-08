@@ -29,7 +29,7 @@ import { Component, Watch } from "vue-property-decorator";
 
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "nodes-country-distribution",

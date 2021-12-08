@@ -160,7 +160,7 @@ import {
 } from "bootstrap-vue";
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

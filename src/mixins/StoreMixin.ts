@@ -2,7 +2,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "../store/Store";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({})
 export class StoreMixin extends Vue {

@@ -23,7 +23,7 @@ import Vue from "vue";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import Gauge from "@/components/charts/gauge.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { Gauge },

@@ -22,7 +22,7 @@ import {
   ScatterDataPoint,
   TooltipItem,
 } from "chart.js";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "line-chart-hour",

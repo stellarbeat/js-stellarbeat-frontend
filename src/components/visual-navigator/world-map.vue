@@ -92,7 +92,7 @@ type Marker = {
 };
 
 import ClientOnly from "vue-client-only";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "world-map",

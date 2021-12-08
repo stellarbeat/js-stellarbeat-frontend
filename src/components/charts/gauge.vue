@@ -17,7 +17,7 @@ import Vue from "vue";
 import { Component, Prop, Watch } from "vue-property-decorator";
 import Store from "@/store/Store";
 import { Chart, DoughnutController, ArcElement, LinearScale } from "chart.js";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({})
 export default class Gauge extends Vue {

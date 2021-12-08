@@ -334,7 +334,7 @@ import {
   watch,
 } from "@vue/composition-api";
 import { useRoute, useRouter } from "vue2-helpers/vue-router";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 export default defineComponent({
   components: {

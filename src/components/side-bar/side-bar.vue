@@ -76,7 +76,7 @@ import {
   BIconBullseye,
   BIconBuilding,
 } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

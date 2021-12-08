@@ -92,7 +92,7 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

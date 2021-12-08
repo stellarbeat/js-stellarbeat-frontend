@@ -16,7 +16,7 @@ import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { NodesTable, BBadge: BBadge },

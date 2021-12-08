@@ -78,7 +78,7 @@ import {
 import DateNavigator from "@/components/date-navigator.vue";
 import { AutomaticNetworkAnalysis } from "@/services/NetworkAnalyzer";
 import { MergeBy } from "stellar_analysis";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

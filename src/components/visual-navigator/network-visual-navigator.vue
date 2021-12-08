@@ -227,7 +227,7 @@ import {
 import Graph from "@/components/visual-navigator/graph/graph.vue";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 import ClientOnly from "vue-client-only";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "network-visual-navigator",

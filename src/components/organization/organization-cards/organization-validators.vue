@@ -9,7 +9,7 @@ import Vue from "vue";
 import { Network, Organization } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import NodesTable from "@/components/node/nodes-table.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { NodesTable },

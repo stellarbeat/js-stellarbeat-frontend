@@ -24,7 +24,7 @@ import Vue from "vue";
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import { BListGroup, BListGroupItem } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { BListGroup, BListGroupItem },

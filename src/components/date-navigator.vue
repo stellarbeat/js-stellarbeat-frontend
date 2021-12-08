@@ -74,7 +74,7 @@ import {
 } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import { Dictionary } from "vue-router/types/router";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "date-navigator",

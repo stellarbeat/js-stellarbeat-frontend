@@ -15,7 +15,7 @@ import Store from "@/store/Store";
 import { BIconX } from "bootstrap-vue";
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { BIconX: BIconX },

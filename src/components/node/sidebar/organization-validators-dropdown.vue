@@ -43,7 +43,7 @@ import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import Store from "@/store/Store";
 import { BIconSearch } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

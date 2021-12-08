@@ -80,7 +80,7 @@ import { Component, Prop } from "vue-property-decorator";
 import Vue from "vue";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {},

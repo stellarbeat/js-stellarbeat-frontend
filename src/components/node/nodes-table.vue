@@ -133,7 +133,7 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

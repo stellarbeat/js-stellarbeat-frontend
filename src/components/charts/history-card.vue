@@ -88,7 +88,7 @@ import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
 import { BButton, BButtonGroup, BIconExclamationCircle } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   name: "history-card",

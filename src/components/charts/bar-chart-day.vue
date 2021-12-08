@@ -25,7 +25,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-moment";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 export type timeUnit = "day" | "hour";
 

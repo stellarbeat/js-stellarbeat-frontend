@@ -160,7 +160,7 @@ import {
   BIconEnvelope,
 } from "bootstrap-vue";
 import Stellar from "@/components/organization/logo/stellar.vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: {

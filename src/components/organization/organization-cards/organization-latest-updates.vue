@@ -131,7 +131,7 @@ import {
   BButtonToolbar,
   BIconExclamationTriangle,
 } from "bootstrap-vue";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 interface Update {
   key: string;

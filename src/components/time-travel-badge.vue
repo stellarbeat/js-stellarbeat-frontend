@@ -12,7 +12,7 @@ import Vue from "vue";
 import { BIconX } from "bootstrap-vue";
 import { Component } from "vue-property-decorator";
 import { Dictionary } from "vue-router/types/router";
-import useStore from "@/useStore";
+import useStore from "@/store/useStore";
 
 @Component({
   components: { BIconX: BIconX },
