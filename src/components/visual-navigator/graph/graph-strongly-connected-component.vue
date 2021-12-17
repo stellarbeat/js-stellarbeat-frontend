@@ -45,18 +45,19 @@ export default class GraphStronglyConnectedComponent extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "src/assets/tabler-ui/variables";
 .scc {
   opacity: 0.1;
   fill: transparent;
-  stroke: #1997c6;
+  stroke: $primary;
   stroke-width: 10px;
 }
 
 .greatest {
   opacity: 0.1;
-  fill: #1997c6;
-  stroke: #1997c6;
+  fill: $primary;
+  stroke: $primary;
   stroke-width: 10px;
 }
 </style>

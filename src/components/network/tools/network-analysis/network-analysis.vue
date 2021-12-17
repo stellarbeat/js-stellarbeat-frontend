@@ -28,7 +28,7 @@
                   <b-button
                     block
                     v-b-toggle.accordion-quorum
-                    variant="outline-primary-sb"
+                    variant="outline-primary"
                     >Quorum intersection
                   </b-button>
                 </b-card-header>
@@ -83,7 +83,7 @@
                   <b-button
                     block
                     v-b-toggle.accordion-liveness
-                    variant="outline-primary-sb"
+                    variant="outline-primary"
                     >Liveness risk
                   </b-button>
                 </b-card-header>
@@ -133,7 +133,7 @@
                   <b-button
                     block
                     v-b-toggle.accordion-safety
-                    variant="outline-primary-sb"
+                    variant="outline-primary"
                     >Safety risk
                   </b-button>
                 </b-card-header>
@@ -183,7 +183,7 @@
                   <b-button
                     block
                     v-b-toggle.accordion-top-tier
-                    variant="outline-primary-sb"
+                    variant="outline-primary"
                     >Top tier
                   </b-button>
                 </b-card-header>
@@ -278,7 +278,7 @@
 
           <b-button
             v-if="!isLoading"
-            variant="primary-sb"
+            variant="primary"
             v-on:click="performAnalysis"
             >Perform analysis
           </b-button>

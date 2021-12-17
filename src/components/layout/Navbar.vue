@@ -1,14 +1,13 @@
 <template>
   <div>
     <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
-      <div class="header pt-2 pb-0 my-header">
+      <div class="header py-3 my-header">
         <div class="container-fluid" style="max-width: 1360px">
           <div class="d-flex justify-content-between w-100">
-            <div class="d-flex">
+            <div v-if="enableBrandImage" class="d-flex">
               <router-link
                 class="header-brand mr-0 mt-2"
                 :to="{ name: 'network-dashboard' }"
-                v-if="brandImage"
               >
                 <img
                   :src="brandImageSource"
@@ -21,8 +20,10 @@
               <div class="d-none d-lg-flex" style="width: 264px"></div>
             </div>
             <div class="d-flex flex-column mr-0">
-              <h2 class="brand-title mb-0">{{ brandName }}</h2>
-              <h6 class="text-muted">{{ brandTagLine }}</h6>
+              <h3 class="brand-title mb-0">{{ brandName }}</h3>
+              <h6 class="text-muted mb-0" v-if="enableBrandImage">
+                {{ brandTagline }}
+              </h6>
             </div>
             <div class="d-none d-lg-flex">
               <div class="d-flex">
@@ -51,7 +52,7 @@
                   </div>
                   <a
                     href="https://github.com/stellarbeat"
-                    class="btn btn-sm bt btn-primary-sb"
+                    class="btn btn-sm bt btn-primary"
                     target="_blank"
                     rel="noopener"
                   >
@@ -60,7 +61,7 @@
                   >
                   <a
                     href="mailto:info@stellarbeat.io"
-                    class="btn btn-sm bt btn-primary-sb ml-2"
+                    class="btn btn-sm bt btn-primary ml-2"
                     target="_blank"
                   >
                     <b-icon-envelope />
@@ -291,7 +292,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    brandTagLine: {
+    brandTagline: {
       type: String,
       required: true,
     },
@@ -318,6 +319,10 @@ export default defineComponent({
     },
     mailTo: {
       type: String,
+    },
+    enableBrandImage: {
+      type: Boolean,
+      default: true,
     },
     brandImage: {
       type: Object as PropType<BrandImage>,
@@ -353,18 +358,16 @@ export default defineComponent({
       };
     });
 
-    const getImageUrl = (imgSrc: string) => {
-      return require(`@/assets/logo.svg`);
-    };
-
     return { store, homeActiveClass, navigateToNetwork, brandImageSource };
   },
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/assets/tabler-ui/variables";
 .brand-title {
-  color: #44bbe7;
+  color: $primary;
+  filter: brightness(130%);
 }
 
 .collapser {

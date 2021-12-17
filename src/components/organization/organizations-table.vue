@@ -83,7 +83,7 @@
             v-b-tooltip.hover
             title="Tier one organization"
             v-if="row.item.isTierOneOrganization"
-            class="badge sb-badge badge-primary-sb mr-1"
+            class="badge sb-badge badge-primary mr-1"
           >
             <b-icon-shield />
           </span>

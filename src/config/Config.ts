@@ -25,12 +25,27 @@ export default class Config {
   networkContexts: Map<NetworkSlug, NetworkContext> = new Map();
   apiDocUrl?: string;
   blogUrl?: string;
+  brandName = "Stellarbeat.io";
+  brandTagline = "Stellar network visibility";
+  brandImgSrc = "logo.svg"; //assets folder
+  brandImgAlt = "https://stellarbeat.io";
+  enableBrandImg = true;
 
   constructor() {
     this.blogUrl = process.env["VUE_APP_BLOG_URL"];
     this.apiDocUrl = process.env["VUE_APP_API_DOC_URL"];
     if (!isString(process.env["VUE_APP_PUBLIC_API_URL"]))
       throw new Error("VUE_APP_PUBLIC_API_URL not set");
+    if (isString(process.env["VUE_APP_BRAND_NAME"]))
+      this.brandName = process.env["VUE_APP_BRAND_NAME"];
+    if (isString(process.env["VUE_APP_BRAND_TAGLINE"]))
+      this.brandTagline = process.env["VUE_APP_BRAND_TAGLINE"];
+    if (isString(process.env["VUE_APP_BRAND_IMG_SRC"]))
+      this.brandImgSrc = process.env["VUE_APP_BRAND_IMG_SRC"];
+    if (isString(process.env["VUE_APP_BRAND_IMG_ALT"]))
+      this.brandImgAlt = process.env["VUE_APP_BRAND_IMG_ALT"];
+    if (process.env["VUE_APP_ENABLE_BRAND_IMG"])
+      this.enableBrandImg = process.env["VUE_APP_ENABLE_BRAND_IMG"] === "1";
 
     //todo: can be made more generic by defining available networks in config. This will do for now.
     this.networkContexts.set("public", {

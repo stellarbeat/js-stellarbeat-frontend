@@ -29,7 +29,7 @@
       <button
         v-b-tooltip.hover
         title="Travel to selected time"
-        class="btn btn-sm btn-primary-sb time-travel-btn"
+        class="btn btn-sm btn-primary time-travel-btn"
         @click="timeTravel"
       >
         <b-icon-clock />

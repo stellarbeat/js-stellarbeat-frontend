@@ -8,7 +8,7 @@
           v-b-tooltip.hover
           v-if="organization.isTierOneOrganization"
           title="Tier one organization"
-          class="badge sb-badge badge-primary-sb"
+          class="badge sb-badge badge-primary"
         >
           <b-icon-shield />
         </span>

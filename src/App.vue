@@ -2,9 +2,13 @@
   <div id="app" class="page full">
     <div class="flex-fill">
       <navbar
-        brand-tag-line="Stellar network visibility"
-        brand-name="Stellarbeat.io"
-        :brand-image="{ alt: 'stellarbeat.io', src: 'logo.svg' }"
+        :brand-tagline="store.appConfig.brandTagline"
+        :brand-name="store.appConfig.brandName"
+        :enable-brand-image="store.appConfig.enableBrandImg"
+        :brand-image="{
+          alt: store.appConfig.brandImgAlt,
+          src: store.appConfig.brandImgSrc,
+        }"
         :api-doc-url="store.appConfig.apiDocUrl"
         :blog-url="store.appConfig.blogUrl"
         :include-notify="store.networkContext.enableNotify"
@@ -55,7 +59,7 @@
           <div class="nav-item d-none d-lg-flex pr-0">
             <a
               href="https://github.com/stellarbeat"
-              class="btn btn-sm bt btn-primary-sb"
+              class="btn btn-sm bt btn-primary"
               target="_blank"
               rel="noopener"
             >
@@ -65,7 +69,7 @@
             <a
               href="mailto:info@stellarbeat.io"
               rel="noopener"
-              class="btn btn-sm bt btn-primary-sb ml-2"
+              class="btn btn-sm bt btn-primary ml-2"
               target="_blank"
             >
               <b-icon-envelope />
@@ -206,10 +210,6 @@ export default defineComponent({
 
 .full {
   background: #f5f7fb;
-}
-
-.brand-title {
-  color: #44bbe7;
 }
 
 .collapser {
