@@ -42,26 +42,20 @@
     </div>
     <div class="row row-cards row-deck gauges">
       <LazyHydrate when-visible>
-        <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
+        <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
           <NodesCountryDistribution />
         </div>
       </LazyHydrate>
 
       <LazyHydrate when-visible>
-        <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
+        <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
           <NodesVersions />
-        </div>
-      </LazyHydrate>
-
-      <LazyHydrate when-visible>
-        <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
-          <ValidatorsServerLoad />
         </div>
       </LazyHydrate>
     </div>
     <div class="row row-cards row-deck">
       <LazyHydrate when-visible>
-        <div class="col-lg-6" v-if="!store.networkAnalyzer.manualMode">
+        <div class="col-lg-12" v-if="!store.networkAnalyzer.manualMode">
           <liveness-radar-chart />
         </div>
       </LazyHydrate>
@@ -79,7 +73,7 @@
       </LazyHydrate>
       <LazyHydrate when-visible>
         <div
-          class="col-lg-12"
+          class="col-lg-6"
           v-if="!store.isSimulation && store.networkContext.enableHistory"
         >
           <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">

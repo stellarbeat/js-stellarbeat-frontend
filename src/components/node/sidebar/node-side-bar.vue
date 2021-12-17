@@ -83,7 +83,12 @@
         />
       </li>
       <quorum-slices :selected-node="selectedNode" />
-      <li class="sb-nav-item" v-if="selectedNode.isValidator">
+      <li
+        class="sb-nav-item"
+        v-if="
+          selectedNode.isValidator && store.networkContext.enableConfigExport
+        "
+      >
         <nav-link
           :title="'Stellar core config'"
           v-b-modal.tomlExportModal

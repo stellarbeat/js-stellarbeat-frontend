@@ -15,6 +15,8 @@ export interface NetworkContext {
   enableIndex: boolean;
   isSimulation: boolean;
   enableHorizon: boolean;
+  enableValidatorLoad: boolean;
+  enableConfigExport: boolean;
 }
 
 export type NetworkSlug = string;
@@ -47,6 +49,12 @@ export default class Config {
       enableHorizon: process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"]
         ? process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"] === "1"
         : true,
+      enableValidatorLoad: process.env["VUE_APP_PUBLIC_ENABLE_VALIDATOR_LOAD"]
+        ? process.env["VUE_APP_PUBLIC_ENABLE_VALIDATOR_LOAD"] === "1"
+        : true,
+      enableConfigExport: process.env["VUE_APP_PUBLIC_ENABLE_CONFIG_EXPORT"]
+        ? process.env["VUE_APP_PUBLIC_ENABLE_CONFIG_EXPORT"] === "1"
+        : true,
     });
 
     if (isString(process.env["VUE_APP_TEST_API_URL"]))
@@ -63,8 +71,14 @@ export default class Config {
         apiBaseUrl: process.env["VUE_APP_TEST_API_URL"],
         enableIndex: true,
         isSimulation: false,
-        enableHorizon: process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"]
-          ? process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"] === "1"
+        enableHorizon: process.env["VUE_APP_TEST_ENABLE_HORIZON"]
+          ? process.env["VUE_APP_TEST_ENABLE_HORIZON"] === "1"
+          : true,
+        enableValidatorLoad: process.env["VUE_APP_TEST_ENABLE_VALIDATOR_LOAD"]
+          ? process.env["VUE_APP_TEST_ENABLE_VALIDATOR_LOAD"] === "1"
+          : true,
+        enableConfigExport: process.env["VUE_APP_TEST_ENABLE_CONFIG_EXPORT"]
+          ? process.env["VUE_APP_TEST_ENABLE_CONFIG_EXPORT"] === "1"
           : true,
       });
 
@@ -78,6 +92,8 @@ export default class Config {
         enableIndex: false,
         isSimulation: true,
         enableHorizon: false,
+        enableValidatorLoad: false,
+        enableConfigExport: false,
       });
 
       this.networkContexts.set("fbas2", {
@@ -89,6 +105,8 @@ export default class Config {
         enableIndex: false,
         isSimulation: true,
         enableHorizon: false,
+        enableValidatorLoad: false,
+        enableConfigExport: false,
       });
     }
   }

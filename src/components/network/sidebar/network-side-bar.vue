@@ -41,7 +41,7 @@
       </li>
     </template>
     <template v-slot:tool-list-items>
-      <li class="sb-nav-item">
+      <li class="sb-nav-item" v-if="store.networkContext.enableConfigExport">
         <nav-link
           :title="'Stellar core config'"
           v-b-modal.tomlExportModal

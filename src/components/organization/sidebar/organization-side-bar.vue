@@ -68,7 +68,7 @@
           "
         />
       </li>
-      <li class="sb-nav-item">
+      <li class="sb-nav-item" v-if="store.networkContext.enableConfigExport">
         <nav-link
           :title="'Stellar core config'"
           v-b-modal.tomlExportModal
