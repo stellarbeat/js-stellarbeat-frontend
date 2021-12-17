@@ -164,7 +164,7 @@ export default class Dashboard extends Vue {
   get breadCrumbs() {
     let crumbs = [];
     crumbs.push({
-      text: this.store.getNetworkIdPretty(),
+      text: this.store.getNetworkContextName(),
       to: {
         name: "network-dashboard",
         query: {

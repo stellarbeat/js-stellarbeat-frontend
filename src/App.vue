@@ -5,10 +5,15 @@
         brand-tag-line="Stellar network visibility"
         brand-name="Stellarbeat.io"
         :brand-image="{ alt: 'stellarbeat.io', src: 'logo.svg' }"
+        :api-doc-url="store.appConfig.apiDocUrl"
+        :blog-url="store.appConfig.blogUrl"
+        :include-notify="store.networkContext.enableNotify"
       ></navbar>
       <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px">
         <b-alert :show="showError" variant="danger">{{ errorMessage }}</b-alert>
-        <b-alert :show="store.isLocalNetwork" variant="info"
+        <b-alert
+          :show="['fbas', 'fbas2'].includes(store.networkContext.slug)"
+          variant="info"
           >Learn more about the demo networks
           <a
             href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e"
@@ -85,7 +90,6 @@ import {
   nextTick,
   defineComponent,
   computed,
-  onBeforeMount,
   watch,
 } from "@vue/composition-api";
 import { useRoute } from "vue2-helpers/vue-router";
@@ -110,40 +114,37 @@ export default defineComponent({
     ],
   },
 
+  async mounted() {
+    //@todo: useRoute gives issues, move to setup when migrated to vue3. Maybe it could be handled in route watcher even.
+    const store = useStore();
+    let networkContextSlug = this.$route.query.network;
+    if ("string" === typeof networkContextSlug) {
+      store.setNetworkContext(networkContextSlug);
+    }
+    let timeAt = store.getDateFromParam(this.$route.query.at);
+    await store.initializeNetwork(timeAt);
+  },
+
   setup() {
     const errorMessage =
       "Could not connect to stellarbeat.io api, please refresh the page";
     const navCollapsed = false;
-    const enableNotify = process.env.VUE_APP_ENABLE_NOTIFY === "1";
 
     const store: ComputedRef<Store> = computed(() => useStore());
-    const route = useRoute();
-
-    onBeforeMount(async () => {
-      let networkId = route.query.network;
-      if (
-        "string" === typeof networkId &&
-        store.value.availableNetworks.includes(networkId)
-      ) {
-        store.value.networkId = networkId;
-      }
-      let timeAt = store.value.getDateFromParam(route.query.at);
-      await store.value.initializeNetwork(timeAt);
-    });
 
     const network = computed(() => store.value.network);
 
     const showError = computed(() => store.value.fetchingDataFailed);
 
-    const networkQuery = computed(() => route.query.network);
+    const route = useRoute();
+    const networkContextSlug = computed(() => route.query.network);
     const at = computed(() => route.query.at);
 
     watch(
-      [networkQuery, at],
+      [networkContextSlug, at],
       async (to) => {
-        const networkQuery = to[0];
+        const networkContextSlugChange = to[0];
         const at = to[1];
-        let networkId = store.value.networkId;
         let timeTravelDate = store.value.getDateFromParam(at);
         let timeTravel = false;
         if (!timeTravelDate && store.value.isTimeTravel)
@@ -157,14 +158,16 @@ export default defineComponent({
         )
           timeTravel = true;
 
+        let networkContextChanged = false;
         if (
-          isString(networkQuery) &&
-          store.value.availableNetworks.includes(networkQuery)
-        )
-          networkId = networkQuery;
+          isString(networkContextSlugChange) &&
+          store.value.networkContext.slug !== networkContextSlugChange
+        ) {
+          store.value.setNetworkContext(networkContextSlugChange);
+          networkContextChanged = true;
+        }
 
-        if (networkId !== store.value.networkId || timeTravel) {
-          store.value.networkId = networkId;
+        if (networkContextChanged || timeTravel) {
           store.value.isLoading = true;
           await nextTick(async () => {
             //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
@@ -180,7 +183,6 @@ export default defineComponent({
     return {
       errorMessage,
       navCollapsed,
-      enableNotify,
       store,
       network,
       showError,

@@ -5,22 +5,18 @@ import { NetworkRepository } from "@/repositories/NetworkRepository";
 
 //repository to connect to stellarbeat api to fetch networks
 export class StellarBeatNetworkV1Repository implements NetworkRepository {
-  constructor(protected apiBaseUrls: Map<string, string>) {}
+  constructor(protected apiBaseUrl: string) {}
 
-  async find(networkId: string, at?: Date): Promise<Result<Network, Error>> {
+  async find(at?: Date): Promise<Result<Network, Error>> {
     try {
       const params: Record<string, unknown> = {};
       if (at) {
         params["at"] = at.toISOString();
       }
 
-      const apiBaseUrl = this.apiBaseUrls.get(networkId);
-      if (!apiBaseUrl)
-        return err(
-          new Error(`No base url registered for network id ${networkId}`)
-        );
-
-      const result = await axios.get(apiBaseUrl + "/v1", { params });
+      const result = await axios.get(this.apiBaseUrl + "/v1", {
+        params,
+      });
       if (result.data) {
         return ok(Network.fromJSON(result.data));
       }

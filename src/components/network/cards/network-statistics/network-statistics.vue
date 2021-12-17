@@ -315,7 +315,7 @@ export default class NetworkStatistics extends Mixins(
   protected yearStatistics: NetworkStatisticsAggregation[] = [];
 
   public async mounted() {
-    if (!this.store.isSimulation) {
+    if (!this.store.isSimulation && this.store.networkContext.enableHistory) {
       let oneYearAgo = moment(this.network.time).subtract(1, "y").toDate();
       this.yearStatistics =
         await this.store.networkMeasurementStore.getMonthStatistics(

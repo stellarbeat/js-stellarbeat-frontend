@@ -51,7 +51,8 @@ export default class NetworkNodes extends Vue {
 
   get fields() {
     let fields = [{ key: "name", label: "Node", sortable: true }];
-    if (!this.store.isSimulation) {
+
+    if (this.store.networkContext.enableIndex && !this.store.isSimulation) {
       fields.push({ key: "index", label: "Index", sortable: true });
     }
 

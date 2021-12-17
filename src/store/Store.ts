@@ -26,14 +26,11 @@ import OrganizationStatisticsStore from "@/store/OrganizationStatisticsStore";
 import NetworkStatisticsStore from "@/store/NetworkStatisticsStore";
 import { NodeSnapShot } from "@stellarbeat/js-stellar-domain/lib/node-snap-shot";
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
-import LocalNetworks from "@/store/LocalNetworks";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "stellar_analysis";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
-import { StellarBeatNetworkV1Repository } from "@/repositories/StellarBeatNetworkV1Repository";
-
-type NetworkId = string;
+import Config, { NetworkContext, NetworkSlug } from "@/config/Config";
 
 export default class Store {
   protected _network?: Network;
@@ -45,10 +42,8 @@ export default class Store {
   public networkReCalculated = 0; //to update graph views
   public centerNode?: Node = undefined;
   public selectedNode?: Node = undefined;
-  public availableNetworks = ["public", "test", "fbas", "fbas2", "custom"];
-  public availableNetworksPretty!: Map<string, string>;
-  public networkId: NetworkId = "public";
-  public isLocalNetwork = false;
+
+  public networkContext: NetworkContext;
   public selectedOrganization?: Organization = undefined;
   protected measurementStore: StatisticsStore = new StatisticsStore(this);
   public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(
@@ -63,8 +58,6 @@ export default class Store {
   public networkAnalysisMergeBy: MergeBy = MergeBy.DoNotMerge;
   public isTimeTravel = false;
   public timeTravelDate?: Date;
-  public customNetwork: Network | undefined;
-  protected networkRepository: StellarBeatNetworkV1Repository;
   public includeWatcherNodes = false;
   public watcherNodeFilter = (node: Node) => {
     return this.includeWatcherNodes || node.isValidator;
@@ -74,20 +67,19 @@ export default class Store {
 
   protected _uniqueId = 0;
 
-  constructor() {
-    const baseApiUrls = new Map<string, string>(); //todo cleanup and config
-    if (!process.env["VUE_APP_PUBLIC_API_URL"])
-      throw new Error("VUE_APP_PUBLIC_API_URL not set");
-    baseApiUrls.set("public", this.getApiUrl("public"));
-    if (process.env["VUE_APP_TEST_API_URL"])
-      baseApiUrls.set("test", this.getApiUrl("test"));
-    this.networkRepository = new StellarBeatNetworkV1Repository(baseApiUrls);
+  public networkContexts: Map<NetworkSlug, NetworkContext> = new Map();
 
-    this.availableNetworksPretty = new Map();
-    this.availableNetworksPretty.set("public", "Public network");
-    this.availableNetworksPretty.set("test", "Testnet");
-    this.availableNetworksPretty.set("fbas", "FBAS demo");
-    this.availableNetworksPretty.set("fbas2", "FBAS QI demo");
+  //todo: move higher up
+  public appConfig: Config;
+
+  //todo: change of network context = new store? What about time travel? Time travel should be domain concept?
+  //todo: networkContext should be injected?
+  constructor() {
+    //todo: inject
+    const appConfig = new Config();
+    this.networkContexts = appConfig.networkContexts;
+    this.networkContext = this.networkContexts.get("public")!;
+    this.appConfig = appConfig;
   }
 
   get network(): Network {
@@ -96,7 +88,24 @@ export default class Store {
     return this._network;
   }
 
-  setNetwork(network: Network) {
+  //@deprecated
+  get isLocalNetwork(): boolean {
+    return !this.networkContext.enableHistory;
+  }
+
+  //@deprecated
+  get networkId(): string {
+    return this.networkContext.slug;
+  }
+
+  setNetworkContext(networkContextSlug: NetworkSlug) {
+    if (this.networkContexts.has(networkContextSlug))
+      this.networkContext = this.networkContexts.get(
+        networkContextSlug
+      ) as NetworkContext;
+  }
+
+  protected setNetwork(network: Network) {
     Vue.set(this, "_network", network);
     Vue.set(this, "_networkAnalyzer", new NetworkAnalyzer(this.network));
     Vue.set(
@@ -123,19 +132,10 @@ export default class Store {
     return this._networkAnalyzer;
   }
 
-  hydrateNetwork(networkDTO: Record<string, unknown>, networkId: string) {
-    const network = Network.fromJSON(networkDTO);
-    this.networkId = networkId;
-    if (["fbas", "fbas2"].includes(this.networkId)) {
-      this.isLocalNetwork = true;
-    }
-
-    this.setNetwork(network);
-    this.isLoading = false;
-  }
-  public getNetworkIdPretty(networkId?: string): string | undefined {
-    if (!networkId) networkId = this.networkId;
-    return this.availableNetworksPretty.get(networkId);
+  public getNetworkContextName(networkSlug?: NetworkSlug): string | undefined {
+    if (!networkSlug) return this.networkContext.name;
+    const context = this.networkContexts.get(networkSlug);
+    return context?.name;
   }
 
   getUniqueId() {
@@ -151,21 +151,11 @@ export default class Store {
     return this._haltingAnalysisPublicKey;
   }
 
-  getApiUrl(networkId: string = this.networkId): string {
-    const key = "VUE_APP_" + networkId.toUpperCase() + "_API_URL";
-    const url = process.env[key];
-
-    if (!url)
-      throw new Error(`Network API URL not defined in env variables: ${key}`);
-
-    return url;
-  }
-
   async fetchNodeSnapshotsByPublicKey(id: PublicKey): Promise<NodeSnapShot[]> {
     const params: Record<string, unknown> = {};
     params["at"] = this.network.time;
     const result = await axios.get(
-      this.getApiUrl() + "/v1/node/" + id + "/snapshots",
+      this.networkContext.apiBaseUrl + "/v1/node/" + id + "/snapshots",
       { params }
     );
     if (result.data) {
@@ -180,9 +170,12 @@ export default class Store {
   async fetchNodeSnapshots(): Promise<NodeSnapShot[]> {
     const params: Record<string, unknown> = {};
     params["at"] = this.network.time;
-    const result = await axios.get(this.getApiUrl() + "/v1/node-snapshots", {
-      params,
-    });
+    const result = await axios.get(
+      this.networkContext.apiBaseUrl + "/v1/node-snapshots",
+      {
+        params,
+      }
+    );
     if (result.data) {
       return result.data.map((item: Record<string, unknown>) =>
         NodeSnapShot.fromJSON(item)
@@ -198,7 +191,7 @@ export default class Store {
     const params: Record<string, unknown> = {};
     params["at"] = this.network.time;
     const result = await axios.get(
-      this.getApiUrl() + "/v1/organization/" + id + "/snapshots",
+      this.networkContext.apiBaseUrl + "/v1/organization/" + id + "/snapshots",
       { params }
     );
     if (result.data) {
@@ -214,7 +207,7 @@ export default class Store {
     const params: Record<string, unknown> = {};
     params["at"] = this.network.time;
     const result = await axios.get(
-      this.getApiUrl() + "/v1/organization-snapshots",
+      this.networkContext.apiBaseUrl + "/v1/organization-snapshots",
       { params }
     );
     if (result.data) {
@@ -229,34 +222,6 @@ export default class Store {
   async initializeNetwork(at?: Date): Promise<void> {
     this.fetchingDataFailed = false;
 
-    if (this.networkId === "fbas") {
-      this.loadFBAS();
-      this.isLocalNetwork = true;
-      return new Promise(function (resolve) {
-        resolve();
-      });
-    }
-
-    if (this.networkId === "fbas2") {
-      this.loadFBAS2();
-      this.isLocalNetwork = true;
-      return new Promise(function (resolve) {
-        resolve();
-      });
-    }
-
-    if (this.networkId === "custom") {
-      this.isLocalNetwork = true;
-      if (this.customNetwork !== undefined) this.loadCustomNetwork();
-      else this.loadFBAS2();
-
-      this.isLocalNetwork = true;
-      return new Promise(function (resolve) {
-        resolve();
-      });
-    }
-
-    this.isLocalNetwork = false;
     if (at) {
       this.isTimeTravel = true;
       this.timeTravelDate = at;
@@ -266,9 +231,11 @@ export default class Store {
     }
 
     this.isLoading = true;
-    const networkResult = await this.networkRepository.find(this.networkId, at);
+    const networkResult = await this.networkContext.repository.find(at);
+
     if (networkResult.isOk()) {
       this.setNetwork(networkResult.value);
+      this.isLocalNetwork;
       this.isLoading = false;
       return;
     }
@@ -408,7 +375,7 @@ export default class Store {
   }
 
   get isSimulation(): boolean {
-    return this.changeQueue.hasUndo() || this.isLocalNetwork;
+    return this.changeQueue.hasUndo() || this.networkContext.isSimulation;
   }
 
   get hasUndo(): boolean {
@@ -446,28 +413,6 @@ export default class Store {
     }
     this.changeQueue.reset();
     this.networkReCalculated++;
-  }
-
-  public loadCustomNetwork() {
-    if (!this.customNetwork) {
-      this.isLoading = false;
-      return;
-    }
-
-    this.setNetwork(this.customNetwork);
-    this.isLoading = false;
-  }
-
-  public loadFBAS() {
-    const network = LocalNetworks.getFBASNetwork();
-    this.setNetwork(network);
-    this.isLoading = false;
-  }
-
-  public loadFBAS2() {
-    const network = LocalNetworks.getFBAS2Network();
-    this.setNetwork(network);
-    this.isLoading = false;
   }
 
   //todo: needs better location

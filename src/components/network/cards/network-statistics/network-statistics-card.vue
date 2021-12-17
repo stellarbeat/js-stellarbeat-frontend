@@ -54,7 +54,10 @@
           />
         </b-button>
       </div>
-      <div style="height: 35px" v-show="!store.isSimulation">
+      <div
+        style="height: 35px"
+        v-show="!store.isSimulation && store.networkContext.enableHistory"
+      >
         <network-statistics-chart
           v-if="initialDataLoaded"
           :stats-property="statsProperty"
@@ -62,7 +65,10 @@
           v-on:hover="onHover"
         />
       </div>
-      <div v-show="store.isSimulation" class="mb-4"></div>
+      <div
+        v-show="store.isSimulation || !store.networkContext.enableHistory"
+        class="mb-4"
+      ></div>
     </div>
     <b-modal lazy title="Info" ok-only hide-header v-model="showModal">
       <slot name="info"></slot>

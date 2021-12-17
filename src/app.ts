@@ -14,6 +14,7 @@ import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
+import { useRoute } from "vue2-helpers/vue-router";
 
 Vue.use(VueCompositionAPI);
 const isProd = process.env.NODE_ENV === "production";

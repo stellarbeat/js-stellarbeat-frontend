@@ -34,14 +34,16 @@
                     v-if="!store.isLoading"
                   >
                     <template #button-content>
-                      {{ store.getNetworkIdPretty() }}
+                      {{ store.getNetworkContextName() }}
                     </template>
                     <b-dropdown-item
-                      v-for="network in Array.from(store.availableNetworks)"
+                      v-for="network in Array.from(
+                        store.networkContexts.keys()
+                      )"
                       :key="network"
                       @click="navigateToNetwork(network)"
                     >
-                      {{ store.getNetworkIdPretty(network) }}
+                      {{ store.getNetworkContextName(network) }}
                     </b-dropdown-item>
                   </b-nav-item-dropdown>
                   <div v-else style="width: 137px"></div>
@@ -83,14 +85,16 @@
             v-if="!store.isLoading"
           >
             <template #button-content>
-              {{ store.getNetworkIdPretty() }}
+              {{ store.getNetworkContextName() }}
             </template>
             <b-dropdown-item
-              v-for="network in Array.from(store.availableNetworks)"
-              :key="network"
-              @click="navigateToNetwork(network)"
+              v-for="networkContext in Array.from(
+                store.networkContexts.values()
+              )"
+              :key="networkContext.slug"
+              @click="navigateToNetwork(networkContext.slug)"
             >
-              {{ store.getNetworkIdPretty(network) }}
+              {{ networkContext.name }}
             </b-dropdown-item>
           </b-nav-item-dropdown>
           <div class="col-lg order-lg-first">
@@ -189,18 +193,18 @@
                   Blog
                 </a>
               </li>
-              <li class="nav-item" v-if="apiUrl">
+              <li class="nav-item" v-if="apiDocUrl">
                 <a
                   class="nav-link"
                   target="_blank"
-                  :href="apiUrl"
+                  :href="apiDocUrl"
                   rel="noopener"
                 >
                   <b-icon-code class="mr-1" scale="0.9" />
                   API
                 </a>
               </li>
-              <li class="nav-item" v-if="includeFAQ">
+              <li class="nav-item">
                 <router-link
                   active-class="active"
                   class="nav-link"
@@ -277,6 +281,10 @@ export default defineComponent({
     BIconNewspaper,
   },
   props: {
+    faqRoute: {
+      type: String,
+      required: false,
+    },
     brandName: {
       type: String,
       required: true,
@@ -297,7 +305,7 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    apiUrl: {
+    apiDocUrl: {
       type: String,
     },
     blogUrl: {
@@ -322,12 +330,12 @@ export default defineComponent({
     const brandImageSource = ref(
       props.brandImage?.src ? require(`@/assets/logo.svg`) : ""
     ); //require needs to happen before mount
-    const navigateToNetwork = (networkId: string) => {
-      if (networkId === store.networkId) return;
+    const navigateToNetwork = (networkContextSlug: string) => {
+      if (networkContextSlug === store.networkContext.slug) return;
       router
         .push({
           name: "network-dashboard",
-          query: { network: networkId },
+          query: { network: networkContextSlug },
         })
         .catch(() => {
           //this triggers a navigation guard error that we can safely ignore. See router beforeEach

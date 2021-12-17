@@ -58,7 +58,7 @@ export default class NetworkOrganizations extends Vue {
     let fields = [{ key: "name", label: "Node", sortable: true }];
     //@ts-ignore
     fields.push();
-    if (!this.store.isSimulation) {
+    if (!this.store.isSimulation && this.store.networkContext.enableHistory) {
       fields.push({
         key: "subQuorum30DAvailability",
         label: "30D Availability",

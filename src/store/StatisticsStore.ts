@@ -33,11 +33,14 @@ export default class StatisticsStore {
     route: string
   ): Promise<unknown[]> {
     let statisticsCache = this.statisticsCache.get(
-      this.store.getApiUrl() + route
+      this.store.networkContext.apiBaseUrl + route
     );
     if (!statisticsCache) {
       statisticsCache = new Map();
-      this.statisticsCache.set(this.store.getApiUrl() + route, statisticsCache);
+      this.statisticsCache.set(
+        this.store.networkContext.apiBaseUrl + route,
+        statisticsCache
+      );
     }
 
     const params: Record<string, unknown> = {};
@@ -48,7 +51,7 @@ export default class StatisticsStore {
       result = await statisticsCache.get(id + params.from + params.to);
     //multiple charts can request the same endpoint at the same time.
     else {
-      const promise = axios.get(this.store.getApiUrl() + route, {
+      const promise = axios.get(this.store.networkContext.apiBaseUrl + route, {
         params,
       });
       statisticsCache.set(id + params.from + params.to, promise);

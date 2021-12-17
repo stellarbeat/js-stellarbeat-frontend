@@ -59,7 +59,7 @@
           <nodes-table :fields="fields" :nodes="nodes" :filter="filter" />
         </div>
       </div>
-      <div class="card mb-2" v-if="!store.isSimulation">
+      <div class="card mb-2" v-if="store.networkContext.enableIndex">
         <div class="card-body">
           <div class="text-wrap">
             <h2 class="mt-0 mb-4">Index formula</h2>
@@ -117,46 +117,43 @@ export default class Nodes extends Mixins(StoreMixin) {
   public filter = "";
 
   get fields() {
-    if (this.store.isSimulation) {
-      return [
-        { key: "name", sortable: true },
-        { key: "organization", sortable: true },
-        { key: "country", sortable: true },
-        { key: "isp", sortable: true },
-        { key: "type", label: "type", sortable: true },
-      ];
-    } else {
-      return [
-        { key: "name", sortable: true },
-        { key: "organization", sortable: true },
-        { key: "type", label: "type", sortable: true },
-        // { key: 'publicKey', label: 'Public key (first 20 characters)', sortable: true },
-        { key: "active24Hour", label: "24H active", sortable: true },
-        { key: "active30Days", label: "30D active", sortable: true },
-        {
-          key: "validating24Hour",
-          label: "24H validating",
-          sortable: true,
-        },
-        {
-          key: "validating30Days",
-          label: "30D validating",
-          sortable: true,
-        },
-        {
-          key: "overLoaded24Hour",
-          label: "24H overloaded",
-          sortable: true,
-        },
-        { key: "index", label: "index", sortable: true },
-        { key: "validating", sortable: true },
-        { key: "version", sortable: true },
-        { key: "country", sortable: true },
-        { key: "isp", sortable: true },
-        { key: "ip", sortable: true },
-        { key: "actions", label: "" },
-      ];
+    const fields = [
+      { key: "name", sortable: true },
+      { key: "organization", sortable: true },
+      { key: "country", sortable: true },
+      { key: "isp", sortable: true },
+      { key: "type", label: "type", sortable: true },
+      { key: "ip", sortable: true },
+      { key: "version", sortable: true },
+      { key: "validating", sortable: true },
+    ];
+    if (this.store.isSimulation) return fields;
+
+    if (this.store.networkContext.enableHistory) {
+      fields.push({ key: "active24Hour", label: "24H active", sortable: true });
+      fields.push({ key: "active30Days", label: "30D active", sortable: true });
+      fields.push({
+        key: "validating24Hour",
+        label: "24H validating",
+        sortable: true,
+      });
+      fields.push({
+        key: "validating30Days",
+        label: "30D validating",
+        sortable: true,
+      });
+      fields.push({
+        key: "overLoaded24Hour",
+        label: "24H overloaded",
+        sortable: true,
+      });
     }
+
+    if (this.store.networkContext.enableIndex) {
+      fields.push({ key: "index", label: "index", sortable: true });
+    }
+
+    return fields;
   }
 
   get nodes() {
