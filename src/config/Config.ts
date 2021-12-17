@@ -14,6 +14,7 @@ export interface NetworkContext {
   apiBaseUrl?: string;
   enableIndex: boolean;
   isSimulation: boolean;
+  enableHorizon: boolean;
 }
 
 export type NetworkSlug = string;
@@ -25,7 +26,6 @@ export default class Config {
 
   constructor() {
     this.blogUrl = process.env["VUE_APP_BLOG_URL"];
-    console.log(this.blogUrl);
     this.apiDocUrl = process.env["VUE_APP_API_DOC_URL"];
     if (!isString(process.env["VUE_APP_PUBLIC_API_URL"]))
       throw new Error("VUE_APP_PUBLIC_API_URL not set");
@@ -44,6 +44,9 @@ export default class Config {
       apiBaseUrl: process.env["VUE_APP_PUBLIC_API_URL"],
       enableIndex: true,
       isSimulation: false,
+      enableHorizon: process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"]
+        ? process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"] === "1"
+        : true,
     });
 
     if (isString(process.env["VUE_APP_TEST_API_URL"]))
@@ -60,6 +63,9 @@ export default class Config {
         apiBaseUrl: process.env["VUE_APP_TEST_API_URL"],
         enableIndex: true,
         isSimulation: false,
+        enableHorizon: process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"]
+          ? process.env["VUE_APP_PUBLIC_ENABLE_HORIZON"] === "1"
+          : true,
       });
 
     if (process.env["VUE_APP_ENABLE_DEMO_NETWORKS"] === "1") {
@@ -71,6 +77,7 @@ export default class Config {
         enableHistory: false,
         enableIndex: false,
         isSimulation: true,
+        enableHorizon: false,
       });
 
       this.networkContexts.set("fbas2", {
@@ -81,6 +88,7 @@ export default class Config {
         enableHistory: false,
         enableIndex: false,
         isSimulation: true,
+        enableHorizon: false,
       });
     }
   }

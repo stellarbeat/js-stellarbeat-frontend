@@ -66,7 +66,10 @@
         </div>
       </LazyHydrate>
       <LazyHydrate when-visible>
-        <div class="col-lg-6" v-if="!store.isSimulation">
+        <div
+          class="col-lg-6"
+          v-if="!store.isSimulation && store.networkContext.enableHistory"
+        >
           <NetworkAnalysis analysis-type="safety">
             <template v-slot:info>
               <safety-info />
@@ -75,7 +78,10 @@
         </div>
       </LazyHydrate>
       <LazyHydrate when-visible>
-        <div class="col-lg-12" v-if="!store.isSimulation">
+        <div
+          class="col-lg-12"
+          v-if="!store.isSimulation && store.networkContext.enableHistory"
+        >
           <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
             <template v-slot:info>
               <liveness-info />
@@ -98,7 +104,11 @@
 
       <LazyHydrate when-visible>
         <div
-          v-if="network.organizations.length > 0 && !store.isSimulation"
+          v-if="
+            network.organizations.length > 0 &&
+            !store.isSimulation &&
+            store.networkContext.enableHistory
+          "
           class="col-lg-6 col-xl-6"
         >
           <network-organization-updates />
@@ -106,12 +116,18 @@
       </LazyHydrate>
 
       <LazyHydrate when-visible>
-        <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
+        <div
+          class="col-lg-6 col-xl-6"
+          v-if="!store.isSimulation && store.networkContext.enableHistory"
+        >
           <network-validator-updates />
         </div>
       </LazyHydrate>
 
-      <LazyHydrate when-visible v-if="!store.isSimulation">
+      <LazyHydrate
+        when-visible
+        v-if="!store.isSimulation && store.networkContext.enableHorizon"
+      >
         <div class="col-lg-6 col-12">
           <network-horizon />
         </div>

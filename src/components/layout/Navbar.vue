@@ -26,12 +26,12 @@
             </div>
             <div class="d-none d-lg-flex">
               <div class="d-flex">
-                <div class="nav-item pr-0">
+                <div class="nav-item pr-0" style="cursor: default">
                   <b-nav-item-dropdown
+                    v-if="store.networkContexts.size > 1 && !store.isLoading"
                     style="width: 137px"
                     toggle-class="gray"
                     class="text-gray nav-link px-0"
-                    v-if="!store.isLoading"
                   >
                     <template #button-content>
                       {{ store.getNetworkContextName() }}
@@ -46,7 +46,9 @@
                       {{ store.getNetworkContextName(network) }}
                     </b-dropdown-item>
                   </b-nav-item-dropdown>
-                  <div v-else style="width: 137px"></div>
+                  <div v-else class="text-gray" style="width: 137px">
+                    {{ store.getNetworkContextName() }}
+                  </div>
                   <a
                     href="https://github.com/stellarbeat"
                     class="btn btn-sm bt btn-primary-sb"
