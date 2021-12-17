@@ -4,8 +4,9 @@
       <div class="header py-3 my-header">
         <div class="container-fluid" style="max-width: 1360px">
           <div class="d-flex justify-content-between w-100">
-            <div v-if="enableBrandImage" class="d-flex">
+            <div class="d-flex">
               <router-link
+                v-if="enableBrandImage"
                 class="header-brand mr-0 mt-2"
                 :to="{ name: 'network-dashboard' }"
               >
@@ -20,8 +21,8 @@
               <div class="d-none d-lg-flex" style="width: 264px"></div>
             </div>
             <div class="d-flex flex-column mr-0">
-              <h3 class="brand-title mb-0">{{ brandName }}</h3>
-              <h6 class="text-muted mb-0" v-if="enableBrandImage">
+              <h2 class="brand-title mb-0">{{ brandName }}</h2>
+              <h6 class="text-muted brand-tagline mb-0">
                 {{ brandTagline }}
               </h6>
             </div>
@@ -367,7 +368,10 @@ export default defineComponent({
 @import "src/assets/tabler-ui/variables";
 .brand-title {
   color: $primary;
-  filter: brightness(130%);
+  font-weight: 500;
+}
+.brand-tagline {
+  font-weight: 500;
 }
 
 .collapser {
