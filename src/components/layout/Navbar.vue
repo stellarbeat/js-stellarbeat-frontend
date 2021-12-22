@@ -365,10 +365,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/tabler-ui/variables";
+@import "src/assets/custom";
 .brand-title {
   color: $primary;
   font-weight: 500;
+  filter: brightness(1.2);
 }
 .brand-tagline {
   font-weight: 500;

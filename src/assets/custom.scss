@@ -1,3 +1,6 @@
+$blue:#1997c6;
+$graph-primary: $blue;
+
 @import "src/assets/tabler-ui/variables";
 @import "node_modules/bootstrap/scss/bootstrap.scss";
 @import "src/assets/tabler-ui/dashboard/dashboard";
@@ -13,4 +16,7 @@
   line-height: 0.5;
   border-radius: 0.2rem;
   min-width: 0px !important;
+}
+a {
+  color: #1687b2;
 }

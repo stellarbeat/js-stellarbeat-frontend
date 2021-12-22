@@ -354,7 +354,7 @@ export default class Graph extends Mixins(StoreMixin) {
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/tabler-ui/variables";
+@import "src/assets/custom";
 svg.graph {
   width: 100%;
   cursor: grab;
@@ -365,14 +365,14 @@ svg.graph {
 }
 
 path.edge {
-  stroke: $primary;
+  stroke: $graph-primary;
   stroke-width: 0.5px;
   stroke-opacity: 0.07;
   fill-opacity: 0;
 }
 
 path.strongly-connected {
-  stroke: $primary;
+  stroke: $graph-primary;
   stroke-width: 0.7px;
   stroke-opacity: 0.25;
 }
@@ -393,11 +393,11 @@ path.incoming {
   stroke-width: 1.3px;
 }
 circle.active {
-  fill: $primary;
+  fill: $graph-primary;
 }
 
 circle.transitive {
-  fill: $primary;
+  fill: $graph-primary;
 }
 
 circle.selected {
@@ -427,7 +427,7 @@ circle {
 }
 
 text {
-  fill: $primary;
+  fill: $graph-primary;
   font-weight: 400;
 }
 
