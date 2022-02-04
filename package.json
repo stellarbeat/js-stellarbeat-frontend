@@ -1,6 +1,6 @@
 {
   "name": "stellarbeat-frontend",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -20,7 +20,7 @@
     "@sentry/integrations": "^6.15.0",
     "@sentry/node": "^6.15.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellar-domain": "^3.1.0",
+    "@stellarbeat/js-stellar-domain": "^3.1.2",
     "ajv-formats": "^2.1.1",
     "axios": "^0.24.0",
     "bootstrap-vue": "2.21.2",
