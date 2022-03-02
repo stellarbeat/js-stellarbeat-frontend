@@ -2,7 +2,6 @@
   <div>
     <div class="page-header mt-2">
       <h1 class="page-title mr-2">Notify</h1>
-      <b-badge variant="warning">Beta</b-badge>
     </div>
     <div class="card">
       <div class="card-body">
