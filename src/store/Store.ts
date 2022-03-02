@@ -290,6 +290,14 @@ export default class Store {
           targetAvailability
         );
       }),
+      ...organization.validators.map((validator) => {
+        const node = this.network.getNodeByPublicKey(validator);
+        return new EntityPropertyUpdate(
+          node,
+          "activeInScp",
+          targetAvailability
+        );
+      }),
     ]);
     this.processChange(aggregateChange);
   }
@@ -301,6 +309,10 @@ export default class Store {
 
     changes.push(
       new EntityPropertyUpdate(node, "isValidating", !node.isValidating)
+    );
+
+    changes.push(
+      new EntityPropertyUpdate(node, "activeInScp", !node.isValidating)
     );
 
     this.processChange(new AggregateChange(changes));
