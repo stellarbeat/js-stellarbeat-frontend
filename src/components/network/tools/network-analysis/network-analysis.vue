@@ -319,7 +319,6 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import { StoreMixin } from "@/mixins/StoreMixin";
-import FbasAnalysisWorker from "worker-loader?name=worker/[name].js!../../../../workers/fbas-analysis-v3.worker.ts";
 import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
 import { Node, PublicKey } from "@stellarbeat/js-stellar-domain";
 import Analysis from "@/components/network/tools/network-analysis/analysis.vue";
@@ -329,7 +328,6 @@ import LivenessInfo from "@/components/network/tools/network-analysis/info/liven
 import TopTierInfo from "@/components/network/tools/network-analysis/info/top-tier-info.vue";
 import { MergeBy } from "stellar_analysis";
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
-const _FbasAnalysisWorker = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
 @Component({
   components: {
@@ -375,7 +373,9 @@ export default class NetworkAnalysis extends Mixins(
     ISPs: number;
     Countries: number;
   } = MergeBy; //for use in template as enums not supported
-  protected fbasAnalysisWorker = new _FbasAnalysisWorker();
+  protected fbasAnalysisWorker = new Worker(
+    new URL("./../../../../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+  );
   protected hasResult = false;
   protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
   protected hasQuorumIntersection = false;
@@ -487,7 +487,6 @@ export default class NetworkAnalysis extends Mixins(
         nodes.push(node.displayName);
         this.nodesPartition.set(value, nodes);
       });
-    console.log(this.nodesPartition);
   }
 
   mapPublicKeysToNames(items: Array<Array<PublicKey>>) {

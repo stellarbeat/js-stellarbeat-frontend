@@ -1,6 +1,3 @@
-import FbasAnalysisWorker from "worker-loader?name=worker/[name].js!../workers/fbas-analysis-v3.worker.ts";
-
-const _FbasAnalysisWorker = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
 import { MergeBy } from "stellar_analysis";
@@ -17,7 +14,9 @@ export enum AutomaticNetworkAnalysis {
 }
 
 export default class NetworkAnalyzer {
-  protected fbasAnalysisWorker = new _FbasAnalysisWorker(); //todo shared worker!
+  protected fbasAnalysisWorker = new Worker(
+    new URL("./../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+  );
   protected network: Network;
   protected networkAnalysisId = 0;
   public analyzing = false;

@@ -139,6 +139,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
+import { Multiselect } from "vue-multiselect";
 import { StoreMixin } from "@/mixins/StoreMixin";
 import axios from "axios";
 import {
@@ -177,6 +178,7 @@ type SelectedOrganization = {
     BFormInput,
     BFormInvalidFeedback,
     BFormText,
+    Multiselect,
   },
 })
 export default class NotifySubscribe extends Mixins(StoreMixin) {

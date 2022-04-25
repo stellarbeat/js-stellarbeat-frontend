@@ -5,6 +5,7 @@ const VueSSRServerPlugin = require("vue-server-renderer/server-plugin");
 const nodeExternals = require("webpack-node-externals");
 const VueSSRClientPlugin = require("vue-server-renderer/client-plugin");
 const webpack = require("webpack");
+const PrerenderSPAPlugin = require("prerender-spa-plugin-next");
 
 module.exports = {
   css: {
@@ -21,7 +22,7 @@ module.exports = {
         patterns: [
           {
             from: "node_modules/stellar_analysis/stellar_analysis_bg.wasm",
-            to: "worker/stellar_analysis_bg.wasm",
+            to: "js/stellar_analysis_bg.wasm",
           },
           {
             from: "*.json",
@@ -29,6 +30,23 @@ module.exports = {
             context: "node_modules/@stellarbeat/js-stellar-domain/schemas/",
           },
         ],
+      }),
+      new PrerenderSPAPlugin({
+        routes: [
+          "/",
+          "/nodes",
+          "/organizations",
+          "/faq",
+          "/api",
+          "/terms-and-conditions",
+        ],
+
+        rendererOptions: {
+          headless: true,
+          renderAfterDocumentEvent: "x-app-rendered",
+          inject: {},
+          timeout: 10000,
+        },
       }),
     ],
     optimization: {
@@ -46,13 +64,12 @@ module.exports = {
         // Alias for using source of BootstrapVue
         "bootstrap-vue$": "bootstrap-vue/src/index.js",
       },
+      fallback: {
+        stream: require.resolve("stream-browserify"),
+      },
     },
     module: {
       rules: [
-        {
-          test: /\.worker\.js$/,
-          use: { loader: "worker-loader" },
-        },
         {
           test: /\.js$/,
           // Exclude transpiling `node_modules`, except `bootstrap-vue/src`

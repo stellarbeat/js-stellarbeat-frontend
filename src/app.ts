@@ -12,7 +12,6 @@ import VueClipboard from "vue-clipboard2";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
-import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
 
 const isProd = process.env.NODE_ENV === "production";
@@ -39,7 +38,6 @@ Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);
 Vue.use(VueScrollTo);
-Vue.component("multiselect", Multiselect);
 
 const router = createRouter();
 

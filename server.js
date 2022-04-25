@@ -7,9 +7,12 @@ let port = process.env.PORT || 3000;
 app.use(
   history({
     rewrites: [
-      { from: /\/faq$/, to: "/faq.html" },
+      { from: /\/faq$/, to: "/faq/index.html" },
       { from: /\/api$/, to: "/api.html" },
-      { from: /\/terms-and-conditions$/, to: "/terms-and-conditions.html" },
+      {
+        from: /\/terms-and-conditions$/,
+        to: "/terms-and-conditions/index.html",
+      },
     ],
   })
 );
