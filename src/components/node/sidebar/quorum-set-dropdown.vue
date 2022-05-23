@@ -42,7 +42,7 @@
             : '')
         "
         :has-warnings="network.nodeHasWarnings(validator)"
-        warnings="History archive not up-to-date"
+        :warnings="network.getNodeWarningReasons(validator)"
       >
         <template v-slot:action-dropdown>
           <node-actions

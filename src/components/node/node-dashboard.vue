@@ -3,7 +3,26 @@
     <b-alert :show="network.isNodeFailing(selectedNode)" variant="danger">
       {{ network.getNodeFailingReason(selectedNode).description }}
     </b-alert>
-    <b-alert :show="network.nodeHasWarnings(selectedNode)" variant="warning">
+
+    <b-alert
+      :show="network.historyArchiveGasGaps(selectedNode)"
+      variant="warning"
+    >
+      Gap detected in history archive, use
+      <a
+        href="https://github.com/stellar/go/tree/master/tools/stellar-archivist"
+        target="_blank"
+        >Stellar Archivist</a
+      >
+      to repair
+    </b-alert>
+    <b-alert
+      :show="
+        network.nodeHasWarnings(selectedNode) &&
+        !network.historyArchiveGasGaps(selectedNode)
+      "
+      variant="warning"
+    >
       {{ network.getNodeWarningReasons(selectedNode) }}
     </b-alert>
     <div class="row row-cards row-deck" v-if="!store.isSimulation">

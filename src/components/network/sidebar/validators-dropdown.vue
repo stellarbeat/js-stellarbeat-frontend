@@ -94,6 +94,9 @@ export default class ValidatorsDropdown extends Mixins(DropdownMixin) {
     if (this.nodes.some((node) => this.network.isNodeFailing(node)))
       return "Some nodes are failing";
 
+    if (this.nodes.some((node) => this.network.historyArchiveGasGaps(node)))
+      return "Gap detected in history archive";
+
     if (
       this.nodes.some((node) =>
         this.network.isFullValidatorWithOutOfDateArchive(node)
