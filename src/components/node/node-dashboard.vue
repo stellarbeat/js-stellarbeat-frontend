@@ -8,13 +8,14 @@
       :show="network.historyArchiveGasGaps(selectedNode)"
       variant="warning"
     >
-      Gap detected in history archive, use
+      {{ historyArchiveGapDescription }}
+      Use
       <a
         href="https://github.com/stellar/go/tree/master/tools/stellar-archivist"
         target="_blank"
         >Stellar Archivist</a
       >
-      to repair
+      to repair.
     </b-alert>
     <b-alert
       :show="
@@ -192,7 +193,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import HistoryCard from "@/components/charts/history-card.vue";
 import Store from "@/store/Store";
 import NodeInfo from "@/components/node/node-cards/node-info.vue";
@@ -208,7 +209,7 @@ import NodeTrustedBy from "@/components/node/node-cards/node-trusted-by.vue";
 import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
-import { Network } from "@stellarbeat/js-stellar-domain";
+import { HistoryArchiveScan, Network } from "@stellarbeat/js-stellar-domain";
 
 @Component({
   components: {
@@ -229,6 +230,9 @@ import { Network } from "@stellarbeat/js-stellar-domain";
   },
 })
 export default class NodeDashboard extends Vue {
+  private fetchingHistoryArchiveGapDetails = false;
+  private historyArchiveScan: HistoryArchiveScan | null = null;
+
   get store(): Store {
     return this.$root.$data.store;
   }
@@ -239,6 +243,46 @@ export default class NodeDashboard extends Vue {
 
   get selectedNode() {
     return this.store.selectedNode;
+  }
+
+  async fetchHistoryArchiveScan() {
+    if (!this.selectedNode) return;
+
+    if (!this.selectedNode.historyUrl) return;
+
+    this.fetchingHistoryArchiveGapDetails = true;
+    this.historyArchiveScan =
+      await this.store.historyArchiveScanRepository.findLatest(
+        this.selectedNode.historyUrl
+      );
+
+    this.fetchingHistoryArchiveGapDetails = false;
+  }
+
+  get historyArchiveGapDescription() {
+    if (this.historyArchiveScan === null)
+      return "Gap in history archive detected. ";
+
+    let message =
+      "Gap in history archive detected, missing " +
+      this.historyArchiveScan.gapUrl;
+    if (this.historyArchiveScan.gapCheckPoint)
+      message +=
+        " at checkpoint " + this.historyArchiveScan.gapCheckPoint + ".";
+    else
+      message +=
+        " above checkpoint " +
+        this.historyArchiveScan.latestVerifiedLedger +
+        ".";
+
+    return message;
+  }
+
+  @Watch("selectedNode", { immediate: true })
+  public onSelectedNodeChanged() {
+    console.log("CHANGE");
+    if (this.selectedNode && this.selectedNode.historyArchiveGap)
+      this.fetchHistoryArchiveScan();
   }
 }
 </script>

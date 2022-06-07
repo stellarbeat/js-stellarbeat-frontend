@@ -31,6 +31,7 @@ import { AggregateChange } from "@/services/change-queue/changes/aggregate-chang
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "stellar_analysis";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
 
 type NetworkId = string;
 
@@ -72,6 +73,10 @@ export default class Store {
   protected _haltingAnalysisPublicKey?: string = undefined;
 
   protected _uniqueId = 0;
+
+  public historyArchiveScanRepository = new RESTHistoryArchiveScanRepository(
+    this.getApiUrl()
+  );
 
   constructor() {
     this.availableNetworksPretty = new Map();
