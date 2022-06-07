@@ -12,7 +12,6 @@ export class RESTHistoryArchiveScanRepository
       this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url)
     );
 
-    console.log(result.data);
     if (result.data) {
       return HistoryArchiveScan.fromJSON(result.data);
     }
