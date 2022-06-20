@@ -280,7 +280,6 @@ export default class NodeDashboard extends Vue {
 
   @Watch("selectedNode", { immediate: true })
   public onSelectedNodeChanged() {
-    console.log("CHANGE");
     if (this.selectedNode && this.selectedNode.historyArchiveGap)
       this.fetchHistoryArchiveScan();
   }

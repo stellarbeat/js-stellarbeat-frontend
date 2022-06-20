@@ -61,6 +61,14 @@
       </b-modal>
       <li class="sb-nav-item">
         <nav-link
+          title="Horizon APIs"
+          :show-icon="true"
+          icon="broadcast"
+          v-on:click="scrollToHorizonCard()"
+        ></nav-link>
+      </li>
+      <li class="sb-nav-item">
+        <nav-link
           v-b-modal.simulate-node-modal
           :title="'Simulate new node'"
           :show-icon="true"
@@ -102,9 +110,11 @@ import SideBar from "@/components/side-bar/side-bar.vue";
 
 import { BIconX, BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
+import Stellar from "@/components/organization/logo/stellar.vue";
 
 @Component({
   components: {
+    Stellar,
     ModifyNetwork,
     SideBar,
     OrganizationsDropdown,
@@ -156,6 +166,10 @@ export default class NetworkSideBar extends Vue {
     return stellarCoreConfigurationGenerator.nodesToToml(
       this.networkTransitiveQuorumSetNodes
     );
+  }
+
+  scrollToHorizonCard() {
+    this.$scrollTo("#public-horizon-apis-card");
   }
 }
 </script>

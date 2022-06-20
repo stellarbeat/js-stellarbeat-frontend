@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" id="public-horizon-apis-card">
     <div class="card-header pl-3">
       <h1 class="card-title">Public Horizon API's</h1>
     </div>
