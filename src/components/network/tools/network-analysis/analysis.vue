@@ -93,14 +93,17 @@ export default class Analysis extends Mixins(StoreMixin) {
   @Prop({ default: false })
   showNodesPartition!: boolean;
 
-  protected fields = [
-    {
-      key: "key",
-      label: this.title,
-    },
-  ];
   protected perPage = 5;
   protected currentPage = 1;
+
+  get fields() {
+    return [
+      {
+        key: "key",
+        label: this.title,
+      },
+    ];
+  }
 
   get tableItems() {
     return this.items.map((item) => {

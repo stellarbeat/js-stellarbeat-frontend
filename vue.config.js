@@ -21,7 +21,7 @@ module.exports = {
       new CopyPlugin({
         patterns: [
           {
-            from: "node_modules/stellar_analysis/stellar_analysis_bg.wasm",
+            from: "node_modules/@stellarbeat/stellar_analysis_web/stellar_analysis_bg.wasm",
             to: "js/stellar_analysis_bg.wasm",
           },
           {

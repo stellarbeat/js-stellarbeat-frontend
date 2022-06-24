@@ -6,7 +6,7 @@ import init, {
   init_panic_hook,
   analyze_symmetric_top_tier,
   MergeBy,
-} from "stellar_analysis";
+} from "@stellarbeat/stellar_analysis_web";
 import { Node, Organization, PublicKey } from "@stellarbeat/js-stellar-domain";
 
 //@ts-ignore

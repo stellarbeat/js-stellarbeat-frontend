@@ -1,6 +1,6 @@
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import { MergeBy } from "stellar_analysis";
+import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isNumber } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 export enum AutomaticNetworkAnalysis {
@@ -116,7 +116,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingTopTierSymmetric;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.DoNotMerge,
       failingNodePublicKeys: this.network.nodes
@@ -136,7 +136,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingNodes;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.DoNotMerge,
       failingNodePublicKeys: this.network.nodes
@@ -155,7 +155,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingOrganizations;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.Orgs,
       failingNodePublicKeys: this.network.nodes
@@ -174,7 +174,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingCountries;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.Countries,
       failingNodePublicKeys: this.network.nodes
@@ -193,7 +193,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingISPs;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.ISPs,
       failingNodePublicKeys: this.network.nodes
@@ -207,7 +207,7 @@ export default class NetworkAnalyzer {
     });
   }
 
-  protected getCorrectlyConfiguredNodes(network: Network) {
+  get nodesToAnalyze() {
     const isNodeCorrectlyConfigured = (node: Node) => {
       return !(
         node.quorumSet.validators.length === 1 &&
@@ -216,6 +216,17 @@ export default class NetworkAnalyzer {
       );
     };
 
-    return network.nodes.filter((node) => isNodeCorrectlyConfigured(node));
+    const nodeIsPartOfNetworkTransitiveQuorumSet = (node: Node) => {
+      return this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(
+        node.publicKey
+      );
+    };
+
+    return this.network.nodes.filter(
+      (node) =>
+        isNodeCorrectlyConfigured(node) &&
+        (nodeIsPartOfNetworkTransitiveQuorumSet(node) ||
+          !this.network.nodesTrustGraph.hasNetworkTransitiveQuorumSet())
+    );
   }
 }

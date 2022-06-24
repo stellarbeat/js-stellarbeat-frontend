@@ -29,7 +29,7 @@ import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quoru
 import LocalNetworks from "@/store/LocalNetworks";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
-import { MergeBy } from "stellar_analysis";
+import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
 
