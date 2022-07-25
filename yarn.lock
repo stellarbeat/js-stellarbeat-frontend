@@ -1553,10 +1553,10 @@
     semver-compare "^1.0.0"
     to-semver "^3.0.0"
 
-"@stellarbeat/stellar_analysis_web@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/stellar_analysis_web/-/stellar_analysis_web-0.6.1.tgz#0b6cf54be13c98c725b3fdc7d76e880196af40c1"
-  integrity sha512-4gZY+opQS+H2B0ScQxiTY+kqJAzz9nA34PmcEzL3Jub0lkFxTs3oX4EHsWoPYrMMUW4W/eaoCmDN7oaBH1iHOw==
+"@stellarbeat/stellar_analysis_web@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/stellar_analysis_web/-/stellar_analysis_web-0.6.2.tgz#743d1431a5200a1abf82da329ce87626f9e107dc"
+  integrity sha512-Ygit5McXIuvH3aluOlZwZbGg7FYnO1iqPmzHzeqVpx7mrRkiS8YdoS05O1CuFxHXJQVYGQPoFXz1OKPuBcaaLw==
 
 "@tootallnate/once@1":
   version "1.1.2"
