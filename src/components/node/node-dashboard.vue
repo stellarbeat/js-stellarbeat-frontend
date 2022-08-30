@@ -8,7 +8,7 @@
       :show="network.historyArchiveGasGaps(selectedNode)"
       variant="warning"
     >
-      {{ historyArchiveGapDescription }}
+      <span v-html="historyArchiveGapDescription"></span>
       Use
       <a
         href="https://github.com/stellar/go/tree/master/tools/stellar-archivist"
@@ -263,9 +263,7 @@ export default class NodeDashboard extends Vue {
     if (this.historyArchiveScan === null)
       return "Gap in history archive detected. ";
 
-    let message =
-      "Gap in history archive detected, missing " +
-      this.historyArchiveScan.gapUrl;
+    let message = `Gap in history archive detected, missing <a href=${this.historyArchiveScan.gapUrl} target="_blank">${this.historyArchiveScan.gapUrl}</a>`;
     if (this.historyArchiveScan.gapCheckPoint)
       message +=
         " at checkpoint " + this.historyArchiveScan.gapCheckPoint + ".";
