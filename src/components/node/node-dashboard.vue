@@ -5,26 +5,32 @@
     </b-alert>
 
     <b-alert
-      :show="network.historyArchiveGasGaps(selectedNode)"
+      :show="network.historyArchiveHasError(selectedNode)"
       variant="warning"
     >
-      <span v-html="historyArchiveGapDescription"></span>
-      Use
+      <span v-html="historyArchiveErrorDescription"></span>
+      with
       <a
         href="https://github.com/stellar/go/tree/master/tools/stellar-archivist"
         target="_blank"
         >Stellar Archivist</a
-      >
-      to repair.
+      >.
     </b-alert>
     <b-alert
       :show="
         network.nodeHasWarnings(selectedNode) &&
-        !network.historyArchiveGasGaps(selectedNode)
+        !network.historyArchiveHasError(selectedNode)
       "
       variant="warning"
     >
       {{ network.getNodeWarningReasons(selectedNode) }}
+    </b-alert>
+    <b-alert
+      :show="historyArchiveScan && historyArchiveScan.isSLow"
+      variant="info"
+    >
+      Only latest ledgers in history archive are scanned for errors because
+      archive has limited throughput
     </b-alert>
     <div class="row row-cards row-deck" v-if="!store.isSimulation">
       <LazyHydrate when-visible>
@@ -230,7 +236,7 @@ import { HistoryArchiveScan, Network } from "@stellarbeat/js-stellar-domain";
   },
 })
 export default class NodeDashboard extends Vue {
-  private fetchingHistoryArchiveGapDetails = false;
+  private fetchingLatestHistoryArchiveScan = false;
   private historyArchiveScan: HistoryArchiveScan | null = null;
 
   get store(): Store {
@@ -250,35 +256,30 @@ export default class NodeDashboard extends Vue {
 
     if (!this.selectedNode.historyUrl) return;
 
-    this.fetchingHistoryArchiveGapDetails = true;
+    this.fetchingLatestHistoryArchiveScan = true;
     this.historyArchiveScan =
       await this.store.historyArchiveScanRepository.findLatest(
         this.selectedNode.historyUrl
       );
 
-    this.fetchingHistoryArchiveGapDetails = false;
+    this.fetchingLatestHistoryArchiveScan = false;
   }
 
-  get historyArchiveGapDescription() {
+  get historyArchiveErrorDescription() {
     if (this.historyArchiveScan === null)
-      return "Gap in history archive detected. ";
+      return "Verification error in history archive detected. ";
 
-    let message = `Gap in history archive detected, missing <a href=${this.historyArchiveScan.gapUrl} target="_blank">${this.historyArchiveScan.gapUrl}</a>`;
-    if (this.historyArchiveScan.gapCheckPoint)
-      message +=
-        " at checkpoint " + this.historyArchiveScan.gapCheckPoint + ".";
-    else
-      message +=
-        " above checkpoint " +
-        this.historyArchiveScan.latestVerifiedLedger +
-        ".";
+    let message = `Archive verification error at <a href=${this.historyArchiveScan.errorUrl} target="_blank">${this.historyArchiveScan.errorUrl}</a>: ${this.historyArchiveScan.errorMessage}. `;
+
+    message +=
+      "Start repair at ledger " + this.historyArchiveScan.latestVerifiedLedger;
 
     return message;
   }
 
   @Watch("selectedNode", { immediate: true })
   public onSelectedNodeChanged() {
-    if (this.selectedNode && this.selectedNode.historyArchiveGap)
+    if (this.selectedNode && this.selectedNode.historyUrl)
       this.fetchHistoryArchiveScan();
   }
 }

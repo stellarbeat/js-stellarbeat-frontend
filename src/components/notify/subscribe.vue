@@ -21,7 +21,7 @@
           id="nodes-group"
           label="Node events"
           label-for="nodes-select"
-          description="Triggered when inactive, not validating or history archive not up-to-date for three consecutive updates or when history archive gap is detected"
+          description="Triggered when inactive, not validating or history archive not up-to-date for three consecutive updates or when history archive verification error is detected"
         >
           <multiselect
             id="nodes-select"

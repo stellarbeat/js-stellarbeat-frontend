@@ -20,7 +20,7 @@
     "@sentry/integrations": "^6.15.0",
     "@sentry/node": "^6.15.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellar-domain": "^3.7.2",
+    "@stellarbeat/js-stellar-domain": "^4.1.1",
     "@stellarbeat/stellar_analysis_web": "^0.6.2",
     "ajv-formats": "^2.1.1",
     "axios": "^0.24.0",

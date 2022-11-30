@@ -497,7 +497,7 @@ export default class Store {
     return (
       this.organizationHasOutOfDateHistoryArchives(organization) ||
       this.getOrganizationFailAt(organization) === 1 ||
-      this.organizationHasHistoryArchivesWithGaps(organization)
+      this.organizationHasHistoryArchivesWithError(organization)
     );
   }
   public organizationHasOutOfDateHistoryArchives(organization: Organization) {
@@ -506,18 +506,20 @@ export default class Store {
       .some((validator) => validator.historyUrl && !validator.isFullValidator);
   }
 
-  public organizationHasHistoryArchivesWithGaps(organization: Organization) {
+  public organizationHasHistoryArchivesWithError(organization: Organization) {
     return organization.validators
       .map((validator) => this.network.getNodeByPublicKey(validator))
-      .some((validator) => validator.historyUrl && validator.historyArchiveGap);
+      .some(
+        (validator) => validator.historyUrl && validator.historyArchiveHasError
+      );
   }
 
   getOrganizationWarningReason(organization: Organization) {
     if (this.getOrganizationFailAt(organization) === 1)
       return "If one more validator fails, this organization will fail";
 
-    if (this.organizationHasHistoryArchivesWithGaps(organization)) {
-      return "History archive with gaps detected";
+    if (this.organizationHasHistoryArchivesWithError(organization)) {
+      return "History archive verification error";
     }
 
     if (this.organizationHasOutOfDateHistoryArchives(organization))
