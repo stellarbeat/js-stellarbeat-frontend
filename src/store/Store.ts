@@ -519,7 +519,7 @@ export default class Store {
       return "If one more validator fails, this organization will fail";
 
     if (this.organizationHasHistoryArchivesWithError(organization)) {
-      return "History archive verification error";
+      return "History archive verification issue detected";
     }
 
     if (this.organizationHasOutOfDateHistoryArchives(organization))

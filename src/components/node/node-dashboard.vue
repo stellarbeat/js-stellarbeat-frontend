@@ -14,7 +14,8 @@
         href="https://github.com/stellar/go/tree/master/tools/stellar-archivist"
         target="_blank"
         >Stellar Archivist</a
-      >.
+      >
+      and purge your cache afterwards.
     </b-alert>
     <b-alert
       :show="
@@ -30,7 +31,7 @@
       variant="info"
     >
       Only latest ledgers in history archive are scanned for errors because
-      archive has limited throughput
+      archive has limited throughput.
     </b-alert>
     <div class="row row-cards row-deck" v-if="!store.isSimulation">
       <LazyHydrate when-visible>
