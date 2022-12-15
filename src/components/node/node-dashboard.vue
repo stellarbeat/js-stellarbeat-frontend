@@ -27,7 +27,7 @@
       {{ network.getNodeWarningReasons(selectedNode) }}
     </b-alert>
     <b-alert
-      :show="historyArchiveScan && historyArchiveScan.isSLow"
+      :show="historyArchiveScan && historyArchiveScan.isSlow"
       variant="info"
     >
       Only latest ledgers in history archive are scanned for errors because
