@@ -1,6 +1,6 @@
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
 import { HistoryArchiveScan } from "@stellarbeat/js-stellar-domain";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export class RESTHistoryArchiveScanRepository
   implements HistoryArchiveScanRepository
@@ -8,14 +8,21 @@ export class RESTHistoryArchiveScanRepository
   constructor(private baseApiUrl: string) {}
 
   async findLatest(url: string): Promise<HistoryArchiveScan | null> {
-    const result = await axios.get(
-      this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url)
-    );
+    try {
+      const result = await axios.get(
+        this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url)
+      );
 
-    if (result.data) {
-      return HistoryArchiveScan.fromJSON(result.data);
+      if (result.data) {
+        return HistoryArchiveScan.fromJSON(result.data);
+      }
+
+      return null;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
+      throw error;
     }
-
-    return null;
   }
 }
