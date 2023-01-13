@@ -1,6 +1,6 @@
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
 import { HistoryArchiveScan } from "@stellarbeat/js-stellar-domain";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export class RESTHistoryArchiveScanRepository
   implements HistoryArchiveScanRepository

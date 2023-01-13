@@ -105,7 +105,6 @@ export default class NetworkAnalyzer {
   public analyzeNetwork() {
     if (this.analyzing) {
       this.fbasAnalysisWorker.terminate();
-      console.log("terminate");
     }
     this.networkAnalysisId++;
     this.analyzeTopTierSymmetric();

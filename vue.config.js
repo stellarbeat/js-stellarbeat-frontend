@@ -5,7 +5,6 @@ const VueSSRServerPlugin = require("vue-server-renderer/server-plugin");
 const nodeExternals = require("webpack-node-externals");
 const VueSSRClientPlugin = require("vue-server-renderer/client-plugin");
 const webpack = require("webpack");
-const PrerenderSPAPlugin = require("prerender-spa-plugin-next");
 
 module.exports = {
   css: {
@@ -30,24 +29,7 @@ module.exports = {
             context: "node_modules/@stellarbeat/js-stellar-domain/schemas/",
           },
         ],
-      }),
-      new PrerenderSPAPlugin({
-        routes: [
-          "/",
-          "/nodes",
-          "/organizations",
-          "/faq",
-          "/api",
-          "/terms-and-conditions",
-        ],
-
-        rendererOptions: {
-          headless: true,
-          renderAfterDocumentEvent: "x-app-rendered",
-          inject: {},
-          timeout: 10000,
-        },
-      }),
+      })
     ],
     optimization: {
       minimize: !process.env.SSR,

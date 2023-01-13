@@ -282,7 +282,6 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
     } catch (e) {
       this.requesting = false;
       this.subscribeError = true;
-      console.log(e);
     }
   }
 

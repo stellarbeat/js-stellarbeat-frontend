@@ -722,7 +722,6 @@ export default class NetworkAnalysis extends Mixins(
         this.yearStatistics
       );
     } catch (e) {
-      console.log(e);
       this.failed = true;
     }
     this.isLoading = false;

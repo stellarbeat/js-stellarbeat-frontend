@@ -95,7 +95,6 @@ export default class NetworkValidatorUpdates extends Mixins(
     try {
       snapshots = await this.store.fetchNodeSnapshots();
     } catch (e) {
-      console.log(e);
       this.failed = true;
     }
     this.isLoading = false;
