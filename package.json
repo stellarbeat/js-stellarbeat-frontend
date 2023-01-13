@@ -38,6 +38,7 @@
     "leaflet-sleep": "^0.5.2",
     "lru-cache": "^6.0.0",
     "moment": "^2.29.1",
+    "prerender-node": "^3.5.0",
     "regenerator-runtime": "^0.13.3",
     "stickybits": "^3.7.9",
     "stream-browserify": "^3.0.0",
