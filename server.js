@@ -5,12 +5,12 @@ const history = require("connect-history-api-fallback");
 
 let port = process.env.PORT || 3000;
 
-app.use(history());
-
 const prerenderToken = process.env.VUE_PRERENDER_TOKEN;
 if (prerenderToken) {
   app.use(require("prerender-node").set("prerenderToken", prerenderToken));
 }
+
+app.use(history());
 
 let cacheTime = 86400000 * 7; //7 day cache for assets
 app.use(function (req, res, next) {
