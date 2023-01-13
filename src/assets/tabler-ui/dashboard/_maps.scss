@@ -1,7 +1,9 @@
+@use "sass:math";
+
 .map,
 .chart {
   position: relative;
-  padding-top: (9/16) * 100%;
+  padding-top: math.div(9, 16) * 100%;
 }
 
 .map-square,

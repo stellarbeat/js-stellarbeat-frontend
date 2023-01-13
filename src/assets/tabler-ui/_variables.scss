@@ -1,4 +1,6 @@
 // Options
+@use "sass:math";
+
 $enable-rounded: true;
 $enable-shadows: false;
 $enable-gradients: false;
@@ -142,14 +144,14 @@ $yiq-text-dark: $body-color;
 $yiq-text-light: $white;
 
 // Buttons
-$input-line-height: (24/15);
-$btn-line-height: (24/13);
+$input-line-height: math.div(24, 15);
+$btn-line-height: math.div(24, 13);
 
-$input-line-height-sm: (16/14);
-$btn-line-height-sm: (16/12);
+$input-line-height-sm: math.div(16, 14);
+$btn-line-height-sm: math.div(16, 12);
 
-$input-line-height-lg: (26/18);
-$btn-line-height-lg: (26/16);
+$input-line-height-lg: math.div(26, 18);
+$btn-line-height-lg: math.div(26, 16);
 
 $input-btn-focus-width: 2px;
 
