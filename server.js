@@ -4,18 +4,7 @@ const history = require("connect-history-api-fallback");
 
 let port = process.env.PORT || 3000;
 
-app.use(
-  history({
-    rewrites: [
-      { from: /\/faq$/, to: "/faq/index.html" },
-      { from: /\/api$/, to: "/api.html" },
-      {
-        from: /\/terms-and-conditions$/,
-        to: "/terms-and-conditions/index.html",
-      },
-    ],
-  })
-);
+app.use(history());
 let cacheTime = 86400000 * 7; //7 day cache for assets
 app.use(function (req, res, next) {
   res.setHeader("X-Frame-Options", "DENY"); //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
