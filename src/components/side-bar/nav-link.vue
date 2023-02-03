@@ -67,6 +67,7 @@ import {
   BIconSearch,
   BBadge,
   BIconPencil,
+  BIconBroadcast,
 } from "bootstrap-vue";
 
 @Component({
@@ -84,6 +85,7 @@ import {
     BIconPencil,
     BIconGearWide,
     BBadge,
+    BIconBroadcast,
   },
 })
 export default class NavLink extends Vue {

@@ -1,5 +1,5 @@
 import Store from "@/store/Store";
-import { UnwrapRef, reactive } from "@vue/composition-api";
+import { UnwrapRef, reactive } from "vue";
 
 let store: UnwrapRef<Store> | null = null;
 export default function (): Store {

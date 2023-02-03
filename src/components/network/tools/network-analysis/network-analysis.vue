@@ -319,17 +319,15 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import { StoreMixin } from "@/mixins/StoreMixin";
-import FbasAnalysisWorker from "worker-loader?name=worker/[name].js!../../../../workers/fbas-analysis-v3.worker.ts";
 import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
-import { Node, PublicKey } from "@stellarbeat/js-stellar-domain";
+import { PublicKey } from "@stellarbeat/js-stellar-domain";
 import Analysis from "@/components/network/tools/network-analysis/analysis.vue";
 import QuorumIntersectionInfo from "@/components/network/tools/network-analysis/info/quorum-intersection-info.vue";
 import SafetyInfo from "@/components/network/tools/network-analysis/info/safety-info.vue";
 import LivenessInfo from "@/components/network/tools/network-analysis/info/liveness-info.vue";
 import TopTierInfo from "@/components/network/tools/network-analysis/info/top-tier-info.vue";
-import { MergeBy } from "stellar_analysis";
+import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
-const _FbasAnalysisWorker = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 
 @Component({
   components: {
@@ -375,7 +373,9 @@ export default class NetworkAnalysis extends Mixins(
     ISPs: number;
     Countries: number;
   } = MergeBy; //for use in template as enums not supported
-  protected fbasAnalysisWorker = new _FbasAnalysisWorker();
+  protected fbasAnalysisWorker = new Worker(
+    new URL("./../../../../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+  );
   protected hasResult = false;
   protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
   protected hasQuorumIntersection = false;
@@ -411,18 +411,6 @@ export default class NetworkAnalysis extends Mixins(
     }
   }
 
-  get correctlyConfiguredNodes() {
-    let isNodeCorrectlyConfigured = (node: Node) => {
-      return !(
-        node.quorumSet.validators.length === 1 &&
-        node.publicKey === node.quorumSet.validators[0] &&
-        node.quorumSet.innerQuorumSets.length === 0
-      );
-    };
-
-    return this.network.nodes.filter((node) => isNodeCorrectlyConfigured(node));
-  }
-
   stopAnalysis() {
     this.fbasAnalysisWorker.terminate();
     this.isLoading = false;
@@ -432,7 +420,7 @@ export default class NetworkAnalysis extends Mixins(
     this.isLoading = true;
     this.fbasAnalysisWorker.postMessage({
       id: 1,
-      nodes: this.correctlyConfiguredNodes,
+      nodes: this.store.networkAnalyzer.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: this.store.networkAnalysisMergeBy,
       failingNodePublicKeys: this.network.nodes
@@ -487,7 +475,6 @@ export default class NetworkAnalysis extends Mixins(
         nodes.push(node.displayName);
         this.nodesPartition.set(value, nodes);
       });
-    console.log(this.nodesPartition);
   }
 
   mapPublicKeysToNames(items: Array<Array<PublicKey>>) {

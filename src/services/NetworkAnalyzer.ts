@@ -1,9 +1,6 @@
-import FbasAnalysisWorker from "worker-loader?name=worker/[name].js!../workers/fbas-analysis-v3.worker.ts";
-
-const _FbasAnalysisWorker = FbasAnalysisWorker; // workaround for typescript not compiling web workers.
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
 import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import { MergeBy } from "stellar_analysis";
+import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isNumber } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
 export enum AutomaticNetworkAnalysis {
@@ -17,7 +14,9 @@ export enum AutomaticNetworkAnalysis {
 }
 
 export default class NetworkAnalyzer {
-  protected fbasAnalysisWorker = new _FbasAnalysisWorker(); //todo shared worker!
+  protected fbasAnalysisWorker = new Worker(
+    new URL("./../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+  );
   protected network: Network;
   protected networkAnalysisId = 0;
   public analyzing = false;
@@ -106,7 +105,6 @@ export default class NetworkAnalyzer {
   public analyzeNetwork() {
     if (this.analyzing) {
       this.fbasAnalysisWorker.terminate();
-      console.log("terminate");
     }
     this.networkAnalysisId++;
     this.analyzeTopTierSymmetric();
@@ -117,7 +115,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingTopTierSymmetric;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.DoNotMerge,
       failingNodePublicKeys: this.network.nodes
@@ -137,7 +135,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingNodes;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.DoNotMerge,
       failingNodePublicKeys: this.network.nodes
@@ -156,7 +154,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingOrganizations;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.Orgs,
       failingNodePublicKeys: this.network.nodes
@@ -175,7 +173,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingCountries;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.Countries,
       failingNodePublicKeys: this.network.nodes
@@ -194,7 +192,7 @@ export default class NetworkAnalyzer {
     this.automaticState = AutomaticNetworkAnalysis.AnalyzingISPs;
     this.fbasAnalysisWorker.postMessage({
       jobId: this.networkAnalysisId,
-      nodes: this.getCorrectlyConfiguredNodes(this.network),
+      nodes: this.nodesToAnalyze,
       organizations: this.network.organizations,
       mergeBy: MergeBy.ISPs,
       failingNodePublicKeys: this.network.nodes
@@ -208,7 +206,7 @@ export default class NetworkAnalyzer {
     });
   }
 
-  protected getCorrectlyConfiguredNodes(network: Network) {
+  get nodesToAnalyze() {
     const isNodeCorrectlyConfigured = (node: Node) => {
       return !(
         node.quorumSet.validators.length === 1 &&
@@ -217,6 +215,17 @@ export default class NetworkAnalyzer {
       );
     };
 
-    return network.nodes.filter((node) => isNodeCorrectlyConfigured(node));
+    const nodeIsPartOfNetworkTransitiveQuorumSet = (node: Node) => {
+      return this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(
+        node.publicKey
+      );
+    };
+
+    return this.network.nodes.filter(
+      (node) =>
+        isNodeCorrectlyConfigured(node) &&
+        (nodeIsPartOfNetworkTransitiveQuorumSet(node) ||
+          !this.network.nodesTrustGraph.hasNetworkTransitiveQuorumSet())
+    );
   }
 }

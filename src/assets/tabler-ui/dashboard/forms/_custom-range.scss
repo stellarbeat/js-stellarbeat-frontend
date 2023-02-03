@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $custom-range-slider-width: 240px;
 $custom-range-slider-height: 2px;
 $custom-range-background-slider: lighten($input-border-color, 5%);
@@ -9,9 +11,9 @@ $custom-range-thumb-background: #fff;
 $custom-range-thumb-border: 1px solid darken($input-border-color, 5%);
 
 @function custom-range-long-shadow($color) {
-  $size: (-($custom-range-thumb-height - $custom-range-slider-height) / 2);
+  $size: (-($custom-range-thumb-height - $custom-range-slider-height) * 0.5);
   $val: 1px 0 0 $size $color;
-  $s: $custom-range-slider-width / 1px;
+  $s: math.div($custom-range-slider-width, 1px);
 
   @for $i from 6 through $s {
     $val: #{$val}, #{$i}px 0 0 $size #{$color};
@@ -72,7 +74,7 @@ $custom-range-thumb-border: 1px solid darken($input-border-color, 5%);
     border-radius: $custom-range-thumb-radius;
     box-shadow: custom-range-long-shadow($custom-range-background-slider);
     margin-top: (
-      -($custom-range-thumb-height - $custom-range-slider-height) / 2
+      -($custom-range-thumb-height - $custom-range-slider-height) * 0.5
     );
     border: $custom-range-thumb-border;
     transition: 0.3s border-color, 0.3s background-color;

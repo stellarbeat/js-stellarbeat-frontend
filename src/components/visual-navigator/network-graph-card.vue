@@ -21,7 +21,6 @@ import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
 import Graph from "@/components/visual-navigator/graph/graph.vue";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 import { StoreMixin } from "@/mixins/StoreMixin";
-import ComputeGraphWorker from "worker-loader?name=worker/[name].js!../../workers/compute-graphv9.worker";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
@@ -34,7 +33,7 @@ import { TrustGraphBuilder } from "@stellarbeat/js-stellar-domain";
 export default class NetworkGraphCard extends Mixins(StoreMixin) {
   public viewGraph: ViewGraph = new ViewGraph();
   public networkId!: string;
-  public computeGraphWorker!: ComputeGraphWorker;
+  public computeGraphWorker!: Worker;
   public isLoading = true;
 
   @Prop({ default: "node" })
@@ -239,7 +238,9 @@ export default class NetworkGraphCard extends Mixins(StoreMixin) {
         this.selectedKeys
       );
     Object.freeze(this.viewGraph); //not reactive;
-    this.computeGraphWorker = new ComputeGraphWorker();
+    this.computeGraphWorker = new Worker(
+      new URL("./../../workers/compute-graphv9.worker", import.meta.url)
+    );
     this.networkId = this.store.networkId;
 
     this.computeGraphWorker.onmessage = (event: {

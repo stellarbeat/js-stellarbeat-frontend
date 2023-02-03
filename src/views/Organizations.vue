@@ -125,6 +125,8 @@ export default class Organizations extends Mixins(StoreMixin) {
         id: organization.id,
         failAt: this.store.getOrganizationFailAt(organization),
         dangers: this.store.getOrganizationFailingReason(organization),
+        hasWarning: this.store.organizationHasWarnings(organization),
+        warning: this.store.getOrganizationWarningReason(organization),
         blocked: this.network.isOrganizationBlocked(organization),
         subQuorum24HAvailability:
           organization.subQuorum24HoursAvailability + "%",

@@ -65,7 +65,6 @@ export default class Unmute extends Mixins(StoreMixin) {
         }
       );
     } catch (e) {
-      if (axios.isAxiosError(e)) console.log(e.response);
       this.error = true;
       this.errorMessage = "Something went wrong";
     }

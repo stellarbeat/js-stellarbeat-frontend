@@ -239,7 +239,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, defineComponent, PropType } from "@vue/composition-api";
+import { ref, computed, defineComponent, PropType } from "vue";
 import {
   BCollapse,
   BDropdownItem,
@@ -266,7 +266,7 @@ export interface BrandImage {
 }
 
 export default defineComponent({
-  name: "Navbar",
+  name: "nav-bar",
   components: {
     BIconBell,
     Github,

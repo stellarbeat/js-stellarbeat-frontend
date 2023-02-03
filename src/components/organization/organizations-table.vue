@@ -51,6 +51,13 @@
                 "
                 >{{ network.getNodeFailingReason(validator).label }}</span
               >
+              <span
+                v-else-if="network.nodeHasWarnings(validator)"
+                class="badge sb-badge badge-warning ml-1"
+                v-b-tooltip:hover="network.getNodeWarningReasons(validator)"
+              >
+                Warning
+              </span>
             </div>
           </li>
         </ul>
@@ -115,6 +122,13 @@
             v-b-tooltip.hover
             :title="row.item.dangers"
             >{{ row.item.blocked ? "Blocked" : "Failing" }}
+          </span>
+          <span
+            v-else-if="row.item.hasWarning"
+            class="badge sb-badge badge-warning ml-1"
+            v-b-tooltip.hover
+            :title="row.item.warning"
+            >Warning
           </span>
         </div>
       </template>

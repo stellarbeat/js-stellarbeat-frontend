@@ -20,8 +20,8 @@ module.exports = {
       new CopyPlugin({
         patterns: [
           {
-            from: "node_modules/stellar_analysis/stellar_analysis_bg.wasm",
-            to: "worker/stellar_analysis_bg.wasm",
+            from: "node_modules/@stellarbeat/stellar_analysis_web/stellar_analysis_bg.wasm",
+            to: "js/stellar_analysis_bg.wasm",
           },
           {
             from: "*.json",
@@ -29,7 +29,7 @@ module.exports = {
             context: "node_modules/@stellarbeat/js-stellar-domain/schemas/",
           },
         ],
-      }),
+      })
     ],
     optimization: {
       minimize: !process.env.SSR,
@@ -46,13 +46,12 @@ module.exports = {
         // Alias for using source of BootstrapVue
         "bootstrap-vue$": "bootstrap-vue/src/index.js",
       },
+      fallback: {
+        stream: require.resolve("stream-browserify"),
+      },
     },
     module: {
       rules: [
-        {
-          test: /\.worker\.js$/,
-          use: { loader: "worker-loader" },
-        },
         {
           test: /\.js$/,
           // Exclude transpiling `node_modules`, except `bootstrap-vue/src`

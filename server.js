@@ -1,18 +1,17 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const history = require("connect-history-api-fallback");
 
 let port = process.env.PORT || 3000;
 
-app.use(
-  history({
-    rewrites: [
-      { from: /\/faq$/, to: "/faq.html" },
-      { from: /\/api$/, to: "/api.html" },
-      { from: /\/terms-and-conditions$/, to: "/terms-and-conditions.html" },
-    ],
-  })
-);
+const prerenderToken = process.env.VUE_PRERENDER_TOKEN;
+if (prerenderToken) {
+  app.use(require("prerender-node").set("prerenderToken", prerenderToken));
+}
+
+app.use(history());
+
 let cacheTime = 86400000 * 7; //7 day cache for assets
 app.use(function (req, res, next) {
   res.setHeader("X-Frame-Options", "DENY"); //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options

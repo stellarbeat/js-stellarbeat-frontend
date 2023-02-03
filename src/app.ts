@@ -1,5 +1,4 @@
 import Vue from "vue";
-import VueCompositionAPI from "@vue/composition-api";
 import App from "./App.vue";
 import { createRouter } from "./router";
 import VueTruncate from "vue-truncate-filter";
@@ -15,7 +14,6 @@ import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
 
-Vue.use(VueCompositionAPI);
 const isProd = process.env.NODE_ENV === "production";
 
 Vue.config.productionTip = false;
@@ -25,8 +23,6 @@ if (isProd) {
     dsn: process.env.VUE_APP_SENTRY_DSN,
     integrations: [new VueIntegration({ Vue, attachProps: true })],
   });
-} else {
-  //makeServer();
 }
 
 if (typeof window !== "undefined") {
@@ -34,13 +30,12 @@ if (typeof window !== "undefined") {
   window.ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill;
 }
 
-//Vue.use(AsyncComputedPlugin);
 VueClipboard.config.autoSetContainer = true;
 Vue.use(VueClipboard);
 Vue.use(VueTruncate);
 Vue.use(Meta);
 Vue.use(VueScrollTo);
-Vue.component("multiselect", Multiselect);
+Vue.component("multi-select", Multiselect);
 
 const router = createRouter();
 

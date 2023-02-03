@@ -21,7 +21,7 @@
           id="nodes-group"
           label="Node events"
           label-for="nodes-select"
-          description="Triggered when inactive, not validating or history archive not up-to-date for three consecutive updates"
+          description="Triggered when inactive, not validating or history archive not up-to-date for three consecutive updates or when history archive verification error is detected"
         >
           <multiselect
             id="nodes-select"
@@ -139,6 +139,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from "vue-property-decorator";
+import { Multiselect } from "vue-multiselect";
 import { StoreMixin } from "@/mixins/StoreMixin";
 import axios from "axios";
 import {
@@ -177,6 +178,7 @@ type SelectedOrganization = {
     BFormInput,
     BFormInvalidFeedback,
     BFormText,
+    Multiselect,
   },
 })
 export default class NotifySubscribe extends Mixins(StoreMixin) {
@@ -280,7 +282,6 @@ export default class NotifySubscribe extends Mixins(StoreMixin) {
     } catch (e) {
       this.requesting = false;
       this.subscribeError = true;
-      console.log(e);
     }
   }
 

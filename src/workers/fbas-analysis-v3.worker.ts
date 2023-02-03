@@ -6,7 +6,7 @@ import init, {
   init_panic_hook,
   analyze_symmetric_top_tier,
   MergeBy,
-} from "stellar_analysis";
+} from "@stellarbeat/stellar_analysis_web";
 import { Node, Organization, PublicKey } from "@stellarbeat/js-stellar-domain";
 
 //@ts-ignore
@@ -60,7 +60,9 @@ ctx.addEventListener("message", (event) => {
           jobId
         );
       })
-      .catch((reason) => console.log(reason));
+      .catch(() => {
+        //TODO: handle error
+      });
   } else {
     performAnalysis(
       nodes,
@@ -92,7 +94,6 @@ function performAnalysis(
   //@ts-ignore
   const analysis: FbasAnalysisWorkerResult = {};
   if (analyzeSymmetricTopTier) {
-    console.log("analyze symmetric top tier");
     const symmetricTopTierAnalysis = analyze_symmetric_top_tier(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
@@ -103,7 +104,6 @@ function performAnalysis(
     analysis.hasSymmetricTopTierAnalyzed = true;
   } else analysis.hasSymmetricTopTierAnalyzed = false;
   if (analyzeQuorumIntersection) {
-    console.log("analyze quorum intersection");
     const minimalQuorumsAnalysis = analyze_minimal_quorums(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
@@ -115,7 +115,6 @@ function performAnalysis(
   } else analysis.quorumIntersectionAnalyzed = false;
 
   if (analyzeTopTier) {
-    console.log("analyze top tier");
     const topTierAnalysis = analyze_top_tier(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
@@ -127,7 +126,6 @@ function performAnalysis(
   } else analysis.topTierAnalyzed = false;
 
   if (analyzeLiveness) {
-    console.log("analyze liveness");
     const minimalBlockingSetsAnalysis = analyze_minimal_blocking_sets(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
@@ -140,7 +138,6 @@ function performAnalysis(
   } else analysis.livenessAnalyzed = false;
 
   if (analyzeSafety) {
-    console.log("analyze safety");
     const minimalSplittingSetsAnalysis = analyze_minimal_splitting_sets(
       JSON.stringify(nodes),
       JSON.stringify(organizations),

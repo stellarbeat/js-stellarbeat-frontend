@@ -3,8 +3,35 @@
     <b-alert :show="network.isNodeFailing(selectedNode)" variant="danger">
       {{ network.getNodeFailingReason(selectedNode).description }}
     </b-alert>
-    <b-alert :show="network.nodeHasWarnings(selectedNode)" variant="warning">
+
+    <b-alert
+      :show="network.historyArchiveHasError(selectedNode)"
+      variant="warning"
+    >
+      <span v-html="historyArchiveErrorDescription"></span>
+      with
+      <a
+        href="https://github.com/stellar/go/tree/master/tools/stellar-archivist"
+        target="_blank"
+        >Stellar Archivist</a
+      >
+      and purge your cache afterwards.
+    </b-alert>
+    <b-alert
+      :show="
+        network.nodeHasWarnings(selectedNode) &&
+        !network.historyArchiveHasError(selectedNode)
+      "
+      variant="warning"
+    >
       {{ network.getNodeWarningReasons(selectedNode) }}
+    </b-alert>
+    <b-alert
+      :show="historyArchiveScan && historyArchiveScan.isSlow"
+      variant="info"
+    >
+      Only latest ledgers in history archive are scanned for errors because
+      archive has limited throughput.
     </b-alert>
     <div class="row row-cards row-deck" v-if="!store.isSimulation">
       <LazyHydrate when-visible>
@@ -93,7 +120,7 @@
           v-if="selectedNode.isValidator"
         >
           <history-card
-            :subject="'History Archive'"
+            :subject="'History Archive up-to-date'"
             :entityId="selectedNode.publicKey"
             :fetchDayMeasurements="
               (publicKey, from, to) =>
@@ -173,7 +200,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import HistoryCard from "@/components/charts/history-card.vue";
 import Store from "@/store/Store";
 import NodeInfo from "@/components/node/node-cards/node-info.vue";
@@ -189,7 +216,7 @@ import NodeTrustedBy from "@/components/node/node-cards/node-trusted-by.vue";
 import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
-import { Network } from "@stellarbeat/js-stellar-domain";
+import { HistoryArchiveScan, Network } from "@stellarbeat/js-stellar-domain";
 import useStore from "@/store/useStore";
 
 @Component({
@@ -211,6 +238,9 @@ import useStore from "@/store/useStore";
   },
 })
 export default class NodeDashboard extends Vue {
+  private fetchingLatestHistoryArchiveScan = false;
+  private historyArchiveScan: HistoryArchiveScan | null = null;
+
   get store(): Store {
     return useStore();
   }
@@ -221,6 +251,38 @@ export default class NodeDashboard extends Vue {
 
   get selectedNode() {
     return this.store.selectedNode;
+  }
+
+  async fetchHistoryArchiveScan() {
+    if (!this.selectedNode) return;
+
+    if (!this.selectedNode.historyUrl) return;
+
+    this.fetchingLatestHistoryArchiveScan = true;
+    this.historyArchiveScan =
+      await this.store.historyArchiveScanRepository.findLatest(
+        this.selectedNode.historyUrl
+      );
+
+    this.fetchingLatestHistoryArchiveScan = false;
+  }
+
+  get historyArchiveErrorDescription() {
+    if (this.historyArchiveScan === null)
+      return "Verification error in history archive detected. ";
+
+    let message = `Archive verification error at <a href=${this.historyArchiveScan.errorUrl} target="_blank">${this.historyArchiveScan.errorUrl}</a>: ${this.historyArchiveScan.errorMessage}. `;
+
+    message +=
+      "Start repair at ledger " + this.historyArchiveScan.latestVerifiedLedger;
+
+    return message;
+  }
+
+  @Watch("selectedNode", { immediate: true })
+  public onSelectedNodeChanged() {
+    if (this.selectedNode && this.selectedNode.historyUrl)
+      this.fetchHistoryArchiveScan();
   }
 }
 </script>

@@ -358,7 +358,6 @@ export default class NodeLatestUpdates extends Vue {
       }
       this.updatesPerDate.reverse();
     } catch (e) {
-      console.log(e);
       this.failed = true;
     }
     this.isLoading = false;

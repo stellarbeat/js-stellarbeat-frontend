@@ -115,7 +115,7 @@ $loader-size: 2.5rem;
   &:after {
     width: $loader-size;
     height: $loader-size;
-    margin: (-$loader-size / 2) 0 0 (-$loader-size / 2);
+    margin: (-$loader-size * 0.5) 0 0 (-$loader-size * 0.5);
     position: absolute;
     content: "";
     top: 50%;

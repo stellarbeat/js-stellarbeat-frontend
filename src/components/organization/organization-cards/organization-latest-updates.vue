@@ -287,7 +287,6 @@ export default class OrganizationLatestUpdates extends Vue {
     } catch (e) {
       this.isLoading = false;
       this.failed = true;
-      console.log(e);
     }
 
     this.isLoading = false;

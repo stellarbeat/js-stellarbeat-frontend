@@ -22,8 +22,8 @@
         :is-link-in-dropdown="true"
         :has-danger="network.isNodeFailing(validator)"
         :dangers="network.getNodeFailingReason(validator).description"
-        :has-warnings="validator.historyUrl && !validator.isFullValidator"
-        warnings="History archive not up-to-date"
+        :has-warnings="network.nodeHasWarnings(validator)"
+        :warnings="network.getNodeWarningReasons(validator)"
       >
         <template v-slot:action-dropdown>
           <node-actions :node="validator" />

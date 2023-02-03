@@ -119,7 +119,6 @@ import {
   QuorumSet,
   Vertex,
 } from "@stellarbeat/js-stellar-domain";
-import HaltingAnalysisWorker from "worker-loader?name=worker/[name].js!./../../../../workers/halting-analysisv1.worker.ts";
 import Store from "@/store/Store";
 import {
   BAlert,
@@ -134,8 +133,6 @@ import {
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
 import useStore from "@/store/useStore";
-
-const _HaltingAnalysisWorker = HaltingAnalysisWorker; // workaround for typescript not compiling web workers.
 
 @Component({
   name: "halting-analysis",
@@ -162,7 +159,12 @@ export default class HaltingAnalysis extends Vue {
   protected isLoading = false;
   protected simulated = false;
 
-  protected haltingAnalysisWorker = new _HaltingAnalysisWorker();
+  protected haltingAnalysisWorker = new Worker(
+    new URL(
+      "./../../../../workers/halting-analysisv1.worker.ts",
+      import.meta.url
+    )
+  );
 
   get store(): Store {
     return useStore();

@@ -14,7 +14,7 @@
           >
         </b-button-group>
         <h1 class="card-title">
-          {{ capitalizeFirstLetter(analysisType) }} risk
+          {{ capitalizeFirstLetter(analysisType) }} thresholds
         </h1>
       </div>
       <b-button size="sm" @click="showModal = true">
@@ -722,7 +722,6 @@ export default class NetworkAnalysis extends Mixins(
         this.yearStatistics
       );
     } catch (e) {
-      console.log(e);
       this.failed = true;
     }
     this.isLoading = false;

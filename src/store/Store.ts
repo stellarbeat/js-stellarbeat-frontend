@@ -28,9 +28,13 @@ import { NodeSnapShot } from "@stellarbeat/js-stellar-domain/lib/node-snap-shot"
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
-import { MergeBy } from "stellar_analysis";
+import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
+
+type NetworkId = string;
 import Config, { NetworkContext, NetworkSlug } from "@/config/Config";
+import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
 
 export default class Store {
   protected _network?: Network;
@@ -67,6 +71,8 @@ export default class Store {
 
   protected _uniqueId = 0;
 
+  public historyArchiveScanRepository: HistoryArchiveScanRepository;
+
   public networkContexts: Map<NetworkSlug, NetworkContext> = new Map();
 
   //todo: move higher up
@@ -79,6 +85,9 @@ export default class Store {
     const appConfig = new Config();
     this.networkContexts = appConfig.networkContexts;
     this.networkContext = this.networkContexts.get("public")!;
+    this.historyArchiveScanRepository = new RESTHistoryArchiveScanRepository(
+      this.networkContext.apiBaseUrl!
+    );
     this.appConfig = appConfig;
   }
 
@@ -260,6 +269,14 @@ export default class Store {
           targetAvailability
         );
       }),
+      ...organization.validators.map((validator) => {
+        const node = this.network.getNodeByPublicKey(validator);
+        return new EntityPropertyUpdate(
+          node,
+          "activeInScp",
+          targetAvailability
+        );
+      }),
     ]);
     this.processChange(aggregateChange);
   }
@@ -271,6 +288,10 @@ export default class Store {
 
     changes.push(
       new EntityPropertyUpdate(node, "isValidating", !node.isValidating)
+    );
+
+    changes.push(
+      new EntityPropertyUpdate(node, "activeInScp", !node.isValidating)
     );
 
     this.processChange(new AggregateChange(changes));
@@ -427,7 +448,8 @@ export default class Store {
   public organizationHasWarnings(organization: Organization) {
     return (
       this.organizationHasOutOfDateHistoryArchives(organization) ||
-      this.getOrganizationFailAt(organization) === 1
+      this.getOrganizationFailAt(organization) === 1 ||
+      this.organizationHasHistoryArchivesWithError(organization)
     );
   }
   public organizationHasOutOfDateHistoryArchives(organization: Organization) {
@@ -436,9 +458,21 @@ export default class Store {
       .some((validator) => validator.historyUrl && !validator.isFullValidator);
   }
 
+  public organizationHasHistoryArchivesWithError(organization: Organization) {
+    return organization.validators
+      .map((validator) => this.network.getNodeByPublicKey(validator))
+      .some(
+        (validator) => validator.historyUrl && validator.historyArchiveHasError
+      );
+  }
+
   getOrganizationWarningReason(organization: Organization) {
     if (this.getOrganizationFailAt(organization) === 1)
       return "If one more validator fails, this organization will fail";
+
+    if (this.organizationHasHistoryArchivesWithError(organization)) {
+      return "History archive verification issue detected";
+    }
 
     if (this.organizationHasOutOfDateHistoryArchives(organization))
       return "Not all history archives up-to-date";

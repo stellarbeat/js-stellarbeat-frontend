@@ -89,15 +89,9 @@ import CustomNetwork from "@/components/network/tools/modify-network.vue";
 import { BAlert, BIconEnvelope } from "bootstrap-vue";
 import Store from "@/store/Store";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
-import {
-  ComputedRef,
-  nextTick,
-  defineComponent,
-  computed,
-  watch,
-} from "@vue/composition-api";
 import { useRoute } from "vue2-helpers/vue-router";
 import useStore from "@/store/useStore";
+import { computed, ComputedRef, defineComponent, nextTick, watch } from "vue";
 
 export default defineComponent({
   components: {
@@ -119,7 +113,6 @@ export default defineComponent({
   },
 
   async mounted() {
-    //@todo: useRoute gives issues, move to setup when migrated to vue3. Maybe it could be handled in route watcher even.
     const store = useStore();
     let networkContextSlug = this.$route.query.network;
     if ("string" === typeof networkContextSlug) {
@@ -173,7 +166,7 @@ export default defineComponent({
 
         if (networkContextChanged || timeTravel) {
           store.value.isLoading = true;
-          await nextTick(async () => {
+          nextTick(async () => {
             //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
             await store.value.initializeNetwork(
               timeTravel ? timeTravelDate : undefined
@@ -193,13 +186,6 @@ export default defineComponent({
     };
   },
 });
-/*export default class App extends Vue {
-
-
-
-
-
-}*/
 </script>
 
 <style scoped>
