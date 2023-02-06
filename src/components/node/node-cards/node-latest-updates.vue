@@ -366,7 +366,7 @@ export default class NodeLatestUpdates extends Vue {
 
   async timeTravel(snapshot: SnapshotForDelta) {
     this.store.isLoading = true;
-    await this.store.initializeNetwork(snapshot.startDate);
+    await this.store.timeTravel(snapshot.startDate);
     this.store.isLoading = false;
   }
 

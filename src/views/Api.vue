@@ -59,10 +59,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-
-@Component({
+export default {
   name: "api",
   metaInfo: {
     title: "API - Stellarbeat.io",
@@ -70,8 +67,7 @@ import { Component } from "vue-property-decorator";
       { name: "description", content: "Connect your app through our api" },
     ],
   },
-})
-export default class Api extends Vue {}
+};
 </script>
 <style scoped>
 li {

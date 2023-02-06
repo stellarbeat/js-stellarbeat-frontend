@@ -182,15 +182,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-
-@Component({
+export default {
   name: "terms-and-conditions",
   metaInfo: {
     title: "Terms and Conditions - Stellarbeat.io",
     meta: [{ name: "description", content: "Terms and conditions." }],
   },
-})
-export default class TermsAndConditions extends Vue {}
+};
 </script>

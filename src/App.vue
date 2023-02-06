@@ -82,25 +82,61 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Navbar from "@/components/layout/Navbar.vue";
 import Github from "@/components/organization/logo/github.vue";
 import CustomNetwork from "@/components/network/tools/modify-network.vue";
 import { BAlert, BIconEnvelope } from "bootstrap-vue";
-import Store from "@/store/Store";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import { useRoute } from "vue2-helpers/vue-router";
 import useStore from "@/store/useStore";
-import { computed, ComputedRef, defineComponent, nextTick, watch } from "vue";
+import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
 
-export default defineComponent({
-  components: {
-    Github,
-    CustomNetwork,
-    BAlert,
-    BIconEnvelope,
-    Navbar,
+const errorMessage = ref(
+  "Could not connect to stellarbeat.io api, please refresh the page"
+);
+
+const store = useStore();
+const showError = store.fetchingDataFailed;
+const route = useRoute();
+
+const getNetworkIdFromQueryParam = (
+  networkQueryParameter: string | (string | null)[]
+): string | null => {
+  if (isString(networkQueryParameter)) return networkQueryParameter;
+  return null;
+};
+
+const networkId = computed(() => {
+  return getNetworkIdFromQueryParam(route.query.network);
+});
+
+const timeTravelDate = computed(() => {
+  return store.getDateFromParam(route.query.at);
+});
+
+onBeforeMount(async () => {
+  await store.updateNetwork(networkId.value, timeTravelDate.value);
+});
+
+watch(
+  [networkId, timeTravelDate],
+  async () => {
+    if (!store.networkNeedsToBeUpdated(networkId.value, timeTravelDate.value))
+      return;
+
+    store.isLoading = true;
+    nextTick(async () => {
+      //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
+      await store.updateNetwork(networkId.value, timeTravelDate.value);
+    });
   },
+  { immediate: false, deep: true }
+);
+</script>
+
+<script lang="ts">
+export default {
   metaInfo: {
     title: "Stellarbeat.io - Stellar network visibility",
     meta: [
@@ -111,81 +147,7 @@ export default defineComponent({
       },
     ],
   },
-
-  async mounted() {
-    const store = useStore();
-    let networkContextSlug = this.$route.query.network;
-    if ("string" === typeof networkContextSlug) {
-      store.setNetworkContext(networkContextSlug);
-    }
-    let timeAt = store.getDateFromParam(this.$route.query.at);
-    await store.initializeNetwork(timeAt);
-  },
-
-  setup() {
-    const errorMessage =
-      "Could not connect to stellarbeat.io api, please refresh the page";
-    const navCollapsed = false;
-
-    const store: ComputedRef<Store> = computed(() => useStore());
-
-    const network = computed(() => store.value.network);
-
-    const showError = computed(() => store.value.fetchingDataFailed);
-
-    const route = useRoute();
-    const networkContextSlug = computed(() => route.query.network);
-    const at = computed(() => route.query.at);
-
-    watch(
-      [networkContextSlug, at],
-      async (to) => {
-        const networkContextSlugChange = to[0];
-        const at = to[1];
-        let timeTravelDate = store.value.getDateFromParam(at);
-        let timeTravel = false;
-        if (!timeTravelDate && store.value.isTimeTravel)
-          //time travel reset
-          timeTravel = true;
-        if (timeTravelDate && !store.value.timeTravelDate) timeTravel = true;
-        if (
-          timeTravelDate &&
-          store.value.timeTravelDate &&
-          timeTravelDate.getTime() !== store.value.timeTravelDate.getTime()
-        )
-          timeTravel = true;
-
-        let networkContextChanged = false;
-        if (
-          isString(networkContextSlugChange) &&
-          store.value.networkContext.slug !== networkContextSlugChange
-        ) {
-          store.value.setNetworkContext(networkContextSlugChange);
-          networkContextChanged = true;
-        }
-
-        if (networkContextChanged || timeTravel) {
-          store.value.isLoading = true;
-          nextTick(async () => {
-            //next tick is needed to toggle the loading state. The loading state is needed to clean up the previous gui.
-            await store.value.initializeNetwork(
-              timeTravel ? timeTravelDate : undefined
-            );
-          });
-        }
-      },
-      { immediate: false }
-    );
-
-    return {
-      errorMessage,
-      navCollapsed,
-      store,
-      network,
-      showError,
-    };
-  },
-});
+};
 </script>
 
 <style scoped>

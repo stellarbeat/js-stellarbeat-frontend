@@ -5,7 +5,7 @@ import { FBASRepository } from "@/repositories/implementation/FBASRepository";
 import { FBASQIRepository } from "@/repositories/implementation/FBASQIRepository";
 
 export interface NetworkContext {
-  slug: NetworkSlug;
+  slug: NetworkSlug; //todo: id
   name: string;
   repository: NetworkRepository;
   enableNotify: boolean;

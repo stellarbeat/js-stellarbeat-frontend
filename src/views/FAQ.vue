@@ -136,18 +136,14 @@ Age = Time since discovery
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+<script setup lang="ts">
 import Github from "@/components/organization/logo/github.vue";
-
-@Component({
-  name: "faq",
-  components: { Github },
+</script>
+<script lang="ts">
+export default {
   metaInfo: {
     title: "FAQ - Stellarbeat.io",
     meta: [{ name: "Frequently asked questions", content: "Help faq" }],
   },
-})
-export default class About extends Vue {}
+};
 </script>

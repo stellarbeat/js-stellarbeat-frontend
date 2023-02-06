@@ -80,24 +80,140 @@ Age = Time since discovery
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { Node } from "@stellarbeat/js-stellar-domain";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import NodesTable from "@/components/node/nodes-table.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
+import { computed, defineProps, ref } from "vue";
+import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    TimeTravelBadge,
-    NodesTable,
-    SimulationBadge,
-    CrawlTime,
-    BFormInput: BFormInput,
+defineProps({
+  isLoading: {
+    type: Boolean,
+    required: true,
   },
+});
+
+const store = useStore();
+
+const optionShowInactive = ref(false);
+const optionShowWatchers = ref(false);
+const filter = ref("");
+
+const fieldsBase = [
+  { key: "name", sortable: true },
+  { key: "organization", sortable: true },
+  { key: "country", sortable: true },
+  { key: "isp", sortable: true },
+  { key: "type", label: "type", sortable: true },
+  { key: "ip", sortable: true },
+  { key: "version", sortable: true },
+  { key: "validating", sortable: true },
+];
+
+if (!store.isSimulation) {
+  if (store.networkContext.enableHistory) {
+    fieldsBase.push({
+      key: "active24Hour",
+      label: "24H active",
+      sortable: true,
+    });
+    fieldsBase.push({
+      key: "active30Days",
+      label: "30D active",
+      sortable: true,
+    });
+    fieldsBase.push({
+      key: "validating24Hour",
+      label: "24H validating",
+      sortable: true,
+    });
+    fieldsBase.push({
+      key: "validating30Days",
+      label: "30D validating",
+      sortable: true,
+    });
+    fieldsBase.push({
+      key: "overLoaded24Hour",
+      label: "24H overloaded",
+      sortable: true,
+    });
+  }
+
+  if (store.networkContext.enableIndex) {
+    fieldsBase.push({ key: "index", label: "index", sortable: true });
+  }
+}
+
+const fields = computed(() => {
+  return fieldsBase;
+});
+
+const getNodeType = (node: Node): string => {
+  if (node.isFullValidator) {
+    return "Full validator";
+  }
+  if (node.isValidator) return "Validator";
+
+  return "Watcher";
+};
+
+const nodes = computed(() => {
+  return store.network.nodes
+    .filter((node) => node.active || optionShowInactive.value)
+    .filter((node) => node.isValidator || optionShowWatchers.value)
+    .map((node) => {
+      return {
+        name: node.displayName,
+        type: getNodeType(node),
+        active24Hour: node.statistics.has24HourStats
+          ? node.statistics.active24HoursPercentage + "%"
+          : "NA",
+        active30Days: node.statistics.has30DayStats
+          ? node.statistics.active30DaysPercentage + "%"
+          : "NA",
+        validating24Hour: node.statistics.has24HourStats
+          ? node.statistics.validating24HoursPercentage + "%"
+          : "NA",
+        validating30Days: node.statistics.has30DayStats
+          ? node.statistics.validating30DaysPercentage + "%"
+          : "NA",
+        overLoaded24Hour: node.statistics.has24HourStats
+          ? node.statistics.overLoaded24HoursPercentage + "%"
+          : "NA",
+        ip: node.key,
+        publicKey: node.publicKey,
+        country: node.geoData.countryName,
+        isp: node.isp,
+        version: node.versionStr,
+        isFullValidator: node.isFullValidator,
+        isValidator: node.isValidator,
+        index: node.index,
+        validating: node.isValidating,
+        organization: getOrganization(node),
+        organizationId: node.organizationId,
+      };
+    });
+});
+
+const getOrganization = (node: Node) => {
+  if (!node.organizationId) {
+    return "-";
+  }
+  let organization = store.network.getOrganizationById(node.organizationId);
+  if (organization) {
+    return organization.name;
+  } else {
+    return "-";
+  }
+};
+</script>
+
+<script lang="ts">
+export default {
   metaInfo: {
     title: "Nodes overview - Stellarbeat.io",
     meta: [
@@ -107,109 +223,7 @@ import { StoreMixin } from "@/mixins/StoreMixin";
       },
     ],
   },
-})
-export default class Nodes extends Mixins(StoreMixin) {
-  @Prop()
-  public isLoading!: boolean;
-
-  public optionShowInactive = false;
-  public optionShowWatchers = false;
-  public filter = "";
-
-  get fields() {
-    const fields = [
-      { key: "name", sortable: true },
-      { key: "organization", sortable: true },
-      { key: "country", sortable: true },
-      { key: "isp", sortable: true },
-      { key: "type", label: "type", sortable: true },
-      { key: "ip", sortable: true },
-      { key: "version", sortable: true },
-      { key: "validating", sortable: true },
-    ];
-    if (this.store.isSimulation) return fields;
-
-    if (this.store.networkContext.enableHistory) {
-      fields.push({ key: "active24Hour", label: "24H active", sortable: true });
-      fields.push({ key: "active30Days", label: "30D active", sortable: true });
-      fields.push({
-        key: "validating24Hour",
-        label: "24H validating",
-        sortable: true,
-      });
-      fields.push({
-        key: "validating30Days",
-        label: "30D validating",
-        sortable: true,
-      });
-      fields.push({
-        key: "overLoaded24Hour",
-        label: "24H overloaded",
-        sortable: true,
-      });
-    }
-
-    if (this.store.networkContext.enableIndex) {
-      fields.push({ key: "index", label: "index", sortable: true });
-    }
-
-    return fields;
-  }
-
-  get nodes() {
-    return this.network.nodes
-      .filter((node) => node.active || this.optionShowInactive)
-      .filter((node) => node.isValidator || this.optionShowWatchers)
-      .map((node) => {
-        return {
-          name: node.displayName,
-          type: node.isFullValidator
-            ? "Full validator"
-            : node.isValidator
-            ? "Validator"
-            : "Watcher",
-          active24Hour: node.statistics.has24HourStats
-            ? node.statistics.active24HoursPercentage + "%"
-            : "NA",
-          active30Days: node.statistics.has30DayStats
-            ? node.statistics.active30DaysPercentage + "%"
-            : "NA",
-          validating24Hour: node.statistics.has24HourStats
-            ? node.statistics.validating24HoursPercentage + "%"
-            : "NA",
-          validating30Days: node.statistics.has30DayStats
-            ? node.statistics.validating30DaysPercentage + "%"
-            : "NA",
-          overLoaded24Hour: node.statistics.has24HourStats
-            ? node.statistics.overLoaded24HoursPercentage + "%"
-            : "NA",
-          ip: node.key,
-          publicKey: node.publicKey,
-          country: node.geoData.countryName,
-          isp: node.isp,
-          version: node.versionStr,
-          isFullValidator: node.isFullValidator,
-          isValidator: node.isValidator,
-          index: node.index,
-          validating: node.isValidating,
-          organization: this.getOrganization(node),
-          organizationId: node.organizationId,
-        };
-      });
-  }
-
-  getOrganization(node: Node): string {
-    if (!node.organizationId) {
-      return "-";
-    }
-    let organization = this.network.getOrganizationById(node.organizationId);
-    if (organization) {
-      return organization.name;
-    } else {
-      return "-";
-    }
-  }
-}
+};
 </script>
 <style scoped>
 .header-row {

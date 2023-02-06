@@ -31,10 +31,10 @@ import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
-
-type NetworkId = string;
 import Config, { NetworkContext, NetworkSlug } from "@/config/Config";
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
+
+type NetworkId = string;
 
 export default class Store {
   protected _network?: Network;
@@ -78,13 +78,15 @@ export default class Store {
   //todo: move higher up
   public appConfig: Config;
 
+  private defaultNetworkId = "public";
+
   //todo: change of network context = new store? What about time travel? Time travel should be domain concept?
   //todo: networkContext should be injected?
   constructor() {
     //todo: inject
     const appConfig = new Config();
     this.networkContexts = appConfig.networkContexts;
-    this.networkContext = this.networkContexts.get("public")!;
+    this.networkContext = this.networkContexts.get(this.defaultNetworkId)!;
     this.historyArchiveScanRepository = new RESTHistoryArchiveScanRepository(
       this.networkContext.apiBaseUrl!
     );
@@ -107,11 +109,38 @@ export default class Store {
     return this.networkContext.slug;
   }
 
-  setNetworkContext(networkContextSlug: NetworkSlug) {
-    if (this.networkContexts.has(networkContextSlug))
-      this.networkContext = this.networkContexts.get(
-        networkContextSlug
-      ) as NetworkContext;
+  getNetworkContextFromNetworkId(
+    networkId: string | null
+  ): NetworkContext | null {
+    const targetNetworkId =
+      networkId === null ? this.defaultNetworkId : networkId;
+    return this.networkContexts.get(targetNetworkId) ?? null;
+  }
+
+  networkNeedsToBeUpdated(
+    networkId: string | null,
+    at: Date | undefined
+  ): boolean {
+    const targetNetworkContext = this.getNetworkContextFromNetworkId(networkId);
+    if (targetNetworkContext === null) return false; //unknown network
+
+    if (targetNetworkContext.slug !== this.networkContext.slug) return true; //new network context
+
+    return this.timeTravelDate?.getTime() !== at?.getTime(); //new time travel date
+  }
+
+  async updateNetwork(networkId: string | null, at: Date | undefined) {
+    const newNetworkContext = this.getNetworkContextFromNetworkId(networkId);
+    if (newNetworkContext) {
+      this.networkContext = newNetworkContext;
+      return await this.fetchNetwork(at);
+    }
+  }
+
+  async timeTravel(at: Date | undefined) {
+    if (this.timeTravelDate?.getTime() !== at?.getTime()) {
+      return await this.fetchNetwork(at);
+    }
   }
 
   protected setNetwork(network: Network) {
@@ -228,7 +257,7 @@ export default class Store {
     return [];
   }
 
-  async initializeNetwork(at?: Date): Promise<void> {
+  private async fetchNetwork(at?: Date): Promise<void> {
     this.fetchingDataFailed = false;
 
     if (at) {

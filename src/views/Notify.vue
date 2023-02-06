@@ -29,15 +29,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
-import { BBadge } from "bootstrap-vue";
-
-@Component({
-  name: "notify",
-  components: {
-    "b-badge": BBadge,
-  },
+export default {
   metaInfo: {
     title: "Notify - Stellarbeat.io",
     meta: [
@@ -47,10 +39,8 @@ import { BBadge } from "bootstrap-vue";
       },
     ],
   },
-})
-export default class Notify extends Mixins(StoreMixin) {}
+};
 </script>
-
 <style scoped>
 .privacy-link {
   justify-content: flex-end;

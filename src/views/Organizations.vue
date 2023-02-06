@@ -35,41 +35,85 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import { Node, Organization } from "@stellarbeat/js-stellar-domain";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
-import {
-  BCol,
-  BFormInput,
-  BIconInfoCircle,
-  BIconShield,
-  BPagination,
-  BRow,
-  BTable,
-  VBTooltip,
-} from "bootstrap-vue";
+import { BFormInput } from "bootstrap-vue";
 import OrganizationsTable from "@/components/organization/organizations-table.vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
+import { computed, defineProps, ref } from "vue";
+import useStore from "@/store/useStore";
 
-@Component({
-  name: "organizations",
-  components: {
-    OrganizationsTable,
-    TimeTravelBadge,
-    SimulationBadge,
-    CrawlTime,
-    BPagination: BPagination,
-    BCol: BCol,
-    BRow: BRow,
-    BTable: BTable,
-    BIconShield: BIconShield,
-    BFormInput: BFormInput,
-    BIconInfoCircle: BIconInfoCircle,
+defineProps({
+  isLoading: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
-  directives: { "b-tooltip": VBTooltip },
+});
+
+const store = useStore();
+const filter = ref("");
+const fields = computed(() => {
+  if (store.isSimulation) {
+    return [
+      { key: "name", sortable: true },
+      { key: "validators", sortable: false },
+    ];
+  } else {
+    return [
+      { key: "name", sortable: true },
+      { key: "validators", sortable: false },
+      {
+        key: "subQuorum24HAvailability",
+        label: "24H Availability",
+        sortable: true,
+      },
+      {
+        key: "subQuorum30DAvailability",
+        label: "30D Availability",
+        sortable: true,
+      },
+      { key: "url", sortable: true },
+      { key: "keybase", sortable: true },
+      { key: "email", sortable: true },
+    ];
+  }
+});
+
+const organizations = computed(() => {
+  return store.network.organizations.map((organization) => {
+    return {
+      name: organization.name,
+      validators: getValidators(organization),
+      keybase: organization.keybase,
+      github: organization.github,
+      url: organization.url,
+      email: organization.officialEmail,
+      id: organization.id,
+      failAt: store.getOrganizationFailAt(organization),
+      dangers: store.getOrganizationFailingReason(organization),
+      hasWarning: store.organizationHasWarnings(organization),
+      warning: store.getOrganizationWarningReason(organization),
+      blocked: store.network.isOrganizationBlocked(organization),
+      subQuorum24HAvailability: organization.subQuorum24HoursAvailability + "%",
+      subQuorum30DAvailability: organization.subQuorum30DaysAvailability + "%",
+      isTierOneOrganization: organization.isTierOneOrganization,
+    };
+  });
+});
+
+const getValidators = (organization: Organization) => {
+  return organization.validators
+    .map((publicKey) => {
+      return store.network.getNodeByPublicKey(publicKey);
+    })
+    .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
+};
+</script>
+<script lang="ts">
+export default {
   metaInfo: {
     title: "Organizations - Stellarbeat.io",
     meta: [
@@ -79,72 +123,7 @@ import { StoreMixin } from "@/mixins/StoreMixin";
       },
     ],
   },
-})
-export default class Organizations extends Mixins(StoreMixin) {
-  public filter = "";
-
-  get fields() {
-    if (this.store.isSimulation) {
-      return [
-        { key: "name", sortable: true },
-        { key: "validators", sortable: false },
-      ];
-    } else {
-      return [
-        { key: "name", sortable: true },
-        { key: "validators", sortable: false },
-        {
-          key: "subQuorum24HAvailability",
-          label: "24H Availability",
-          sortable: true,
-        },
-        {
-          key: "subQuorum30DAvailability",
-          label: "30D Availability",
-          sortable: true,
-        },
-        { key: "url", sortable: true },
-        { key: "keybase", sortable: true },
-        { key: "email", sortable: true },
-      ];
-    }
-  }
-
-  @Prop()
-  public isLoading!: boolean;
-
-  get organizations() {
-    return this.network.organizations.map((organization) => {
-      return {
-        name: organization.name,
-        validators: this.getValidators(organization),
-        keybase: organization.keybase,
-        github: organization.github,
-        url: organization.url,
-        email: organization.officialEmail,
-        id: organization.id,
-        failAt: this.store.getOrganizationFailAt(organization),
-        dangers: this.store.getOrganizationFailingReason(organization),
-        hasWarning: this.store.organizationHasWarnings(organization),
-        warning: this.store.getOrganizationWarningReason(organization),
-        blocked: this.network.isOrganizationBlocked(organization),
-        subQuorum24HAvailability:
-          organization.subQuorum24HoursAvailability + "%",
-        subQuorum30DAvailability:
-          organization.subQuorum30DaysAvailability + "%",
-        isTierOneOrganization: organization.isTierOneOrganization,
-      };
-    });
-  }
-
-  getValidators(organization: Organization) {
-    return organization.validators
-      .map((publicKey) => {
-        return this.network.getNodeByPublicKey(publicKey);
-      })
-      .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
-  }
-}
+};
 </script>
 <style scoped>
 .header-row {
