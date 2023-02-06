@@ -16,7 +16,7 @@
       <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px">
         <b-alert :show="showError" variant="danger">{{ errorMessage }}</b-alert>
         <b-alert
-          :show="['fbas', 'fbas2'].includes(store.networkContext.slug)"
+          :show="['fbas', 'fbas2'].includes(store.networkContext.networkId)"
           variant="info"
           >Learn more about the demo networks
           <a

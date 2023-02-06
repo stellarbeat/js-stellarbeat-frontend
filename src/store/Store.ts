@@ -31,10 +31,8 @@ import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
-import Config, { NetworkContext, NetworkSlug } from "@/config/Config";
+import Config, { NetworkContext, NetworkId } from "@/config/Config";
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
-
-type NetworkId = string;
 
 export default class Store {
   protected _network?: Network;
@@ -73,7 +71,7 @@ export default class Store {
 
   public historyArchiveScanRepository: HistoryArchiveScanRepository;
 
-  public networkContexts: Map<NetworkSlug, NetworkContext> = new Map();
+  public networkContexts: Map<NetworkId, NetworkContext> = new Map();
 
   //todo: move higher up
   public appConfig: Config;
@@ -106,7 +104,7 @@ export default class Store {
 
   //@deprecated
   get networkId(): string {
-    return this.networkContext.slug;
+    return this.networkContext.networkId;
   }
 
   getNetworkContextFromNetworkId(
@@ -124,7 +122,8 @@ export default class Store {
     const targetNetworkContext = this.getNetworkContextFromNetworkId(networkId);
     if (targetNetworkContext === null) return false; //unknown network
 
-    if (targetNetworkContext.slug !== this.networkContext.slug) return true; //new network context
+    if (targetNetworkContext.networkId !== this.networkContext.networkId)
+      return true; //new network context
 
     return this.timeTravelDate?.getTime() !== at?.getTime(); //new time travel date
   }
@@ -170,9 +169,9 @@ export default class Store {
     return this._networkAnalyzer;
   }
 
-  public getNetworkContextName(networkSlug?: NetworkSlug): string | undefined {
-    if (!networkSlug) return this.networkContext.name;
-    const context = this.networkContexts.get(networkSlug);
+  public getNetworkContextName(networkId?: NetworkId): string | undefined {
+    if (!networkId) return this.networkContext.name;
+    const context = this.networkContexts.get(networkId);
     return context?.name;
   }
 

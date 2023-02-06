@@ -95,8 +95,8 @@
               v-for="networkContext in Array.from(
                 store.networkContexts.values()
               )"
-              :key="networkContext.slug"
-              @click="navigateToNetwork(networkContext.slug)"
+              :key="networkContext.networkId"
+              @click="navigateToNetwork(networkContext.networkId)"
             >
               {{ networkContext.name }}
             </b-dropdown-item>
@@ -338,12 +338,12 @@ export default defineComponent({
     const brandImageSource = ref(
       props.brandImage?.src ? require(`@/assets/logo.svg`) : ""
     ); //require needs to happen before mount
-    const navigateToNetwork = (networkContextSlug: string) => {
-      if (networkContextSlug === store.networkContext.slug) return;
+    const navigateToNetwork = (networkId: string) => {
+      if (networkId === store.networkContext.networkId) return;
       router
         .push({
           name: "network-dashboard",
-          query: { network: networkContextSlug },
+          query: { network: networkId },
         })
         .catch(() => {
           //this triggers a navigation guard error that we can safely ignore. See router beforeEach

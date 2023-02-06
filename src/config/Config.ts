@@ -5,7 +5,7 @@ import { FBASRepository } from "@/repositories/implementation/FBASRepository";
 import { FBASQIRepository } from "@/repositories/implementation/FBASQIRepository";
 
 export interface NetworkContext {
-  slug: NetworkSlug; //todo: id
+  networkId: NetworkId; //todo: id
   name: string;
   repository: NetworkRepository;
   enableNotify: boolean;
@@ -19,10 +19,10 @@ export interface NetworkContext {
   enableConfigExport: boolean;
 }
 
-export type NetworkSlug = string;
+export type NetworkId = string;
 
 export default class Config {
-  networkContexts: Map<NetworkSlug, NetworkContext> = new Map();
+  networkContexts: Map<NetworkId, NetworkContext> = new Map();
   apiDocUrl?: string;
   blogUrl?: string;
   brandName = "Stellarbeat.io";
@@ -49,7 +49,7 @@ export default class Config {
 
     //todo: can be made more generic by defining available networks in config. This will do for now.
     this.networkContexts.set("public", {
-      slug: "public",
+      networkId: "public",
       name: "Public network",
       repository: new StellarBeatNetworkV1Repository(
         process.env["VUE_APP_PUBLIC_API_URL"]
@@ -74,7 +74,7 @@ export default class Config {
 
     if (isString(process.env["VUE_APP_TEST_API_URL"]))
       this.networkContexts.set("test", {
-        slug: "test",
+        networkId: "test",
         name: "Testnet",
         repository: new StellarBeatNetworkV1Repository(
           process.env["VUE_APP_TEST_API_URL"]
@@ -99,7 +99,7 @@ export default class Config {
 
     if (process.env["VUE_APP_ENABLE_DEMO_NETWORKS"] === "1") {
       this.networkContexts.set("fbas", {
-        slug: "fbas",
+        networkId: "fbas",
         name: "FBAS demo",
         repository: new FBASRepository(),
         enableNotify: false,
@@ -112,7 +112,7 @@ export default class Config {
       });
 
       this.networkContexts.set("fbas2", {
-        slug: "fbas2",
+        networkId: "fbas2",
         name: "FBAS QI demo",
         repository: new FBASQIRepository(),
         enableNotify: false,
