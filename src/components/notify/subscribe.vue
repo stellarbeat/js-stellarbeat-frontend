@@ -137,21 +137,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { Multiselect } from "vue-multiselect";
-import { StoreMixin } from "@/mixins/StoreMixin";
 import axios from "axios";
 import {
   BButton,
   BFormInput,
   BFormCheckbox,
-  BFormInvalidFeedback,
-  BFormText,
   BForm,
   BFormGroup,
   BAlert,
 } from "bootstrap-vue";
+import { computed, ComputedRef, onMounted, Ref, ref } from "vue";
+import useStore from "@/store/useStore";
 
 type EventSourceId = {
   type: string;
@@ -168,132 +166,118 @@ type SelectedOrganization = {
   id: string;
 };
 
-@Component({
-  components: {
-    BFormCheckbox,
-    BAlert,
-    BFormGroup,
-    BForm,
-    BButton,
-    BFormInput,
-    BFormInvalidFeedback,
-    BFormText,
-    Multiselect,
-  },
-})
-export default class NotifySubscribe extends Mixins(StoreMixin) {
-  protected emailAddress = "";
-  protected requested = false;
-  protected requesting = false;
-  protected subscribeError = false;
-  protected networkSubscription = false;
-  protected selectedNodes: SelectNode[] | null = null;
-  protected nodes: SelectNode[] = [];
-  protected selectedOrganizations: SelectedOrganization[] | null = null;
+const store = useStore();
+const network = store.network;
 
-  get organizations(): SelectedOrganization[] {
-    return this.network.organizations.map((org) => {
-      return {
-        name: org.name,
-        id: org.id,
-      };
+const emailAddress = ref("");
+const requested = ref(false);
+const requesting = ref(false);
+const subscribeError = ref(false);
+const networkSubscription = ref(false);
+const selectedNodes: Ref<SelectNode[] | null> = ref(null);
+const nodes: Ref<SelectNode[]> = ref([]);
+const selectedOrganizations: Ref<SelectedOrganization[] | null> = ref(null);
+
+const organizations: ComputedRef<SelectedOrganization[]> = computed(() => {
+  return network.organizations.map((org) => {
+    return {
+      name: org.name,
+      id: org.id,
+    };
+  });
+});
+
+function searchNodes(query: string) {
+  nodes.value = network.nodes
+    .filter(
+      (node) =>
+        node.publicKey.toLowerCase().search(query.toLowerCase()) !== -1 ||
+        node.displayName.toLowerCase().search(query.toLowerCase()) !== -1
+    )
+    .map((node) => {
+      return { name: node.displayName, publicKey: node.publicKey };
+    });
+}
+
+const emailAddressState = computed(() => {
+  if (emailAddress.value === "") return null;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(emailAddress.value.toLowerCase());
+});
+
+function onReset(event: Event) {
+  event.preventDefault();
+  resetForm();
+}
+
+function resetForm() {
+  emailAddress.value = "";
+  selectedOrganizations.value = null;
+  selectedNodes.value = null;
+  networkSubscription.value = false;
+}
+
+function getSelectedEventSourceIds(): EventSourceId[] {
+  const eventSourceIds: EventSourceId[] = [];
+  if (networkSubscription.value) {
+    eventSourceIds.push({
+      type: "network",
+      id: store.network.id
+        ? store.network.id
+        : "Public Global Stellar Network ; September 2015",
     });
   }
-  searchNodes(query: string) {
-    this.nodes = this.network.nodes
-      .filter(
-        (node) =>
-          node.publicKey.toLowerCase().search(query.toLowerCase()) !== -1 ||
-          node.displayName.toLowerCase().search(query.toLowerCase()) !== -1
-      )
-      .map((node) => {
-        return { name: node.displayName, publicKey: node.publicKey };
-      });
-  }
 
-  get emailAddressState() {
-    if (this.emailAddress === "") return null;
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(this.emailAddress.toLowerCase());
-  }
-
-  onReset(event: Event) {
-    event.preventDefault();
-    this.resetForm();
-  }
-
-  resetForm() {
-    this.emailAddress = "";
-    this.selectedOrganizations = null;
-    this.selectedNodes = null;
-    this.networkSubscription = false;
-  }
-
-  getSelectedEventSourceIds(): EventSourceId[] {
-    const eventSourceIds: EventSourceId[] = [];
-    if (this.networkSubscription) {
+  if (selectedNodes.value !== null) {
+    selectedNodes.value.forEach((node: SelectNode) => {
       eventSourceIds.push({
-        type: "network",
-        id: this.store.network.id
-          ? this.store.network.id
-          : "Public Global Stellar Network ; September 2015",
+        type: "node",
+        id: node.publicKey,
       });
-    }
-
-    if (this.selectedNodes !== null) {
-      this.selectedNodes.forEach((node: SelectNode) => {
-        eventSourceIds.push({
-          type: "node",
-          id: node.publicKey,
-        });
-      });
-    }
-
-    if (this.selectedOrganizations !== null) {
-      this.selectedOrganizations.forEach((org: SelectedOrganization) => {
-        eventSourceIds.push({
-          type: "organization",
-          id: org.id,
-        });
-      });
-    }
-
-    return eventSourceIds;
-  }
-
-  async onSubmit(event: Event) {
-    event.preventDefault();
-    this.subscribeError = false;
-    this.requested = false;
-    if (this.emailAddressState !== true) return;
-    try {
-      this.requesting = true;
-      await axios.post(
-        process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription",
-        {
-          emailAddress: this.emailAddress,
-          eventSourceIds: this.getSelectedEventSourceIds(),
-        }
-      );
-      this.requested = true;
-      this.requesting = false;
-      this.resetForm();
-    } catch (e) {
-      this.requesting = false;
-      this.subscribeError = true;
-    }
-  }
-
-  mounted() {
-    this.nodes = this.network.nodes.map((node) => {
-      return {
-        name: node.displayName,
-        publicKey: node.publicKey,
-      };
     });
+  }
+
+  if (selectedOrganizations.value !== null) {
+    selectedOrganizations.value.forEach((org: SelectedOrganization) => {
+      eventSourceIds.push({
+        type: "organization",
+        id: org.id,
+      });
+    });
+  }
+
+  return eventSourceIds;
+}
+
+async function onSubmit(event: Event) {
+  event.preventDefault();
+  subscribeError.value = false;
+  requested.value = false;
+  if (emailAddressState.value !== true) return;
+  try {
+    requesting.value = true;
+    await axios.post(process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription", {
+      emailAddress: emailAddress.value,
+      eventSourceIds: getSelectedEventSourceIds(),
+    });
+    requested.value = true;
+    requesting.value = false;
+    resetForm();
+  } catch (e) {
+    requesting.value = false;
+    subscribeError.value = true;
   }
 }
+
+onMounted(() => {
+  nodes.value = network.nodes.map((node) => {
+    return {
+      name: node.displayName,
+      publicKey: node.publicKey,
+    };
+  });
+});
 </script>
 
 <style scoped></style>

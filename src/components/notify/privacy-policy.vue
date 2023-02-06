@@ -30,13 +30,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component } from "vue-property-decorator";
-import { BAlert, BButton } from "bootstrap-vue";
-import Vue from "vue";
-
-@Component({ components: { BAlert, BButton } })
-export default class PrivacyPolicy extends Vue {}
-</script>
+<script setup lang="ts"></script>
 
 <style scoped></style>

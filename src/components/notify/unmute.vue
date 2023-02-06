@@ -18,63 +18,61 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
+<script setup lang="ts">
 import axios from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router/composables";
 
-@Component({ components: { BAlert, BButton } })
-export default class Unmute extends Mixins(StoreMixin) {
-  private unmuting = true;
-  private error = true;
-  private errorMessage = "Something went wrong";
+const route = useRoute();
+const unmuting = ref(true);
+const error = ref(true);
+const errorMessage = ref("Something went wrong");
 
-  async unmute() {
-    this.error = false;
-    this.unmuting = true;
-    const subscriberRef = this.$route.params.subscriberRef;
-    const eventSourceId = this.$route.query["event-source-id"];
-    if (!eventSourceId) {
-      this.error = true;
-      this.errorMessage = "event-source-id query param missing";
-      return;
-    }
-    const eventType = this.$route.query["event-type"];
-    if (!eventType) {
-      this.error = true;
-      this.errorMessage = "event-type query param missing";
-      return;
-    }
-    const eventSourceType = this.$route.query["event-source-type"];
-    if (!eventSourceType) {
-      this.error = true;
-      this.errorMessage = "event-source-type query param missing";
-      return;
-    }
-    try {
-      await axios.post(
-        process.env.VUE_APP_PUBLIC_API_URL +
-          "/v1/subscription/" +
-          subscriberRef +
-          "/unmute",
-        {
-          eventSourceId: eventSourceId,
-          eventType: eventType,
-          eventSourceType: eventSourceType,
-        }
-      );
-    } catch (e) {
-      this.error = true;
-      this.errorMessage = "Something went wrong";
-    }
-
-    this.unmuting = false;
+async function unmute() {
+  error.value = false;
+  unmuting.value = true;
+  const subscriberRef = route.params.subscriberRef;
+  const eventSourceId = route.query["event-source-id"];
+  if (!eventSourceId) {
+    error.value = true;
+    errorMessage.value = "event-source-id query param missing";
+    return;
   }
-  mounted() {
-    this.unmute();
+  const eventType = route.query["event-type"];
+  if (!eventType) {
+    error.value = true;
+    errorMessage.value = "event-type query param missing";
+    return;
   }
+  const eventSourceType = route.query["event-source-type"];
+  if (!eventSourceType) {
+    error.value = true;
+    errorMessage.value = "event-source-type query param missing";
+    return;
+  }
+  try {
+    await axios.post(
+      process.env.VUE_APP_PUBLIC_API_URL +
+        "/v1/subscription/" +
+        subscriberRef +
+        "/unmute",
+      {
+        eventSourceId: eventSourceId,
+        eventType: eventType,
+        eventSourceType: eventSourceType,
+      }
+    );
+  } catch (e) {
+    error.value = true;
+    errorMessage.value = "Something went wrong";
+  }
+
+  unmuting.value = false;
 }
+onMounted(() => {
+  unmute();
+});
 </script>
 
 <style scoped></style>

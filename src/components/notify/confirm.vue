@@ -19,42 +19,38 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
+<script setup lang="ts">
 import axios, { AxiosError } from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router/composables";
 
-@Component({ components: { BAlert, BButton } })
-export default class Confirm extends Mixins(StoreMixin) {
-  private confirming = true;
-  private alreadyConfirmed = false;
-  private error = true;
+const route = useRoute();
+const confirming = ref(true);
+const alreadyConfirmed = ref(false);
+const error = ref(true);
 
-  async confirm() {
-    this.error = false;
-    this.alreadyConfirmed = false;
-    this.confirming = true;
-    const pendingSubscriptionId = this.$route.params.pendingSubscriptionId;
-    try {
-      await axios.post(
-        process.env.VUE_APP_PUBLIC_API_URL +
-          "/v1/subscription/" +
-          pendingSubscriptionId +
-          "/confirm"
-      );
-    } catch (e) {
-      if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)
-        this.alreadyConfirmed = true;
-      else this.error = true;
-    }
-
-    this.confirming = false;
+async function confirm() {
+  error.value = false;
+  alreadyConfirmed.value = false;
+  confirming.value = true;
+  const pendingSubscriptionId = route.params.pendingSubscriptionId;
+  try {
+    await axios.post(
+      process.env.VUE_APP_PUBLIC_API_URL +
+        "/v1/subscription/" +
+        pendingSubscriptionId +
+        "/confirm"
+    );
+  } catch (e) {
+    if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)
+      alreadyConfirmed.value = true;
+    else error.value = true;
   }
-  mounted() {
-    this.confirm();
-  }
+
+  confirming.value = false;
 }
+onMounted(() => {
+  confirm();
+});
 </script>
-
-<style scoped></style>

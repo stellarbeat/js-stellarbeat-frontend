@@ -16,39 +16,37 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
+<script setup lang="ts">
 import axios, { AxiosError } from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router/composables";
 
-@Component({ components: { BAlert, BButton } })
-export default class Unsubscribe extends Mixins(StoreMixin) {
-  private unsubscribing = true;
-  private error = true;
-  private errorMessage = "Something went wrong";
+const route = useRoute();
+const unsubscribing = ref(true);
+const error = ref(true);
+const errorMessage = ref("Something went wrong");
 
-  async confirm() {
-    this.error = false;
-    this.unsubscribing = true;
-    const subscriberRef = this.$route.params.subscriberRef;
-    try {
-      await axios.delete(
-        process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription/" + subscriberRef
-      );
-    } catch (e) {
-      this.error = true;
-      if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)
-        this.errorMessage = "No subscription found";
-      else this.errorMessage = "Something went wrong";
-    }
-
-    this.unsubscribing = false;
+async function confirm() {
+  error.value = false;
+  unsubscribing.value = true;
+  const subscriberRef = route.params.subscriberRef;
+  try {
+    await axios.delete(
+      process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription/" + subscriberRef
+    );
+  } catch (e) {
+    error.value = true;
+    if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)
+      errorMessage.value = "No subscription found";
+    else errorMessage.value = "Something went wrong";
   }
-  mounted() {
-    this.confirm();
-  }
+
+  unsubscribing.value = false;
 }
+onMounted(() => {
+  confirm();
+});
 </script>
 
 <style scoped></style>
