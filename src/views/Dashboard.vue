@@ -73,153 +73,95 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import Search from "../components/search.vue";
-import NetworkStatistics from "../components/network/cards/network-statistics/network-statistics.vue";
+<script setup lang="ts">
+import {
+  computed,
+  defineAsyncComponent,
+  defineProps,
+  nextTick,
+  watch,
+} from "vue";
 import HaltingAnalysis from "@/components/node/tools/halting-analysis/halting-analysis.vue";
-import { Network } from "@stellarbeat/js-stellar-domain";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Store from "@/store/Store";
 import NetworkVisualNavigator from "@/components/visual-navigator/network-visual-navigator.vue";
-import NetworkSideBar from "@/components/network/sidebar/network-side-bar.vue";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
-import { BBreadcrumb, BAlert } from "bootstrap-vue";
+import { BAlert } from "bootstrap-vue";
 import LazyHydrate from "vue-lazy-hydration";
-import { Route } from "vue-router";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
+import VueScrollTo from "vue-scrollto";
 
-@Component({
-  name: "dashboard",
-  components: {
-    BAlert,
-    LazyHydrate,
-    "network-analysis": () =>
-      import(
-        "@/components/network/tools/network-analysis/network-analysis.vue"
-      ),
-    TimeTravelBadge,
-    SimulationBadge,
-    CrawlTime,
-    NetworkSideBar,
-    NetworkVisualNavigator,
-    Search,
-    Statistics: NetworkStatistics,
-    HaltingAnalysis,
-    BBreadcrumb: BBreadcrumb,
+const NetworkAnalysis = defineAsyncComponent(
+  () =>
+    import("@/components/network/tools/network-analysis/network-analysis.vue")
+);
+
+defineProps({
+  view: {
+    type: String,
+    required: true,
+    default: "graph",
   },
-})
-export default class Dashboard extends Vue {
-  @Prop({ default: "graph" })
-  public view!: string;
+});
 
-  @Watch("$route", { immediate: true })
-  public onRouteChanged(to: Route) {
+const store = useStore();
+const network = store.network;
+const selectedNode = store.selectedNode;
+const selectedOrganization = store.selectedOrganization;
+const route = useRoute();
+const router = useRouter();
+
+watch(
+  route,
+  (to) => {
     if (to.params.publicKey) {
-      this.store.selectedNode = this.network.getNodeByPublicKey(
-        to.params.publicKey
-      );
-      if (!this.store.selectedNode) {
-        this.$router.push({
+      store.selectedNode = network.getNodeByPublicKey(to.params.publicKey);
+      if (!store.selectedNode) {
+        router.push({
           name: "network-dashboard",
           query: {
-            view: this.$route.query.view,
-            network: this.$route.query.network,
-            at: this.$route.query.at,
+            view: route.query.view,
+            network: route.query.network,
+            at: route.query.at,
           },
         });
       }
-    } else this.store.selectedNode = undefined;
+    } else store.selectedNode = undefined;
     if (to.params.organizationId) {
-      this.store.selectedOrganization = this.network.getOrganizationById(
+      store.selectedOrganization = network.getOrganizationById(
         to.params.organizationId
       );
-      if (!this.store.selectedOrganization) {
-        this.$router.push({
+      if (!store.selectedOrganization) {
+        router.push({
           name: "network-dashboard",
           query: {
-            view: this.$route.query.view,
-            network: this.$route.query.network,
-            at: this.$route.query.at,
+            view: route.query.view,
+            network: route.query.network,
+            at: route.query.at,
           },
         });
       }
-    } else this.store.selectedOrganization = undefined;
+    } else store.selectedOrganization = undefined;
 
     if (to.query.center === "1" || !to.query.center) {
-      this.store.centerNode = this.store.selectedNode;
+      store.centerNode = store.selectedNode;
     }
-  }
+  },
+  { immediate: true }
+);
 
-  @Watch("store.haltingAnalysisPublicKey")
-  public onHaltingAnalysisPublicKeyChanged(publicKey?: string) {
-    if (publicKey)
-      this.$nextTick(() => {
-        this.$scrollTo("#halting-analysis-card");
-      });
-  }
+const haltingAnalysisPublicKey = computed(() => {
+  return store.haltingAnalysisPublicKey;
+});
 
-  get breadCrumbs() {
-    let crumbs = [];
-    crumbs.push({
-      text: this.store.getNetworkContextName(),
-      to: {
-        name: "network-dashboard",
-        query: {
-          view: this.$route.query.view,
-          network: this.$route.query.network,
-        },
-      },
+watch(haltingAnalysisPublicKey, (publicKey) => {
+  console.log("MIEP");
+  if (publicKey)
+    nextTick(() => {
+      VueScrollTo.scrollTo("#halting-analysis-card");
     });
-
-    if (this.selectedNode) {
-      if (this.selectedNode.organizationId)
-        crumbs.push({
-          text: this.network.getOrganizationById(
-            this.selectedNode.organizationId
-          ).name,
-          to: {
-            name: "organization-dashboard",
-            params: {
-              organizationId: this.selectedNode.organizationId,
-            },
-          },
-          active: false,
-        });
-      crumbs.push({
-        text: this.selectedNode.displayName,
-        active: true,
-      });
-    } else if (this.selectedOrganization)
-      crumbs.push({
-        text: this.selectedOrganization.name,
-        active: true,
-      });
-    return crumbs;
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get selectedNode() {
-    return this.store.selectedNode;
-  }
-
-  get selectedOrganization() {
-    return this.store.selectedOrganization;
-  }
-
-  get network(): Network {
-    return useStore().network;
-  }
-
-  get isSimulation(): boolean {
-    return this.store.isSimulation;
-  }
-}
+});
 </script>
 
 <style scoped>

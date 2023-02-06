@@ -90,7 +90,7 @@ import { BAlert, BIconEnvelope } from "bootstrap-vue";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import { useRoute } from "vue2-helpers/vue-router";
 import useStore from "@/store/useStore";
-import { computed, nextTick, onBeforeMount, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
 
 const errorMessage = ref(
   "Could not connect to stellarbeat.io api, please refresh the page"
