@@ -6,30 +6,23 @@
     </a>
   </span>
 </template>
-<script lang="ts">
-import Store from "@/store/Store";
-import Vue from "vue";
+<script setup lang="ts">
 import { BIconX } from "bootstrap-vue";
-import { Component } from "vue-property-decorator";
 import { Dictionary } from "vue-router/types/router";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  components: { BIconX: BIconX },
-})
-export default class TimeTravelBadge extends Vue {
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-  resetTimeTravel() {
-    let query = this.store.copyAndModifyObject(this.$route.query, [], ["at"]);
-    this.$router.push({
-      name: this.$route.name ? this.$route.name : undefined,
-      params: this.$route.params,
-      query: query as Dictionary<string>,
-    });
-  }
+function resetTimeTravel() {
+  let query = store.copyAndModifyObject(route.query, [], ["at"]);
+  router.push({
+    name: route.name ? route.name : undefined,
+    params: route.params,
+    query: query as Dictionary<string>,
+  });
 }
 </script>
 <style scoped></style>

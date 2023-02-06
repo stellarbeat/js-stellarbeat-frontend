@@ -43,117 +43,105 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-
-import { Network } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { computed, ComputedRef, ref } from "vue";
 import { RawLocation } from "vue-router";
 import { BIconSearch, BFormInput } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
 type Match = { name: string; type: string; route: RawLocation };
-@Component({
-  name: "search",
-  components: { BIconSearch, BFormInput },
-})
-export default class Search extends Vue {
-  protected searchString = "";
-  protected arrowCounter = -1;
+const searchString = ref("");
+const arrowCounter = ref(-1);
 
-  get store(): Store {
-    return useStore();
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const network = store.network;
+
+const showSuggestions = computed(() => {
+  if (searchString.value === "") {
+    return false;
   }
 
-  get network(): Network {
-    return this.store.network;
+  return filteredList.value.length !== 0;
+});
+
+const filteredList: ComputedRef<Match[]> = computed(() => {
+  let match = (text: string) =>
+    text.toLowerCase().includes(searchString.value.toLowerCase().trim());
+
+  let matchedOrganizations = network.organizations
+    .filter((organization) => {
+      return match(organization.name);
+    })
+    .map((organization) => {
+      return {
+        name: organization.name,
+        type: "organization",
+        route: {
+          name: "organization-dashboard",
+          params: { organizationId: organization.id },
+          query: {
+            center: "1",
+            "no-scroll": "1",
+            view: route.query.view,
+            network: route.query.network,
+          },
+        } as RawLocation,
+      };
+    });
+
+  let matchedNodes = network.nodes
+    .filter((node) => {
+      return (
+        match(node.displayName) || match(node.publicKey) || match(node.key)
+      );
+    })
+    .map((node) => {
+      return {
+        name: node.displayName,
+        type: node.isValidator ? "validator node" : "watcher node",
+        route: {
+          name: "node-dashboard",
+          params: { publicKey: node.publicKey },
+          query: {
+            center: "1",
+            "no-scroll": "1",
+            view: route.query.view,
+            network: route.query.network,
+          },
+        } as RawLocation,
+      };
+    });
+
+  return matchedOrganizations.concat(matchedNodes).slice(0, 10);
+});
+
+function navigate(match: Match) {
+  searchString.value = "";
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  router.push(match.route).catch(() => {});
+}
+
+function onArrowDown() {
+  if (arrowCounter.value < filteredList.value.length - 1) {
+    arrowCounter.value = arrowCounter.value + 1;
+  } else arrowCounter.value = 0;
+}
+
+function onArrowUp() {
+  if (arrowCounter.value > 0) {
+    arrowCounter.value = arrowCounter.value - 1;
+  } else arrowCounter.value = filteredList.value.length - 1;
+}
+
+function onEnter() {
+  if (arrowCounter.value !== -1) {
+    navigate(filteredList.value[arrowCounter.value]);
   }
 
-  get showSuggestions() {
-    if (this.searchString === "") {
-      return false;
-    }
-
-    return this.filteredList.length !== 0;
-  }
-
-  get filteredList(): Match[] {
-    let match = (text: string) =>
-      text.toLowerCase().includes(this.searchString.toLowerCase().trim());
-
-    let matchedOrganizations = this.network.organizations
-      .filter((organization) => {
-        return match(organization.name);
-      })
-      .map((organization) => {
-        return {
-          name: organization.name,
-          type: "organization",
-          route: {
-            name: "organization-dashboard",
-            params: { organizationId: organization.id },
-            query: {
-              center: "1",
-              "no-scroll": "1",
-              view: this.$route.query.view,
-              network: this.$route.query.network,
-            },
-          } as RawLocation,
-        };
-      });
-
-    let matchedNodes = this.network.nodes
-      .filter((node) => {
-        return (
-          match(node.displayName) || match(node.publicKey) || match(node.key)
-        );
-      })
-      .map((node) => {
-        return {
-          name: node.displayName,
-          type: node.isValidator ? "validator node" : "watcher node",
-          route: {
-            name: "node-dashboard",
-            params: { publicKey: node.publicKey },
-            query: {
-              center: "1",
-              "no-scroll": "1",
-              view: this.$route.query.view,
-              network: this.$route.query.network,
-            },
-          } as RawLocation,
-        };
-      });
-
-    return matchedOrganizations.concat(matchedNodes).slice(0, 10);
-  }
-
-  protected navigate(match: Match) {
-    this.searchString = "";
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    this.$router.push(match.route).catch(() => {});
-  }
-
-  protected onArrowDown() {
-    if (this.arrowCounter < this.filteredList.length - 1) {
-      this.arrowCounter = this.arrowCounter + 1;
-    } else this.arrowCounter = 0;
-  }
-
-  protected onArrowUp() {
-    if (this.arrowCounter > 0) {
-      this.arrowCounter = this.arrowCounter - 1;
-    } else this.arrowCounter = this.filteredList.length - 1;
-  }
-
-  protected onEnter() {
-    if (this.arrowCounter !== -1) {
-      this.navigate(this.filteredList[this.arrowCounter]);
-    }
-
-    this.arrowCounter = -1;
-  }
+  arrowCounter.value = -1;
 }
 </script>
 

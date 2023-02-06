@@ -38,10 +38,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import Vue, { ref, Ref } from "vue";
 import moment from "moment";
 import ClientOnly from "vue-client-only";
 import {
@@ -52,42 +50,32 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  name: "crawl-time",
-  components: {
-    BIconClock,
-    BIconCalendar,
-    BFormTimepicker,
-    BFormDatepicker,
-    ClientOnly,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class CrawlTime extends Vue {
-  protected time: Date = new Date(this.store.network.time.getTime());
-  protected crawlTime: string = moment(this.time).format("HH:mm:ss");
-  protected minSelectedDate: Date = this.store.measurementsStartDate;
+Vue.directive("b-tooltip", VBTooltip);
 
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
-  public timeTravel() {
-    this.$router.push({
-      name: this.$route.name ? this.$route.name : undefined,
-      params: this.$route.params,
-      query: {
-        view: this.$route.query.view,
-        "no-scroll": "1",
-        network: this.$route.query.network,
-        at: moment(this.time)
-          .hours(Number(this.crawlTime.substr(0, 2)))
-          .minutes(Number(this.crawlTime.substr(3, 2)))
-          .toISOString(),
-      },
-    });
-  }
+const time: Ref<Date> = ref(new Date(store.network.time.getTime()));
+const crawlTime: Ref<string> = ref(moment(time.value).format("HH:mm:ss"));
+const minSelectedDate: Date = store.measurementsStartDate;
+
+function timeTravel() {
+  router.push({
+    name: route.name ? route.name : undefined,
+    params: route.params,
+    query: {
+      view: route.query.view,
+      "no-scroll": "1",
+      network: route.query.network,
+      at: moment(time.value)
+        .hours(Number(crawlTime.value.substr(0, 2)))
+        .minutes(Number(crawlTime.value.substr(3, 2)))
+        .toISOString(),
+    },
+  });
 }
 </script>
 
