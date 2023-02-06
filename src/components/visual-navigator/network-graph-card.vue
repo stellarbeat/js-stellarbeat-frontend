@@ -16,255 +16,263 @@
   />
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
+<script setup lang="ts">
 import Graph from "@/components/visual-navigator/graph/graph.vue";
-import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 import { TrustGraphBuilder } from "@stellarbeat/js-stellar-domain";
+import {
+  computed,
+  defineProps,
+  onBeforeUnmount,
+  onMounted,
+  Ref,
+  ref,
+  watch,
+} from "vue";
+import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  name: "network-graph-card",
-  components: { GraphLegend, Graph },
-})
-export default class NetworkGraphCard extends Mixins(StoreMixin) {
-  public viewGraph: ViewGraph = new ViewGraph();
-  public networkId!: string;
-  public computeGraphWorker!: Worker;
-  public isLoading = true;
+const router = useRouter();
+const route = useRoute();
+const viewGraph: Ref<ViewGraph> = ref(new ViewGraph());
+let networkId: string;
+let computeGraphWorker: Worker;
+const isLoading = ref(true);
 
-  @Prop({ default: "node" })
-  public type!: string;
+const props = defineProps({
+  type: {
+    type: String,
+    default: "node",
+  },
+  optionShowFailingEdges: {
+    type: Boolean,
+    default: false,
+  },
+  optionHighlightTrustingNodes: {
+    type: Boolean,
+    default: true,
+  },
+  optionHighlightTrustedNodes: {
+    type: Boolean,
+    default: true,
+  },
+  optionShowRegularEdges: {
+    type: Boolean,
+    default: true,
+  },
+  optionTransitiveQuorumSetOnly: {
+    type: Boolean,
+    default: true,
+  },
+  fullScreen: {
+    type: Boolean,
+    required: true,
+  },
+});
 
-  @Prop({ default: false })
-  public optionShowFailingEdges!: boolean;
+const type = computed(() => props.type);
+const store = useStore();
+const network = computed(() => store.network);
+const selectedNode = computed(() => store.selectedNode);
+const selectedOrganization = computed(() => store.selectedOrganization);
+const networkReCalculated = computed(() => store.networkReCalculated);
 
-  @Prop({ default: true })
-  public optionHighlightTrustingNodes!: boolean;
-
-  @Prop({ default: true })
-  public optionHighlightTrustedNodes!: boolean;
-
-  @Prop({ default: true })
-  public optionShowRegularEdges!: boolean;
-
-  @Prop({ default: true })
-  public optionTransitiveQuorumSetOnly!: boolean;
-
-  @Watch("store.networkReCalculated")
-  public onNetworkReCalculated() {
-    if (this.networkId !== this.store.networkId) {
-      this.viewGraph.reset();
-    }
-    this.updateGraph(true);
+watch(networkReCalculated, () => {
+  if (networkId !== store.networkId) {
+    viewGraph.value.reset();
   }
+  updateGraph(true);
+});
 
-  @Watch("store.selectedNode")
-  public onSelectedNodeChanged() {
-    this.reclassify();
-  }
+watch(selectedNode, () => {
+  reclassify();
+});
 
-  @Watch("store.selectedOrganization")
-  public onSelectedOrganizationIdChanged() {
-    this.reclassify();
-  }
+watch(selectedOrganization, () => {
+  reclassify();
+});
 
-  protected reclassify() {
-    let selectedKeys = this.selectedKeys;
-    this.viewGraph.reClassifyEdges(selectedKeys);
-    this.viewGraph.reClassifyVertices(selectedKeys);
-  }
+function reclassify() {
+  let mySelectedKeys = selectedKeys.value;
+  viewGraph.value.reClassifyEdges(mySelectedKeys);
+  viewGraph.value.reClassifyVertices(mySelectedKeys);
+}
 
-  @Watch("type")
-  public onTypeChanged() {
-    this.updateGraph();
-  }
+watch(type, () => {
+  updateGraph();
+});
 
-  @Prop()
-  fullScreen!: boolean;
+function vertexSelected(vertex: ViewVertex) {
+  if (type.value === "organization") {
+    if (
+      route.params.organizationId &&
+      route.params.organizationId === vertex.key
+    )
+      return;
 
-  vertexSelected(vertex: ViewVertex) {
-    if (this.type === "organization") {
-      if (
-        this.$route.params.organizationId &&
-        this.$route.params.organizationId === vertex.key
-      )
-        return;
-
-      this.$router.push({
-        name: "organization-dashboard",
-        params: { organizationId: vertex.key },
-        query: {
-          center: "0",
-          "no-scroll": "1",
-          view: this.$route.query.view,
-          network: this.$route.query.network,
-          at: this.$route.query.at,
-        },
-      });
-    } else {
-      if (
-        this.$route.params.publicKey &&
-        this.$route.params.publicKey === vertex.key
-      )
-        return;
-
-      this.$router.push({
-        name: "node-dashboard",
-        params: { publicKey: vertex.key },
-        query: {
-          center: "0",
-          "no-scroll": "1",
-          view: this.$route.query.view,
-          network: this.$route.query.network,
-          at: this.$route.query.at,
-        },
-      });
-    }
-  }
-
-  get selectedKeys() {
-    let selectedKeys: string[] = [];
-    if (this.type === "node") {
-      if (this.store.selectedNode)
-        selectedKeys.push(this.store.selectedNode.publicKey);
-      else if (this.store.selectedOrganization)
-        selectedKeys.push(...this.store.selectedOrganization.validators);
-    } else if (this.type === "organization") {
-      if (this.store.selectedOrganization)
-        selectedKeys.push(this.store.selectedOrganization.id);
-      else if (
-        this.store.selectedNode &&
-        this.store.selectedNode.organizationId
-      ) {
-        selectedKeys.push(this.store.selectedNode.organizationId);
-      }
-    }
-
-    return selectedKeys;
-  }
-
-  getOrganizationTrustGraph() {
-    let trustGraphBuilder = new TrustGraphBuilder(this.network);
-    return trustGraphBuilder.buildGraphFromOrganizations(
-      this.network.nodesTrustGraph
-    );
-  }
-
-  updateGraph(merge = false) {
-    this.isLoading = true;
-
-    if (this.type === "node")
-      this.viewGraph = ViewGraph.fromNodes(
-        this.network,
-        this.network.nodesTrustGraph,
-        merge ? this.viewGraph : undefined,
-        this.selectedKeys
-      );
-    else
-      this.viewGraph = ViewGraph.fromOrganizations(
-        this.network,
-        this.getOrganizationTrustGraph(),
-        merge ? this.viewGraph : undefined,
-        this.selectedKeys
-      );
-
-    this.computeGraphWorker.postMessage({
-      vertices: Array.from(this.viewGraph.viewVertices.values()),
-      edges: Array.from(this.viewGraph.viewEdges.values()),
+    router.push({
+      name: "organization-dashboard",
+      params: { organizationId: vertex.key },
+      query: {
+        center: "0",
+        "no-scroll": "1",
+        view: route.query.view,
+        network: route.query.network,
+        at: route.query.at,
+      },
     });
-  }
+  } else {
+    if (route.params.publicKey && route.params.publicKey === vertex.key) return;
 
-  get width(): number {
-    let graph = this.$refs["graph"] as Graph;
-    if (!graph) return 0;
-    //@ts-ignore
-    return graph.clientWidth;
-  }
-
-  get height(): number {
-    let graph = this.$refs["graph"] as Graph;
-    if (!graph) return 0;
-    //@ts-ignore
-    return graph.clientHeight;
-  }
-
-  get selectedVertices() {
-    if (this.selectedKeys.length > 0 && this.viewGraph)
-      return this.selectedKeys
-        .map((key) => this.viewGraph.viewVertices.get(key))
-        .filter((vertex) => vertex !== undefined);
-    return [];
-  }
-
-  get centerVertex() {
-    if (this.store.centerNode && this.viewGraph)
-      return this.viewGraph.viewVertices.get(this.store.centerNode.publicKey);
-    return undefined;
-  }
-
-  mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
-    vertices.forEach((updatedVertex: ViewVertex) => {
-      let vertex = this.viewGraph.viewVertices.get(updatedVertex.key);
-      if (!vertex) return;
-      vertex.x = updatedVertex.x;
-      vertex.y = updatedVertex.y;
+    router.push({
+      name: "node-dashboard",
+      params: { publicKey: vertex.key },
+      query: {
+        center: "0",
+        "no-scroll": "1",
+        view: route.query.view,
+        network: route.query.network,
+        at: route.query.at,
+      },
     });
-
-    edges.forEach((updatedEdge: ViewEdge) => {
-      let edge = this.viewGraph.viewEdges.get(updatedEdge.key);
-      if (!edge) return;
-      edge.source = updatedEdge.source;
-      edge.target = updatedEdge.target;
-    });
-  }
-
-  mounted() {
-    if (this.type === "node")
-      this.viewGraph = ViewGraph.fromNodes(
-        this.network,
-        this.network.nodesTrustGraph,
-        undefined,
-        this.selectedKeys
-      );
-    else
-      this.viewGraph = ViewGraph.fromOrganizations(
-        this.network,
-        this.getOrganizationTrustGraph(),
-        undefined,
-        this.selectedKeys
-      );
-    Object.freeze(this.viewGraph); //not reactive;
-    this.computeGraphWorker = new Worker(
-      new URL("./../../workers/compute-graphv9.worker", import.meta.url)
-    );
-    this.networkId = this.store.networkId;
-
-    this.computeGraphWorker.onmessage = (event: {
-      data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };
-    }) => {
-      switch (event.data.type) {
-        case "end":
-          {
-            this.mapViewGraph(event.data.vertices, event.data.edges);
-            this.isLoading = false;
-          }
-          break;
-      }
-    };
-
-    this.computeGraphWorker.postMessage({
-      vertices: Array.from(this.viewGraph.viewVertices.values()),
-      edges: Array.from(this.viewGraph.viewEdges.values()),
-    });
-  }
-
-  public beforeDestroy() {
-    this.computeGraphWorker.terminate();
   }
 }
+
+const selectedKeys = computed(() => {
+  let selectedKeys: string[] = [];
+  if (type.value === "node") {
+    if (store.selectedNode) selectedKeys.push(store.selectedNode.publicKey);
+    else if (store.selectedOrganization)
+      selectedKeys.push(...store.selectedOrganization.validators);
+  } else if (type.value === "organization") {
+    if (store.selectedOrganization)
+      selectedKeys.push(store.selectedOrganization.id);
+    else if (store.selectedNode && store.selectedNode.organizationId) {
+      selectedKeys.push(store.selectedNode.organizationId);
+    }
+  }
+
+  return selectedKeys;
+});
+
+function getOrganizationTrustGraph() {
+  let trustGraphBuilder = new TrustGraphBuilder(store.network);
+  return trustGraphBuilder.buildGraphFromOrganizations(
+    store.network.nodesTrustGraph
+  );
+}
+
+function updateGraph(merge = false) {
+  isLoading.value = true;
+
+  if (type.value === "node")
+    viewGraph.value = ViewGraph.fromNodes(
+      store.network,
+      store.network.nodesTrustGraph,
+      merge ? viewGraph.value : undefined,
+      selectedKeys.value
+    );
+  else
+    viewGraph.value = ViewGraph.fromOrganizations(
+      store.network,
+      getOrganizationTrustGraph(),
+      merge ? viewGraph.value : undefined,
+      selectedKeys.value
+    );
+
+  computeGraphWorker.postMessage({
+    vertices: Array.from(viewGraph.value.viewVertices.values()),
+    edges: Array.from(viewGraph.value.viewEdges.values()),
+  });
+}
+
+const graph = ref(null);
+const width = computed(() => {
+  if (!graph) return 0;
+  //@ts-ignore
+  return graph.clientWidth;
+});
+
+const height = computed(() => {
+  if (!graph) return 0;
+  //@ts-ignore
+  return graph.clientHeight;
+});
+
+const selectedVertices = computed(() => {
+  if (selectedKeys.value.length > 0 && viewGraph)
+    return selectedKeys.value
+      .map((key) => viewGraph.value.viewVertices.get(key))
+      .filter((vertex) => vertex !== undefined);
+  return [];
+});
+
+const centerVertex = computed(() => {
+  if (store.centerNode && viewGraph)
+    return viewGraph.value.viewVertices.get(store.centerNode.publicKey);
+  return undefined;
+});
+
+function mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
+  vertices.forEach((updatedVertex: ViewVertex) => {
+    let vertex = viewGraph.value.viewVertices.get(updatedVertex.key);
+    if (!vertex) return;
+    vertex.x = updatedVertex.x;
+    vertex.y = updatedVertex.y;
+  });
+
+  edges.forEach((updatedEdge: ViewEdge) => {
+    let edge = viewGraph.value.viewEdges.get(updatedEdge.key);
+    if (!edge) return;
+    edge.source = updatedEdge.source;
+    edge.target = updatedEdge.target;
+  });
+}
+
+onMounted(() => {
+  if (type.value === "node")
+    viewGraph.value = ViewGraph.fromNodes(
+      store.network,
+      store.network.nodesTrustGraph,
+      undefined,
+      selectedKeys.value
+    );
+  else
+    viewGraph.value = ViewGraph.fromOrganizations(
+      store.network,
+      getOrganizationTrustGraph(),
+      undefined,
+      selectedKeys.value
+    );
+  Object.freeze(viewGraph); //not reactive;
+  computeGraphWorker = new Worker(
+    new URL("./../../workers/compute-graphv9.worker", import.meta.url)
+  );
+  networkId = store.networkId;
+
+  computeGraphWorker.onmessage = (event: {
+    data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };
+  }) => {
+    switch (event.data.type) {
+      case "end":
+        {
+          mapViewGraph(event.data.vertices, event.data.edges);
+          isLoading.value = false;
+        }
+        break;
+    }
+  };
+
+  computeGraphWorker.postMessage({
+    vertices: Array.from(viewGraph.value.viewVertices.values()),
+    edges: Array.from(viewGraph.value.viewEdges.values()),
+  });
+});
+
+onBeforeUnmount(() => {
+  computeGraphWorker.terminate();
+});
 </script>
 <style scoped></style>

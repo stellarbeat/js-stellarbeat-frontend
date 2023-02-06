@@ -240,6 +240,14 @@ const network = store.network;
 const route = useRoute();
 const router = useRouter();
 
+const selectedNode = computed(() => {
+  return store.selectedNode;
+});
+
+const selectedOrganization = computed(() => {
+  return store.selectedOrganization;
+});
+
 const optionShowFailingEdges = ref(false);
 const optionHighlightTrustingNodes = ref(true);
 const optionHighlightTrustedNodes = ref(true);
@@ -282,22 +290,17 @@ const breadCrumbs = computed(() => {
             at: route.query.at,
           },
         },
+        active: false,
       });
     crumbs.push({
-      text: selectedNode.value.name,
-      to: {
-        name: "node-dashboard",
-        params: {
-          nodeId: selectedNode.value.publicKey,
-        },
-        query: {
-          view: route.query.view,
-          network: route.query.network,
-          at: route.query.at,
-        },
-      },
+      text: selectedNode.value.displayName,
+      active: true,
     });
-  }
+  } else if (selectedOrganization.value)
+    crumbs.push({
+      text: selectedOrganization.value.name,
+      active: true,
+    });
   return crumbs;
 });
 
@@ -314,14 +317,6 @@ function navigateToView() {
     },
   });
 }
-
-const selectedNode = computed(() => {
-  return store.selectedNode;
-});
-
-const selectedOrganization = computed(() => {
-  return store.selectedOrganization;
-});
 </script>
 <style scoped>
 .sb-bread-crumbs {
