@@ -202,153 +202,132 @@
           alt="map-preview"
           class="preview-image"
         />
-        <!--div class="preview-text">map</div!-->
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import Vue, { computed, defineAsyncComponent, defineProps, ref } from "vue";
 import NetworkGraphCard from "@/components/visual-navigator/network-graph-card.vue";
-import SimulationBadge from "@/components/simulation-badge.vue";
 import {
   BBreadcrumb,
   BIconList,
-  BButton,
   BIconChevronDoubleLeft,
   BFormCheckbox,
   BIconFullscreen,
   BIconFullscreenExit,
   VBTooltip,
 } from "bootstrap-vue";
-import Graph from "@/components/visual-navigator/graph/graph.vue";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
-import ClientOnly from "vue-client-only";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
+Vue.directive("b-tooltip", VBTooltip);
+const WorldMap = defineAsyncComponent(
+  () => import("@/components/visual-navigator/world-map.vue")
+);
 
-@Component({
-  name: "network-visual-navigator",
-  components: {
-    GraphLegend,
-    Graph,
-    SimulationBadge,
-    NetworkGraphCard,
-    "world-map": () => import("@/components/visual-navigator/world-map.vue"),
-    BBreadcrumb,
-    BIconList,
-    BButton,
-    BIconChevronDoubleLeft,
-    BFormCheckbox,
-    BIconFullscreen,
-    BIconFullscreenExit,
-    ClientOnly,
+const props = defineProps({
+  view: {
+    type: String,
+    default: "map",
   },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class NetworkVisualNavigator extends Vue {
-  @Prop({ default: "map" })
-  public view!: string;
+});
+const view = computed(() => props.view);
 
-  public optionShowFailingEdges = false;
-  public optionHighlightTrustingNodes = true;
-  public optionHighlightTrustedNodes = true;
-  public optionShowRegularEdges = true;
-  public optionTransitiveQuorumSetOnly = false;
+const store = useStore();
+const network = store.network;
+const route = useRoute();
+const router = useRouter();
 
-  protected menuVisible = false;
-  protected fullScreen = false;
+const optionShowFailingEdges = ref(false);
+const optionHighlightTrustingNodes = ref(true);
+const optionHighlightTrustedNodes = ref(true);
+const optionShowRegularEdges = ref(true);
+const optionTransitiveQuorumSetOnly = ref(false);
 
-  get breadCrumbs() {
-    let crumbs = [];
+const menuVisible = ref(false);
+const fullScreen = ref(false);
+
+const breadCrumbs = computed(() => {
+  let crumbs = [];
+  crumbs.push({
+    text: store.getNetworkContextName(),
+    to: {
+      name: "network-dashboard",
+      query: {
+        view: route.query.view,
+        network: route.query.network,
+        at: route.query.at,
+      },
+    },
+  });
+
+  if (selectedNode.value) {
+    if (
+      selectedNode.value.organizationId &&
+      network.getOrganizationById(selectedNode.value.organizationId)
+    )
+      crumbs.push({
+        text: network.getOrganizationById(selectedNode.value.organizationId)
+          .name,
+        to: {
+          name: "organization-dashboard",
+          params: {
+            organizationId: selectedNode.value.organizationId,
+          },
+          query: {
+            view: route.query.view,
+            network: route.query.network,
+            at: route.query.at,
+          },
+        },
+      });
     crumbs.push({
-      text: this.store.getNetworkContextName(),
+      text: selectedNode.value.name,
       to: {
-        name: "network-dashboard",
+        name: "node-dashboard",
+        params: {
+          nodeId: selectedNode.value.publicKey,
+        },
         query: {
-          view: this.$route.query.view,
-          network: this.$route.query.network,
-          at: this.$route.query.at,
+          view: route.query.view,
+          network: route.query.network,
+          at: route.query.at,
         },
       },
     });
-
-    if (this.selectedNode) {
-      if (
-        this.selectedNode.organizationId &&
-        this.network.getOrganizationById(this.selectedNode.organizationId)
-      )
-        crumbs.push({
-          text: this.network.getOrganizationById(
-            this.selectedNode.organizationId
-          ).name,
-          to: {
-            name: "organization-dashboard",
-            params: {
-              organizationId: this.selectedNode.organizationId,
-            },
-            query: {
-              view: this.$route.query.view,
-              network: this.$route.query.network,
-              at: this.$route.query.at,
-            },
-          },
-          active: false,
-        });
-      crumbs.push({
-        text: this.selectedNode.displayName,
-        active: true,
-      });
-    } else if (this.selectedOrganization)
-      crumbs.push({
-        text: this.selectedOrganization.name,
-        active: true,
-      });
-    return crumbs;
   }
+  return crumbs;
+});
 
-  navigateToView() {
-    let toView = this.view === "map" ? "graph" : "map";
-    this.$router.push({
-      name: this.$route.name ? this.$route.name : undefined,
-      params: this.$route.params,
-      query: {
-        view: toView,
-        "no-scroll": "1",
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get selectedNode() {
-    return this.store.selectedNode;
-  }
-
-  get centerNode() {
-    return this.store.centerNode;
-  }
-
-  get selectedOrganization() {
-    return this.store.selectedOrganization;
-  }
-
-  get network() {
-    return this.store.network;
-  }
+function navigateToView() {
+  let toView = view.value === "map" ? "graph" : "map";
+  router.push({
+    name: route.name ? route.name : undefined,
+    params: route.params,
+    query: {
+      view: toView,
+      "no-scroll": "1",
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
 }
+
+const selectedNode = computed(() => {
+  return store.selectedNode;
+});
+
+const selectedOrganization = computed(() => {
+  return store.selectedOrganization;
+});
 </script>
 <style scoped>
 .sb-bread-crumbs {
   background: white !important;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   align-self: center;
 }
 
@@ -404,7 +383,7 @@ export default class NetworkVisualNavigator extends Vue {
 
 .preview-text {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   height: 25px;
   color: white;
   width: 100%;
@@ -429,15 +408,15 @@ export default class NetworkVisualNavigator extends Vue {
   width: 60px;
   height: 60px;
   border-radius: 5px;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   background: white;
 }
 
 .sb-bread-crumbs {
   background-color: white;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   align-self: center;
 }
 
