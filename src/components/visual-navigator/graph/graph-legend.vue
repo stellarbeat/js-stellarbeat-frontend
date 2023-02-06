@@ -45,15 +45,10 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: "graph-legend",
-  data() {
-    return {
-      showLegend: false,
-    };
-  },
-};
+<script setup lang="ts">
+import { ref } from "vue";
+
+const showLegend = ref(false);
 </script>
 
 <style scoped>

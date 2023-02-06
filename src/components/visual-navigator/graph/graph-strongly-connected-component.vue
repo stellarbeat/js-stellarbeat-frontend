@@ -2,47 +2,51 @@
   <path :class="classObject" v-bind:d="hullLine" />
 </template>
 
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
+<script setup lang="ts">
+import { computed, defineProps, toRefs } from "vue";
 import { polygonHull } from "d3-polygon";
 import { curveCatmullRomClosed, line } from "d3-shape";
 
-@Component({})
-export default class GraphStronglyConnectedComponent extends Vue {
-  @Prop({ default: false })
-  greatest!: boolean;
-  @Prop({})
-  vertexCoordinates!: [number, number][];
+const props = defineProps({
+  greatest: {
+    type: Boolean,
+    default: false,
+  },
+  vertexCoordinates: {
+    type: Array,
+    required: true,
+  },
+});
 
-  get hullLine() {
-    let hull = polygonHull(this.vertexCoordinates);
-    if (!hull) return null;
+const { greatest, vertexCoordinates } = toRefs(props);
 
-    let valueLine = line()
-      .x(function (d) {
-        return d[0];
-      })
-      .y(function (d) {
-        return d[1];
-      })
-      .curve(curveCatmullRomClosed); //we want a smooth line
+const hullLine = computed(() => {
+  let hull = polygonHull(vertexCoordinates.value as [number, number][]);
+  if (!hull) return null;
 
-    let hullLine = valueLine(hull);
-    if (hullLine) {
-      return hullLine;
-    }
+  let valueLine = line()
+    .x(function (d) {
+      return d[0];
+    })
+    .y(function (d) {
+      return d[1];
+    })
+    .curve(curveCatmullRomClosed); //we want a smooth line
 
-    return null;
+  let hullLine = valueLine(hull);
+  if (hullLine) {
+    return hullLine;
   }
 
-  get classObject() {
-    return {
-      scc: !this.greatest,
-      greatest: this.greatest,
-    };
-  }
-}
+  return null;
+});
+
+const classObject = computed(() => {
+  return {
+    scc: !greatest.value,
+    greatest: greatest.value,
+  };
+});
 </script>
 
 <style scoped lang="scss">

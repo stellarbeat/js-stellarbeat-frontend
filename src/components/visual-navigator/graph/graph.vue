@@ -127,234 +127,279 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop, Watch } from "vue-property-decorator";
-import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
-
+<script setup lang="ts">
 import * as zoom from "d3-zoom";
 import { select, Selection } from "d3-selection";
 import GraphStronglyConnectedComponent from "@/components/visual-navigator/graph/graph-strongly-connected-component.vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 import { isObject } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import {
+  computed,
+  defineEmits,
+  defineProps,
+  onMounted,
+  PropType,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 
-@Component({
-  components: {
-    GraphStronglyConnectedComponent,
-    GraphLegend,
+const props = defineProps({
+  centerVertex: {
+    type: Object as PropType<ViewVertex>,
+    required: false,
   },
-})
-export default class Graph extends Mixins(StoreMixin) {
-  @Prop()
-  public centerVertex!: ViewVertex | undefined;
-  @Prop()
-  public selectedVertices!: ViewVertex[];
+  selectedVertices: {
+    type: Array as PropType<ViewVertex[]>,
+    required: true,
+  },
+  optionShowFailingEdges: {
+    type: Boolean,
+    required: true,
+  },
+  optionHighlightTrustingNodes: {
+    type: Boolean,
+    required: true,
+  },
+  optionHighlightTrustedNodes: {
+    type: Boolean,
+    required: true,
+  },
+  optionShowRegularEdges: {
+    type: Boolean,
+    required: true,
+  },
+  optionTransitiveQuorumSetOnly: {
+    type: Boolean,
+    required: true,
+  },
+  fullScreen: {
+    type: Boolean,
+    required: true,
+  },
+  isLoading: {
+    type: Boolean,
+    required: true,
+  },
+  viewGraph: {
+    type: Object as PropType<ViewGraph>,
+    required: true,
+  },
+});
 
-  @Prop({ default: false })
-  public optionShowFailingEdges!: boolean;
+const {
+  centerVertex,
+  fullScreen,
+  isLoading,
+  selectedVertices,
+  viewGraph,
+  optionHighlightTrustingNodes,
+  optionHighlightTrustedNodes,
+  optionShowFailingEdges,
+} = toRefs(props);
+const emit = defineEmits(["vertex-selected"]);
 
-  @Prop({ default: true })
-  public optionHighlightTrustingNodes!: boolean;
+let d3svg: Selection<Element, null, null, undefined>;
+let d3Grid: Selection<Element, null, null, undefined>;
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+let graphZoom: any;
 
-  @Prop({ default: true })
-  public optionHighlightTrustedNodes!: boolean;
-
-  @Prop({ default: true })
-  public optionShowRegularEdges!: boolean;
-
-  @Prop({ default: true })
-  public optionTransitiveQuorumSetOnly!: boolean;
-
-  @Prop({ default: false })
-  public fullScreen!: boolean;
-
-  @Prop({ default: true })
-  public isLoading!: boolean;
-
-  @Prop()
-  public viewGraph!: ViewGraph;
-
-  public d3svg!: Selection<Element, null, null, undefined>;
-  public d3Grid!: Selection<Element, null, null, undefined>;
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  public graphZoom!: any;
-
-  @Watch("centerVertex")
-  public onCenterNodeChanged() {
-    this.centerCorrectVertex();
+watch(
+  () => props.centerVertex,
+  () => {
+    centerCorrectVertex();
   }
+);
 
-  @Watch("fullScreen")
-  public onFullScreenChanged() {
-    this.centerCorrectVertex();
-    this.transformAndZoom();
-  }
+watch(fullScreen, () => {
+  centerCorrectVertex();
+  transformAndZoom();
+});
 
-  @Watch("isLoading")
-  public onIsLoadingChanged() {
-    this.centerCorrectVertex();
-  }
+watch(isLoading, () => {
+  centerCorrectVertex();
+});
 
-  vertexSelected(vertex: ViewVertex) {
-    this.$emit("vertex-selected", vertex);
-  }
+function vertexSelected(vertex: ViewVertex) {
+  emit("vertex-selected", vertex);
+}
 
-  getVertexTransform(vertex: ViewVertex): string {
-    return `translate(${vertex.x},${vertex.y})`;
-  }
+function getVertexTransform(vertex: ViewVertex): string {
+  return `translate(${vertex.x},${vertex.y})`;
+}
 
-  getVertexTextRectWidth(vertex: ViewVertex) {
-    if (!this.$options.filters) return 10;
-    return (this.$options.filters.truncate(vertex.label, 10).length / 10) * 70;
-  }
+function getVertexTextRectWidth(vertex: ViewVertex) {
+  return (truncate(vertex.label, 10).length / 10) * 70;
+}
 
-  getVertexTextRectWidthPx(vertex: ViewVertex) {
-    return this.getVertexTextRectWidth(vertex) + "px";
-  }
+function truncate(text: string, length?: number, clamp?: string) {
+  //https://github.com/imcvampire/vue-truncate-filter/blob/master/LICENSE
+  //temp solution because vue3 deprecates filters
+  clamp = clamp || "...";
+  length = length || 30;
 
-  getVertexTextRectX(vertex: ViewVertex) {
-    return "-" + this.getVertexTextRectWidth(vertex) / 2 + "px";
-  }
+  if (text.length <= length) return text;
 
-  getVertexTextClass(vertex: ViewVertex) {
-    return {
-      active: !vertex.isFailing,
-      failing: vertex.isFailing,
-      selected: vertex.selected,
-    };
-  }
+  let tcText = text.slice(0, length - clamp.length);
+  let last = tcText.length - 1;
 
-  getVertexClassObject(vertex: ViewVertex) {
-    return {
-      active: !vertex.isFailing,
-      selected: vertex.selected,
-      failing: vertex.isFailing,
-      target: this.highlightVertexAsIncoming(vertex) && !vertex.selected,
-      source:
-        this.highlightVertexAsOutgoing(vertex) &&
-        !vertex.selected &&
-        !this.highlightVertexAsIncoming(vertex),
-      transitive: vertex.isPartOfTransitiveQuorumSet,
-    };
-  }
+  while (last > 0 && tcText[last] !== " " && tcText[last] !== clamp[0])
+    last -= 1;
 
-  highlightVertexAsOutgoing(vertex: ViewVertex) {
-    if (this.selectedVertices.length <= 0) return false;
-    let edges = this.selectedVertices
-      .map((selectedVertex) =>
-        this.viewGraph.viewEdges.get(vertex.key + ":" + selectedVertex.key)
-      )
-      .filter((edge) => edge !== undefined);
-    let allEdgesAreFailing = edges.every(
-      (edge) => (edge as ViewEdge).isFailing
-    );
+  // Fix for case when text dont have any `space`
+  last = last || length - clamp.length;
 
-    if (edges.length <= 0) return false;
+  tcText = tcText.slice(0, last);
 
-    return (
-      vertex.isTrustingSelectedVertex &&
-      this.optionHighlightTrustingNodes &&
-      (!allEdgesAreFailing || this.optionShowFailingEdges)
-    );
-  }
+  return tcText + clamp;
+}
 
-  highlightVertexAsIncoming(vertex: ViewVertex) {
-    if (this.selectedVertices.length <= 0) return false;
+function getVertexTextRectWidthPx(vertex: ViewVertex) {
+  return getVertexTextRectWidth(vertex) + "px";
+}
 
-    let edges = this.selectedVertices
-      .map((selectedVertex) =>
-        this.viewGraph.viewEdges.get(selectedVertex.key + ":" + vertex.key)
-      )
-      .filter((edge) => edge !== undefined);
-    let allEdgesAreFailing = edges.every(
-      (edge) => (edge as ViewEdge).isFailing
-    );
+function getVertexTextRectX(vertex: ViewVertex) {
+  return "-" + getVertexTextRectWidth(vertex) / 2 + "px";
+}
 
-    if (edges.length <= 0) return false;
+function getVertexTextClass(vertex: ViewVertex) {
+  return {
+    active: !vertex.isFailing,
+    failing: vertex.isFailing,
+    selected: vertex.selected,
+  };
+}
 
-    return (
-      vertex.isTrustedBySelectedVertex &&
-      this.optionHighlightTrustedNodes &&
-      (!allEdgesAreFailing || this.optionShowFailingEdges)
-    );
-  }
+function getVertexClassObject(vertex: ViewVertex) {
+  return {
+    active: !vertex.isFailing,
+    selected: vertex.selected,
+    failing: vertex.isFailing,
+    target: highlightVertexAsIncoming(vertex) && !vertex.selected,
+    source:
+      highlightVertexAsOutgoing(vertex) &&
+      !vertex.selected &&
+      !highlightVertexAsIncoming(vertex),
+    transitive: vertex.isPartOfTransitiveQuorumSet,
+  };
+}
 
-  width() {
-    return (this.$refs.graphSvg as SVGElement).clientWidth;
-  }
+function highlightVertexAsOutgoing(vertex: ViewVertex) {
+  if (selectedVertices?.value.length <= 0) return false;
+  let edges = selectedVertices?.value
+    .map((selectedVertex) =>
+      viewGraph?.value.viewEdges.get(vertex.key + ":" + selectedVertex.key)
+    )
+    .filter((edge) => edge !== undefined);
+  let allEdgesAreFailing = edges.every((edge) => (edge as ViewEdge).isFailing);
 
-  height() {
-    return (this.$refs.graphSvg as SVGElement).clientHeight;
-  }
+  if (edges.length <= 0) return false;
 
-  get dimmerClass() {
-    return {
-      dimmer: true,
-      active: this.isLoading,
-    };
-  }
+  return (
+    vertex.isTrustingSelectedVertex &&
+    optionHighlightTrustingNodes?.value &&
+    (!allEdgesAreFailing || optionShowFailingEdges?.value)
+  );
+}
 
-  public centerCorrectVertex() {
-    if (this.centerVertex !== undefined) {
-      const realVertexX = -this.centerVertex.x + this.width() / 2;
-      const realVertexY = -this.centerVertex.y + this.height() / 2;
+function highlightVertexAsIncoming(vertex: ViewVertex) {
+  if (selectedVertices?.value.length <= 0) return false;
 
-      let transform = zoom.zoomIdentity
-        .translate(realVertexX, realVertexY)
-        .scale(1);
-      this.d3svg.call(this.graphZoom.transform, transform);
-    }
-  }
+  let edges = selectedVertices?.value
+    .map((selectedVertex) =>
+      viewGraph?.value.viewEdges.get(selectedVertex.key + ":" + vertex.key)
+    )
+    .filter((edge) => edge !== undefined);
+  let allEdgesAreFailing = edges.every((edge) => (edge as ViewEdge).isFailing);
 
-  public mounted() {
-    this.d3Grid = select(this.$refs.grid as Element);
-    this.d3svg = select(this.$refs.graphSvg as Element);
-    this.graphZoom = zoom
-      .zoom()
-      .on("zoom", (event) => {
-        this.d3Grid.attr("transform", event.transform);
-      })
-      .scaleExtent([1, 3]);
-    this.transformAndZoom();
-  }
+  if (edges.length <= 0) return false;
 
-  transformAndZoom() {
+  return (
+    vertex.isTrustedBySelectedVertex &&
+    optionHighlightTrustedNodes?.value &&
+    (!allEdgesAreFailing || optionShowFailingEdges?.value)
+  );
+}
+
+const graphSvg = ref<SVGElement | null>(null);
+
+function width() {
+  return (graphSvg.value as SVGElement).clientWidth;
+}
+
+function height() {
+  return (graphSvg.value as SVGElement).clientHeight;
+}
+
+const dimmerClass = computed(() => {
+  return {
+    dimmer: true,
+    active: isLoading?.value,
+  };
+});
+
+function centerCorrectVertex() {
+  if (centerVertex?.value !== undefined) {
+    const realVertexX = -centerVertex.value.x + width() / 2;
+    const realVertexY = -centerVertex.value.y + height() / 2;
+
     let transform = zoom.zoomIdentity
-      .translate(this.width() / 2, this.height() / 2)
+      .translate(realVertexX, realVertexY)
       .scale(1);
-    this.d3svg.call(this.graphZoom).call(this.graphZoom.transform, transform);
+    d3svg.call(graphZoom.transform, transform);
   }
+}
 
-  getEdgeClassObject(edge: ViewEdge) {
-    return {
-      "strongly-connected": edge.isPartOfStronglyConnectedComponent,
-      failing: edge.isFailing,
-    };
-  }
+const grid = ref<Element | null>(null);
+onMounted(() => {
+  d3Grid = select(grid.value as Element);
+  d3svg = select(graphSvg.value as Element);
+  graphZoom = zoom
+    .zoom()
+    .on("zoom", (event) => {
+      d3Grid.attr("transform", event.transform);
+    })
+    .scaleExtent([1, 3]);
+  transformAndZoom();
+});
 
-  getEdgePath(edge: ViewEdge) {
-    if (!isObject(edge.source))
-      throw new Error("Edge source not transformed into object by D3");
-    if (!isObject(edge.target))
-      throw new Error("Edge target not transformed into object by D3");
-    return (
-      "M" +
-      edge.source.x +
-      " " +
-      edge.source.y +
-      " L" +
-      edge.target.x +
-      " " +
-      edge.target.y
-    );
-  }
+function transformAndZoom() {
+  let transform = zoom.zoomIdentity
+    .translate(width() / 2, height() / 2)
+    .scale(1);
+  d3svg.call(graphZoom).call(graphZoom.transform, transform);
+}
+
+function getEdgeClassObject(edge: ViewEdge) {
+  return {
+    "strongly-connected": edge.isPartOfStronglyConnectedComponent,
+    failing: edge.isFailing,
+  };
+}
+
+function getEdgePath(edge: ViewEdge) {
+  if (!isObject(edge.source))
+    throw new Error("Edge source not transformed into object by D3");
+  if (!isObject(edge.target))
+    throw new Error("Edge target not transformed into object by D3");
+  return (
+    "M" +
+    edge.source.x +
+    " " +
+    edge.source.y +
+    " L" +
+    edge.target.x +
+    " " +
+    edge.target.y
+  );
 }
 </script>
 
 <style lang="scss" scoped>
 @import "src/assets/custom";
+
 svg.graph {
   width: 100%;
   cursor: grab;
@@ -392,6 +437,7 @@ path.incoming {
   stroke-opacity: 0.9;
   stroke-width: 1.3px;
 }
+
 circle.active {
   fill: $graph-primary;
 }
@@ -447,7 +493,5 @@ text {
 .rect-selected {
   stroke: yellow;
   stroke-width: 1.5;
-}
-.svg-wrapper {
 }
 </style>
