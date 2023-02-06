@@ -97,9 +97,7 @@
   </b-modal>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
+<script setup lang="ts">
 import {
   BButton,
   BButtonGroup,
@@ -108,19 +106,21 @@ import {
   BListGroup,
   BListGroupItem,
   BModal,
-  VBModal,
 } from "bootstrap-vue";
 import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import { ModifyNetwork as ModifyNetworkChange } from "@/services/change-queue/changes/modify-network";
+import useStore from "@/store/useStore";
+import { defineExpose, Ref, ref } from "vue";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const validate = require("@stellarbeat/js-stellar-domain/lib/network-schema");
+const validateSchema = require("@stellarbeat/js-stellar-domain/lib/network-schema");
 
 type BasicQuorumSet = {
   validators: string[];
   threshold: number;
   innerQuorumSets: BasicQuorumSet[];
 };
+
 type BasicOrganization = {
   id: string;
   name: string;
@@ -141,148 +141,141 @@ type BasicNode = {
   active: boolean;
 };
 
-@Component({
-  components: {
-    BFormTextarea,
-    BButton,
-    BModal,
-    BButtonGroup,
-    BListGroup,
-    BListGroupItem,
-    BIconX,
-  },
-  directives: { "b-modal": VBModal },
-})
-export default class CustomNetwork extends Mixins(StoreMixin) {
-  modalVisible = false;
+const store = useStore();
 
-  modifiedNetworkString = "";
-  modifiedNetwork: {
-    nodes: BasicNode[];
-    organizations: BasicOrganization[];
-  } = { nodes: [], organizations: [] };
-  isValid = false;
-  modified = false;
-  validationErrors: { dataPath?: string; message: string; params: unknown }[] =
-    [];
+const modalVisible = ref(false);
+const modifiedNetworkString = ref("");
 
-  showModal() {
-    this.initModifiedNetworkString();
-    this.modalVisible = true;
+let modifiedNetwork: {
+  nodes: BasicNode[];
+  organizations: BasicOrganization[];
+} = { nodes: [], organizations: [] };
+const isValid = ref(false);
+const modified = ref(false);
+const validationErrors: Ref<
+  {
+    dataPath?: string;
+    message: string;
+    params: unknown;
+  }[]
+> = ref([]);
+
+const showModal = () => {
+  initModifiedNetworkString();
+  modalVisible.value = true;
+};
+
+const validate = () => {
+  isValid.value = false;
+  modified.value = false;
+  try {
+    modifiedNetwork = JSON.parse(modifiedNetworkString.value);
+    isValid.value = validateSchema(modifiedNetwork);
+    validationErrors.value = validateSchema.errors;
+  } catch (error) {
+    if (error instanceof Error)
+      validationErrors.value = [
+        {
+          message: error.message,
+          dataPath: undefined,
+          params: undefined,
+        },
+      ];
   }
+};
 
-  validate() {
-    this.isValid = false;
-    this.modified = false;
-    try {
-      this.modifiedNetwork = JSON.parse(this.modifiedNetworkString);
-      this.isValid = validate(this.modifiedNetwork);
-      this.validationErrors = validate.errors;
-    } catch (error) {
-      if (error instanceof Error)
-        this.validationErrors = [
-          {
-            message: error.message,
-            dataPath: undefined,
-            params: undefined,
-          },
-        ];
-    }
-  }
+const load = () => {
+  let nodesMap = new Map<string, Node>();
+  let nodes = modifiedNetwork.nodes.map((basicNode) => {
+    let node = Node.fromJSON(basicNode);
+    node.isValidating =
+      basicNode.isValidating === undefined ? true : basicNode.isValidating;
+    node.active = basicNode.active === undefined ? true : basicNode.active;
 
-  load() {
-    let nodesMap = new Map<string, Node>();
-    let nodes = this.modifiedNetwork.nodes.map((basicNode) => {
-      let node = Node.fromJSON(basicNode);
-      node.isValidating =
-        basicNode.isValidating === undefined ? true : basicNode.isValidating;
-      node.active = basicNode.active === undefined ? true : basicNode.active;
+    nodesMap.set(node.publicKey, node);
+    return node;
+  });
+  let organizations: Organization[] = [];
+  if (modifiedNetwork.organizations) {
+    organizations = modifiedNetwork.organizations.map((basicOrganization) => {
+      let organization = Organization.fromJSON(basicOrganization);
+      organization.validators = basicOrganization.validators;
+      organization.validators.forEach((validatorPublicKey) => {
+        let validator = nodesMap.get(validatorPublicKey);
+        if (!validator) return;
 
-      nodesMap.set(node.publicKey, node);
-      return node;
+        validator.organizationId = organization.id;
+      });
+      organization.subQuorumAvailable =
+        basicOrganization.subQuorumAvailable === undefined
+          ? true
+          : basicOrganization.subQuorumAvailable;
+      return organization;
     });
-    let organizations: Organization[] = [];
-    if (this.modifiedNetwork.organizations) {
-      organizations = this.modifiedNetwork.organizations.map(
-        (basicOrganization) => {
-          let organization = Organization.fromJSON(basicOrganization);
-          organization.validators = basicOrganization.validators;
-          organization.validators.forEach((validatorPublicKey) => {
-            let validator = nodesMap.get(validatorPublicKey);
-            if (!validator) return;
-
-            validator.organizationId = organization.id;
-          });
-          organization.subQuorumAvailable =
-            basicOrganization.subQuorumAvailable === undefined
-              ? true
-              : basicOrganization.subQuorumAvailable;
-          return organization;
-        }
-      );
-    }
-
-    this.store.processChange(
-      new ModifyNetworkChange(this.network, nodes, organizations)
-    );
   }
 
-  mapToBasicQuorumSet(quorumSet: QuorumSet): BasicQuorumSet {
-    return {
-      threshold: quorumSet.threshold,
-      validators: quorumSet.validators,
-      innerQuorumSets: quorumSet.innerQuorumSets.map((innerQSet) =>
-        this.mapToBasicQuorumSet(innerQSet)
-      ),
-    };
-  }
+  store.processChange(
+    new ModifyNetworkChange(store.network, nodes, organizations)
+  );
+};
 
-  mapToBasicNode(node: Node): BasicNode {
-    return {
-      publicKey: node.publicKey,
-      name: node.displayName,
-      quorumSet: this.mapToBasicQuorumSet(node.quorumSet),
-      geoData: {
-        countryCode: node.geoData.countryCode
-          ? node.geoData.countryCode
-          : "N/A",
-        countryName: node.geoData.countryName
-          ? node.geoData.countryName
-          : "N/A",
-      },
-      isp: node.isp ? node.isp : "N/A",
-      active: node.active,
-      isValidating: node.isValidating,
-    };
-  }
+const mapToBasicQuorumSet = (quorumSet: QuorumSet): BasicQuorumSet => {
+  return {
+    threshold: quorumSet.threshold,
+    validators: quorumSet.validators,
+    innerQuorumSets: quorumSet.innerQuorumSets.map((innerQSet) =>
+      mapToBasicQuorumSet(innerQSet)
+    ),
+  };
+};
 
-  mapToBasicOrganization(organization: Organization): BasicOrganization {
-    return {
-      id: organization.id,
-      name: organization.name,
-      validators: organization.validators,
-      subQuorumAvailable: organization.subQuorumAvailable,
-    };
-  }
+const mapToBasicNode = (node: Node): BasicNode => {
+  return {
+    publicKey: node.publicKey,
+    name: node.displayName,
+    quorumSet: mapToBasicQuorumSet(node.quorumSet),
+    geoData: {
+      countryCode: node.geoData.countryCode ? node.geoData.countryCode : "N/A",
+      countryName: node.geoData.countryName ? node.geoData.countryName : "N/A",
+    },
+    isp: node.isp ? node.isp : "N/A",
+    active: node.active,
+    isValidating: node.isValidating,
+  };
+};
 
-  initModifiedNetworkString() {
-    this.modifiedNetwork = {
-      nodes: this.network.nodes
-        .filter((node) => node.isValidator)
-        .map((node) => this.mapToBasicNode(node)),
-      organizations: this.network.organizations.map((organization) =>
-        this.mapToBasicOrganization(organization)
-      ),
-    };
-    this.modifiedNetworkString = JSON.stringify(this.modifiedNetwork, null, 2);
-    this.isValid = true;
-  }
-}
+const mapToBasicOrganization = (
+  organization: Organization
+): BasicOrganization => {
+  return {
+    id: organization.id,
+    name: organization.name,
+    validators: organization.validators,
+    subQuorumAvailable: organization.subQuorumAvailable,
+  };
+};
+
+const initModifiedNetworkString = () => {
+  modifiedNetwork = {
+    nodes: store.network.nodes
+      .filter((node) => node.isValidator)
+      .map((node) => mapToBasicNode(node)),
+    organizations: store.network.organizations.map((organization) =>
+      mapToBasicOrganization(organization)
+    ),
+  };
+  modifiedNetworkString.value = JSON.stringify(modifiedNetwork, null, 2);
+  isValid.value = true;
+};
+
+defineExpose({
+  showModal,
+});
 </script>
 
 <style scoped>
 .schema-list {
-  padding-left: 0px;
+  padding-left: 0;
   list-style-type: none;
 }
 </style>
