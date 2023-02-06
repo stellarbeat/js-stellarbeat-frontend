@@ -55,8 +55,8 @@
     </div>
     <div class="row row-cards row-deck">
       <LazyHydrate when-visible>
-        <div class="col-lg-12" v-if="!store.networkAnalyzer.manualMode">
-          <liveness-radar-chart />
+        <div class="col-lg-6" v-if="!store.networkAnalyzer.manualMode">
+          <NetworkRiskRadarChart />
         </div>
       </LazyHydrate>
       <LazyHydrate when-visible>
@@ -73,7 +73,7 @@
       </LazyHydrate>
       <LazyHydrate when-visible>
         <div
-          class="col-lg-6"
+          class="col-lg-12"
           v-if="!store.isSimulation && store.networkContext.enableHistory"
         >
           <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
@@ -129,65 +129,24 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
+<script setup lang="ts">
 import NodesCountryDistribution from "@/components/network/cards/nodes-country-distribution.vue";
 import NodesVersions from "@/components/network/cards/nodes-versions.vue";
-import ValidatorsServerLoad from "@/components/network/cards/validator-load.vue";
-import { Network } from "@stellarbeat/js-stellar-domain";
 import NetworkStatistics from "@/components/network/cards/network-statistics/network-statistics.vue";
 import NetworkNodes from "@/components/network/cards/network-nodes.vue";
 import NetworkOrganizations from "@/components/network/cards/network-organizations.vue";
 import NetworkAnalysis from "@/components/network/cards/network-risk-analysis-charts/network-analysis.vue";
-import {
-  BCard,
-  BListGroup,
-  BListGroupItem,
-  BBadge,
-  BAlert,
-} from "bootstrap-vue";
+import { BAlert } from "bootstrap-vue";
 import LivenessInfo from "@/components/network/cards/network-risk-analysis-charts/liveness-info.vue";
 import SafetyInfo from "@/components/network/cards/network-risk-analysis-charts/safety-info.vue";
 import NetworkValidatorUpdates from "@/components/network/cards/network-validator-updates.vue";
 import NetworkOrganizationUpdates from "@/components/network/cards/network-organization-updates.vue";
-import Store from "@/store/Store";
 import LazyHydrate from "vue-lazy-hydration";
 import NetworkHorizon from "@/components/network/cards/network-horizon.vue";
 import NetworkRiskRadarChart from "@/components/network/cards/network-risk-analysis-charts/network-risk-radar-chart.vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    LivenessRadarChart: NetworkRiskRadarChart,
-    NetworkHorizon,
-    NetworkOrganizationUpdates,
-    LazyHydrate,
-    NetworkValidatorUpdates,
-    SafetyInfo,
-    LivenessInfo,
-    NetworkAnalysis,
-    NetworkOrganizations,
-    NetworkNodes,
-    NetworkStatistics,
-    ValidatorsServerLoad,
-    NodesVersions,
-    NodesCountryDistribution,
-    BCard,
-    BListGroup,
-    BListGroupItem,
-    BBadge,
-    BAlert,
-  },
-})
-export default class NetworkDashboard extends Vue {
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-}
+const store = useStore();
+const network = store.network;
 </script>
 <style scoped></style>
