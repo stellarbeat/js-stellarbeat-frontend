@@ -9,8 +9,8 @@
         v-if="isMounted"
       >
         <l-tile-layer :url="url" :attribution="attribution" />
-        <v-marker-cluster :options="clusterOptions" ref="clusterRef">
-          <l-circle-marker
+        <Vue2LeafletMarkerCluster :options="clusterOptions" ref="clusterRef">
+          <LCircleMarker
             v-for="marker in markers"
             :lat-lng="marker.latLng"
             @click="nodeSelected(marker.node)"
@@ -31,23 +31,30 @@
                 <full-validator-title :node="marker.node" />
               </div>
             </l-tooltip>
-          </l-circle-marker>
-        </v-marker-cluster>
+          </LCircleMarker>
+        </Vue2LeafletMarkerCluster>
       </l-map>
     </client-only>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Vue from "vue";
+import {
+  computed,
+  ComputedRef,
+  defineProps,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
-import Store from "@/store/Store";
 /* eslint-disable */
 //ssr voodoo because leaflet uses window global only available in browser
 let divIcon: any,
@@ -93,83 +100,70 @@ type Marker = {
 
 import ClientOnly from "vue-client-only";
 import useStore from "@/store/useStore";
+import {useRoute, useRouter} from "vue-router/composables";
 
-@Component({
-  name: "world-map",
-  components: {
-    FullValidatorTitle,
-    LMap,
-    LTileLayer,
-    LCircleMarker,
-    LMarker,
-    LTooltip,
-    "v-marker-cluster": Vue2LeafletMarkerCluster,
-    ClientOnly,
+const props = defineProps({
+  fullScreen: {
+    type: Boolean,
+    default: false,
   },
-})
-export default class WorldMap extends Vue {
-  protected url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-  protected attribution =
+});
+
+  const url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  const attribution =
     '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors';
-  protected zoom = 2;
-  protected isMounted = false;
+  const zoom = ref(2);
+  const isMounted = ref(false);
+  const store = useStore();
+  const myMap = ref(null);
+const clusterRef = ref(null);
 
-  @Prop({ default: false })
-  fullScreen!: boolean;
+const fullScreen = ref(props.fullScreen);
 
-  mounted() {
-    this.isMounted = true;
-  }
-  get store(): Store {
-    return useStore();
-  }
+  onMounted(() => {
+    isMounted.value = true;
+  });
 
-  @Watch("fullScreen")
-  public fullScreenChanged() {
-    (this.$refs.myMap as any).mapObject.invalidateSize();
-    if (this.fullScreen) this.zoom = 3;
-    else this.zoom = 2;
-  }
 
-  @Watch("selectedNode")
-  public onSelectedNodeChanged() {
+  watch(fullScreen, () => {
+    (myMap.value as any).mapObject.invalidateSize();
+    if (fullScreen.value) zoom.value = 3;
+    else zoom.value = 2;
+  });
+
+  const selectedNode = computed(() => {
+    return store.selectedNode;
+  });
+
+  watch(selectedNode,  () => {
     //not on initial load
-    this.$nextTick(() => {
-      (this.$refs.clusterRef as any).mapObject.refreshClusters();
+    nextTick(() => {
+      (clusterRef.value as any).mapObject.refreshClusters();
     });
-  }
+  });
 
-  @Watch("selectedOrganization")
-  public onSelectedOrganizationChanged() {
+  const selectedOrganization = computed(() => {
+    return store.selectedOrganization;
+  });
+
+  watch(selectedOrganization, () => {
     //not on initial load
-    this.$nextTick(() => {
-      (this.$refs.clusterRef as any).mapObject.refreshClusters();
+    nextTick(() => {
+      (clusterRef.value as any).mapObject.refreshClusters();
     });
+  });
+
+  const network = store.network;
+  const route = useRoute();
+  const router = useRouter();
+
+  function isNodeFailing(node: Node) {
+    return network.isNodeFailing(node);
   }
 
-  get selectedNode() {
-    return this.store.selectedNode;
-  }
-
-  get selectedOrganization() {
-    return this.store.selectedOrganization;
-  }
-
-  get centerNode() {
-    return this.store.centerNode;
-  }
-
-  get network() {
-    return this.store.network;
-  }
-
-  isNodeFailing(node: Node) {
-    return this.network.isNodeFailing(node);
-  }
-
-  get markers(): Marker[] {
-    return this.store.network.nodes
-      .filter(this.store.watcherNodeFilter)
+  const markers : ComputedRef<Marker[]>= computed(() => {
+    return store.network.nodes
+      .filter(store.watcherNodeFilter)
       .filter((node) => node.geoData.latitude)
       .map((geoNode) => {
         return {
@@ -178,75 +172,76 @@ export default class WorldMap extends Vue {
             geoNode.geoData.longitude ? geoNode.geoData.longitude : 0
           ),
           node: geoNode,
-          color: !this.network.isNodeFailing(geoNode) ? "#1997c6" : "#cd201f",
+          color: !network.isNodeFailing(geoNode) ? "#1997c6" : "#cd201f",
         };
       });
-  }
+  });
 
-  get center(): any {
+  const center = computed(() => {
     if (
-      this.selectedNode &&
-      this.selectedNode.geoData.longitude &&
-      this.selectedNode.geoData.latitude
+      selectedNode.value &&
+      selectedNode.value.geoData.longitude &&
+      selectedNode.value.geoData.latitude
     ) {
       return latLng(
-        this.selectedNode.geoData.latitude
-          ? this.selectedNode.geoData.latitude
+       selectedNode.value.geoData.latitude
+          ? selectedNode.value.geoData.latitude
           : 0,
-        this.selectedNode.geoData.longitude
-          ? this.selectedNode.geoData.latitude
+        selectedNode.value.geoData.longitude
+          ? selectedNode.value.geoData.latitude
           : 0
       );
     } else return latLng(25.505, -0.09);
-  }
+  });
 
-  getColor(marker: Marker) {
-    if (this.selectedNode && this.selectedNode === marker.node) return "yellow";
+  function getColor(marker: Marker) {
+    if (selectedNode.value && selectedNode.value === marker.node) return "yellow";
 
     if (
-      this.selectedOrganization &&
-      this.selectedOrganization.validators.includes(marker.node.publicKey!)
+      selectedOrganization.value &&
+      selectedOrganization.value.validators.includes(marker.node.publicKey)
     )
       return "yellow";
 
     return "white";
   }
 
-  public nodeSelected(node: Node) {
+  function nodeSelected(node: Node) {
     if (
-      this.$route.params.publicKey &&
-      this.$route.params.publicKey === node.publicKey
+      route.params.publicKey &&
+      route.params.publicKey === node.publicKey
     )
       return;
 
-    this.$router.push({
+    router.push({
       name: "node-dashboard",
-      params: { publicKey: node.publicKey! },
+      params: { publicKey: node.publicKey },
       query: {
         center: "1",
         "no-scroll": "1",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
+        view: route.query.view,
+        network: route.query.network,
+        at: route.query.at,
       },
     });
   }
 
-  get clusterOptions(): any {
+  const clusterOptions = computed(() => {
     return {
       maxClusterRadius: 30,
       iconCreateFunction: (cluster: any) => {
         let markers: any[] = cluster.getAllChildMarkers();
         return divIcon({
           html: "<div><span>" + markers.length + "</span></div>",
-          className: this.getMarkerClusterClasses(markers),
+          className: getMarkerClusterClasses(markers),
           iconSize: point(40, 40),
         });
       },
     };
-  }
+  });
 
-  getMarkerClusterClasses(markers: any[]) {
+
+  function getMarkerClusterClasses(markers: any[]) {
     let classes: string[] = ["marker-cluster"];
     if (
       markers.filter((marker: any) => !marker.options.isNodeFailing).length ===
@@ -256,16 +251,16 @@ export default class WorldMap extends Vue {
 
     let isSelected = false;
 
-    if (this.selectedNode)
+    if (selectedNode.value)
       isSelected = markers.some(
         (marker: any) =>
-          marker.options.publicKey === this.selectedNode!.publicKey
+          marker.options.publicKey === selectedNode.value?.publicKey
       );
 
-    if (this.selectedOrganization)
+    if (selectedOrganization.value)
       isSelected = markers.some(
         (marker: any) =>
-          marker.options.organizationId === this.selectedOrganization!.id
+          marker.options.organizationId === selectedOrganization.value?.id
       );
 
     if (isSelected) classes.push("marker-cluster-selected");
@@ -273,7 +268,7 @@ export default class WorldMap extends Vue {
     return classes.join(" ");
   }
 
-  get mapOptions(): any {
+  const mapOptions = computed(() => {
     return {
       wakeTime: 250,
       sleepTime: 250,
@@ -282,12 +277,11 @@ export default class WorldMap extends Vue {
       sleepOpacity: 1,
       noBlockingAnimations: true,
     };
-  }
+  });
 
-  beforeDestroy() {
-    this.$refs.myMap = undefined;
-  }
-}
+  onBeforeUnmount(() => {
+    myMap.value = null;
+  });
 </script>
 
 <style>
