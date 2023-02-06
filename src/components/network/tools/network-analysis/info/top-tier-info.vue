@@ -2,7 +2,7 @@
   <b-modal
     lazy
     id="network-analysis-top-tier-info"
-    ref="network-analysis-top-tier-info"
+    ref="topTierInfoModal"
     hide-header
   >
     <h3>Top tier</h3>
@@ -53,21 +53,12 @@
   </b-modal>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { BModal, BButton } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
 
-@Component({
-  components: {
-    BModal,
-    BButton,
-  },
-})
-export default class TopTierInfo extends Mixins(StoreMixin) {
-  hideModal() {
-    //@ts-ignore
-    this.$refs["network-analysis-top-tier-info"].hide();
-  }
+import { ref } from "vue";
+const topTierInfoModal = ref(null);
+function hideModal() {
+  if (topTierInfoModal.value) (topTierInfoModal.value as BModal).hide();
 }
 </script>

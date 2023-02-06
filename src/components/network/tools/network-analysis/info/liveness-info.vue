@@ -2,7 +2,7 @@
   <b-modal
     lazy
     id="network-analysis-liveness-info"
-    ref="network-analysis-liveness-info"
+    ref="livenessInfoModal"
     hide-header
   >
     <h3>What does this analysis show?</h3>
@@ -65,21 +65,11 @@
   </b-modal>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { BModal, BButton } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
-
-@Component({
-  components: {
-    BModal,
-    BButton,
-  },
-})
-export default class LivenessInfo extends Mixins(StoreMixin) {
-  hideModal() {
-    //@ts-ignore
-    this.$refs["network-analysis-liveness-info"].hide();
-  }
+import { ref } from "vue";
+const livenessInfoModal = ref(null);
+function hideModal() {
+  if (livenessInfoModal.value) (livenessInfoModal.value as BModal).hide();
 }
 </script>

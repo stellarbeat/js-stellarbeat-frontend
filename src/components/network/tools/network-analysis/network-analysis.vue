@@ -44,7 +44,7 @@
                       :items="minimalQuorums"
                       :nodesPartition="nodesPartition"
                       :showNodesPartition="
-                        resultMergedBy !== MergeBy.DoNotMerge
+                        resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
                       <template v-slot:title>
@@ -99,7 +99,7 @@
                       :items="blockingSets"
                       :nodesPartition="nodesPartition"
                       :showNodesPartition="
-                        resultMergedBy !== MergeBy.DoNotMerge
+                        resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
                       <template v-slot:title>
@@ -149,7 +149,7 @@
                       :items="splittingSets"
                       :nodesPartition="nodesPartition"
                       :showNodesPartition="
-                        resultMergedBy !== MergeBy.DoNotMerge
+                        resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
                       <template v-slot:title>
@@ -199,7 +199,7 @@
                       :items="topTier"
                       :nodesPartition="nodesPartition"
                       :showNodesPartition="
-                        resultMergedBy !== MergeBy.DoNotMerge
+                        resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
                       <template v-slot:title>
@@ -235,7 +235,7 @@
         </div>
         <div class="mb-2">
           <b-alert
-            :show="!network.networkStatistics.hasSymmetricTopTier"
+            :show="!store.network.networkStatistics.hasSymmetricTopTier"
             variant="warning"
             >Warning: top tier is not symmetric, analysis could be slow.
             Execution time increases exponentially with top tier size. For very
@@ -251,17 +251,17 @@
               v-model="store.networkAnalysisMergeBy"
               name="radio-sub-component"
             >
-              <b-form-radio :value="MergeBy.DoNotMerge"
-                >{{ getMergeByFriendlyName(MergeBy.DoNotMerge) }}
+              <b-form-radio :value="MyMergeBy.DoNotMerge"
+                >{{ getMergeByFriendlyName(MyMergeBy.DoNotMerge) }}
               </b-form-radio>
-              <b-form-radio :value="MergeBy.Orgs"
-                >{{ getMergeByFriendlyName(MergeBy.Orgs) }}
+              <b-form-radio :value="MyMergeBy.Orgs"
+                >{{ getMergeByFriendlyName(MyMergeBy.Orgs) }}
               </b-form-radio>
-              <b-form-radio :value="MergeBy.Countries"
-                >{{ getMergeByFriendlyName(MergeBy.Countries) }}
+              <b-form-radio :value="MyMergeBy.Countries"
+                >{{ getMergeByFriendlyName(MyMergeBy.Countries) }}
               </b-form-radio>
-              <b-form-radio :value="MergeBy.ISPs"
-                >{{ getMergeByFriendlyName(MergeBy.ISPs) }}
+              <b-form-radio :value="MyMergeBy.ISPs"
+                >{{ getMergeByFriendlyName(MyMergeBy.ISPs) }}
               </b-form-radio>
             </b-form-radio-group>
           </b-form-group>
@@ -291,35 +291,25 @@
   </b-card>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import {
   BAlert,
   BBadge,
   BButton,
   BCard,
   BCardBody,
-  BCardFooter,
   BCardHeader,
-  BCardText,
   BCollapse,
   BFormCheckbox,
-  BFormCheckboxGroup,
   BFormGroup,
-  BFormInput,
   BFormRadio,
   BFormRadioGroup,
-  BFormSelect,
   BIconInfoCircle,
   BIconX,
-  BPagination,
-  BTable,
   VBModal,
   VBToggle,
   VBTooltip,
 } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
-import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
 import { PublicKey } from "@stellarbeat/js-stellar-domain";
 import Analysis from "@/components/network/tools/network-analysis/analysis.vue";
 import QuorumIntersectionInfo from "@/components/network/tools/network-analysis/info/quorum-intersection-info.vue";
@@ -328,251 +318,223 @@ import LivenessInfo from "@/components/network/tools/network-analysis/info/liven
 import TopTierInfo from "@/components/network/tools/network-analysis/info/top-tier-info.vue";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
+import Vue, { nextTick, onMounted, Ref, ref } from "vue";
+import { useIsLoading } from "@/mixins/useIsLoading";
+import useStore from "@/store/useStore";
+import VueScrollTo from "vue-scrollto";
+Vue.directive("b-modal", VBModal);
+Vue.directive("b-toggle", VBToggle);
+Vue.directive("b-tooltip", VBTooltip);
 
-@Component({
-  components: {
-    TopTierInfo,
-    LivenessInfo,
-    SafetyInfo,
-    QuorumIntersectionInfo,
-    BIconX,
-    Analysis,
-    BFormInput,
-    BButton,
-    BAlert,
-    BFormCheckbox,
-    BFormCheckboxGroup,
-    BFormSelect,
-    BTable,
-    BPagination,
-    BBadge,
-    BCard,
-    BCardBody,
-    BCardFooter,
-    BCardText,
-    BCollapse,
-    BCardHeader,
-    BIconInfoCircle,
-    BFormGroup,
-    BFormRadioGroup,
-    BFormRadio,
-  },
-  directives: {
-    "b-toggle": VBToggle,
-    "b-modal": VBModal,
-    "b-tooltip": VBTooltip,
-  },
-})
-export default class NetworkAnalysis extends Mixins(
-  StoreMixin,
-  IsLoadingMixin
-) {
-  protected MergeBy: {
-    DoNotMerge: number;
-    Orgs: number;
-    ISPs: number;
-    Countries: number;
-  } = MergeBy; //for use in template as enums not supported
-  protected fbasAnalysisWorker = new Worker(
-    new URL("./../../../../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+const { isLoading, dimmerClass } = useIsLoading();
+const store = useStore();
+
+const showModal = ref(false);
+
+const MyMergeBy: {
+  DoNotMerge: number;
+  Orgs: number;
+  ISPs: number;
+  Countries: number;
+} = MergeBy; //for use in template as enums not supported
+
+const fbasAnalysisWorker = new Worker(
+  new URL("./../../../../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+);
+const hasResult = ref(false);
+const resultMergedBy = ref(MyMergeBy.DoNotMerge);
+const hasQuorumIntersection = ref(false);
+const minimalQuorums: Ref<Array<Array<string>>> = ref([]);
+const blockingSets: Ref<Array<Array<string>>> = ref([]);
+const blockingSetsMinSize = ref(0);
+const splittingSets: Ref<Array<Array<string>>> = ref([]);
+const splittingSetsMinSize = ref(0);
+const topTier: Ref<Array<Array<string>>> = ref([]);
+const topTierIsSymmetric = ref(false);
+
+const analyzeQuorumIntersection = ref(true);
+const quorumIntersectionAnalyzed = ref(false);
+const analyzeSafety = ref(true);
+const safetyAnalyzed = ref(false);
+const analyzeLiveness = ref(true);
+const livenessAnalyzed = ref(false);
+const analyzeTopTier = ref(true);
+const topTierAnalyzed = ref(false);
+
+const nodesPartition: Ref<Map<string, string[]>> = ref(
+  new Map<string, string[]>()
+);
+
+function getMergeByFriendlyName(mergeBy = MyMergeBy.DoNotMerge) {
+  switch (mergeBy) {
+    case MyMergeBy.Countries:
+      return "Countries";
+    case MyMergeBy.DoNotMerge:
+      return "Nodes";
+    case MyMergeBy.ISPs:
+      return "ISP's";
+    case MyMergeBy.Orgs:
+      return "Organizations";
+  }
+}
+
+function stopAnalysis() {
+  fbasAnalysisWorker.terminate();
+  isLoading.value = false;
+}
+
+function performAnalysis() {
+  isLoading.value = true;
+  fbasAnalysisWorker.postMessage({
+    id: 1,
+    nodes: store.networkAnalyzer.nodesToAnalyze,
+    organizations: store.network.organizations,
+    mergeBy: store.networkAnalysisMergeBy,
+    failingNodePublicKeys: store.network.nodes
+      .filter((node) => store.network.isNodeFailing(node))
+      .map((node) => node.publicKey),
+    analyzeQuorumIntersection: analyzeQuorumIntersection,
+    analyzeSafety: analyzeSafety,
+    analyzeLiveness: analyzeLiveness,
+    analyzeTopTier: analyzeTopTier,
+    analyzeSymmetricTopTier: true,
+  });
+}
+
+function updatePartitions() {
+  //todo should come from fbas analysis
+  let removeSpecialCharsFromGroupingName = (name: string) => {
+    //copied from fbas analysis, to handle isp naming differences
+    name = name.replace(",", "");
+    let start = name.substring(0, name.length - 1);
+    let end = name.substring(name.length - 1);
+    end = end.replace(".", "");
+    name = start + end;
+
+    return name;
+  };
+  nodesPartition.value = new Map<string, string[]>();
+  store.network.nodes
+    .filter((node) =>
+      store.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(
+        node.publicKey
+      )
+    )
+    .forEach((node) => {
+      let value = "N/A";
+      if (resultMergedBy.value === MyMergeBy.Countries) {
+        value = node.geoData.countryName
+          ? removeSpecialCharsFromGroupingName(node.geoData.countryName)
+          : "N/A";
+      } else if (resultMergedBy.value === MyMergeBy.ISPs) {
+        value = node.isp ? removeSpecialCharsFromGroupingName(node.isp) : "N/A";
+      } else if (resultMergedBy.value === MyMergeBy.Orgs) {
+        value = node.organizationId
+          ? store.network.getOrganizationById(node.organizationId).name
+          : "N/A";
+      }
+
+      let nodes = nodesPartition.value.has(value)
+        ? (nodesPartition.value.get(value) as string[])
+        : [];
+      nodes.push(node.displayName);
+      nodesPartition.value.set(value, nodes);
+    });
+}
+
+function mapPublicKeysToNames(items: Array<Array<PublicKey>>) {
+  return items.map((row) =>
+    row.map(
+      (publicKey) => store.network.getNodeByPublicKey(publicKey).displayName
+    )
   );
-  protected hasResult = false;
-  protected resultMergedBy: MergeBy = MergeBy.DoNotMerge;
-  protected hasQuorumIntersection = false;
-  protected minimalQuorums: Array<Array<string>> = [];
-  protected blockingSets: Array<Array<string>> = [];
-  protected blockingSetsMinSize = 0;
-  protected splittingSets: Array<Array<string>> = [];
-  protected splittingSetsMinSize = 0;
-  protected topTier: Array<Array<string>> = [];
-  protected topTierIsSymmetric = false;
+}
 
-  protected analyzeQuorumIntersection = true;
-  protected quorumIntersectionAnalyzed = false;
-  protected analyzeSafety = true;
-  protected safetyAnalyzed = false;
-  protected analyzeLiveness = true;
-  protected livenessAnalyzed = false;
-  protected analyzeTopTier = true;
-  protected topTierAnalyzed = false;
-
-  protected nodesPartition: Map<string, string[]> = new Map<string, string[]>();
-
-  getMergeByFriendlyName(mergeBy = MergeBy.DoNotMerge) {
-    switch (mergeBy) {
-      case MergeBy.Countries:
-        return "Countries";
-      case MergeBy.DoNotMerge:
-        return "Nodes";
-      case MergeBy.ISPs:
-        return "ISP's";
-      case MergeBy.Orgs:
-        return "Organizations";
-    }
-  }
-
-  stopAnalysis() {
-    this.fbasAnalysisWorker.terminate();
-    this.isLoading = false;
-  }
-
-  performAnalysis() {
-    this.isLoading = true;
-    this.fbasAnalysisWorker.postMessage({
-      id: 1,
-      nodes: this.store.networkAnalyzer.nodesToAnalyze,
-      organizations: this.network.organizations,
-      mergeBy: this.store.networkAnalysisMergeBy,
-      failingNodePublicKeys: this.network.nodes
-        .filter((node) => this.network.isNodeFailing(node))
-        .map((node) => node.publicKey),
-      analyzeQuorumIntersection: this.analyzeQuorumIntersection,
-      analyzeSafety: this.analyzeSafety,
-      analyzeLiveness: this.analyzeLiveness,
-      analyzeTopTier: this.analyzeTopTier,
-      analyzeSymmetricTopTier: true,
-    });
-  }
-
-  updatePartitions() {
-    //todo should come from fbas analysis
-    let removeSpecialCharsFromGroupingName = (name: string) => {
-      //copied from fbas analysis, to handle isp naming differences
-      name = name.replace(",", "");
-      let start = name.substring(0, name.length - 1);
-      let end = name.substring(name.length - 1);
-      end = end.replace(".", "");
-      name = start + end;
-
-      return name;
-    };
-    this.nodesPartition = new Map<string, string[]>();
-    this.network.nodes
-      .filter((node) =>
-        this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(
-          node.publicKey
-        )
-      )
-      .forEach((node) => {
-        let value = "N/A";
-        if (this.resultMergedBy === MergeBy.Countries) {
-          value = node.geoData.countryName
-            ? removeSpecialCharsFromGroupingName(node.geoData.countryName)
-            : "N/A";
-        } else if (this.resultMergedBy === MergeBy.ISPs) {
-          value = node.isp
-            ? removeSpecialCharsFromGroupingName(node.isp)
-            : "N/A";
-        } else if (this.resultMergedBy === MergeBy.Orgs) {
-          value = node.organizationId
-            ? this.network.getOrganizationById(node.organizationId).name
-            : "N/A";
-        }
-
-        let nodes = this.nodesPartition.has(value)
-          ? (this.nodesPartition.get(value) as string[])
-          : [];
-        nodes.push(node.displayName);
-        this.nodesPartition.set(value, nodes);
-      });
-  }
-
-  mapPublicKeysToNames(items: Array<Array<PublicKey>>) {
-    return items.map((row) =>
-      row.map(
-        (publicKey) => this.network.getNodeByPublicKey(publicKey).displayName
-      )
-    );
-  }
-
-  async mounted() {
-    this.isLoading = false;
-    this.$nextTick(() => {
-      this.$scrollTo("#network-analysis-card");
-    });
-    this.fbasAnalysisWorker.onmessage = (event: {
-      data: {
-        type: string;
-        result: {
-          analysis: FbasAnalysisWorkerResult;
-          mergeBy: MergeBy;
-          jobId: number;
-        };
+onMounted(() => {
+  isLoading.value = false;
+  nextTick(() => {
+    VueScrollTo.scrollTo("#network-analysis-card");
+  });
+  fbasAnalysisWorker.onmessage = (event: {
+    data: {
+      type: string;
+      result: {
+        analysis: FbasAnalysisWorkerResult;
+        mergeBy: MergeBy;
+        jobId: number;
       };
-    }) => {
-      switch (event.data.type) {
-        case "end":
-          {
-            if (event.data.result) {
-              this.hasResult = true;
-              this.resultMergedBy = event.data.result.mergeBy;
-              this.updatePartitions();
-              let analysisResult: FbasAnalysisWorkerResult =
-                event.data.result.analysis;
-              this.topTierIsSymmetric = analysisResult.hasSymmetricTopTier;
-              this.quorumIntersectionAnalyzed =
-                analysisResult.quorumIntersectionAnalyzed;
+    };
+  }) => {
+    switch (event.data.type) {
+      case "end":
+        {
+          if (event.data.result) {
+            hasResult.value = true;
+            resultMergedBy.value = event.data.result.mergeBy;
+            updatePartitions();
+            let analysisResult: FbasAnalysisWorkerResult =
+              event.data.result.analysis;
+            topTierIsSymmetric.value = analysisResult.hasSymmetricTopTier;
+            quorumIntersectionAnalyzed.value =
+              analysisResult.quorumIntersectionAnalyzed;
 
-              if (analysisResult.quorumIntersectionAnalyzed) {
-                this.hasQuorumIntersection =
-                  analysisResult.hasQuorumIntersection as boolean;
-                this.minimalQuorums =
-                  analysisResult.minimalQuorums as string[][];
-                if (this.resultMergedBy === MergeBy.DoNotMerge)
-                  this.minimalQuorums = this.mapPublicKeysToNames(
-                    this.minimalQuorums
-                  );
-              }
+            if (analysisResult.quorumIntersectionAnalyzed) {
+              hasQuorumIntersection.value =
+                analysisResult.hasQuorumIntersection as boolean;
+              minimalQuorums.value =
+                analysisResult.minimalQuorums as string[][];
+              if (resultMergedBy.value === MyMergeBy.DoNotMerge)
+                minimalQuorums.value = mapPublicKeysToNames(
+                  minimalQuorums.value
+                );
+            }
 
-              this.livenessAnalyzed = analysisResult.livenessAnalyzed;
-              if (analysisResult.livenessAnalyzed) {
-                let blockingSets =
+            livenessAnalyzed.value = analysisResult.livenessAnalyzed;
+            if (analysisResult.livenessAnalyzed) {
+              let blockingSetsTemp =
+                analysisResult.minimalBlockingSets as string[][];
+              if (blockingSetsTemp.length > 0) {
+                blockingSetsMinSize.value =
+                  analysisResult.minimalBlockingSetsMinSize as number;
+                blockingSets.value =
                   analysisResult.minimalBlockingSets as string[][];
-                if (blockingSets.length > 0) {
-                  this.blockingSetsMinSize =
-                    analysisResult.minimalBlockingSetsMinSize as number;
-                  this.blockingSets =
-                    analysisResult.minimalBlockingSets as string[][];
-                  if (this.resultMergedBy === MergeBy.DoNotMerge) {
-                    this.blockingSets = this.mapPublicKeysToNames(
-                      this.blockingSets
-                    );
-                  }
+                if (resultMergedBy.value === MyMergeBy.DoNotMerge) {
+                  blockingSets.value = mapPublicKeysToNames(blockingSets.value);
                 }
-              }
-
-              this.safetyAnalyzed = analysisResult.safetyAnalyzed;
-              if (analysisResult.safetyAnalyzed) {
-                let splittingSets =
-                  analysisResult.minimalSplittingSets as string[][];
-                if (splittingSets.length > 0) {
-                  this.splittingSetsMinSize =
-                    analysisResult.minimalSplittingSetsMinSize as number;
-                  this.splittingSets =
-                    analysisResult.minimalSplittingSets as string[][];
-                  if (this.resultMergedBy === MergeBy.DoNotMerge)
-                    this.splittingSets = this.mapPublicKeysToNames(
-                      this.splittingSets
-                    );
-                }
-              }
-
-              this.topTierAnalyzed = analysisResult.topTierAnalyzed;
-              //@ts-ignore;
-              if (analysisResult.topTierAnalyzed) {
-                this.topTier = analysisResult.topTier.map((member) => [member]);
-                if (this.resultMergedBy === MergeBy.DoNotMerge)
-                  this.topTier = this.mapPublicKeysToNames(this.topTier);
               }
             }
 
-            this.isLoading = false;
+            safetyAnalyzed.value = analysisResult.safetyAnalyzed;
+            if (analysisResult.safetyAnalyzed) {
+              let splittingSetsTemp =
+                analysisResult.minimalSplittingSets as string[][];
+              if (splittingSetsTemp.length > 0) {
+                splittingSetsMinSize.value =
+                  analysisResult.minimalSplittingSetsMinSize as number;
+                splittingSets.value =
+                  analysisResult.minimalSplittingSets as string[][];
+                if (resultMergedBy.value === MyMergeBy.DoNotMerge)
+                  splittingSets.value = mapPublicKeysToNames(
+                    splittingSets.value
+                  );
+              }
+            }
+
+            topTierAnalyzed.value = analysisResult.topTierAnalyzed;
+            //@ts-ignore;
+            if (analysisResult.topTierAnalyzed) {
+              topTier.value = analysisResult.topTier.map((member) => [member]);
+              if (resultMergedBy.value === MyMergeBy.DoNotMerge)
+                topTier.value = mapPublicKeysToNames(topTier.value);
+            }
           }
-          break;
-      }
-    };
-  }
-}
+
+          isLoading.value = false;
+        }
+        break;
+    }
+  };
+});
 </script>
 <style>
 .my-thead tr th {

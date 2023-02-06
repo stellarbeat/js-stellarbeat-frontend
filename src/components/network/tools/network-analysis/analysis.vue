@@ -44,79 +44,54 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from "vue-property-decorator";
-import {
-  BFormInput,
-  BModal,
-  BButton,
-  BFormCheckbox,
-  BFormSelect,
-  BTable,
-  BPagination,
-  BBadge,
-  BCard,
-  BCardBody,
-  BCardText,
-  BCollapse,
-  VBToggle,
-  BCardHeader,
-  VBTooltip,
-} from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
+<script setup lang="ts">
+import { BTable, BPagination } from "bootstrap-vue";
+import { computed, defineProps, ref, toRefs } from "vue";
 
-@Component({
-  components: {
-    BFormInput,
-    BModal,
-    BButton,
-    BFormCheckbox,
-    BFormSelect,
-    BTable,
-    BPagination,
-    BBadge,
-    BCard,
-    BCardBody,
-    BCardText,
-    BCollapse,
-    BCardHeader,
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true,
   },
-  directives: { "b-toggle": VBToggle, "b-tooltip": VBTooltip },
-})
-export default class Analysis extends Mixins(StoreMixin) {
-  @Prop()
-  items!: Array<Array<string>>;
-  @Prop()
-  title!: string;
-  @Prop()
-  nodesPartition!: Map<string, string[]>;
-  @Prop({ default: false })
-  showNodesPartition!: boolean;
+  title: {
+    type: String,
+    required: true,
+  },
+  nodesPartition: {
+    type: Map,
+    required: true,
+  },
+  showNodesPartition: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-  protected perPage = 5;
-  protected currentPage = 1;
+const { title, items } = toRefs(props);
 
-  get fields() {
-    return [
-      {
-        key: "key",
-        label: this.title,
-      },
-    ];
-  }
+const perPage = ref(5);
+const currentPage = ref(1);
 
-  get tableItems() {
-    return this.items.map((item) => {
-      return {
-        key: item,
-      };
-    });
-  }
+const fields = computed(() => {
+  return [
+    {
+      key: "key",
+      label: title,
+    },
+  ];
+});
 
-  get rows() {
-    return this.items.length;
-  }
-}
+const tableItems = computed(() => {
+  return items.value.map((item) => {
+    return {
+      key: item,
+    };
+  });
+});
+
+const rows = computed(() => {
+  return items.value.length;
+});
 </script>
 <style>
 .my-thead tr th {
@@ -132,9 +107,9 @@ export default class Analysis extends Mixins(StoreMixin) {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
-  padding-bottom: 0px;
-  margin-bottom: 0px;
-  padding-left: 0px;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  padding-left: 0;
 }
 .horizontal-list-item {
   margin-right: 4px;

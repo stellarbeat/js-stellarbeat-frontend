@@ -2,7 +2,7 @@
   <b-modal
     lazy
     id="network-analysis-safety-info"
-    ref="network-analysis-safety-info"
+    ref="safetyInfoModal"
     hide-header
   >
     <h3>What does this analysis show?</h3>
@@ -69,21 +69,12 @@
   </b-modal>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { BModal, BButton } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
 
-@Component({
-  components: {
-    BModal,
-    BButton,
-  },
-})
-export default class SafetyInfo extends Mixins(StoreMixin) {
-  hideModal() {
-    //@ts-ignore
-    this.$refs["network-analysis-safety-info"].hide();
-  }
+import { ref } from "vue";
+const safetyInfoModal = ref(null);
+function hideModal() {
+  if (safetyInfoModal.value) (safetyInfoModal.value as BModal).hide();
 }
 </script>

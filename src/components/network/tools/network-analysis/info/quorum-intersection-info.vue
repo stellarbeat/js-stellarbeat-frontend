@@ -2,7 +2,7 @@
   <b-modal
     lazy
     id="network-analysis-qi-info"
-    ref="network-analysis-qi-info"
+    ref="quorumIntersectionInfoModal"
     hide-header
   >
     <h3>What is quorum intersection?</h3>
@@ -51,21 +51,13 @@
   </b-modal>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { BModal, BButton } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
 
-@Component({
-  components: {
-    BModal,
-    BButton,
-  },
-})
-export default class QuorumIntersectionInfo extends Mixins(StoreMixin) {
-  hideModal() {
-    //@ts-ignore
-    this.$refs["network-analysis-qi-info"].hide();
-  }
+import { ref } from "vue";
+const quorumIntersectionInfoModal = ref(null);
+function hideModal() {
+  if (quorumIntersectionInfoModal.value)
+    (quorumIntersectionInfoModal.value as BModal).hide();
 }
 </script>
