@@ -76,13 +76,12 @@ import {
 } from "bootstrap-vue";
 
 import Vue from "vue";
-Vue.component("BIconHouse", BIconHouse);
 Vue.component("BIconBullseye", BIconBullseye);
 Vue.component("BIconBuilding", BIconBuilding);
 
 import useStore from "@/store/useStore";
 
-const props = defineProps({
+defineProps({
   stickyKey: String,
   icon: String,
   hasExploreSection: {
@@ -90,7 +89,6 @@ const props = defineProps({
     default: true,
   },
 });
-console.log(props.icon);
 
 const store = useStore();
 

@@ -106,12 +106,13 @@ import NavLink from "@/components/side-bar/nav-link.vue";
 import OrganizationsDropdown from "@/components/network/sidebar/organizations-dropdown.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
 
-import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
+import { BModal, VBModal, BBadge, VBTooltip, BIconHouse } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
 import useStore from "@/store/useStore";
 import VueScrollTo from "vue-scrollto";
 Vue.directive("b-modal", VBModal);
 Vue.directive("b-tooltip", VBTooltip);
+Vue.component("BIconHouse", BIconHouse);
 
 const organizationsExpanded = ref(true);
 const store = useStore();
