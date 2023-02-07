@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   Chart,
   ArcElement,
@@ -21,159 +21,157 @@ import {
   Tooltip,
 } from "chart.js";
 
-import Vue from "vue";
+import Vue, {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  Ref,
+  watch,
+} from "vue";
 import { Component, Watch } from "vue-property-decorator";
 
 import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import useStore from "@/store/useStore";
 
-@Component({
-  name: "nodes-versions",
-})
-export default class NodesVersions extends Vue {
-  public chart: Chart | null = null;
+const chart: Ref<Chart | null> = ref(null);
+const store: Store = useStore();
+const network = store.network;
 
-  get store(): Store {
-    return useStore();
+watch(
+  () => store.includeWatcherNodes,
+  () => {
+    if (!chart.value || !chart.value.data.datasets) return;
+    chart.value.data.datasets[0].data = chartData.value;
+    chart.value.update();
   }
+);
 
-  get network(): Network {
-    return this.store.network;
-  }
-
-  @Watch("store.includeWatcherNodes")
-  protected onWatcherNodesOptionChanged() {
-    if (!this.chart || !this.chart.data.datasets) return;
-    this.chart.data.datasets[0].data = this.chartData;
-    this.chart.update();
-  }
-
-  get sortedVersions() {
-    let versions: Record<string, number | undefined> = this.network.nodes
-      .filter(useStore().watcherNodeFilter)
-      .filter((node) => node.versionStr)
-      .map((node) =>
-        (node.versionStr as string)
-          .replace("stellar-core ", "")
-          .replace("v", "")
-          .replace(/ \(.*$/, "")
-          .replace(/-.*$/, "")
-      )
-      .reduce(
-        (
-          accumulator: Record<string, number | undefined>,
-          currentValue: string
-        ) => {
-          if (accumulator[currentValue] === undefined)
-            accumulator[currentValue] = 1;
-          else (accumulator[currentValue] as number)++;
-          return accumulator;
-        },
-        {}
-      );
-
-    let sortedVersions: [string, number][] = [];
-    for (let versionStr in versions) {
-      if (versions[versionStr] !== undefined)
-        sortedVersions.push([versionStr, versions[versionStr] as number]);
-    }
-
-    return sortedVersions.sort(function (
-      a: [string, number],
-      b: [string, number]
-    ) {
-      return b[1] - a[1];
-    });
-  }
-
-  get chartData() {
-    let countries = [];
-    if (this.sortedVersions[0]) countries.push(this.sortedVersions[0][1]);
-    if (this.sortedVersions[1]) countries.push(this.sortedVersions[1][1]);
-    if (this.sortedVersions[2]) countries.push(this.sortedVersions[2][1]);
-    if (this.sortedVersions[3])
-      countries.push(
-        this.sortedVersions.slice(3).reduce((accumulator, currentValue) => {
-          return accumulator + currentValue[1];
-        }, 0)
-      );
-
-    return countries;
-  }
-
-  get labels() {
-    let labels = [];
-    if (this.sortedVersions[0]) labels.push(this.sortedVersions[0][0]);
-    if (this.sortedVersions[1]) labels.push(this.sortedVersions[1][0]);
-    if (this.sortedVersions[2]) labels.push(this.sortedVersions[2][0]);
-    if (this.sortedVersions[3]) labels.push("Other");
-
-    return labels;
-  }
-
-  initializeDoughnut() {
-    let context = (this.$refs.versionGraph as HTMLCanvasElement).getContext(
-      "2d"
+const sortedVersions = computed(() => {
+  let versions: Record<string, number | undefined> = network.nodes
+    .filter(useStore().watcherNodeFilter)
+    .filter((node) => node.versionStr)
+    .map((node) =>
+      (node.versionStr as string)
+        .replace("stellar-core ", "")
+        .replace("v", "")
+        .replace(/ \(.*$/, "")
+        .replace(/-.*$/, "")
+    )
+    .reduce(
+      (
+        accumulator: Record<string, number | undefined>,
+        currentValue: string
+      ) => {
+        if (accumulator[currentValue] === undefined)
+          accumulator[currentValue] = 1;
+        else (accumulator[currentValue] as number)++;
+        return accumulator;
+      },
+      {}
     );
-    Chart.register(Tooltip, ArcElement, DoughnutController, Legend);
-    this.chart = new Chart(context as CanvasRenderingContext2D, {
-      type: "doughnut",
-      data: {
-        labels: this.labels,
-        datasets: [
-          {
-            label: "Node versions",
-            backgroundColor: [
-              "rgba(25, 151, 198,0.7)", // primary blue
-              "rgba(27, 201, 141,0.7)", // success green
-              "rgba(228, 216, 54,0.7)", // warning yellow
-              "#e5e5e5",
-            ],
-            borderColor: [
-              "rgba(25, 151, 198,1)", // primary blue
-              "#1bc98e", // success green
-              "#e4d836", // warning yellow
-              "#e5e5e5",
-            ],
-            borderWidth: 0,
-            data: this.chartData,
-          },
-        ],
+  let sortedVersions: [string, number][] = [];
+  for (let versionStr in versions) {
+    if (versions[versionStr] !== undefined)
+      sortedVersions.push([versionStr, versions[versionStr] as number]);
+  }
+
+  return sortedVersions.sort(function (
+    a: [string, number],
+    b: [string, number]
+  ) {
+    return b[1] - a[1];
+  });
+});
+
+const chartData = computed(() => {
+  let countries: number[] = [];
+  if (sortedVersions.value[0]) countries.push(sortedVersions.value[0][1]);
+  if (sortedVersions.value[1]) countries.push(sortedVersions.value[1][1]);
+  if (sortedVersions.value[2]) countries.push(sortedVersions.value[2][1]);
+  if (sortedVersions.value[3])
+    countries.push(
+      sortedVersions.value.slice(3).reduce((accumulator, currentValue) => {
+        return accumulator + currentValue[1];
+      }, 0)
+    );
+
+  return countries;
+});
+
+const labels = computed(() => {
+  let labels: string[] = [];
+  if (sortedVersions.value[0]) labels.push(sortedVersions.value[0][0]);
+  if (sortedVersions.value[1]) labels.push(sortedVersions.value[1][0]);
+  if (sortedVersions.value[2]) labels.push(sortedVersions.value[2][0]);
+  if (sortedVersions.value[3]) labels.push("Other");
+
+  return labels;
+});
+
+const versionGraph: Ref<HTMLCanvasElement | null> = ref(null);
+function initializeDoughnut() {
+  if (versionGraph.value === null) return;
+  let context = versionGraph.value.getContext("2d");
+
+  Chart.register(Tooltip, ArcElement, DoughnutController, Legend);
+  chart.value = new Chart(context as CanvasRenderingContext2D, {
+    type: "doughnut",
+    data: {
+      labels: labels.value,
+      datasets: [
+        {
+          label: "Node versions",
+          backgroundColor: [
+            "rgba(25, 151, 198,0.7)", // primary blue
+            "rgba(27, 201, 141,0.7)", // success green
+            "rgba(228, 216, 54,0.7)", // warning yellow
+            "#e5e5e5",
+          ],
+          borderColor: [
+            "rgba(25, 151, 198,1)", // primary blue
+            "#1bc98e", // success green
+            "#e4d836", // warning yellow
+            "#e5e5e5",
+          ],
+          borderWidth: 0,
+          data: chartData.value,
+        },
+      ],
+    },
+
+    // Configuration options go here
+    options: {
+      layout: {
+        padding: {
+          left: 0,
+          right: 0,
+        },
       },
-
-      // Configuration options go here
-      options: {
-        layout: {
-          padding: {
-            left: 0,
-            right: 0,
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "50%",
-        plugins: {
-          legend: {
-            display: true,
-            position: "bottom",
-          },
-        },
-        animation: {
-          duration: 0, // general animation time
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "50%",
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
         },
       },
-    });
-  }
-
-  mounted() {
-    this.initializeDoughnut();
-  }
-
-  beforeDestroy() {
-    if (this.chart) this.chart.destroy();
-  }
+      animation: {
+        duration: 0, // general animation time
+      },
+    },
+  });
 }
+
+onMounted(function () {
+  initializeDoughnut();
+});
+
+onBeforeUnmount(function () {
+  if (chart.value) chart.value.destroy();
+});
 </script>
 
 <style scoped>

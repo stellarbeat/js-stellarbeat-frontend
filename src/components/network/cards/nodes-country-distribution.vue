@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   ArcElement,
   Chart,
@@ -24,158 +24,150 @@ import {
   Tooltip,
 } from "chart.js";
 
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from "vue";
 
-import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import useStore from "@/store/useStore";
 
-@Component({
-  name: "nodes-country-distribution",
-})
-export default class NodesCountryDistribution extends Vue {
-  public chart: Chart | null = null;
+const chart: Ref<Chart | null> = ref(null);
+const store: Store = useStore();
+const network = store.network;
 
-  get store(): Store {
-    return useStore();
-  }
+watch(() => store.includeWatcherNodes, onWatcherNodesOptionChanged);
 
-  get network(): Network {
-    return this.store.network;
-  }
-
-  @Watch("store.includeWatcherNodes")
-  protected onWatcherNodesOptionChanged() {
-    if (!this.chart || !this.chart.data.datasets) return;
-
-    this.chart.data.datasets[0].data = this.chartData;
-    this.chart.update();
-  }
-
-  get sortedCountries() {
-    let countries = this.network.nodes
-      .filter(this.store.watcherNodeFilter)
-      .filter((node) => node.geoData.countryName)
-      .map((node) => node.geoData.countryName)
-      .reduce(
-        (
-          accumulator: Record<string, number | undefined>,
-          currentValue: string | null
-        ) => {
-          if (currentValue === null) {
-            return accumulator;
-          }
-          if (!accumulator[currentValue]) accumulator[currentValue] = 1;
-          else (accumulator[currentValue] as number)++;
-          return accumulator;
-        },
-        {}
-      );
-
-    let sortedCountries: [string, number][] = [];
-    for (let countryName in countries) {
-      if (countries[countryName])
-        sortedCountries.push([countryName, countries[countryName] as number]);
-    }
-
-    return sortedCountries.sort(function (a, b) {
-      return b[1] - a[1];
-    });
-  }
-
-  get chartData() {
-    let countries = [];
-    if (this.sortedCountries[0]) countries.push(this.sortedCountries[0][1]);
-    if (this.sortedCountries[1]) countries.push(this.sortedCountries[1][1]);
-    if (this.sortedCountries[2]) countries.push(this.sortedCountries[2][1]);
-    if (this.sortedCountries[3])
-      countries.push(
-        this.sortedCountries.slice(3).reduce((accumulator, currentValue) => {
-          return accumulator + currentValue[1];
-        }, 0)
-      );
-
-    return countries;
-  }
-  get labels() {
-    let labels = [];
-    if (this.sortedCountries[0]) labels.push(this.sortedCountries[0][0]);
-    if (this.sortedCountries[1]) labels.push(this.sortedCountries[1][0]);
-    if (this.sortedCountries[2]) labels.push(this.sortedCountries[2][0]);
-    if (this.sortedCountries[3]) labels.push("Other");
-
-    return labels;
-  }
-
-  initializeDoughnut() {
-    if (this.sortedCountries.length === 0) {
-      return;
-    }
-    let context = (
-      this.$refs.countryDistributionGraph as HTMLCanvasElement
-    ).getContext("2d");
-    Chart.register(Tooltip, Legend, ArcElement, DoughnutController);
-    this.chart = new Chart(context as CanvasRenderingContext2D, {
-      type: "doughnut",
-      // The data for our dataset
-      data: {
-        labels: this.labels,
-        datasets: [
-          {
-            label: "Node countries",
-            backgroundColor: [
-              "rgba(25, 151, 198,0.7)", // primary blue
-              "rgba(27, 201, 141,0.7)", // success green
-              "rgba(228, 216, 54,0.7)", // warning yellow
-              "#e5e5e5",
-            ],
-            borderColor: [
-              "rgba(25, 151, 198,1)", // primary blue
-              "#1bc98e", // success green
-              "#e4d836", // warning yellow
-              "#e5e5e5",
-            ],
-            borderWidth: 0,
-            data: this.chartData,
-          },
-        ],
-      },
-
-      // Configuration options go here
-      options: {
-        layout: {
-          padding: {
-            left: 0,
-            right: 0,
-          },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "50%",
-        plugins: {
-          legend: {
-            display: true,
-            position: "bottom",
-          },
-        },
-        animation: {
-          duration: 0, // general animation time
-        },
-      },
-    });
-  }
-
-  mounted() {
-    this.initializeDoughnut();
-  }
-
-  beforeDestroy() {
-    if (this.chart) {
-      this.chart.destroy();
-    }
-  }
+function onWatcherNodesOptionChanged() {
+  if (!chart.value || !chart.value.data.datasets) return;
+  chart.value.data.datasets[0].data = chartData.value;
+  chart.value.update();
 }
+
+const sortedCountries = computed(() => {
+  let countries = network.nodes
+    .filter(useStore().watcherNodeFilter)
+    .filter((node) => node.geoData.countryName)
+    .map((node) => node.geoData.countryName)
+    .reduce(
+      (
+        accumulator: Record<string, number | undefined>,
+        currentValue: string | null
+      ) => {
+        if (currentValue === null) {
+          return accumulator;
+        }
+        if (!accumulator[currentValue]) accumulator[currentValue] = 1;
+        else (accumulator[currentValue] as number)++;
+        return accumulator;
+      },
+      {}
+    );
+
+  let sortedCountries: [string, number][] = [];
+  for (let countryName in countries) {
+    if (countries[countryName])
+      sortedCountries.push([countryName, countries[countryName] as number]);
+  }
+
+  return sortedCountries.sort(function (a, b) {
+    return b[1] - a[1];
+  });
+});
+
+const chartData = computed(() => {
+  let countries = [];
+  if (sortedCountries.value[0]) countries.push(sortedCountries.value[0][1]);
+  if (sortedCountries.value[1]) countries.push(sortedCountries.value[1][1]);
+  if (sortedCountries.value[2]) countries.push(sortedCountries.value[2][1]);
+  if (sortedCountries.value[3])
+    countries.push(
+      sortedCountries.value.slice(3).reduce((accumulator, currentValue) => {
+        return accumulator + currentValue[1];
+      }, 0)
+    );
+
+  return countries;
+});
+
+const labels = computed(() => {
+  let labels = [];
+  if (sortedCountries.value[0]) labels.push(sortedCountries.value[0][0]);
+  if (sortedCountries.value[1]) labels.push(sortedCountries.value[1][0]);
+  if (sortedCountries.value[2]) labels.push(sortedCountries.value[2][0]);
+  if (sortedCountries.value[3]) labels.push("Other");
+
+  return labels;
+});
+
+const countryDistributionGraph: Ref<HTMLCanvasElement | null> = ref(null);
+
+function initializeDoughnut() {
+  if (countryDistributionGraph.value === null) return;
+
+  if (sortedCountries.value.length === 0) {
+    return;
+  }
+  let context = countryDistributionGraph.value.getContext("2d");
+  if (!context) return;
+
+  Chart.register(Tooltip, Legend, ArcElement, DoughnutController);
+  chart.value = new Chart(context, {
+    type: "doughnut",
+    // The data for our dataset
+    data: {
+      labels: labels.value,
+      datasets: [
+        {
+          label: "Node countries",
+          backgroundColor: [
+            "rgba(25, 151, 198,0.7)", // primary blue
+            "rgba(27, 201, 141,0.7)", // success green
+            "rgba(228, 216, 54,0.7)", // warning yellow
+            "#e5e5e5",
+          ],
+          borderColor: [
+            "rgba(25, 151, 198,1)", // primary blue
+            "#1bc98e", // success green
+            "#e4d836", // warning yellow
+            "#e5e5e5",
+          ],
+          borderWidth: 0,
+          data: chartData.value,
+        },
+      ],
+    },
+
+    // Configuration options go here
+    options: {
+      layout: {
+        padding: {
+          left: 0,
+          right: 0,
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "50%",
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
+        },
+      },
+      animation: {
+        duration: 0, // general animation time
+      },
+    },
+  });
+}
+
+onMounted(() => {
+  initializeDoughnut();
+});
+
+onBeforeUnmount(() => {
+  if (chart.value) {
+    chart.value.destroy();
+  }
+});
 </script>
 
 <style scoped></style>
