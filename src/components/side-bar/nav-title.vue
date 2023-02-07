@@ -1,64 +1,36 @@
-<template functional>
+<template>
   <div
     class="sb-nav-title"
-    :class="
-      (props.hasDanger && props.completeDanger ? 'sb-danger ' : '') +
-      props.classes
-    "
+    :class="(hasDanger && completeDanger ? 'sb-danger ' : '') + classes"
   >
-    {{ props.title }}
+    {{ title }}
     <b-icon-exclamation-triangle
-      :title="props.danger"
-      v-if="props.hasDanger"
-      v-b-tooltip.topleft:hover="props.danger"
+      :title="danger"
+      v-if="hasDanger"
+      v-b-tooltip.topleft:hover="danger"
       class="sb-danger mr-1"
     />
     <b-icon-exclamation-triangle
-      :title="props.warnings"
-      v-else-if="props.hasWarnings"
-      v-b-tooltip.topleft:hover="props.warnings"
+      :title="warnings"
+      v-else-if="hasWarnings"
+      v-b-tooltip.topleft:hover="warnings"
       class="sb-alert mr-1"
     />
   </div>
 </template>
-<script lang="ts">
-import { BIconExclamationTriangle, VBTooltip } from "bootstrap-vue";
-import Vue from "vue";
+<script setup lang="ts">
+import { BIconExclamationTriangle } from "bootstrap-vue";
+import { defineProps } from "vue";
 
-Vue.component("b-icon-exclamation-triangle", BIconExclamationTriangle);
-Vue.directive("b-tooltip", VBTooltip);
-export default {
-  props: {
-    title: {
-      type: String,
-      default: "",
-    },
-    hasWarnings: {
-      type: Boolean,
-      default: false,
-    },
-    warnings: {
-      type: String,
-      default: "",
-    },
-    hasDanger: {
-      type: Boolean,
-      default: false,
-    },
-    danger: {
-      type: String,
-      default: "",
-    },
-    completeDanger: {
-      type: Boolean,
-      default: true,
-    },
-    classes: {
-      type: String,
-      default: "",
-    },
-  },
-};
+const props = defineProps({
+  title: { type: String, default: "" },
+  hasWarnings: { type: Boolean, default: false },
+  warnings: { type: String, default: "" },
+  hasDanger: { type: Boolean, default: false },
+  danger: { type: String, default: "" },
+  completeDanger: { type: Boolean, default: true },
+  classes: { type: String, default: "" },
+});
 </script>
 
 <style scoped>

@@ -12,17 +12,14 @@
     />
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import { BPagination } from "bootstrap-vue";
+import { defineProps } from "vue";
 
-export default {
-  name: "nav-pagination",
-  props: {
-    value: {},
-    totalRows: {},
-  },
-  components: { BPagination },
-};
+defineProps({
+  value: {},
+  totalRows: {},
+});
 </script>
 
 <style scoped>

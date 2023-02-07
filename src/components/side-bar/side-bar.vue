@@ -63,10 +63,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { defineProps, onMounted } from "vue";
 import UndoRedo from "@/components/node/tools/simulation/UndoRedo.vue";
 import stickybits from "stickybits";
 import {
@@ -76,44 +74,29 @@ import {
   BIconBullseye,
   BIconBuilding,
 } from "bootstrap-vue";
+
+import Vue from "vue";
+Vue.component("BIconHouse", BIconHouse);
+Vue.component("BIconBullseye", BIconBullseye);
+Vue.component("BIconBuilding", BIconBuilding);
+
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    UndoRedo,
-    BIcon,
-    BFormCheckbox,
-    BIconHouse,
-    BIconBullseye,
-    BIconBuilding,
+const props = defineProps({
+  stickyKey: String,
+  icon: String,
+  hasExploreSection: {
+    type: Boolean,
+    default: true,
   },
-})
-export default class SideBar extends Vue {
-  @Prop()
-  stickyKey!: string;
+});
+console.log(props.icon);
 
-  @Prop()
-  icon!: string;
+const store = useStore();
 
-  @Prop({ default: true })
-  hasExploreSection!: boolean;
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get selectedNode() {
-    return this.store.selectedNode;
-  }
-
-  get network() {
-    return this.store.network;
-  }
-
-  mounted() {
-    stickybits("#sticky");
-  }
-}
+onMounted(() => {
+  stickybits("#sticky");
+});
 </script>
 <style scoped>
 .overflow {
@@ -124,19 +107,14 @@ export default class SideBar extends Vue {
 .sb-card-header {
   border: none !important;
   margin-top: 18px;
-  margin-bottom: 0px;
-  margin-left: 0px;
+  margin-bottom: 0;
+  margin-left: 0;
   padding-left: 21px !important;
 }
 
 .sb-card-title {
   line-height: 1 !important;
   margin-bottom: 2px !important;
-}
-
-.sb-card-title-icon {
-  opacity: 0.8;
-  color: #1997c6;
 }
 
 .title-icon {
@@ -156,13 +134,6 @@ export default class SideBar extends Vue {
 }
 
 .sb-nav-list {
-  padding-left: 0px;
-}
-
-.success {
-}
-
-.danger {
-  color: #cd201f;
+  padding-left: 0;
 }
 </style>
