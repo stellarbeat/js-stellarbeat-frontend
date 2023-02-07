@@ -37,16 +37,4 @@
     </p>
   </div>
 </template>
-
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
-
-@Component({
-  components: {},
-  directives: {},
-})
-export default class LivenessInfo extends Mixins(StoreMixin) {}
-</script>
-
 <style scoped></style>

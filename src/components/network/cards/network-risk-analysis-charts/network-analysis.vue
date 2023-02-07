@@ -727,6 +727,7 @@ export default class NetworkAnalysis extends Mixins(
     this.isLoading = false;
     this.$nextTick(() => {
       if (this.$refs["yearChart"])
+        //@ts-ignore
         (this.$refs["yearChart"] as AggregationLineChart).updateData(); //for some reason watcher doesn't trigger
     });
   }
@@ -756,6 +757,7 @@ export default class NetworkAnalysis extends Mixins(
     this.isLoading = false;
     this.$nextTick(() => {
       if (this.$refs["monthChart"])
+        //@ts-ignore
         (this.$refs["monthChart"] as AggregationLineChart).updateData(); //for some reason watcher doesn't trigger
     });
   }
@@ -783,6 +785,7 @@ export default class NetworkAnalysis extends Mixins(
     this.isLoading = false;
     this.$nextTick(() => {
       if (this.$refs["dayChart"])
+        //@ts-ignore
         (this.$refs["dayChart"] as AggregationLineChart).updateData(); //for some reason watcher doesn't trigger
     });
   }

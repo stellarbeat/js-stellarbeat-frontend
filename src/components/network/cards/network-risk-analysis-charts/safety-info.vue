@@ -5,8 +5,8 @@
       The network is scanned for sets of nodes that contains intersections of
       one or more quorum pairs (network splitting sets). The chart shows the
       smallest sizes of these sets and, if available, the minimum and maximum
-      for each time window. The organizations, countries and ISP's of these
-      nodes are also shown.
+      for each time window. The organizations, countries and ISPs of these nodes
+      are also shown.
     </p>
     <h3>What does it mean?</h3>
     <p class="my-4">
@@ -29,10 +29,10 @@
       Because quorum intersection is calculated for the entire network, it could
       be that badly configured nodes on the edge of the network can cause quorum
       intersection to fail.<br />
-      To mitigate this, stellarbeat filters out 'badly configured' nodes. At the
-      moment these are nodes that have only themselves in their quorumset.<br />
+      To mitigate this, Stellarbeat filters out 'badly configured' nodes. At the
+      moment these are nodes that have only themselves in their quorum-set.<br />
       For ISP and country information of nodes we rely on the
-      <a href="https://ipstack.com/">IPstack api</a>. This data is not
+      <a href="https://ipstack.com/">IP-stack api</a>. This data is not
       guaranteed to be correct.
     </p>
     <h3>More information</h3>
@@ -48,16 +48,5 @@
     </p>
   </div>
 </template>
-
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { StoreMixin } from "@/mixins/StoreMixin";
-
-@Component({
-  components: {},
-  directives: {},
-})
-export default class SafetyInfo extends Mixins(StoreMixin) {}
-</script>
 
 <style scoped></style>
