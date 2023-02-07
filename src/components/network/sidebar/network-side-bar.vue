@@ -97,10 +97,8 @@
   </side-bar>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import Vue, { computed, ref } from "vue";
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
 import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-node.vue";
 import ValidatorsDropdown from "@/components/network/sidebar/validators-dropdown.vue";
@@ -108,70 +106,48 @@ import NavLink from "@/components/side-bar/nav-link.vue";
 import OrganizationsDropdown from "@/components/network/sidebar/organizations-dropdown.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
 
-import { BIconX, BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
+import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
 import useStore from "@/store/useStore";
-import Stellar from "@/components/organization/logo/stellar.vue";
+import VueScrollTo from "vue-scrollto";
+Vue.directive("b-modal", VBModal);
+Vue.directive("b-tooltip", VBTooltip);
 
-@Component({
-  components: {
-    Stellar,
-    ModifyNetwork,
-    SideBar,
-    OrganizationsDropdown,
-    NavLink,
-    SimulateNewNode,
-    ValidatorsDropdown,
-    BModal,
-    BIconX: BIconX,
-    BBadge,
-  },
-  directives: { "b-modal": VBModal, "b-tooltip": VBTooltip },
-})
-export default class NetworkSideBar extends Vue {
-  protected validatorsExpanded: boolean =
-    this.networkTransitiveQuorumSetOrganizations.length === 0;
-  protected organizationsExpanded = true;
+const organizationsExpanded = ref(true);
+const store = useStore();
+const network = store.network;
 
-  get store(): Store {
-    return useStore();
-  }
+const networkTransitiveQuorumSetNodes = computed(() => {
+  return Array.from(network.nodesTrustGraph.networkTransitiveQuorumSet).map(
+    (publicKey) => network.getNodeByPublicKey(publicKey)
+  );
+});
 
-  get network() {
-    return this.store.network;
-  }
+const networkTransitiveQuorumSetOrganizations = computed(() => {
+  return [
+    ...new Set(
+      networkTransitiveQuorumSetNodes.value
+        .filter((node) => node && node.organizationId)
+        .map((node) =>
+          network.getOrganizationById(node.organizationId as string)
+        )
+    ),
+  ];
+});
+const validatorsExpanded = ref(
+  networkTransitiveQuorumSetOrganizations.value.length === 0
+);
+const tomlNodesExport = computed(() => {
+  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
+    network
+  );
+  return stellarCoreConfigurationGenerator.nodesToToml(
+    networkTransitiveQuorumSetNodes.value
+  );
+});
 
-  //todo: move to domain
-  get networkTransitiveQuorumSetNodes() {
-    return Array.from(
-      this.network.nodesTrustGraph.networkTransitiveQuorumSet
-    ).map((publicKey) => this.network.getNodeByPublicKey(publicKey));
-  }
-
-  //todo: move to domain
-  get networkTransitiveQuorumSetOrganizations() {
-    return [
-      ...new Set(
-        this.networkTransitiveQuorumSetNodes
-          .filter((node) => node && node.organizationId)
-          .map((node) =>
-            this.network.getOrganizationById(node.organizationId as string)
-          )
-      ),
-    ];
-  }
-
-  get tomlNodesExport() {
-    let stellarCoreConfigurationGenerator =
-      new StellarCoreConfigurationGenerator(this.network);
-    return stellarCoreConfigurationGenerator.nodesToToml(
-      this.networkTransitiveQuorumSetNodes
-    );
-  }
-
-  scrollToHorizonCard() {
-    this.$scrollTo("#public-horizon-apis-card");
-  }
+function scrollToHorizonCard() {
+  VueScrollTo.scrollTo("#public-horizon-apis-card");
 }
 </script>
 <style scoped>
