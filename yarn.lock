@@ -8683,28 +8683,10 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vue-async-computed-decorator@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/vue-async-computed-decorator/-/vue-async-computed-decorator-0.0.5.tgz#ca29d39c587a4c3fc310772511f32208020a2593"
-  integrity sha512-WqJUmOZ+kvfW18t95cgfyvhqnDnevU7BSFXyF3SCH9vD4pmKtRmJmoQ3vzeVjqBFPExUrsLd9qtlc2XoHOVMIg==
-  dependencies:
-    vue-async-computed "^3.8.3"
-    vue-class-component "^7.2.5"
-
-vue-async-computed@^3.8.3, vue-async-computed@^3.9.0:
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/vue-async-computed/-/vue-async-computed-3.9.0.tgz#af3181c25168bfe9d86d8ffbc7033bf9e484fe84"
-  integrity sha512-ac6m/9zxHHNGGKNOU1en8qNk+fAmEbJLuWL7qyQTFuH3vjv3V4urv//QHcVzCobROM6btnaDG2b+XYMncF/ETA==
-
-vue-class-component@^7.2.5, vue-class-component@^7.2.6:
+vue-class-component@^7.2.6:
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.2.6.tgz#8471e037b8e4762f5a464686e19e5afc708502e4"
   integrity sha512-+eaQXVrAm/LldalI272PpDe3+i4mPis0ORiMYxF6Ae4hyuCh15W8Idet7wPUEs4N4YptgFHGys4UrgNQOMyO6w==
-
-vue-client-only@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/vue-client-only/-/vue-client-only-2.1.0.tgz#1a67a47b8ecacfa86d75830173fffee3bf8a4ee3"
-  integrity sha512-vKl1skEKn8EK9f8P2ZzhRnuaRHLHrlt1sbRmazlvsx6EiC3A8oWF8YCBrMJzoN+W3OnElwIGbVjsx6/xelY1AA==
 
 vue-clipboard2@^0.3.3:
   version "0.3.3"
@@ -8829,11 +8811,6 @@ vue-truncate-filter@^1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/vue-truncate-filter/-/vue-truncate-filter-1.1.7.tgz#e365fd2d4520c017293308e0ecbb1dd6176c3af2"
   integrity sha512-kFmUDsDFIj5vArdK6hX84v80fTWJIMrsYF5keCluy9hMiaKGL8NyApnMbWavZeDod24YeYMVQ9jjd7MkRn3AAg==
-
-vue2-helpers@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/vue2-helpers/-/vue2-helpers-2.1.1.tgz#b061e5bf895a15f658fad0597004742509ea7196"
-  integrity sha512-ujYiQ5xfO8qKP3ly8hMqtNA/QGoJCTmKdYErsL3Oxr3nURJ5axah3IV4ztC/Y3zR6qsST0yVwuG1nEneQ9jXQQ==
 
 vue2-leaflet-markercluster@^3.1.0:
   version "3.1.0"

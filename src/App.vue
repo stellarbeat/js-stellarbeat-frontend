@@ -88,9 +88,9 @@ import Github from "@/components/organization/logo/github.vue";
 import CustomNetwork from "@/components/network/tools/modify-network.vue";
 import { BAlert, BIconEnvelope } from "bootstrap-vue";
 import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
-import { useRoute } from "vue2-helpers/vue-router";
 import useStore from "@/store/useStore";
 import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
+import { useRoute } from "vue-router/composables";
 
 const errorMessage = ref(
   "Could not connect to stellarbeat.io api, please refresh the page"

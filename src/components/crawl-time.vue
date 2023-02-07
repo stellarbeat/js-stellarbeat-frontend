@@ -1,47 +1,43 @@
 <template>
   <div class="crawl-time-component">
-    <client-only class="crawl-time-component">
-      <!--Needs to be client only because date rendering is based on locale!-->
-      <b-form-datepicker
-        size="sm"
-        v-model="time"
-        class="date-picker p-0"
-        :date-format-options="{
-          year: 'numeric',
-          month: 'short',
-          day: '2-digit',
-        }"
-        :min="minSelectedDate"
-        :max="new Date()"
-      >
-        <template v-slot:button-content>
-          <b-icon-calendar class="text-gray" />
-        </template>
-      </b-form-datepicker>
-      <b-form-timepicker
-        size="sm"
-        v-model="crawlTime"
-        class="time-picker p-0"
-        dropleft
-      >
-        <template v-slot:button-content></template>
-      </b-form-timepicker>
-      <button
-        v-b-tooltip.hover
-        title="Travel to selected time"
-        class="btn btn-sm btn-primary time-travel-btn"
-        @click="timeTravel"
-      >
-        <b-icon-clock />
-      </button>
-    </client-only>
+    <b-form-datepicker
+      size="sm"
+      v-model="time"
+      class="date-picker p-0"
+      :date-format-options="{
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+      }"
+      :min="minSelectedDate"
+      :max="new Date()"
+    >
+      <template v-slot:button-content>
+        <b-icon-calendar class="text-gray" />
+      </template>
+    </b-form-datepicker>
+    <b-form-timepicker
+      size="sm"
+      v-model="crawlTime"
+      class="time-picker p-0"
+      dropleft
+    >
+      <template v-slot:button-content></template>
+    </b-form-timepicker>
+    <button
+      v-b-tooltip.hover
+      title="Travel to selected time"
+      class="btn btn-sm btn-primary time-travel-btn"
+      @click="timeTravel"
+    >
+      <b-icon-clock />
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import Vue, { ref, Ref } from "vue";
 import moment from "moment";
-import ClientOnly from "vue-client-only";
 import {
   BIconClock,
   BIconCalendar,

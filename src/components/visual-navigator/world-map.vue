@@ -1,40 +1,38 @@
 <template>
   <div style="height: 100%">
-    <client-only>
-      <l-map
-        ref="myMap"
-        :center="center"
-        :zoom="zoom"
-        :options="mapOptions"
-        v-if="isMounted"
-      >
-        <l-tile-layer :url="url" :attribution="attribution" />
-        <Vue2LeafletMarkerCluster :options="clusterOptions" ref="clusterRef">
-          <LCircleMarker
-            v-for="marker in markers"
-            :lat-lng="marker.latLng"
-            @click="nodeSelected(marker.node)"
-            :key="marker.node.publicKey"
-            :fillColor="marker.color"
-            :fillOpacity="1"
-            :color="getColor(marker)"
-            :radius="7"
-            :options="{
-              publicKey: marker.node.publicKey,
-              isNodeFailing: isNodeFailing(marker.node),
-              organizationId: marker.node.organizationId,
-            }"
-          >
-            <slot>lol</slot>
-            <l-tooltip :options="{ permanent: false, interactive: true }">
-              <div :id="marker.node.publicKey">
-                <full-validator-title :node="marker.node" />
-              </div>
-            </l-tooltip>
-          </LCircleMarker>
-        </Vue2LeafletMarkerCluster>
-      </l-map>
-    </client-only>
+    <l-map
+      ref="myMap"
+      :center="center"
+      :zoom="zoom"
+      :options="mapOptions"
+      v-if="isMounted"
+    >
+      <l-tile-layer :url="url" :attribution="attribution" />
+      <Vue2LeafletMarkerCluster :options="clusterOptions" ref="clusterRef">
+        <LCircleMarker
+          v-for="marker in markers"
+          :lat-lng="marker.latLng"
+          @click="nodeSelected(marker.node)"
+          :key="marker.node.publicKey"
+          :fillColor="marker.color"
+          :fillOpacity="1"
+          :color="getColor(marker)"
+          :radius="7"
+          :options="{
+            publicKey: marker.node.publicKey,
+            isNodeFailing: isNodeFailing(marker.node),
+            organizationId: marker.node.organizationId,
+          }"
+        >
+          <slot>lol</slot>
+          <l-tooltip :options="{ permanent: false, interactive: true }">
+            <div :id="marker.node.publicKey">
+              <full-validator-title :node="marker.node" />
+            </div>
+          </l-tooltip>
+        </LCircleMarker>
+      </Vue2LeafletMarkerCluster>
+    </l-map>
   </div>
 </template>
 
@@ -98,7 +96,6 @@ type Marker = {
   color: string;
 };
 
-import ClientOnly from "vue-client-only";
 import useStore from "@/store/useStore";
 import {useRoute, useRouter} from "vue-router/composables";
 

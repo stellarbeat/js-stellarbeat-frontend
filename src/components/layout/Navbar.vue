@@ -258,7 +258,7 @@ import {
 import Github from "@/components/organization/logo/github.vue";
 import Search from "@/components/search.vue";
 import useStore from "@/store/useStore";
-import { useRoute, useRouter } from "vue2-helpers/vue-router";
+import { useRoute, useRouter } from "vue-router/composables";
 
 export interface BrandImage {
   src: string;
