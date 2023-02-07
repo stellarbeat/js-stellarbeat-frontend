@@ -10,9 +10,7 @@
       :show-sub-title="true"
       :sub-title="'Transitive quorum set'"
     >
-      <template v-slot:action-dropdown>
-        <!--organization-actions v-on:add-organizations="store.addOrganizationToTransitiveQuorumSet" supports-add="true"/!-->
-      </template>
+      <template v-slot:action-dropdown> </template>
     </nav-link>
     <div v-show="showing" class="sb-nav-dropdown">
       <nav-link
@@ -39,59 +37,54 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import { mixins } from "vue-class-component";
+<script setup lang="ts">
 import { Organization } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { DropdownMixin } from "@/components/side-bar/dropdown-mixin";
 import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
+import { computed, defineEmits, defineProps } from "vue";
+import { useRoute, useRouter } from "vue-router/composables";
+import useStore from "@/store/useStore";
+import { useDropdown } from "@/components/side-bar/useDropdown";
 
-@Component({
-  components: {
-    OrganizationActions,
-    NavPagination,
-    NavLink,
-  },
-})
-export default class OrganizationsDropdown extends mixins(DropdownMixin) {
-  @Prop()
-  public organizations!: Organization[];
+const props = defineProps<{
+  organizations: Organization[];
+  expand: boolean;
+}>();
 
-  get paginatedOrganizations() {
-    return this.paginate(this.organizations).sort(
-      (orgA: Organization, orgB: Organization) => {
-        if (orgA.name > orgB.name) return 1;
-        else return -1;
-      }
-    );
-  }
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const emit = defineEmits(["toggleExpand"]);
+const { showing, toggleShow, currentPage, paginate } = useDropdown(
+  props.expand,
+  emit
+);
 
-  public selectOrganization(organization: Organization) {
-    this.$router.push({
-      name: "organization-dashboard",
-      params: { organizationId: organization.id },
-      query: {
-        view: this.$route.query.view,
-        "no-scroll": "0",
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
+const paginatedOrganizations = computed(() => {
+  return paginate(props.organizations).sort(
+    (orgA: Organization, orgB: Organization) => {
+      if (orgA.name > orgB.name) return 1;
+      else return -1;
+    }
+  );
+});
 
-  public hasWarnings(organization: Organization) {
-    return this.store.organizationHasWarnings(organization);
-  }
+function selectOrganization(organization: Organization) {
+  router.push({
+    name: "organization-dashboard",
+    params: { organizationId: organization.id },
+    query: {
+      view: route.query.view,
+      "no-scroll": "0",
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
+}
 
-  public getFailAt(organization: Organization) {
-    let nrOfValidatingNodes = organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator))
-      .filter((node) => node.isValidating).length;
-
-    return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
-  }
+function hasWarnings(organization: Organization) {
+  return store.organizationHasWarnings(organization);
 }
 </script>
 
