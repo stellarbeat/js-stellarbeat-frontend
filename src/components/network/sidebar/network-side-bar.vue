@@ -150,9 +150,3 @@ function scrollToHorizonCard() {
   VueScrollTo.scrollTo("#public-horizon-apis-card");
 }
 </script>
-<style scoped>
-.overflow {
-  overflow-y: auto;
-  max-height: calc(100vh - 18rem);
-}
-</style>

@@ -50,10 +50,10 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import Vue, { computed, defineProps, ref } from "vue";
 import NavTitle from "@/components/side-bar/nav-title.vue";
+
 import {
   BIcon,
   BIconPlus,
@@ -70,96 +70,57 @@ import {
   BIconBroadcast,
 } from "bootstrap-vue";
 
-@Component({
-  components: {
-    NavTitle,
-    BIcon,
-    BIconPlus,
-    BIconDownload,
-    BIconChevronRight,
-    BIconChevronDown,
-    BIconLightning,
-    BIconGear,
-    BIconSearch,
-    BIconLightningFill,
-    BIconPencil,
-    BIconGearWide,
-    BBadge,
-    BIconBroadcast,
-  },
-})
-export default class NavLink extends Vue {
-  @Prop()
-  title!: string;
+Vue.component("BIconPlus", BIconPlus);
+Vue.component("BIconDownload", BIconDownload);
+Vue.component("BIconChevronRight", BIconChevronRight);
+Vue.component("BIconChevronDown", BIconChevronDown);
+Vue.component("BIconLightning", BIconLightning);
+Vue.component("BIconLightningFill", BIconLightningFill);
+Vue.component("BIconGearWide", BIconGearWide);
+Vue.component("BIconGear", BIconGear);
+Vue.component("BIconSearch", BIconSearch);
+Vue.component("BBadge", BBadge);
+Vue.component("BIconPencil", BIconPencil);
+Vue.component("BIconBroadcast", BIconBroadcast);
 
-  @Prop({ default: false })
-  showSubTitle!: boolean;
+const props = defineProps({
+  title: { type: String, required: true },
+  showSubTitle: { type: Boolean, default: false },
+  subTitle: { type: String, default: "" },
+  showDropdownToggle: { type: Boolean, default: false },
+  dropDownShowing: { type: Boolean, default: false },
+  isLinkInDropdown: { type: Boolean, default: false },
+  hasWarnings: { type: Boolean, default: false },
+  warnings: { type: String, default: "" },
+  hasDanger: { type: Boolean, default: false },
+  completeDanger: { type: Boolean, default: true },
+  dangers: { type: String, default: "" },
+  showIcon: { type: Boolean, default: false },
+  icon: { type: String, default: "" },
+  secondary: { type: Boolean, default: false },
+});
 
-  @Prop()
-  subTitle!: string;
+const hover = ref(false);
 
-  @Prop({ default: false })
-  showDropdownToggle!: boolean;
+const chevronDirection = computed(() => {
+  if (props.dropDownShowing) return "chevron-down";
+  else return "chevron-right";
+});
 
-  @Prop({ default: false })
-  dropDownShowing!: boolean;
+const classObject = computed(() => {
+  return {
+    "sb-nav-dropdown-toggle": false,
+    "sb-nav-link": !props.isLinkInDropdown,
+    "sb-nav-dropdown-link": props.isLinkInDropdown,
+  };
+});
 
-  @Prop({ default: false })
-  isLinkInDropdown!: boolean;
-
-  @Prop({ default: false })
-  hasWarnings!: boolean;
-
-  @Prop()
-  warnings!: string;
-
-  @Prop({ default: false })
-  hasDanger!: boolean;
-
-  //do we want the title also red
-  @Prop({ default: true })
-  completeDanger!: boolean;
-
-  @Prop()
-  dangers!: string;
-
-  @Prop({ default: false })
-  showIcon!: boolean;
-
-  @Prop({})
-  icon!: string;
-
-  @Prop({ default: false })
-  secondary!: boolean;
-
-  hover = false;
-
-  get titleClass() {
-    return {
-      secondary: this.secondary,
-    };
-  }
-
-  get chevronDirection() {
-    if (this.dropDownShowing) return "chevron-down";
-    else return "chevron-right";
-  }
-
-  get classObject() {
-    return {
-      "sb-nav-dropdown-toggle": false,
-      "sb-nav-link": !this.isLinkInDropdown,
-      "sb-nav-dropdown-link": this.isLinkInDropdown,
-    };
-  }
-
-  get dropdownClass() {
-    return {
-      "right-end": !this.showDropdownToggle,
-      right: this.showDropdownToggle,
-    };
-  }
-}
+const dropdownClass = computed(() => {
+  return {
+    "right-end": !props.showDropdownToggle,
+    right: props.showDropdownToggle,
+  };
+});
 </script>
 <style scoped>
 .action {
