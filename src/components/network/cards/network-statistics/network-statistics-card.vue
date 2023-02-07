@@ -76,11 +76,9 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import moment from "moment";
-import { Component, Mixins, Prop } from "vue-property-decorator";
 import {
-  BTooltip,
   BIconInfoCircle,
   VBTooltip,
   BButton,
@@ -89,77 +87,75 @@ import {
 } from "bootstrap-vue";
 import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
-import { StoreMixin } from "@/mixins/StoreMixin";
+import Vue, {
+  computed,
+  defineProps,
+  Ref,
+  ref,
+  toRefs,
+  withDefaults,
+} from "vue";
+import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    NetworkStatisticsChart,
-    BTooltip,
-    BIconInfoCircle,
-    BButton,
-    BModal,
-    BBadge,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class NetworkStatisticsCard extends Mixins(StoreMixin) {
-  @Prop({ default: true })
-  isLoading!: boolean;
-  @Prop()
-  tooltip!: string;
-  @Prop()
-  title!: string;
-  @Prop()
-  value!: number;
-  @Prop()
-  initialDataLoaded!: boolean;
-  @Prop()
-  yearStatistics!: NetworkStatisticsAggregation[];
-  @Prop()
-  statsProperty!: string;
-  @Prop({ default: false })
-  isBool!: boolean;
-  @Prop({ default: false })
-  isSimulationSensitive!: boolean;
-  @Prop({ default: false })
-  unknown!: boolean;
+Vue.directive("b-tooltip", VBTooltip);
 
-  activeElement: NetworkStatisticsAggregation | null = null;
-  showModal = false;
-
-  get hasActiveElement() {
-    return this.activeElement !== null;
-  }
-
-  onHover(stat: NetworkStatisticsAggregation) {
-    this.activeElement = stat;
-  }
-
-  formatTime(date: Date) {
-    return moment(date).format("MMM YYYY");
-  }
-
-  get dimmerClass() {
-    return {
-      dimmer: true,
-      active: this.isLoading,
-    };
-  }
+const store = useStore();
+export interface Props {
+  isLoading: boolean;
+  tooltip: string;
+  title: string;
+  value: number | boolean;
+  initialDataLoaded: boolean;
+  yearStatistics: NetworkStatisticsAggregation[];
+  statsProperty: string;
+  isBool?: boolean;
+  isSimulationSensitive?: boolean;
+  unknown?: boolean;
 }
+const props = withDefaults(defineProps<Props>(), {
+  isLoading: true,
+  isBool: false,
+  isSimulationSensitive: false,
+  unknown: false,
+});
+
+const {
+  title,
+  value,
+  initialDataLoaded,
+  yearStatistics,
+  statsProperty,
+  isBool,
+  unknown,
+} = toRefs(props);
+
+const activeElement: Ref<NetworkStatisticsAggregation | null> = ref(null);
+const showModal = ref(false);
+
+const hasActiveElement = computed(() => activeElement.value !== null);
+
+function onHover(stat: NetworkStatisticsAggregation) {
+  activeElement.value = stat;
+}
+
+function formatTime(date: Date) {
+  return moment(date).format("MMM YYYY");
+}
+
+const dimmerClass = computed(() => {
+  return {
+    dimmer: true,
+    active: props.isLoading,
+  };
+});
 </script>
 
 <style scoped>
-.info {
-  float: right;
-  padding-bottom: 1px;
-  opacity: 0.5;
-}
-
 .value {
   font-size: 18px;
   font-weight: bold;
   line-height: 20px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 .active-element-time {
@@ -172,6 +168,6 @@ export default class NetworkStatisticsCard extends Mixins(StoreMixin) {
   font-size: 18px;
   font-weight: bold;
   line-height: 20px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 </style>

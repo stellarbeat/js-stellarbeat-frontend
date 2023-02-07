@@ -286,58 +286,34 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import { BTooltip, BIconInfoCircle, BBadge } from "bootstrap-vue";
-import { Chart } from "chart.js";
-import { StoreMixin } from "@/mixins/StoreMixin";
-import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
+<script setup lang="ts">
 import moment from "moment";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
-import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
 import NetworkStatisticsCard from "@/components/network/cards/network-statistics/network-statistics-card.vue";
+import useStore from "@/store/useStore";
+import { useIsLoading } from "@/mixins/useIsLoading";
+import { onMounted, ref, Ref } from "vue";
 
-@Component({
-  components: {
-    NetworkStatisticsCard,
-    NetworkStatisticsChart,
-    BTooltip,
-    BIconInfoCircle,
-    BBadge,
-  },
-})
-export default class NetworkStatistics extends Mixins(
-  StoreMixin,
-  IsLoadingMixin
-) {
-  public chart!: Chart;
-  protected initialDataLoaded = false;
-  protected yearStatistics: NetworkStatisticsAggregation[] = [];
+const store = useStore();
+const network = store.network;
+const { isLoading } = useIsLoading();
 
-  public async mounted() {
-    if (!this.store.isSimulation && this.store.networkContext.enableHistory) {
-      let oneYearAgo = moment(this.network.time).subtract(1, "y").toDate();
-      this.yearStatistics =
-        await this.store.networkMeasurementStore.getMonthStatistics(
-          "stellar-public",
-          oneYearAgo,
-          this.network.time
-        );
-    }
-    this.isLoading = false;
-    this.initialDataLoaded = true;
+const initialDataLoaded = ref(false);
+const yearStatistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
+
+onMounted(async () => {
+  if (!store.isSimulation && store.networkContext.enableHistory) {
+    let oneYearAgo = moment(store.network.time).subtract(1, "y").toDate();
+    yearStatistics.value =
+      await store.networkMeasurementStore.getMonthStatistics(
+        "stellar-public",
+        oneYearAgo,
+        store.network.time
+      );
   }
-}
+  isLoading.value = false;
+  initialDataLoaded.value = true;
+});
 </script>
 
-<style scoped>
-.info {
-  float: right;
-  padding-bottom: 1px;
-  opacity: 0.5;
-}
-
-.stat-badge {
-  color: #5eba00;
-}
-</style>
+<style scoped></style>

@@ -32,15 +32,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, defineProps, ref } from "vue";
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { computed, ref } from "vue";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import useStore from "@/store/useStore";
-
-defineProps<{
-  node: Node;
-}>();
 
 const store = useStore();
 const network = store.network;

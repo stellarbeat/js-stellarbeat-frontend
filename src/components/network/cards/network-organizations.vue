@@ -31,16 +31,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Node, Organization } from "@stellarbeat/js-stellar-domain";
+import { Organization } from "@stellarbeat/js-stellar-domain";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import OrganizationsTable from "@/components/organization/organizations-table.vue";
 import useStore from "@/store/useStore";
-import { computed, defineProps, ref } from "vue";
-
-defineProps<{
-  node: Node;
-}>();
-
+import { computed, ref } from "vue";
 const store = useStore();
 const network = store.network;
 const filter = ref("");
