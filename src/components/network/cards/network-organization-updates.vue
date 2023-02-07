@@ -56,53 +56,38 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import {
   BBadge,
-  BIconSearch,
-  BTable,
   BIconExclamationTriangle,
   BListGroup,
   BListGroupItem,
 } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
-//import AsyncComputed from 'vue-async-computed-decorator';
-import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
 import { OrganizationSnapShot } from "@stellarbeat/js-stellar-domain";
+import useStore from "@/store/useStore";
+import { useIsLoading } from "@/mixins/useIsLoading";
+import { onMounted, Ref, ref } from "vue";
 
-@Component({
-  components: {
-    BIconSearch: BIconSearch,
-    BBadge: BBadge,
-    BTable,
-    BIconExclamationTriangle,
-    BListGroup,
-    BListGroupItem,
-  },
-})
-export default class NetworkValidatorUpdates extends Mixins(
-  StoreMixin,
-  IsLoadingMixin
-) {
-  failed = false;
-  snapshots: OrganizationSnapShot[] = [];
+const store = useStore();
+const network = store.network;
+const { isLoading, dimmerClass } = useIsLoading();
+const failed = ref(false);
+const snapshots: Ref<OrganizationSnapShot[]> = ref([]);
 
-  async getSnapshots() {
-    let snapshots: OrganizationSnapShot[] = [];
-    try {
-      snapshots = await this.store.fetchOrganizationSnapshots();
-    } catch (e) {
-      this.failed = true;
-    }
-    this.isLoading = false;
-    return snapshots;
+async function getSnapshots() {
+  let snapshots: OrganizationSnapShot[] = [];
+  try {
+    snapshots = await store.fetchOrganizationSnapshots();
+  } catch (e) {
+    failed.value = true;
   }
-
-  async mounted() {
-    this.snapshots = await this.getSnapshots();
-  }
+  isLoading.value = false;
+  return snapshots;
 }
+
+onMounted(async () => {
+  snapshots.value = await getSnapshots();
+});
 </script>
 <style scoped>
 .card-columns {

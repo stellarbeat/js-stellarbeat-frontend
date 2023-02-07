@@ -56,56 +56,41 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component, Mixins } from "vue-property-decorator";
-import NodesTable from "@/components/node/nodes-table.vue";
+<script setup lang="ts">
 import {
   BBadge,
-  BIconSearch,
-  BTable,
   BIconExclamationTriangle,
   BListGroup,
   BListGroupItem,
 } from "bootstrap-vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
-//import AsyncComputed from 'vue-async-computed-decorator';
-import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
 import { NodeSnapShot } from "@stellarbeat/js-stellar-domain/lib/node-snap-shot";
+import useStore from "@/store/useStore";
+import { useIsLoading } from "@/mixins/useIsLoading";
+import { onMounted, Ref, ref } from "vue";
 
-@Component({
-  components: {
-    NodesTable,
-    BIconSearch: BIconSearch,
-    BBadge: BBadge,
-    BTable,
-    BIconExclamationTriangle,
-    BListGroup,
-    BListGroupItem,
-  },
-})
-export default class NetworkValidatorUpdates extends Mixins(
-  StoreMixin,
-  IsLoadingMixin
-) {
-  failed = false;
-  snapshots: NodeSnapShot[] = [];
+const store = useStore();
+const network = store.network;
 
-  async getSnapshots() {
-    let snapshots: NodeSnapShot[] = [];
-    try {
-      snapshots = await this.store.fetchNodeSnapshots();
-    } catch (e) {
-      this.failed = true;
-    }
-    this.isLoading = false;
+const { isLoading, dimmerClass } = useIsLoading();
 
-    return snapshots;
+const failed = ref(false);
+const snapshots: Ref<NodeSnapShot[]> = ref([]);
+
+async function getSnapshots() {
+  let snapshots: NodeSnapShot[] = [];
+  try {
+    snapshots = await store.fetchNodeSnapshots();
+  } catch (e) {
+    failed.value = true;
   }
+  isLoading.value = false;
 
-  async mounted() {
-    this.snapshots = await this.getSnapshots();
-  }
+  return snapshots;
 }
+
+onMounted(async () => {
+  snapshots.value = await getSnapshots();
+});
 </script>
 <style scoped>
 .card-columns {
