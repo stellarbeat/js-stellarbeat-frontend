@@ -30,88 +30,69 @@
     />
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
-import { Network, Node, Organization } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
-import NodesTable from "@/components/node/nodes-table.vue";
+<script setup lang="ts">
+import { Node, Organization } from "@stellarbeat/js-stellar-domain";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import OrganizationsTable from "@/components/organization/organizations-table.vue";
 import useStore from "@/store/useStore";
+import { computed, defineProps, ref } from "vue";
 
-@Component({
-  components: {
-    OrganizationsTable,
-    NodesTable,
-    BIconSearch: BIconSearch,
-    BBadge: BBadge,
-  },
-})
-export default class NetworkOrganizations extends Vue {
-  @Prop()
-  node!: Node;
+defineProps<{
+  node: Node;
+}>();
 
-  protected filter = "";
+const store = useStore();
+const network = store.network;
+const filter = ref("");
 
-  get fields() {
-    let fields = [{ key: "name", label: "Node", sortable: true }];
-    //@ts-ignore
-    fields.push();
-    if (!this.store.isSimulation && this.store.networkContext.enableHistory) {
-      fields.push({
-        key: "subQuorum30DAvailability",
-        label: "30D Availability",
-        sortable: true,
-      });
-    }
-
+const fields = computed(() => {
+  let fields = [{ key: "name", label: "Node", sortable: true }];
+  //@ts-ignore
+  fields.push();
+  if (!store.isSimulation && store.networkContext.enableHistory) {
     fields.push({
-      key: "action",
-      label: "",
-      sortable: false,
-      //@ts-ignore
-      tdClass: "action",
-    });
-
-    return fields;
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-
-  getFailAt(organization: Organization): number {
-    let nrOfValidatingNodes = organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator))
-      .filter((node) => !this.network.isNodeFailing(node)).length;
-
-    return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
-  }
-
-  get numberOfActiveOrganizations(): number {
-    return this.network.organizations.filter(
-      (organization) => organization.subQuorumAvailable
-    ).length;
-  }
-
-  get organizations() {
-    return this.network.organizations.map((organization) => {
-      return {
-        name: organization.name,
-        id: organization.id,
-        failAt: this.getFailAt(organization),
-        dangers: this.store.getOrganizationFailingReason(organization),
-        blocked: this.network.isOrganizationBlocked(organization),
-        subQuorum30DAvailability:
-          organization.subQuorum30DaysAvailability + "%",
-        isTierOneOrganization: organization.isTierOneOrganization,
-      };
+      key: "subQuorum30DAvailability",
+      label: "30D Availability",
+      sortable: true,
     });
   }
+
+  fields.push({
+    key: "action",
+    label: "",
+    sortable: false,
+    //@ts-ignore
+    tdClass: "action",
+  });
+
+  return fields;
+});
+
+function getFailAt(organization: Organization): number {
+  let nrOfValidatingNodes = organization.validators
+    .map((validator) => network.getNodeByPublicKey(validator))
+    .filter((node) => !network.isNodeFailing(node)).length;
+
+  return nrOfValidatingNodes - organization.subQuorumThreshold + 1;
 }
+
+const numberOfActiveOrganizations = computed(() => {
+  return network.organizations.filter(
+    (organization) => organization.subQuorumAvailable
+  ).length;
+});
+
+const organizations = computed(() => {
+  return network.organizations.map((organization) => {
+    return {
+      name: organization.name,
+      id: organization.id,
+      failAt: getFailAt(organization),
+      dangers: store.getOrganizationFailingReason(organization),
+      blocked: network.isOrganizationBlocked(organization),
+      subQuorum30DAvailability: organization.subQuorum30DaysAvailability + "%",
+      isTierOneOrganization: organization.isTierOneOrganization,
+    };
+  });
+});
 </script>

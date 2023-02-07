@@ -18,35 +18,22 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component } from "vue-property-decorator";
-import Vue from "vue";
-import { Network } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { computed } from "vue";
 import { BListGroup, BListGroupItem } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: { BListGroup, BListGroupItem },
-})
-export default class NetworkHorizon extends Vue {
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const network = store.network;
 
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get horizons() {
-    return this.network.organizations
-      .filter((organization) => organization.horizonUrl)
-      .map((organization) => {
-        return {
-          name: organization.name,
-          url: organization.horizonUrl,
-        };
-      });
-  }
-}
+const horizons = computed(() => {
+  return network.organizations
+    .filter((organization) => organization.horizonUrl)
+    .map((organization) => {
+      return {
+        name: organization.name,
+        url: organization.horizonUrl,
+      };
+    });
+});
 </script>

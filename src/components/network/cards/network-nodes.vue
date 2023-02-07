@@ -31,72 +31,59 @@
     />
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
-import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { computed, defineProps, ref } from "vue";
+import { Node } from "@stellarbeat/js-stellar-domain";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: { NodesTable, BIconSearch: BIconSearch, BBadge: BBadge },
-})
-export default class NetworkNodes extends Vue {
-  @Prop()
-  node!: Node;
+defineProps<{
+  node: Node;
+}>();
 
-  protected filter = "";
+const store = useStore();
+const network = store.network;
 
-  get fields() {
-    let fields = [{ key: "name", label: "Node", sortable: true }];
+const filter = ref("");
 
-    if (this.store.networkContext.enableIndex && !this.store.isSimulation) {
-      fields.push({ key: "index", label: "Index", sortable: true });
-    }
+const fields = computed(() => {
+  let fields = [{ key: "name", label: "Node", sortable: true }];
 
-    fields.push({
-      key: "action",
-      label: "",
-      sortable: false,
-      //@ts-ignore
-      tdClass: "action",
+  if (store.networkContext.enableIndex && !store.isSimulation) {
+    fields.push({ key: "index", label: "Index", sortable: true });
+  }
+
+  fields.push({
+    key: "action",
+    label: "",
+    sortable: false,
+    //@ts-ignore
+    tdClass: "action",
+  });
+
+  return fields;
+});
+
+const numberOfActiveNodes = computed(() => {
+  if (store.includeWatcherNodes)
+    return network.nodes.filter((node) => !network.isNodeFailing(node)).length;
+  else
+    return network.nodes.filter(
+      (node) => node.isValidator && !network.isNodeFailing(node)
+    ).length;
+});
+
+const validators = computed(() => {
+  return network.nodes
+    .filter((node) => node.isValidator || store.includeWatcherNodes)
+    .map((node) => {
+      return {
+        isFullValidator: node.isFullValidator,
+        name: node.displayName,
+        index: node.index,
+        publicKey: node.publicKey,
+      };
     });
-
-    return fields;
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get numberOfActiveNodes(): number {
-    if (this.store.includeWatcherNodes)
-      return this.network.nodes.filter(
-        (node) => !this.network.isNodeFailing(node)
-      ).length;
-    else
-      return this.network.nodes.filter(
-        (node) => node.isValidator && !this.network.isNodeFailing(node)
-      ).length;
-  }
-
-  get validators() {
-    return this.network.nodes
-      .filter((node) => node.isValidator || this.store.includeWatcherNodes)
-      .map((node) => {
-        return {
-          isFullValidator: node.isFullValidator,
-          name: node.displayName,
-          index: node.index,
-          publicKey: node.publicKey,
-        };
-      });
-  }
-}
+});
 </script>
