@@ -238,8 +238,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { ref, computed, defineComponent, PropType } from "vue";
+<script setup lang="ts">
+import { ref, computed, PropType, defineProps } from "vue";
 import {
   BCollapse,
   BDropdownItem,
@@ -265,102 +265,78 @@ export interface BrandImage {
   alt: string;
 }
 
-export default defineComponent({
-  name: "nav-bar",
-  components: {
-    BIconBell,
-    Github,
-    Search,
-    BNavbar,
-    BNavItemDropdown,
-    BDropdownItem,
-    BCollapse,
-    BIconBuilding,
-    BIconBullseye,
-    BIconHouse,
-    BIconCode,
-    BIconQuestionCircle,
-    BIconEnvelope,
-    BNavbarToggle,
-    BIconNewspaper,
+const props = defineProps({
+  faqRoute: {
+    type: String,
+    required: false,
   },
-  props: {
-    faqRoute: {
-      type: String,
-      required: false,
-    },
-    brandName: {
-      type: String,
-      required: true,
-    },
-    brandTagline: {
-      type: String,
-      required: true,
-    },
-    includeOrganizations: {
-      type: Boolean,
-      default: true,
-    },
-    includeNotify: {
-      type: Boolean,
-      default: false,
-    },
-    includeFAQ: {
-      type: Boolean,
-      default: false,
-    },
-    apiDocUrl: {
-      type: String,
-    },
-    blogUrl: {
-      type: String,
-    },
-    githubUrl: {
-      type: String,
-    },
-    mailTo: {
-      type: String,
-    },
-    enableBrandImage: {
-      type: Boolean,
-      default: true,
-    },
-    brandImage: {
-      type: Object as PropType<BrandImage>,
-    },
+  brandName: {
+    type: String,
+    required: true,
   },
+  brandTagline: {
+    type: String,
+    required: true,
+  },
+  includeOrganizations: {
+    type: Boolean,
+    default: true,
+  },
+  includeNotify: {
+    type: Boolean,
+    default: false,
+  },
+  includeFAQ: {
+    type: Boolean,
+    default: false,
+  },
+  apiDocUrl: {
+    type: String,
+  },
+  blogUrl: {
+    type: String,
+  },
+  githubUrl: {
+    type: String,
+  },
+  mailTo: {
+    type: String,
+  },
+  enableBrandImage: {
+    type: Boolean,
+    default: true,
+  },
+  brandImage: {
+    type: Object as PropType<BrandImage>,
+  },
+});
 
-  setup(props) {
-    const store = useStore();
-    const route = useRoute();
-    const router = useRouter();
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-    const brandImageSource = ref(
-      props.brandImage?.src ? require(`@/assets/logo.svg`) : ""
-    ); //require needs to happen before mount
-    const navigateToNetwork = (networkId: string) => {
-      if (networkId === store.networkContext.networkId) return;
-      router
-        .push({
-          name: "network-dashboard",
-          query: { network: networkId },
-        })
-        .catch(() => {
-          //this triggers a navigation guard error that we can safely ignore. See router beforeEach
-        });
-    };
-
-    const homeActiveClass = computed(() => {
-      return {
-        active:
-          route.name === "network-dashboard" ||
-          route.name === "node-dashboard" ||
-          route.name === "organization-dashboard",
-      };
+const brandImageSource = ref(
+  props.brandImage?.src ? require(`@/assets/logo.svg`) : ""
+); //require needs to happen before mount
+const navigateToNetwork = (networkId: string) => {
+  if (networkId === store.networkContext.networkId) return;
+  router
+    .push({
+      name: "network-dashboard",
+      query: { network: networkId },
+    })
+    .catch(() => {
+      //this triggers a navigation guard error that we can safely ignore. See router beforeEach
     });
+};
 
-    return { store, homeActiveClass, navigateToNetwork, brandImageSource };
-  },
+const homeActiveClass = computed(() => {
+  return {
+    active:
+      route.name === "network-dashboard" ||
+      route.name === "node-dashboard" ||
+      route.name === "organization-dashboard",
+  };
 });
 </script>
 
