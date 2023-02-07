@@ -40,98 +40,91 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { Node } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { DropdownMixin } from "@/components/side-bar/dropdown-mixin";
 import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import LazyHydrate from "vue-lazy-hydration";
+import { computed, defineEmits, defineProps } from "vue";
+import useStore from "@/store/useStore";
+import { useDropdown } from "@/components/side-bar/useDropdown";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  components: {
-    NodeActions,
-    NavPagination,
-    NavLink,
-    LazyHydrate,
-  },
-})
-export default class ValidatorsDropdown extends Mixins(DropdownMixin) {
-  @Prop()
-  public nodes!: Node[];
+const props = defineProps<{
+  nodes: Node[];
+  expand: boolean;
+}>();
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const network = store.network;
+const emit = defineEmits(["toggleExpand"]);
+const { showing, toggleShow, currentPage, paginate } = useDropdown(
+  props.expand,
+  emit
+);
 
-  get sortedNodes() {
-    let sort = (nodeA: Node, nodeB: Node) => {
-      return nodeA.displayName.localeCompare(nodeB.displayName);
-    };
+const sortedNodes = computed(() => {
+  let sort = (nodeA: Node, nodeB: Node) => {
+    return nodeA.displayName.localeCompare(nodeB.displayName);
+  };
 
-    let failingNodes = this.nodes
-      .filter((node) => this.network.isNodeFailing(node))
-      .sort(sort);
-    let nonFailingNodes = this.nodes
-      .filter((node) => !this.network.isNodeFailing(node))
-      .sort(sort);
-    return failingNodes.concat(nonFailingNodes);
-  }
+  let failingNodes = props.nodes
+    .filter((node) => network.isNodeFailing(node))
+    .sort(sort);
 
-  get paginatedNodes() {
-    return this.paginate(this.sortedNodes);
-  }
+  let nonFailingNodes = props.nodes
+    .filter((node) => !network.isNodeFailing(node))
+    .sort(sort);
 
-  hasWarnings(node: Node) {
-    return this.network.nodeHasWarnings(node);
-  }
+  return failingNodes.concat(nonFailingNodes);
+});
 
-  get hasGeneralValidatorsWarning() {
-    return this.nodes.some(
-      (node) =>
-        this.network.nodeHasWarnings(node) || this.network.isNodeFailing(node)
-    );
-  }
+const paginatedNodes = computed(() => {
+  return paginate(sortedNodes.value);
+});
 
-  get generalValidatorsWarning() {
-    if (this.nodes.some((node) => this.network.isNodeFailing(node)))
-      return "Some nodes are failing";
+const hasGeneralValidatorsWarning = computed(() => {
+  return (
+    props.nodes.some((node) => network.nodeHasWarnings(node)) ||
+    props.nodes.some((node) => network.isNodeFailing(node))
+  );
+});
 
-    if (this.nodes.some((node) => this.network.historyArchiveHasError(node)))
-      return "Verification error in history archive";
+const generalValidatorsWarning = computed(() => {
+  if (props.nodes.some((node) => network.isNodeFailing(node)))
+    return "Some nodes are failing";
 
-    if (
-      this.nodes.some((node) =>
-        this.network.isFullValidatorWithOutOfDateArchive(node)
-      )
+  if (props.nodes.some((node) => network.historyArchiveHasError(node)))
+    return "Verification error in history archive";
+
+  if (
+    props.nodes.some((node) =>
+      network.isFullValidatorWithOutOfDateArchive(node)
     )
-      return "Some history archives not up-to-date";
+  )
+    return "Some history archives not up-to-date";
 
-    return "";
-  }
+  return "";
+});
 
-  public selectNode(node: Node) {
-    this.$router.push({
-      name: "node-dashboard",
-      params: { publicKey: node.publicKey },
-      query: {
-        center: "1",
-        "no-scroll": "0",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
+function selectNode(node: Node) {
+  router.push({
+    name: "node-dashboard",
+    params: { publicKey: node.publicKey },
+    query: {
+      center: "1",
+      "no-scroll": "0",
+      view: route.query.view,
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
+}
 
-  public nodeState(node: Node) {
-    return {
-      inactive: !node.active,
-      active: node.active,
-      failing: this.network.isNodeFailing(node),
-    };
-  }
-
-  getDisplayName(node: Node) {
-    return node.displayName;
-  }
+function getDisplayName(node: Node) {
+  return node.displayName;
 }
 </script>
 

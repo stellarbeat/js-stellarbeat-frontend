@@ -17,7 +17,7 @@
         v-for="organization in paginatedOrganizations"
         :key="organization.id"
         v-on:click="selectOrganization(organization)"
-        :title="organization.name | truncate(30)"
+        :title="organization.name"
         :is-link-in-dropdown="true"
         :has-warnings="hasWarnings(organization)"
         :warnings="store.getOrganizationWarningReason(organization)"
