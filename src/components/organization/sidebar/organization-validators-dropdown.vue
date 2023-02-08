@@ -12,7 +12,7 @@
         v-for="validator in validators"
         :key="validator.publicKey"
         v-on:click="selectValidator(validator)"
-        :title="getDisplayName(validator)"
+        :title="validator.displayName"
         :is-link-in-dropdown="true"
         :has-danger="network.isNodeFailing(validator)"
         :dangers="network.getNodeFailingReason(validator).description"
@@ -27,50 +27,45 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { Node, Organization } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { DropdownMixin } from "@/components/side-bar/dropdown-mixin";
-import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
+import { useDropdown } from "@/components/side-bar/useDropdown";
+import useStore from "@/store/useStore";
+import { computed, defineEmits } from "vue";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  components: {
-    NodeActions,
-    NavPagination,
-    NavLink,
-  },
-})
-export default class OrganizationValidatorsDropdown extends Mixins(
-  DropdownMixin
-) {
-  @Prop()
-  public organization!: Organization;
+const props = defineProps<{
+  organization: Organization;
+}>();
 
-  get validators() {
-    return this.organization.validators.map((validator) =>
-      this.network.getNodeByPublicKey(validator)
-    );
-  }
+const emit = defineEmits(["toggleExpand"]);
+const { showing, toggleShow } = useDropdown(true, emit);
 
-  getDisplayName(node: Node) {
-    return node.displayName;
-  }
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const network = store.network;
 
-  public selectValidator(validator: Node) {
-    this.$router.push({
-      name: "node-dashboard",
-      params: { publicKey: validator.publicKey },
-      query: {
-        center: "1",
-        "no-scroll": "0",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
+const validators = computed(() => {
+  return props.organization.validators.map((validator) =>
+    network.getNodeByPublicKey(validator)
+  );
+});
+
+function selectValidator(validator: Node) {
+  router.push({
+    name: "node-dashboard",
+    params: { publicKey: validator.publicKey },
+    query: {
+      center: "1",
+      "no-scroll": "0",
+      view: route.query.view,
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
 }
 </script>
 
