@@ -1,16 +1,17 @@
 <template>
-  <canvas
-    height="140px"
-    :width="width"
-    :id="'lineChart' + id"
-    :ref="'lineChart' + id"
-  />
+  <canvas height="140px" :width="width" :ref="(el) => (chartElement = el)" />
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  Ref,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import {
   Chart,
   BarController,
@@ -25,197 +26,191 @@ import {
   TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-moment";
-import useStore from "@/store/useStore";
 
 export type timeUnit = "day" | "hour";
 
-@Component({
-  name: "bar-chart-day",
-})
-export default class BarChartDay extends Vue {
-  @Prop()
-  width!: string;
-  @Prop()
-  data!: ScatterDataPoint[];
-  @Prop()
-  unit!: timeUnit;
+const props = defineProps<{
+  width: number;
+  data: ScatterDataPoint[];
+  unit: timeUnit;
+}>();
 
-  barChart!: Chart;
-  id: number = this.store.getUniqueId();
+const { data, unit } = toRefs(props);
+const emit = defineEmits(["click-date"]);
 
-  get store(): Store {
-    return useStore();
-  }
+let barChart: Chart | null = null;
+const chartElement: Ref<HTMLCanvasElement | null> = ref(null);
 
-  get timeFormat() {
-    if (this.unit === "day") return "D-M-YYYY";
-    else return "HH:mm";
-  }
+const timeFormat = computed(() => {
+  if (props.unit === "day") return "D-M-YYYY";
+  else return "HH:mm";
+});
 
-  get displayFormat() {
-    if (this.unit === "day") return { day: this.timeFormat };
-    else return { hour: this.timeFormat };
-  }
+const displayFormat = computed(() => {
+  if (props.unit === "day") return { day: timeFormat.value };
+  else return { hour: timeFormat.value };
+});
 
-  @Watch("data")
-  onDataChanged() {
-    if (!this.barChart.data.datasets) return;
-    this.barChart.data.datasets[0].data = this.data;
-    this.barChart.data.datasets[0].backgroundColor = this.data.map((data) =>
-      data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)"
-    );
-    this.barChart.data.datasets[1].data = this.data.map((data) => {
-      return {
-        x: data.x,
-        y: 100 - data.y,
-      };
-    });
-    this.barChart.update();
-  }
+watch(data, () => {
+  if (!barChart) return;
+  if (!barChart.data.datasets) return;
+  barChart.data.datasets[0].data = data.value;
+  barChart.data.datasets[0].backgroundColor = data.value.map((data) =>
+    data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)"
+  );
+  barChart.data.datasets[1].data = data.value.map((data) => {
+    return {
+      x: data.x,
+      y: 100 - data.y,
+    };
+  });
+  barChart.update();
+});
 
-  mounted() {
-    let chartId = "lineChart" + this.id;
-    let context = (this.$refs[chartId] as HTMLCanvasElement).getContext("2d");
-    Chart.register(
-      BarController,
-      CategoryScale,
-      BarElement,
-      TimeScale,
-      Tooltip,
-      Legend
-    );
-    this.barChart = new Chart(context as CanvasRenderingContext2D, {
-      type: "bar",
-      data: {
-        datasets: [
-          {
-            label: "Validating",
-            backgroundColor: this.data.map((data) =>
-              data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)"
-            ),
-            borderWidth: 0,
-            data: this.data,
-          },
-          {
-            label: "Not Validating",
-            backgroundColor: "#cd201f",
-            borderColor: "#1997c6",
-            data: this.data.map((data) => {
-              return {
-                x: data.x,
-                y: 100 - data.y,
-              };
-            }),
-          },
-        ],
+onMounted(() => {
+  if (chartElement.value === null) return;
+  const context = chartElement.value.getContext("2d");
+  if (!context) return;
+  Chart.register(
+    BarController,
+    CategoryScale,
+    BarElement,
+    TimeScale,
+    Tooltip,
+    Legend
+  );
+
+  barChart = new Chart(context, {
+    type: "bar",
+    data: {
+      datasets: [
+        {
+          label: "Validating",
+          backgroundColor: data.value.map((data) =>
+            data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)"
+          ),
+          borderWidth: 0,
+          data: data.value,
+        },
+        {
+          label: "Not Validating",
+          backgroundColor: "#cd201f",
+          borderColor: "#1997c6",
+          data: data.value.map((data) => {
+            return {
+              x: data.x,
+              y: 100 - data.y,
+            };
+          }),
+        },
+      ],
+    },
+
+    // Configuration options go here
+    options: {
+      layout: {
+        padding: 0,
       },
-
-      // Configuration options go here
-      options: {
-        layout: {
-          padding: 0,
-        },
-        onHover: (event: ChartEvent, activeElements: ActiveElement[]): void => {
-          //@ts-ignore
-          event.native.target.style.cursor = activeElements[0]
-            ? "pointer"
-            : "default";
-        },
-        onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
-          if (activeElements[0] && activeElements[0].index >= 0) {
-            this.$emit("click-date", this.data[activeElements[0].index].x);
-          }
-        },
-        plugins: {
-          tooltip: {
-            enabled: true,
-            callbacks: {
-              label: (tooltipItem: TooltipItem<"bar">): string | string[] => {
-                return " " + tooltipItem.formattedValue + "%";
-              },
+      onHover: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+        //@ts-ignore
+        event.native.target.style.cursor = activeElements[0]
+          ? "pointer"
+          : "default";
+      },
+      onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
+        if (activeElements[0] && activeElements[0].index >= 0) {
+          emit("click-date", data.value[activeElements[0].index].x);
+        }
+      },
+      plugins: {
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: (tooltipItem: TooltipItem<"bar">): string | string[] => {
+              return " " + tooltipItem.formattedValue + "%";
             },
           },
-          legend: {
-            display: false,
-          },
         },
-
-        responsive: false,
-
-        animation: {
-          duration: 0, // general animation time
+        legend: {
+          display: false,
         },
-        responsiveAnimationDuration: 0, // animation duration after a resize
-        scales: {
+      },
+
+      responsive: false,
+
+      animation: {
+        duration: 0, // general animation time
+      },
+      responsiveAnimationDuration: 0, // animation duration after a resize
+      scales: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          display: false,
+        },
+        x: {
           grid: {
-            display: false,
+            display: true,
+            drawTicks: false,
+            drawBorder: true,
+            drawOnChartArea: false,
+          },
+          distribution: "linear",
+          stacked: true,
+          display: true,
+          //@ts-ignore
+          type: "time",
+          time: {
+            unit: unit.value,
+            displayFormats: displayFormat.value,
+            stepSize: 2,
           },
           ticks: {
-            display: false,
+            font: {
+              size: 10,
+            },
+            color: "#aaa",
+            padding: 2,
           },
-          x: {
-            grid: {
-              display: true,
-              drawTicks: false,
-              drawBorder: true,
-              drawOnChartArea: false,
-            },
-            distribution: "linear",
-            stacked: true,
-            display: true,
-            //@ts-ignore
-            type: "time",
-            time: {
-              unit: this.unit,
-              displayFormats: this.displayFormat,
-              stepSize: 2,
-            },
-            ticks: {
-              font: {
-                size: 10,
-              },
-              color: "#aaa",
-              padding: 2,
-            },
-            beginAtZero: true,
-          },
+          beginAtZero: true,
+        },
 
-          y: {
-            grid: {
-              display: true,
-              drawTicks: false,
-              drawBorder: true,
-              drawOnChartArea: false,
-            },
-            min: 0,
-            max: 100,
-            stacked: true,
+        y: {
+          grid: {
             display: true,
-            bounds: "data",
-            ticks: {
-              padding: 0,
-              font: {
-                size: 8,
-              },
-              color: "#aaa",
-              stepSize: 50,
-              callback: function (value) {
-                return value + "%";
-              },
-            },
-            beginAtZero: true,
+            drawTicks: false,
+            drawBorder: true,
+            drawOnChartArea: false,
           },
+          min: 0,
+          max: 100,
+          stacked: true,
+          display: true,
+          bounds: "data",
+          ticks: {
+            padding: 0,
+            font: {
+              size: 8,
+            },
+            color: "#aaa",
+            stepSize: 50,
+            callback: function (value) {
+              return value + "%";
+            },
+          },
+          beginAtZero: true,
         },
       },
-    });
-  }
+    },
+  });
+});
 
-  public beforeDestroy() {
-    if (this.barChart) {
-      this.barChart.destroy();
-    }
+onBeforeUnmount(() => {
+  if (barChart) {
+    barChart.destroy();
   }
-}
+});
 </script>
 
 <style scoped></style>
