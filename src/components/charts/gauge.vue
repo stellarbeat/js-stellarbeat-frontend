@@ -1,7 +1,11 @@
 <template>
   <div class="d-flex flex-column align-items-center">
     <div class="relative">
-      <canvas :height="height" :width="width" ref="chart" />
+      <canvas
+        :height="height"
+        :width="width"
+        :ref="(el) => (chartElement = el)"
+      />
       <div class="absolute-center text-center">
         {{ centerText }}
       </div>
@@ -12,99 +16,93 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
 import { Chart, DoughnutController, ArcElement, LinearScale } from "chart.js";
-import useStore from "@/store/useStore";
 
-@Component({})
-export default class Gauge extends Vue {
-  @Prop()
-  width!: string;
-  @Prop()
-  height!: string;
-  @Prop()
-  value!: number;
-  @Prop({ default: "#1997c6" })
-  valueColor!: string;
-  @Prop({ default: "#e6e5e5" })
-  negativeValueColor!: string;
-  @Prop()
-  maxValue!: number;
-  @Prop()
-  title!: string;
-  @Prop()
-  centerText!: string;
+const props = defineProps({
+  width: { type: String, required: true },
+  height: { type: String, required: true },
+  value: { type: Number, required: true },
+  valueColor: { type: String, default: "#1997c6" },
+  negativeValueColor: { type: String, default: "#e6e5e5" },
+  maxValue: { type: Number, required: true },
+  title: { type: String, required: false },
+  centerText: { type: String, required: false },
+});
+const {
+  width,
+  height,
+  value,
+  valueColor,
+  negativeValueColor,
+  maxValue,
+  title,
+} = toRefs(props);
 
-  chart!: Chart;
+const chartElement = ref<HTMLCanvasElement | null>(null);
+let chart: Chart | null = null;
 
-  get store(): Store {
-    return useStore();
-  }
+watch(value, () => {
+  if (!chart) return;
+  if (!chart.data.datasets) return;
+  chart.data.datasets[0].data = [
+    value.value,
+    Math.round((maxValue.value - value.value) * 100) / 100,
+  ];
 
-  @Watch("value")
-  onValueChanged() {
-    if (!this.chart.data.datasets) return;
-    this.chart.data.datasets[0].data = [
-      this.value,
-      Math.round((this.maxValue - this.value) * 100) / 100,
-    ];
+  chart.update();
+});
 
-    this.chart.update();
-  }
+onMounted(() => {
+  if (!chartElement.value) return;
 
-  mounted() {
-    let canvas = this.$refs.chart as HTMLCanvasElement;
-    Chart.register(DoughnutController, ArcElement, LinearScale);
-    this.chart = new Chart(canvas, {
-      type: "doughnut",
-
-      data: {
-        datasets: [
-          {
-            label: this.title,
-            backgroundColor: [this.valueColor, this.negativeValueColor],
-            data: [
-              this.value,
-              Math.round((this.maxValue - this.value) * 100) / 100,
-            ],
-          },
-        ],
-        labels: [this.title, ""],
+  Chart.register(DoughnutController, ArcElement, LinearScale);
+  chart = new Chart(chartElement.value, {
+    type: "doughnut",
+    data: {
+      datasets: [
+        {
+          label: title?.value,
+          backgroundColor: [valueColor?.value, negativeValueColor?.value],
+          data: [
+            value?.value,
+            Math.round((maxValue?.value - value?.value) * 100) / 100,
+          ],
+        },
+      ],
+      labels: [title?.value, ""],
+    },
+    // Configuration options go here
+    options: {
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: false,
+        },
       },
-      // Configuration options go here
-      options: {
-        plugins: {
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            enabled: false,
-          },
-        },
-        animation: {
-          duration: 0, // general animation time
-        },
-        hover: {
-          //@ts-ignore
-          mode: null,
-        },
-        responsive: false,
-        cutout: "75%",
-        maintainAspectRatio: true,
+      animation: {
+        duration: 0, // general animation time
       },
-    });
-    this.chart.options.animation = false; // disables all animations
-  }
+      hover: {
+        //@ts-ignore
+        mode: null,
+      },
+      responsive: false,
+      cutout: "75%",
+      maintainAspectRatio: true,
+    },
+  });
+  chart.options.animation = false; // disables all animations
+});
 
-  public beforeDestroy() {
-    if (this.chart) {
-      this.chart.destroy();
-    }
+onBeforeUnmount(() => {
+  if (chart) {
+    chart.destroy();
   }
-}
+});
 </script>
 
 <style scoped>

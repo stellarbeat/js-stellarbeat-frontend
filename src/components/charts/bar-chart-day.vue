@@ -24,6 +24,7 @@ import {
   Tooltip,
   Legend,
   TooltipItem,
+  LinearScale,
 } from "chart.js";
 import "chartjs-adapter-moment";
 
@@ -77,7 +78,8 @@ onMounted(() => {
     BarElement,
     TimeScale,
     Tooltip,
-    Legend
+    Legend,
+    LinearScale
   );
 
   barChart = new Chart(context, {
