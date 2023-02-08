@@ -30,67 +30,55 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Store from "@/store/Store";
 import {
   BIconArrowClockwise,
   BIconArrowCounterclockwise,
   VBTooltip,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  name: "UndoRedo",
-  components: {
-    BIconArrowCounterclockwise: BIconArrowCounterclockwise,
-    BIconArrowClockwise: BIconArrowClockwise,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class UndoRedo extends Vue {
-  get store(): Store {
-    return useStore();
-  }
+Vue.directive("b-tooltip", VBTooltip);
 
-  protected onUndoUpdate() {
-    this.store.undoUpdate();
-    this.resetRouteIfNoSelectedNode();
-  }
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
-  protected onRedoUpdate() {
-    this.store.redoUpdate();
-  }
+function onUndoUpdate() {
+  store.undoUpdate();
+  resetRouteIfNoSelectedNode();
+}
 
-  protected onReset() {
-    this.store.resetUpdates();
-    this.resetRouteIfNoSelectedNode();
-  }
+function onRedoUpdate() {
+  store.redoUpdate();
+}
 
-  protected resetRouteIfNoSelectedNode() {
-    if (
-      this.store.selectedNode &&
-      !this.store.network.getNodeByPublicKey(this.store.selectedNode.publicKey)
-    ) {
-      this.$router.push({
-        name: "network-dashboard",
-        query: {
-          "no-scroll": "1",
-          network: this.$route.query.network,
-          view: this.$route.query.view,
-          at: this.$route.query.at,
-        },
-      });
-    }
+function onReset() {
+  store.resetUpdates();
+  resetRouteIfNoSelectedNode();
+}
+
+function resetRouteIfNoSelectedNode() {
+  if (
+    store.selectedNode &&
+    !store.network.getNodeByPublicKey(store.selectedNode.publicKey)
+  ) {
+    router.push({
+      name: "network-dashboard",
+      query: {
+        "no-scroll": "1",
+        network: route.query.network,
+        view: route.query.view,
+        at: route.query.at,
+      },
+    });
   }
 }
 </script>
 
 <style scoped>
-.btn-no-border {
-  border: none;
-}
 .undo-redo {
   opacity: 0.75;
 }

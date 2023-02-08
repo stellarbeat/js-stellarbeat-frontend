@@ -47,9 +47,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import Vue, { onMounted, ref } from "vue";
 
 import { Node, Organization } from "@stellarbeat/js-stellar-domain";
 import {
@@ -60,54 +59,37 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 
-@Component({
-  components: {
-    BFormInput: BFormInput,
-    BTable: BTable,
-    BIconShield: BIconShield,
-    BPagination: BPagination,
-  },
-  directives: {
-    "b-tooltip": VBTooltip,
-  },
-})
-export default class AddOrganizationsTable extends Vue {
-  @Prop()
-  public organizations!: Organization[];
+Vue.directive("b-tooltip", VBTooltip);
 
-  public mode = "multi";
-  public optionShowInactive = 1;
-  public sortBy = "index";
-  public sortDesc = true;
-  public perPage = 10;
-  public currentPage = 1;
-  public filter = "";
-  public totalRows = 1;
-  public fields = [
-    { key: "name", sortable: true },
-    { key: "availability", sortable: true, label: "30D availability" },
-  ];
+const props = defineProps<{
+  organizations: Organization[];
+}>();
 
-  rowSelected(items: Node[]) {
-    this.$emit("organizations-selected", items);
-  }
+const emit = defineEmits(["organizations-selected"]);
 
-  public onFiltered = (filteredItems: unknown[]) => {
-    this.totalRows = 1;
-    //@ts-ignore
-    this.$refs.paginator._data.currentPage = 1;
-    //@ts-ignore
-    this.$refs.paginator._data.localNumPages = Math.round(
-      filteredItems.length / this.perPage
-    );
-    //reactivity doesn't work on currentPage and totalRows. why?
-  };
+const mode = ref("multi");
+const sortBy = ref("index");
+const sortDesc = ref(true);
+const perPage = ref(10);
+const currentPage = ref(1);
+const filter = ref("");
+const totalRows = ref(1);
+const fields = ref([
+  { key: "name", sortable: true },
+  { key: "availability", sortable: true, label: "30D availability" },
+]);
 
-  mounted() {
-    // Set the initial number of items
-    this.totalRows = this.organizations.length;
-  }
+function rowSelected(items: Node[]) {
+  emit("organizations-selected", items);
 }
-</script>
 
-<style scoped></style>
+const onFiltered = (filteredItems: unknown[]) => {
+  totalRows.value = filteredItems.length;
+  currentPage.value = 1;
+};
+
+onMounted(() => {
+  // Set the initial number of items
+  totalRows.value = props.organizations.length;
+});
+</script>

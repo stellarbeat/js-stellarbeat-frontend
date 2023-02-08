@@ -33,11 +33,11 @@
         >
           <b-icon-shield />
         </span>
-        {{ row.item.name || " " | truncate(20) }}
+        {{ truncate(row.item.name, 20) || " " }}
       </template>
 
       <template v-slot:cell(version)="data">
-        {{ data.value || " " | truncate(28) }}
+        {{ truncate(data.value, 28) || " " }}
       </template>
     </b-table>
 
@@ -51,9 +51,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import Vue, { computed, onMounted, ref } from "vue";
 
 import { Node } from "@stellarbeat/js-stellar-domain";
 import {
@@ -63,70 +62,54 @@ import {
   BTable,
   VBTooltip,
 } from "bootstrap-vue";
+import { useTruncate } from "@/mixins/useTruncate";
 
-@Component({
-  name: "add-validators-table",
-  components: {
-    BFormInput: BFormInput,
-    BTable: BTable,
-    BIconShield: BIconShield,
-    BPagination: BPagination,
-  },
-  directives: {
-    "b-tooltip": VBTooltip,
-  },
-})
-export default class AddValidatorsTable extends Vue {
-  @Prop()
-  public validators!: Node[];
+Vue.directive("b-tooltip", VBTooltip);
 
-  public mode = "multi";
-  public optionShowInactive = 1;
-  public sortBy = "index";
-  public sortDesc = true;
-  public perPage = 10;
-  public currentPage = 1;
-  public filter = "";
-  public totalRows = 1;
-  public fields = [
-    { key: "name", sortable: true },
-    { key: "availability", sortable: true },
-    { key: "index", label: "index (experimental)", sortable: true },
-    { key: "version", sortable: true },
-  ];
+const props = defineProps<{
+  validators: Node[];
+}>();
 
-  get nodes() {
-    return this.validators.map((node) => {
-      return {
-        name: node.displayName,
-        version: node.versionStr,
-        isFullValidator: node.isFullValidator,
-        index: node.index,
-        publicKey: node.publicKey,
-      };
-    });
-  }
+const emit = defineEmits(["validators-selected"]);
+const truncate = useTruncate();
 
-  rowSelected(items: Node[]) {
-    this.$emit("validators-selected", items);
-  }
+const mode = ref("multi");
+const sortBy = ref("index");
+const sortDesc = ref(true);
+const perPage = ref(10);
+const currentPage = ref(1);
+const filter = ref("");
+const totalRows = ref(1);
+const fields = ref([
+  { key: "name", sortable: true },
+  { key: "availability", sortable: true },
+  { key: "index", label: "index (experimental)", sortable: true },
+  { key: "version", sortable: true },
+]);
 
-  public onFiltered = (filteredItems: unknown[]) => {
-    this.totalRows = 1;
-    //@ts-ignore
-    this.$refs.paginator._data.currentPage = 1;
-    //@ts-ignore
-    this.$refs.paginator._data.localNumPages = Math.round(
-      filteredItems.length / this.perPage
-    );
-    //reactivity doesn't work on currentPage and totalRows. why?
-  };
+const nodes = computed(() => {
+  return props.validators.map((node) => {
+    return {
+      name: node.displayName,
+      version: node.versionStr,
+      isFullValidator: node.isFullValidator,
+      index: node.index,
+      publicKey: node.publicKey,
+    };
+  });
+});
 
-  mounted() {
-    // Set the initial number of items
-    this.totalRows = this.nodes.length;
-  }
+function rowSelected(items: Node[]) {
+  emit("validators-selected", items);
 }
-</script>
 
-<style scoped></style>
+const onFiltered = (filteredItems: unknown[]) => {
+  totalRows.value = filteredItems.length;
+  currentPage.value = 1;
+};
+
+onMounted(() => {
+  // Set the initial number of items
+  totalRows.value = nodes.value.length;
+});
+</script>

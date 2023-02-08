@@ -15,56 +15,47 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { ref } from "vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
 
 import { BFormInput, BModal } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  components: { BFormInput, BModal },
-})
-export default class SimulateNewNode extends Vue {
-  protected newNodeName = "";
+const newNodeName = ref("");
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
 
-  get store(): Store {
-    return useStore();
+function simulateNewNode() {
+  let node = new Node(makePublicKey());
+  node.name = newNodeName.value === "" ? "MyNewNode" : newNodeName.value;
+  node.quorumSet.threshold = 1;
+  node.active = true;
+  node.isValidating = true;
+  store.addNodeToNetwork(node);
+  router.push({
+    name: "node-dashboard",
+    params: { publicKey: node.publicKey },
+    query: {
+      center: "1",
+      "no-scroll": "1",
+      view: route.query.view,
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
+}
+
+function makePublicKey() {
+  let result = "G";
+  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let charactersLength = characters.length;
+  for (let i = 0; i < 56; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-
-  public simulateNewNode() {
-    let node = new Node(this.makePublicKey());
-    node.name = this.newNodeName === "" ? "MyNewNode" : this.newNodeName;
-    node.quorumSet.threshold = 1;
-    node.active = true;
-    node.isValidating = true;
-    this.$set(node, "x", 0); //doesn't belong here, needs better solution
-    this.$set(node, "y", 0);
-    this.store.addNodeToNetwork(node);
-    this.$router.push({
-      name: "node-dashboard",
-      params: { publicKey: node.publicKey },
-      query: {
-        center: "1",
-        "no-scroll": "1",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
-
-  protected makePublicKey() {
-    let result = "G";
-    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let charactersLength = characters.length;
-    for (let i = 0; i < 56; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return result;
-  }
+  return result;
 }
 </script>
 <style scoped></style>
