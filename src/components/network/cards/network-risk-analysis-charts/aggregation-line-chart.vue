@@ -26,7 +26,6 @@ import "chartjs-adapter-moment";
 import {
   defineEmits,
   defineExpose,
-  defineProps,
   onBeforeUnmount,
   onMounted,
   ref,

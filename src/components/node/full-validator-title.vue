@@ -12,7 +12,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { BIconShield, VBTooltip } from "bootstrap-vue";
 import { useTruncate } from "@/mixins/useTruncate";
 

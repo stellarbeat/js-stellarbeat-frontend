@@ -20,9 +20,8 @@
 </template>
 <script setup lang="ts">
 import { BIconExclamationTriangle } from "bootstrap-vue";
-import { defineProps } from "vue";
 
-const props = defineProps({
+defineProps({
   title: { type: String, default: "" },
   hasWarnings: { type: Boolean, default: false },
   warnings: { type: String, default: "" },

@@ -87,14 +87,7 @@ import {
 } from "bootstrap-vue";
 import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
-import Vue, {
-  computed,
-  defineProps,
-  Ref,
-  ref,
-  toRefs,
-  withDefaults,
-} from "vue";
+import Vue, { computed, Ref, ref, toRefs, withDefaults } from "vue";
 import useStore from "@/store/useStore";
 
 Vue.directive("b-tooltip", VBTooltip);

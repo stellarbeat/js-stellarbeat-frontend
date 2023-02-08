@@ -74,7 +74,6 @@ const props = defineProps({
 
 const type = computed(() => props.type);
 const store = useStore();
-const network = computed(() => store.network);
 const selectedNode = computed(() => store.selectedNode);
 const selectedOrganization = computed(() => store.selectedOrganization);
 const networkReCalculated = computed(() => store.networkReCalculated);
@@ -189,23 +188,12 @@ function updateGraph(merge = false) {
 }
 
 const graph = ref(null);
-const width = computed(() => {
-  if (!graph) return 0;
-  //@ts-ignore
-  return graph.clientWidth;
-});
-
-const height = computed(() => {
-  if (!graph) return 0;
-  //@ts-ignore
-  return graph.clientHeight;
-});
 
 const selectedVertices = computed(() => {
   if (selectedKeys.value.length > 0 && viewGraph)
     return selectedKeys.value
       .map((key) => viewGraph.value.viewVertices.get(key))
-      .filter((vertex) => vertex !== undefined);
+      .filter((vertex) => vertex);
   return [];
 });
 
@@ -255,13 +243,11 @@ onMounted(() => {
   computeGraphWorker.onmessage = (event: {
     data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };
   }) => {
-    switch (event.data.type) {
-      case "end":
-        {
-          mapViewGraph(event.data.vertices, event.data.edges);
-          isLoading.value = false;
-        }
-        break;
+    if (event.data.type === "end") {
+      {
+        mapViewGraph(event.data.vertices, event.data.edges);
+        isLoading.value = false;
+      }
     }
   };
 
@@ -275,4 +261,3 @@ onBeforeUnmount(() => {
   computeGraphWorker.terminate();
 });
 </script>
-<style scoped></style>

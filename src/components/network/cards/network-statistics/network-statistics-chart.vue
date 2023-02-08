@@ -19,7 +19,7 @@ import {
 } from "chart.js";
 import "chartjs-adapter-moment";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
-import { defineEmits, defineProps, onBeforeUnmount, onMounted, ref } from "vue";
+import { defineEmits, onBeforeUnmount, onMounted, ref } from "vue";
 
 const chart = ref<Chart>();
 const emit = defineEmits(["hover"]);

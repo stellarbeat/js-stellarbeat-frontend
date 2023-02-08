@@ -51,7 +51,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue, { computed, defineProps, ref } from "vue";
+import Vue, { computed, ref } from "vue";
 import NavTitle from "@/components/side-bar/nav-title.vue";
 
 import {

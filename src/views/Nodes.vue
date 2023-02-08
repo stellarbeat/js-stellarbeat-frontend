@@ -87,7 +87,7 @@ import SimulationBadge from "@/components/simulation-badge.vue";
 import NodesTable from "@/components/node/nodes-table.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
-import { computed, defineProps, ref } from "vue";
+import { computed, ref } from "vue";
 import useStore from "@/store/useStore";
 
 defineProps({

@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { BTable, BPagination } from "bootstrap-vue";
-import { computed, defineProps, ref, toRefs } from "vue";
+import { computed, ref, toRefs } from "vue";
 
 const props = defineProps({
   items: {

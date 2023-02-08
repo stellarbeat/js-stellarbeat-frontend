@@ -21,17 +21,8 @@ import {
   Tooltip,
 } from "chart.js";
 
-import Vue, {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  Ref,
-  watch,
-} from "vue";
-import { Component, Watch } from "vue-property-decorator";
+import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from "vue";
 
-import { Network } from "@stellarbeat/js-stellar-domain";
 import Store from "@/store/Store";
 import useStore from "@/store/useStore";
 
@@ -174,7 +165,4 @@ onBeforeUnmount(function () {
 });
 </script>
 
-<style scoped>
-.canvas-container {
-}
-</style>
+<style scoped></style>

@@ -239,7 +239,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType, defineProps } from "vue";
+import { ref, computed, PropType } from "vue";
 import {
   BCollapse,
   BDropdownItem,

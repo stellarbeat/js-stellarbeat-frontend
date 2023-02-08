@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, toRefs } from "vue";
+import { computed, toRefs } from "vue";
 import { polygonHull } from "d3-polygon";
 import { curveCatmullRomClosed, line } from "d3-shape";
 

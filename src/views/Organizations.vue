@@ -42,7 +42,7 @@ import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
 import OrganizationsTable from "@/components/organization/organizations-table.vue";
-import { computed, defineProps, ref } from "vue";
+import { computed, ref } from "vue";
 import useStore from "@/store/useStore";
 
 defineProps({

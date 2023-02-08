@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, defineProps, ref, withDefaults } from "vue";
+import Vue, { computed, ref, withDefaults } from "vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
 
 import {

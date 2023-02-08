@@ -14,7 +14,6 @@
 </template>
 <script setup lang="ts">
 import { BPagination } from "bootstrap-vue";
-import { defineProps } from "vue";
 
 defineProps({
   value: {},

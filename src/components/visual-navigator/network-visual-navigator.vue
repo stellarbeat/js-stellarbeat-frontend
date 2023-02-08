@@ -208,7 +208,7 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, defineAsyncComponent, defineProps, ref } from "vue";
+import Vue, { computed, defineAsyncComponent, ref } from "vue";
 import NetworkGraphCard from "@/components/visual-navigator/network-graph-card.vue";
 import {
   BBreadcrumb,
