@@ -84,7 +84,7 @@ import { BBadge, BButton, BIconClipboard, VBTooltip } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
 import useClipboard from "vue-clipboard3";
 import useStore from "@/store/useStore";
-import { useTruncate } from "@/mixins/useTruncate";
+import { useTruncate } from "@/composables/useTruncate";
 
 Vue.directive("b-tooltip", VBTooltip);
 

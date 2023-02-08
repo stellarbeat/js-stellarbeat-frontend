@@ -48,7 +48,7 @@ import OrganizationActions from "@/components/organization/sidebar/organization-
 import useStore from "@/store/useStore";
 import { computed, defineEmits } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
-import { useDropdown } from "@/components/side-bar/useDropdown";
+import { useDropdown } from "@/composables/useDropdown";
 
 const props = defineProps<{
   organization: Organization;

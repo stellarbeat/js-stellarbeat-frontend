@@ -62,7 +62,7 @@ import {
   BTable,
   VBTooltip,
 } from "bootstrap-vue";
-import { useTruncate } from "@/mixins/useTruncate";
+import { useTruncate } from "@/composables/useTruncate";
 
 Vue.directive("b-tooltip", VBTooltip);
 

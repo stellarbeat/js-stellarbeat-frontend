@@ -39,7 +39,7 @@ import NavLink from "@/components/side-bar/nav-link.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
 import useStore from "@/store/useStore";
-import { useDropdown } from "@/components/side-bar/useDropdown";
+import { useDropdown } from "@/composables/useDropdown";
 import { computed, defineEmits } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
 

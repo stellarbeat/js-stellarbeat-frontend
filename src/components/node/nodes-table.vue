@@ -132,7 +132,7 @@ import {
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import useStore from "@/store/useStore";
-import { useTruncate } from "@/mixins/useTruncate";
+import { useTruncate } from "@/composables/useTruncate";
 
 Vue.directive("b-tooltip", VBTooltip);
 

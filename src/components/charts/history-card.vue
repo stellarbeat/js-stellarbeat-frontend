@@ -83,7 +83,7 @@ import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
 import { BButton, BButtonGroup } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import useStore from "@/store/useStore";
-import { useIsLoading } from "@/mixins/useIsLoading";
+import { useIsLoading } from "@/composables/useIsLoading";
 import { computed, onMounted, ref, toRefs, watch } from "vue";
 import BarChartDay from "@/components/charts/bar-chart-day.vue";
 

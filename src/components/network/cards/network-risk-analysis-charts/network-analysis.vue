@@ -149,7 +149,7 @@ import AggregationLineChart from "@/components/network/cards/network-risk-analys
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import NetworkStatistics from "@stellarbeat/js-stellar-domain/lib/network-statistics";
 import Vue, { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
-import { useIsLoading } from "@/mixins/useIsLoading";
+import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
 
 Vue.directive("b-tooltip", VBTooltip);
@@ -725,7 +725,6 @@ async function updateYearChart() {
 }
 
 async function updateDays30Chart() {
-  console.log("updateDays30Chart");
   isLoading.value = true;
   let startOfDay = moment(selectedDate.value).startOf("day").toDate();
   let days30Ahead = moment(selectedDate.value)

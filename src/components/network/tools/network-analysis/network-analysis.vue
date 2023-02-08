@@ -319,7 +319,7 @@ import TopTierInfo from "@/components/network/tools/network-analysis/info/top-ti
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
 import Vue, { nextTick, onMounted, Ref, ref } from "vue";
-import { useIsLoading } from "@/mixins/useIsLoading";
+import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
 import VueScrollTo from "vue-scrollto";
 Vue.directive("b-modal", VBModal);

@@ -65,7 +65,7 @@ import {
 } from "bootstrap-vue";
 import { OrganizationSnapShot } from "@stellarbeat/js-stellar-domain";
 import useStore from "@/store/useStore";
-import { useIsLoading } from "@/mixins/useIsLoading";
+import { useIsLoading } from "@/composables/useIsLoading";
 import { onMounted, Ref, ref } from "vue";
 
 const store = useStore();

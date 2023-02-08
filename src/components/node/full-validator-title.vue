@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { BIconShield, VBTooltip } from "bootstrap-vue";
-import { useTruncate } from "@/mixins/useTruncate";
+import { useTruncate } from "@/composables/useTruncate";
 
 const truncate = useTruncate();
 import Vue from "vue";

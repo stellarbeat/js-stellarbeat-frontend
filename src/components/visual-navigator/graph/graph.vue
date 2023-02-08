@@ -145,7 +145,7 @@ import {
   toRefs,
   watch,
 } from "vue";
-import { useTruncate } from "@/mixins/useTruncate";
+import { useTruncate } from "@/composables/useTruncate";
 
 const props = defineProps({
   centerVertex: {

@@ -78,7 +78,7 @@ import QuorumSetActions from "@/components/node/sidebar/quorum-set-actions.vue";
 import useStore from "@/store/useStore";
 import { computed, toRefs, withDefaults } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
-import { useDropdown } from "@/components/side-bar/useDropdown";
+import { useDropdown } from "@/composables/useDropdown";
 
 export interface Props {
   quorumSet: QuorumSet;
