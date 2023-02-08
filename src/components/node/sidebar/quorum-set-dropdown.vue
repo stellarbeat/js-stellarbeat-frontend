@@ -15,7 +15,9 @@
       :secondary="!isRoot"
       :has-warnings="hasWarnings"
       :warnings="quorumSetWarnings"
-      :has-danger="network.isQuorumSetBlocked(store.selectedNode, quorumSet)"
+      :has-danger="
+        store.network.isQuorumSetBlocked(store.selectedNode, quorumSet)
+      "
       :dangers="quorumSetDangers"
     >
       <template v-slot:action-dropdown>
@@ -34,15 +36,15 @@
         v-on:click="selectNode(validator)"
         :title="getDisplayName(validator)"
         :isLinkInDropdown="true"
-        :has-danger="network.isNodeFailing(validator)"
+        :has-danger="store.network.isNodeFailing(validator)"
         :dangers="
           'Node not validating ' +
-          (network.isQuorumSetBlocked(validator)
+          (store.network.isQuorumSetBlocked(validator)
             ? ': quorumset not reaching threshold'
             : '')
         "
-        :has-warnings="network.nodeHasWarnings(validator)"
-        :warnings="network.getNodeWarningReasons(validator)"
+        :has-warnings="store.network.nodeHasWarnings(validator)"
+        :warnings="store.network.getNodeWarningReasons(validator)"
       >
         <template v-slot:action-dropdown>
           <node-actions
@@ -64,140 +66,122 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import {
   Node,
   QuorumSet,
   QuorumSetService,
 } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { DropdownMixin } from "@/components/side-bar/dropdown-mixin";
-import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import QuorumSetActions from "@/components/node/sidebar/quorum-set-actions.vue";
+import useStore from "@/store/useStore";
+import { computed, toRefs, withDefaults } from "vue";
+import { useRoute, useRouter } from "vue-router/composables";
+import { useDropdown } from "@/components/side-bar/useDropdown";
 
-@Component({
-  name: "quorum-set-dropdown",
-  components: {
-    QuorumSetActions,
-    NodeActions,
-    NavPagination,
-    NavLink,
-  },
-})
-export default class QuorumSetDropdown extends Mixins(DropdownMixin) {
-  @Prop()
-  quorumSet!: QuorumSet;
+export interface Props {
+  quorumSet: QuorumSet;
+  parentQuorumSet: QuorumSet;
+  level: number;
+  expand: boolean;
+}
 
-  @Prop({ default: null })
-  parentQuorumSet!: QuorumSet;
+const props = withDefaults(defineProps<Props>(), {
+  level: 0,
+  expand: false,
+});
 
-  @Prop({ default: 0 })
-  protected level!: number;
+const { quorumSet, parentQuorumSet, level, expand } = toRefs(props);
 
-  //checks one level of inner quorumsets
-  get quorumSetHasFailingValidators() {
-    return QuorumSetService.quorumSetHasFailingValidators(
-      this.quorumSet,
-      this.network
-    );
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const emit = defineEmits(["toggleExpand"]);
+const { showing, toggleShow } = useDropdown(expand.value, emit);
+
+const quorumSetDangers = computed(() => {
+  if (!store.selectedNode) throw new Error("No node selected");
+  return QuorumSetService.getQuorumSetDangers(
+    store.selectedNode,
+    props.quorumSet,
+    store.network
+  );
+});
+
+const quorumSetWarnings = computed(() => {
+  return QuorumSetService.getQuorumSetWarnings(props.quorumSet, store.network);
+});
+
+const hasWarnings = computed(() => {
+  return QuorumSetService.quorumSetHasWarnings(props.quorumSet, store.network);
+});
+
+const classObject = computed(() => {
+  return {
+    "pl-3": props.level === 1,
+    "pl-4": props.level === 2,
+  };
+});
+
+const title = computed(() => {
+  if (isOrganizationSubQuorum(props.quorumSet))
+    return subQuorumOrganizationName(props.quorumSet);
+  else return "Quorum set";
+});
+
+const isRoot = computed(() => {
+  return props.level === 0;
+});
+
+const validators = computed(() => {
+  return props.quorumSet.validators.map((validator) =>
+    store.network.getNodeByPublicKey(validator)
+  );
+});
+
+const innerQuorumSets = computed(() => {
+  return props.quorumSet.innerQuorumSets;
+});
+
+function selectNode(node: Node) {
+  if (route.params.publicKey && route.params.publicKey === node.publicKey)
+    return;
+
+  router.push({
+    name: "node-dashboard",
+    params: { publicKey: node.publicKey },
+    query: {
+      center: "1",
+      "no-scroll": "0",
+      view: route.query.view,
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
+}
+
+function getDisplayName(node: Node) {
+  if (node.name) return node.name;
+
+  return (
+    node.publicKey.substring(0, 7) + "..." + node.publicKey.substring(50, 100)
+  );
+}
+
+function isOrganizationSubQuorum(quorumSet: QuorumSet): boolean {
+  if (isRoot.value) return false;
+
+  return QuorumSetService.isOrganizationQuorumSet(quorumSet, store.network);
+}
+
+function subQuorumOrganizationName(quorumSet: QuorumSet): string {
+  if (!isOrganizationSubQuorum) {
+    return "";
   }
+  let organizationId = store.network.getNodeByPublicKey(quorumSet.validators[0])
+    .organizationId as string;
 
-  get quorumSetDangers() {
-    if (!this.store.selectedNode) throw new Error("No node selected");
-    return QuorumSetService.getQuorumSetDangers(
-      this.store.selectedNode,
-      this.quorumSet,
-      this.network
-    );
-  }
-
-  get quorumSetWarnings() {
-    return QuorumSetService.getQuorumSetWarnings(this.quorumSet, this.network);
-  }
-
-  //checks one level of inner quorumSets
-  get hasWarnings() {
-    return QuorumSetService.quorumSetHasWarnings(this.quorumSet, this.network);
-  }
-
-  get classObject() {
-    return {
-      "pl-3": this.level === 1,
-      "pl-4": this.level === 2,
-    };
-  }
-  get title(): string {
-    if (this.isOrganizationSubQuorum(this.quorumSet))
-      return this.subQuorumOrganizationName(this.quorumSet);
-    else return "Quorum set";
-  }
-  get isRoot(): boolean {
-    return this.level === 0;
-  }
-
-  get validators() {
-    return this.quorumSet.validators.map((validator) =>
-      this.network.getNodeByPublicKey(validator)
-    );
-  }
-
-  get innerQuorumSets() {
-    return this.quorumSet.innerQuorumSets;
-  }
-
-  public selectNode(node: Node) {
-    if (
-      this.$route.params.publicKey &&
-      this.$route.params.publicKey === node.publicKey
-    )
-      return;
-
-    this.$router.push({
-      name: "node-dashboard",
-      params: { publicKey: node.publicKey },
-      query: {
-        center: "1",
-        "no-scroll": "0",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
-
-  public nodeState(node: Node) {
-    return {
-      inactive: !node.active,
-      active: node.active,
-      failing: this.network.isNodeFailing(node),
-    };
-  }
-
-  getDisplayName(node: Node) {
-    if (node.name) return node.name;
-
-    return node.publicKey.substr(0, 7) + "..." + node.publicKey.substr(50, 100);
-  }
-
-  public isOrganizationSubQuorum(quorumSet: QuorumSet): boolean {
-    if (this.isRoot) return false;
-
-    return QuorumSetService.isOrganizationQuorumSet(quorumSet, this.network);
-  }
-
-  public subQuorumOrganizationName(quorumSet: QuorumSet): string {
-    if (!this.isOrganizationSubQuorum) {
-      return "";
-    }
-    let organizationId = this.network.getNodeByPublicKey(
-      quorumSet.validators[0]
-    ).organizationId as string;
-
-    return this.network.getOrganizationById(organizationId).name;
-  }
+  return store.network.getOrganizationById(organizationId).name;
 }
 </script>
-
-<style scoped></style>
