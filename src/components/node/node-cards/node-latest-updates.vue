@@ -136,32 +136,22 @@
         <div class="loader"></div>
       </div>
     </div>
-    <b-modal ref="modal-diff" title="Diff" size="lg">
+    <b-modal ref="modalDiff" title="Diff" size="lg">
       <div v-html="diffModalHtml"></div>
     </b-modal>
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Vue from "vue";
-import {
-  Network,
-  Node,
-  PublicKey,
-  QuorumSet,
-} from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
-//import AsyncComputed from 'vue-async-computed-decorator';
-import { Delta, formatters, create, DiffPatcher } from "jsondiffpatch";
+<script setup lang="ts">
+import Vue, { Ref, ref, toRefs, watch } from "vue";
+import { Node, PublicKey, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { Delta, formatters, create } from "jsondiffpatch";
 import "jsondiffpatch/dist/formatters-styles/html.css";
 
 import {
   VBTooltip,
-  BTable,
   BModal,
   VBModal,
   BButton,
-  BBadge,
   BListGroup,
   BListGroupItem,
   BIconFileDiff,
@@ -171,6 +161,7 @@ import {
 } from "bootstrap-vue";
 import { isArray } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
 interface Update {
   key: string;
@@ -201,200 +192,193 @@ interface SnapshotForDelta {
   quorumSet: QuorumSet;
   quorumSetHashKey: string | null;
 }
-@Component({
-  components: {
-    BTable,
-    BModal,
-    BButton,
-    BListGroup,
-    BListGroupItem,
-    BBadge,
-    BIconFileDiff,
-    BButtonGroup,
-    BIconClock,
-    BButtonToolbar,
+
+Vue.directive("b-tooltip", VBTooltip);
+Vue.directive("b-modal", VBModal);
+
+const props = defineProps<{
+  node: Node;
+}>();
+
+const node = toRefs(props).node;
+
+const differ = create({
+  objectHash(obj: Record<string, unknown>) {
+    if (isArray(obj.validators)) {
+      return obj.validators.join("");
+    }
   },
-  directives: { "b-tooltip": VBTooltip, "b-modal": VBModal },
-})
-export default class NodeLatestUpdates extends Vue {
-  protected differ!: DiffPatcher;
-  protected diffModalHtml = "<p>No update selected</p>";
-  protected deltas: Map<string, Delta | undefined> = new Map();
-  protected updatesPerDate: {
+});
+
+const diffModalHtml = ref("<p>No update selected</p>");
+const deltas: Map<string, Delta | undefined> = new Map();
+
+const updatesPerDate: Ref<
+  {
     date: string;
     updates: Update[];
     snapshot: SnapshotForDelta;
-  }[] = [];
-  protected isLoading = true;
-  protected failed = false;
+  }[]
+> = ref([]);
 
-  @Prop()
-  protected node!: Node;
+const store = useStore();
+const network = store.network;
+const router = useRouter();
+const route = useRoute();
+const isLoading = ref(true);
+const failed = ref(false);
 
-  showDiff(snapShot: SnapshotForDelta) {
-    formatters.html.showUnchanged(true);
-    this.diffModalHtml = formatters.html.format(
-      this.deltas.get(snapShot.startDate.toISOString()) as Delta,
-      snapShot
+const modalDiff: Ref<BModal | null> = ref(null);
+
+function showDiff(snapShot: SnapshotForDelta) {
+  if (!modalDiff.value) return;
+  formatters.html.showUnchanged(true);
+  diffModalHtml.value = formatters.html.format(
+    deltas.get(snapShot.startDate.toISOString()) as Delta,
+    snapShot
+  );
+  modalDiff.value.show();
+}
+
+function mapValidatorsToNames(quorumSet: QuorumSet) {
+  quorumSet.validators = quorumSet.validators.map((validator: PublicKey) =>
+    network.getNodeByPublicKey(validator) &&
+    network.getNodeByPublicKey(validator).name
+      ? network.getNodeByPublicKey(validator).name
+      : validator
+  ) as [];
+
+  quorumSet.innerQuorumSets = quorumSet.innerQuorumSets.map((quorumSet) =>
+    mapValidatorsToNames(quorumSet)
+  );
+
+  return quorumSet;
+}
+
+watch(
+  node,
+  async () => {
+    await getSnapshots();
+  },
+  { immediate: true }
+);
+
+async function getSnapshots() {
+  let snapshots: SnapshotForDelta[] = [];
+  try {
+    deltas.clear();
+    updatesPerDate.value = [];
+    let fetchedSnapshots = await store.fetchNodeSnapshotsByPublicKey(
+      node.value.publicKey
     );
-    (this.$refs["modal-diff"] as BModal).show();
-  }
+    snapshots = fetchedSnapshots.map((snapshot) => {
+      let quorumSet: QuorumSet;
+      if (!snapshot.node.quorumSet) quorumSet = new QuorumSet(0);
+      else quorumSet = mapValidatorsToNames(snapshot.node.quorumSet);
 
-  get store(): Store {
-    return useStore();
-  }
-
-  mapValidatorsToNames(quorumSet: QuorumSet) {
-    quorumSet.validators = quorumSet.validators.map((validator: PublicKey) =>
-      this.network.getNodeByPublicKey(validator) &&
-      this.network.getNodeByPublicKey(validator).name
-        ? this.network.getNodeByPublicKey(validator).name
-        : validator
-    ) as [];
-
-    quorumSet.innerQuorumSets = quorumSet.innerQuorumSets.map((quorumSet) =>
-      this.mapValidatorsToNames(quorumSet)
-    );
-
-    return quorumSet;
-  }
-
-  @Watch("node")
-  async onNodeChanged() {
-    await this.getSnapshots();
-  }
-  async getSnapshots() {
-    let snapshots: SnapshotForDelta[] = [];
-    try {
-      this.deltas = new Map();
-      this.updatesPerDate = [];
-      let fetchedSnapshots = await this.store.fetchNodeSnapshotsByPublicKey(
-        this.node.publicKey
-      );
-      snapshots = fetchedSnapshots.map((snapshot) => {
-        let quorumSet: QuorumSet;
-        if (!snapshot.node.quorumSet) quorumSet = new QuorumSet(0);
-        else quorumSet = this.mapValidatorsToNames(snapshot.node.quorumSet);
-
-        return {
-          startDate: snapshot.startDate,
-          endDate: snapshot.endDate,
-          publicKey: snapshot.node.publicKey,
-          ip: snapshot.node.ip,
-          port: snapshot.node.port,
-          host: snapshot.node.host,
-          name: snapshot.node.name,
-          homeDomain: snapshot.node.homeDomain,
-          historyUrl: snapshot.node.historyUrl,
-          alias: snapshot.node.alias,
-          isp: snapshot.node.isp,
-          ledgerVersion: snapshot.node.ledgerVersion,
-          overlayVersion: snapshot.node.overlayVersion,
-          overlayMinVersion: snapshot.node.overlayMinVersion,
-          versionStr: snapshot.node.versionStr,
-          countryCode: snapshot.node.geoData.countryCode,
-          countryName: snapshot.node.geoData.countryName,
-          longitude: snapshot.node.geoData.longitude,
-          latitude: snapshot.node.geoData.latitude,
-          organizationId: snapshot.node.organizationId,
-          quorumSet: quorumSet,
-          quorumSetHashKey: snapshot.node.quorumSetHashKey,
-        };
-      });
-
-      for (let i = snapshots.length - 2; i >= 0; i--) {
-        let updates: Update[] = [];
-        [
-          "latitude",
-          "longitude",
-          "quorumSet",
-          "ip",
-          "port",
-          "countryName",
-          "countryCode",
-          "host",
-          "name",
-          "homeDomain",
-          "historyUrl",
-          "alias",
-          "isp",
-          "ledgerVersion",
-          "overlayVersion",
-          "overlayMinVersion",
-          "versionStr",
-          "organizationId",
-        ]
-          .filter((key) =>
-            key !== "quorumSet"
-              ? //@ts-ignore
-                snapshots[i][key] !== snapshots[i + 1][key]
-              : snapshots[i].quorumSetHashKey !==
-                snapshots[i + 1].quorumSetHashKey
-          )
-          .forEach((changedKey) =>
-            updates.push({
-              key: changedKey,
-              //@ts-ignore
-              value: snapshots[i][changedKey],
-            })
-          );
-
-        if (
-          snapshots[i]["startDate"].getTime() !==
-          snapshots[i + 1]["endDate"].getTime()
-        ) {
-          updates.push({ key: "archival", value: "unArchived" });
-        }
-
-        this.updatesPerDate.push({
-          date: snapshots[i].startDate.toISOString(),
-          updates: updates,
-          snapshot: snapshots[i],
-        });
-        this.deltas.set(
-          snapshots[i].startDate.toISOString(),
-          this.differ.diff(snapshots[i + 1], snapshots[i])
-        );
-      }
-      this.updatesPerDate.reverse();
-    } catch (e) {
-      this.failed = true;
-    }
-    this.isLoading = false;
-    return snapshots;
-  }
-
-  async timeTravel(snapshot: SnapshotForDelta) {
-    this.store.isLoading = true;
-    await this.store.timeTravel(snapshot.startDate);
-    this.store.isLoading = false;
-  }
-
-  async mounted() {
-    this.differ = create({
-      objectHash(obj: Record<string, unknown>) {
-        if (isArray(obj.validators)) {
-          return obj.validators.join("");
-        }
-      },
-      /*propertyFilter: function (name: string, context: any) {
-                    return !['startDate', 'endDate'].includes(name);
-                },*/
+      return {
+        startDate: snapshot.startDate,
+        endDate: snapshot.endDate,
+        publicKey: snapshot.node.publicKey,
+        ip: snapshot.node.ip,
+        port: snapshot.node.port,
+        host: snapshot.node.host,
+        name: snapshot.node.name,
+        homeDomain: snapshot.node.homeDomain,
+        historyUrl: snapshot.node.historyUrl,
+        alias: snapshot.node.alias,
+        isp: snapshot.node.isp,
+        ledgerVersion: snapshot.node.ledgerVersion,
+        overlayVersion: snapshot.node.overlayVersion,
+        overlayMinVersion: snapshot.node.overlayMinVersion,
+        versionStr: snapshot.node.versionStr,
+        countryCode: snapshot.node.geoData.countryCode,
+        countryName: snapshot.node.geoData.countryName,
+        longitude: snapshot.node.geoData.longitude,
+        latitude: snapshot.node.geoData.latitude,
+        organizationId: snapshot.node.organizationId,
+        quorumSet: quorumSet,
+        quorumSetHashKey: snapshot.node.quorumSetHashKey,
+      };
     });
-    await this.getSnapshots();
-  }
 
-  get network(): Network {
-    return this.store.network;
+    for (let i = snapshots.length - 2; i >= 0; i--) {
+      let updates: Update[] = [];
+      [
+        "latitude",
+        "longitude",
+        "quorumSet",
+        "ip",
+        "port",
+        "countryName",
+        "countryCode",
+        "host",
+        "name",
+        "homeDomain",
+        "historyUrl",
+        "alias",
+        "isp",
+        "ledgerVersion",
+        "overlayVersion",
+        "overlayMinVersion",
+        "versionStr",
+        "organizationId",
+      ]
+        .filter((key) =>
+          key !== "quorumSet"
+            ? //@ts-ignore
+              snapshots[i][key] !== snapshots[i + 1][key]
+            : snapshots[i].quorumSetHashKey !==
+              snapshots[i + 1].quorumSetHashKey
+        )
+        .forEach((changedKey) =>
+          updates.push({
+            key: changedKey,
+            //@ts-ignore
+            value: snapshots[i][changedKey],
+          })
+        );
+
+      if (
+        snapshots[i]["startDate"].getTime() !==
+        snapshots[i + 1]["endDate"].getTime()
+      ) {
+        updates.push({ key: "archival", value: "unArchived" });
+      }
+
+      updatesPerDate.value.push({
+        date: snapshots[i].startDate.toISOString(),
+        updates: updates,
+        snapshot: snapshots[i],
+      });
+      deltas.set(
+        snapshots[i].startDate.toISOString(),
+        differ.diff(snapshots[i + 1], snapshots[i])
+      );
+    }
+    updatesPerDate.value.reverse();
+  } catch (e) {
+    failed.value = true;
   }
+  isLoading.value = false;
+  return snapshots;
+}
+
+function timeTravel(snapshot: SnapshotForDelta) {
+  router.push({
+    name: route.name ? route.name : undefined,
+    params: route.params,
+    query: {
+      view: route.query.view,
+      "no-scroll": "1",
+      network: route.query.network,
+      at: snapshot.startDate.toISOString(),
+    },
+  });
 }
 </script>
 
 <style scoped>
-.changed {
-  background: #5eba00;
-}
-
 .this-card {
   min-height: 200px;
   max-height: 910px;

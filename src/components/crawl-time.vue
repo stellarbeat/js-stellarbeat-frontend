@@ -67,8 +67,8 @@ function timeTravel() {
       "no-scroll": "1",
       network: route.query.network,
       at: moment(time.value)
-        .hours(Number(crawlTime.value.substr(0, 2)))
-        .minutes(Number(crawlTime.value.substr(3, 2)))
+        .hours(Number(crawlTime.value.substring(0, 2)))
+        .minutes(Number(crawlTime.value.substring(3, 2)))
         .toISOString(),
     },
   });
