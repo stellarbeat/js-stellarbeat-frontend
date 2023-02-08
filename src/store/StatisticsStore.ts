@@ -5,7 +5,7 @@ import {
   isObject,
 } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 
-export interface StatisticsAggregation {
+export interface StatisticsAggregation extends Statistics {
   crawlCount: number;
 }
 
