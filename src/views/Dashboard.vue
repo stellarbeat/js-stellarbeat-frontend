@@ -156,7 +156,6 @@ const haltingAnalysisPublicKey = computed(() => {
 });
 
 watch(haltingAnalysisPublicKey, (publicKey) => {
-  console.log("MIEP");
   if (publicKey)
     nextTick(() => {
       VueScrollTo.scrollTo("#halting-analysis-card");

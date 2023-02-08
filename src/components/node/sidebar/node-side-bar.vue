@@ -111,92 +111,65 @@
   </side-bar>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import Vue, { computed, ref } from "vue";
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
 import QuorumSetDropdown from "@/components/node/sidebar/quorum-set-dropdown.vue";
 import NavLink from "@/components/side-bar/nav-link.vue";
 import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-node.vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
-import OrganizationsDropdown from "@/components/network/sidebar/organizations-dropdown.vue";
 import OrganizationValidatorsDropdown from "@/components/node/sidebar/organization-validators-dropdown.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
 import { BBadge, BModal, VBModal } from "bootstrap-vue";
 import QuorumSlices from "@/components/node/tools/quorum-slices.vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    QuorumSlices,
-    SideBar,
-    OrganizationValidatorsDropdown,
-    OrganizationsDropdown,
-    SimulateNewNode,
-    NavLink,
-    QuorumSetDropdown,
-    BModal: BModal,
-    BBadge: BBadge,
-  },
-  directives: {
-    "b-modal": VBModal,
-  },
-})
-export default class NodeSideBar extends Vue {
-  public quorumSetExpanded = true;
-  protected tomlNodesExport = "";
+Vue.directive("b-modal", VBModal);
 
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const quorumSetExpanded = ref(true);
+const tomlNodesExport = ref("");
 
-  get selectedNode() {
-    if (!this.store.selectedNode) throw new Error("No node selected");
-    return this.store.selectedNode;
-  }
+const selectedNode = computed(() => {
+  if (!store.selectedNode) throw new Error("No node selected");
+  return store.selectedNode;
+});
 
-  get hasOrganization() {
-    return (
-      this.selectedNode &&
-      this.selectedNode.organizationId &&
-      this.network.getOrganizationById(this.selectedNode.organizationId)
+const hasOrganization = computed(() => {
+  return (
+    selectedNode.value &&
+    selectedNode.value.organizationId &&
+    store.network.getOrganizationById(selectedNode.value.organizationId)
+  );
+});
+
+const organization = computed(() => {
+  if (hasOrganization.value && selectedNode.value)
+    return store.network.getOrganizationById(
+      selectedNode.value.organizationId as string
     );
-  }
+  else return null;
+});
 
-  get organization() {
-    if (this.hasOrganization && this.selectedNode)
-      return this.network.getOrganizationById(
-        this.selectedNode.organizationId as string
-      );
-    else return null;
-  }
+const network = store.network;
 
-  get network() {
-    return this.store.network;
-  }
+const nodeType = computed(() => {
+  if (selectedNode.value.isValidator)
+    return selectedNode.value.isFullValidator ? "Full Validator" : "Validator";
+  else return "Watcher";
+});
 
-  get nodeType() {
-    return this.selectedNode.isValidator
-      ? this.selectedNode.isFullValidator
-        ? "Full Validator"
-        : "Validator"
-      : "Watcher";
-  }
+function loadTomlExport() {
+  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
+    network
+  );
+  tomlNodesExport.value = stellarCoreConfigurationGenerator.nodesToToml([
+    selectedNode.value,
+  ]);
+}
 
-  loadTomlExport() {
-    let stellarCoreConfigurationGenerator =
-      new StellarCoreConfigurationGenerator(this.network);
-    this.tomlNodesExport = stellarCoreConfigurationGenerator.nodesToToml([
-      this.selectedNode,
-    ]);
-  }
-
-  getDisplayName(node: Node) {
-    if (node.name) return node.name;
-
-    return node.publicKey.substr(0, 7) + "..." + node.publicKey.substr(50, 100);
-  }
+function getDisplayName(node: Node) {
+  return node.displayName;
 }
 </script>
 <style scoped></style>
