@@ -198,92 +198,56 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { Component, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import HistoryCard from "@/components/charts/history-card.vue";
-import Store from "@/store/Store";
 import NodeInfo from "@/components/node/node-cards/node-info.vue";
 import NodeExtraInfo from "@/components/node/node-cards/node-extra-info.vue";
 import NodeQuorumSetValidators from "@/components/node/node-cards/node-quorum-set-validators.vue";
-import NodeStatistics24HValidating from "@/components/node/node-cards/statistics/node-statistics-24H-validating.vue";
-import NodeStatistics24HActive from "@/components/node/node-cards/statistics/node-statistics-24H-active.vue";
-import NodeStatistics30DValidating from "@/components/node/node-cards/statistics/node-statistics-30D-validating.vue";
-import NodeStatistics30DOverloaded from "@/components/node/node-cards/statistics/node-statistics-30D-overloaded.vue";
 import NodeIndex from "@/components/node/node-cards/statistics/node-index.vue";
-import NodeStatistics30DActive from "@/components/node/node-cards/statistics/node-statistics-30D-active.vue";
 import NodeTrustedBy from "@/components/node/node-cards/node-trusted-by.vue";
 import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
-import { HistoryArchiveScan, Network } from "@stellarbeat/js-stellar-domain";
+import { HistoryArchiveScan } from "@stellarbeat/js-stellar-domain";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    NodeLatestUpdates: NodeLatestUpdates,
-    NodeTrustedBy,
-    NodeStatistics30DActive,
-    NodeIndex,
-    NodeStatistics30DOverloaded,
-    NodeStatistics30DValidating,
-    NodeStatistics24HActive,
-    NodeStatistics24HValidating,
-    NodeQuorumSetValidators,
-    NodeExtraInfo,
-    NodeInfo,
-    HistoryCard,
-    LazyHydrate,
-    BAlert,
-  },
-})
-export default class NodeDashboard extends Vue {
-  private fetchingLatestHistoryArchiveScan = false;
-  private historyArchiveScan: HistoryArchiveScan | null = null;
+const store = useStore();
+const network = store.network;
+const selectedNode = computed(() => store.selectedNode);
 
-  get store(): Store {
-    return useStore();
-  }
+const fetchingLatestHistoryArchiveScan = ref(false);
+const historyArchiveScan = ref<HistoryArchiveScan | null>(null);
 
-  get network(): Network {
-    return this.store.network;
-  }
+async function fetchHistoryArchiveScan() {
+  if (!selectedNode.value) return;
 
-  get selectedNode() {
-    return this.store.selectedNode;
-  }
+  if (!selectedNode.value.historyUrl) return;
 
-  async fetchHistoryArchiveScan() {
-    if (!this.selectedNode) return;
+  fetchingLatestHistoryArchiveScan.value = true;
+  historyArchiveScan.value =
+    await store.historyArchiveScanRepository.findLatest(
+      selectedNode.value.historyUrl
+    );
 
-    if (!this.selectedNode.historyUrl) return;
-
-    this.fetchingLatestHistoryArchiveScan = true;
-    this.historyArchiveScan =
-      await this.store.historyArchiveScanRepository.findLatest(
-        this.selectedNode.historyUrl
-      );
-
-    this.fetchingLatestHistoryArchiveScan = false;
-  }
-
-  get historyArchiveErrorDescription() {
-    if (this.historyArchiveScan === null)
-      return "Verification error in history archive detected. ";
-
-    let message = `Archive verification error at <a href=${this.historyArchiveScan.errorUrl} target="_blank">${this.historyArchiveScan.errorUrl}</a>: ${this.historyArchiveScan.errorMessage}. `;
-
-    message +=
-      "Start repair at ledger " + this.historyArchiveScan.latestVerifiedLedger;
-
-    return message;
-  }
-
-  @Watch("selectedNode", { immediate: true })
-  public onSelectedNodeChanged() {
-    if (this.selectedNode && this.selectedNode.historyUrl)
-      this.fetchHistoryArchiveScan();
-  }
+  fetchingLatestHistoryArchiveScan.value = false;
 }
+
+const historyArchiveErrorDescription = computed(() => {
+  if (historyArchiveScan.value === null)
+    return "Verification error in history archive detected. ";
+
+  let message = `Archive verification error at <a href=${historyArchiveScan.value.errorUrl} target="_blank">${historyArchiveScan.value.errorUrl}</a>: ${historyArchiveScan.value.errorMessage}. `;
+
+  message +=
+    "Start repair at ledger " + historyArchiveScan.value.latestVerifiedLedger;
+
+  return message;
+});
+
+watch(selectedNode, () => {
+  if (selectedNode.value && selectedNode.value.historyUrl)
+    fetchHistoryArchiveScan();
+});
 </script>
 <style scoped></style>

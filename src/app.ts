@@ -1,13 +1,11 @@
 import Vue from "vue";
 import App from "./App.vue";
 import { createRouter } from "./router";
-import VueTruncate from "vue-truncate-filter";
 import "./assets/custom.scss";
 import Meta from "vue-meta";
 import * as Sentry from "@sentry/browser";
 import "@/assets/global.css";
 import VueScrollTo from "vue-scrollto";
-import VueClipboard from "vue-clipboard2";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
@@ -30,9 +28,6 @@ if (typeof window !== "undefined") {
   window.ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill;
 }
 
-VueClipboard.config.autoSetContainer = true;
-Vue.use(VueClipboard);
-Vue.use(VueTruncate);
 Vue.use(Meta);
 Vue.use(VueScrollTo);
 Vue.component("multi-select", Multiselect);

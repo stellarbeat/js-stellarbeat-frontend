@@ -46,7 +46,6 @@
     "stream-browserify": "^3.0.0",
     "vue": "^2.7.14",
     "vue-class-component": "^7.2.6",
-    "vue-clipboard2": "^0.3.3",
     "vue-clipboard3": "^2.0.0",
     "vue-lazy-hydration": "^2.0.0-beta.4",
     "vue-meta": "^1.6.0",
