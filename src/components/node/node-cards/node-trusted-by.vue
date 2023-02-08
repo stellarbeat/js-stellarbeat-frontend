@@ -9,56 +9,44 @@
     <nodes-table :nodes="nodes" :fields="fields" :per-page="5" />
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
-import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { computed } from "vue";
+import { Node } from "@stellarbeat/js-stellar-domain";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: { NodesTable, BBadge: BBadge },
-})
-export default class NodeTrustedBy extends Vue {
-  @Prop()
-  node!: Node;
+const props = defineProps<{
+  node: Node;
+}>();
 
-  get fields() {
-    let fields = [{ key: "name", label: "Node", sortable: true }];
+const store = useStore();
+const network = store.network;
 
-    if (!this.store.isSimulation)
-      fields.push({ key: "index", label: "index", sortable: true });
+const fields = computed(() => {
+  let fields = [{ key: "name", label: "Node", sortable: true }];
 
-    fields.push({
-      key: "action",
-      label: "",
-      sortable: false,
-      //@ts-ignore
-      tdClass: "action",
-    });
+  if (!store.isSimulation)
+    fields.push({ key: "index", label: "index", sortable: true });
 
-    return fields;
-  }
+  fields.push({
+    key: "action",
+    label: "",
+    sortable: false,
+    //@ts-ignore
+    tdClass: "action",
+  });
+  return fields;
+});
 
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get nodes() {
-    return this.network.getTrustingNodes(this.node).map((validator) => {
-      return {
-        isFullValidator: validator.isFullValidator,
-        name: validator.displayName,
-        publicKey: validator.publicKey,
-        index: validator.index,
-      };
-    });
-  }
-}
+const nodes = computed(() => {
+  return network.getTrustingNodes(props.node).map((validator) => {
+    return {
+      isFullValidator: validator.isFullValidator,
+      name: validator.displayName,
+      publicKey: validator.publicKey,
+      index: validator.index,
+    };
+  });
+});
 </script>
