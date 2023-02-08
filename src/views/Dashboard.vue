@@ -74,13 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  defineAsyncComponent,
-  defineProps,
-  nextTick,
-  watch,
-} from "vue";
+import { computed, defineAsyncComponent, nextTick, watch } from "vue";
 import HaltingAnalysis from "@/components/node/tools/halting-analysis/halting-analysis.vue";
 import NetworkVisualNavigator from "@/components/visual-navigator/network-visual-navigator.vue";
 import CrawlTime from "@/components/crawl-time.vue";

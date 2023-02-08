@@ -44,7 +44,6 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import {
   computed,
   ComputedRef,
-  defineProps,
   nextTick,
   onBeforeUnmount,
   onMounted,

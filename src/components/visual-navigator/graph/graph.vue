@@ -138,7 +138,6 @@ import { isObject } from "@stellarbeat/js-stellar-domain/lib/typeguards";
 import {
   computed,
   defineEmits,
-  defineProps,
   onMounted,
   PropType,
   ref,
