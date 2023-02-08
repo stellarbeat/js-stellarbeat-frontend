@@ -27,33 +27,18 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import Vue from "vue";
-import { Network, Organization } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+import { Organization } from "@stellarbeat/js-stellar-domain";
 import Gauge from "@/components/charts/gauge.vue";
 import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
-import useStore from "@/store/useStore";
 
-@Component({
-  components: { Gauge, BIconInfoCircle },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class OrganizationStatistics24HSubQuorumAvailability extends Vue {
-  @Prop()
-  protected organization!: Organization;
+Vue.directive("b-tooltip", VBTooltip);
 
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-}
+defineProps<{
+  organization: Organization;
+}>();
 </script>
-
 <style scoped>
 .strong {
   font-weight: 500;
