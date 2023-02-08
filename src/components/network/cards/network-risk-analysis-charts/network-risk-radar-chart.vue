@@ -90,7 +90,7 @@ watch(
     ) {
       chart.value.data.datasets[0].data = [
         network.networkStatistics.minBlockingSetOrgsFilteredSize as number,
-        network.networkStatistics.minBlockingSetFilteredSize as number,
+        network.networkStatistics.minBlockingSetFilteredSize,
         network.networkStatistics.minBlockingSetCountryFilteredSize as number,
         network.networkStatistics.minBlockingSetISPFilteredSize as number,
       ];
@@ -242,11 +242,5 @@ onBeforeUnmount(() => {
 .my-header {
   display: flex;
   justify-content: space-between;
-}
-
-.info {
-}
-
-.my-body {
 }
 </style>

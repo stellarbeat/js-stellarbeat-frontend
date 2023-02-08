@@ -45,11 +45,11 @@
           class="col-sm-12 col-md-6 col-xl-3"
           v-if="selectedNode.isValidator"
         >
-          <node-statistics-24-h-validating :node="selectedNode" />
+          <NodeStatistics24HValidating :node="selectedNode" />
         </div>
 
         <div class="col-sm-12 col-md-6 col-xl-3" v-else>
-          <node-statistics-24-h-active :node="selectedNode" />
+          <NodeStatistics24HActive :node="selectedNode" />
         </div>
       </LazyHydrate>
 
@@ -58,17 +58,17 @@
           class="col-sm-12 col-md-6 col-xl-3"
           v-if="selectedNode.isValidator"
         >
-          <node-statistics-30-d-validating :node="selectedNode" />
+          <NodeStatistics30DValidating :node="selectedNode" />
         </div>
 
         <div class="col-sm-12 col-md-6 col-xl-3" v-else>
-          <node-statistics-30-d-active :node="selectedNode" />
+          <NodeStatistics30DActive :node="selectedNode" />
         </div>
       </LazyHydrate>
 
       <LazyHydrate when-visible>
         <div class="col-sm-12 col-md-6 col-xl-3">
-          <node-statistics-30-d-overloaded :node="selectedNode" />
+          <NodeStatistics30DOverloaded :node="selectedNode" />
         </div>
       </LazyHydrate>
 
@@ -205,12 +205,17 @@ import NodeInfo from "@/components/node/node-cards/node-info.vue";
 import NodeExtraInfo from "@/components/node/node-cards/node-extra-info.vue";
 import NodeQuorumSetValidators from "@/components/node/node-cards/node-quorum-set-validators.vue";
 import NodeIndex from "@/components/node/node-cards/statistics/node-index.vue";
+import NodeStatistics24HActive from "@/components/node/node-cards/statistics/node-statistics-24H-active.vue";
 import NodeTrustedBy from "@/components/node/node-cards/node-trusted-by.vue";
 import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.vue";
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import { HistoryArchiveScan } from "@stellarbeat/js-stellar-domain";
 import useStore from "@/store/useStore";
+import NodeStatistics30DOverloaded from "@/components/node/node-cards/statistics/node-statistics-30D-overloaded.vue";
+import NodeStatistics30DActive from "@/components/node/node-cards/statistics/node-statistics-30D-active.vue";
+import NodeStatistics30DValidating from "@/components/node/node-cards/statistics/node-statistics-30D-validating.vue";
+import NodeStatistics24HValidating from "@/components/node/node-cards/statistics/node-statistics-24H-validating.vue";
 
 const store = useStore();
 const network = store.network;
