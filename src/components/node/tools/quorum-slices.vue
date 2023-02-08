@@ -41,80 +41,44 @@
   </b-modal>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from "vue-property-decorator";
-import {
-  BFormInput,
-  BModal,
-  BButton,
-  BFormCheckbox,
-  BFormSelect,
-  BTable,
-  BPagination,
-  BBadge,
-  BCard,
-  BCardBody,
-  BCardText,
-  BCollapse,
-  VBToggle,
-  BCardHeader,
-  BAlert,
-} from "bootstrap-vue";
+<script setup lang="ts">
+import { BModal, BTable, BPagination, VBToggle, BAlert } from "bootstrap-vue";
 import {
   Node,
   QuorumSet,
   QuorumSlicesGenerator,
 } from "@stellarbeat/js-stellar-domain";
-import { StoreMixin } from "@/mixins/StoreMixin";
+import Vue, { computed, ref } from "vue";
+import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    BAlert,
-    BFormInput,
-    BModal,
-    BButton,
-    BFormCheckbox,
-    BFormSelect,
-    BTable,
-    BPagination,
-    BBadge,
-    BCard,
-    BCardBody,
-    BCardText,
-    BCollapse,
-    BCardHeader,
-  },
-  directives: { "b-toggle": VBToggle },
-})
-export default class QuorumSlices extends Mixins(StoreMixin) {
-  @Prop()
-  protected selectedNode!: Node;
-  protected perPage = 10;
-  protected currentPage = 1;
-  protected items: { slice: string[] }[] = [];
-  protected fields: { key: string; label: string }[] = [
-    { key: "slice", label: "slices" },
-  ];
+Vue.directive("b-toggle", VBToggle);
 
-  get rows() {
-    return this.items.length;
-  }
+const props = defineProps<{
+  selectedNode: Node;
+}>();
 
-  get length() {
-    return this.items.length;
-  }
+const store = useStore();
+const network = store.network;
 
-  loadSlices() {
-    let generator = new QuorumSlicesGenerator();
-    let quorumSetWithSelf = new QuorumSet(
-      2,
-      [this.selectedNode.publicKey],
-      [this.selectedNode.quorumSet]
-    );
-    this.items = generator.getSlices(quorumSetWithSelf).map((slice) => {
-      return { slice: Array.from(new Set(slice)) };
-    });
-  }
+const perPage = ref(10);
+const currentPage = ref(1);
+const items = ref<{ slice: string[] }[]>([]);
+const fields = ref<{ key: string; label: string }[]>([
+  { key: "slice", label: "slices" },
+]);
+
+const rows = computed(() => items.value.length);
+
+function loadSlices() {
+  let generator = new QuorumSlicesGenerator();
+  let quorumSetWithSelf = new QuorumSet(
+    2,
+    [props.selectedNode.publicKey],
+    [props.selectedNode.quorumSet]
+  );
+  items.value = generator.getSlices(quorumSetWithSelf).map((slice) => {
+    return { slice: Array.from(new Set(slice)) };
+  });
 }
 </script>
 <style>
@@ -123,8 +87,5 @@ export default class QuorumSlices extends Mixins(StoreMixin) {
   text-transform: none;
   font-size: 0.9375rem;
   font-weight: 700;
-}
-
-.my-tbody tr td {
 }
 </style>

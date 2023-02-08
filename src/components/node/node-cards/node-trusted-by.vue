@@ -6,7 +6,7 @@
         <b-badge variant="success">{{ nodes.length }}</b-badge> nodes
       </h1>
     </div>
-    <nodes-table :nodes="nodes" :fields="fields" per-page="5" />
+    <nodes-table :nodes="nodes" :fields="fields" :per-page="5" />
   </div>
 </template>
 <script lang="ts">

@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, ref, withDefaults } from "vue";
+import Vue, { computed, ref, toRefs, withDefaults } from "vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
 
 import {
@@ -137,16 +137,18 @@ import { useTruncate } from "@/mixins/useTruncate";
 Vue.directive("b-tooltip", VBTooltip);
 
 export interface Props {
-  filter: string;
+  filter?: string;
   fields: unknown;
   nodes: Node[];
   perPage: number;
 }
 
-const { filter, fields, nodes, perPage } = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   filter: "",
   perPage: 200,
 });
+
+const { filter, fields, nodes, perPage } = toRefs(props);
 
 const truncate = useTruncate();
 
@@ -158,5 +160,5 @@ const currentPage = ref(1);
 const store = useStore();
 const network = store.network;
 
-const totalRows = computed(() => nodes.length);
+const totalRows = computed(() => nodes.value.length);
 </script>
