@@ -7,24 +7,22 @@
     >
       <b-icon-shield />
     </span>
-    {{ node.displayName | truncate(26) }}
+    {{ truncate(node.displayName, 26) }}
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import { defineProps } from "vue";
 import { BIconShield, VBTooltip } from "bootstrap-vue";
+import { useTruncate } from "@/mixins/useTruncate";
 
-@Component({
-  name: "FullValidatorTitle",
-  components: { BIconShield },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class FullValidatorTitle extends Vue {
-  @Prop()
-  protected node!: Node;
-}
+const truncate = useTruncate();
+import Vue from "vue";
+Vue.directive("b-tooltip", VBTooltip);
+
+defineProps<{
+  node: Node;
+}>();
 </script>
 
 <style scoped>
