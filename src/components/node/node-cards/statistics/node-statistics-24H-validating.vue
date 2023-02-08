@@ -19,29 +19,13 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
-import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { Node } from "@stellarbeat/js-stellar-domain";
 import Gauge from "@/components/charts/gauge.vue";
-import useStore from "@/store/useStore";
 
-@Component({
-  components: { Gauge },
-})
-export default class NodeStatistics24HValidating extends Vue {
-  @Prop()
-  protected node!: Node;
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-}
+defineProps<{
+  node: Node;
+}>();
 </script>
 
 <style scoped>

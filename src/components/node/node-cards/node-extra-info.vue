@@ -75,28 +75,16 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
-import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { Node } from "@stellarbeat/js-stellar-domain";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {},
-})
-export default class NodeExtraInfo extends Vue {
-  @Prop()
-  protected node!: Node;
+defineProps<{
+  node: Node;
+}>();
 
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-}
+const store = useStore();
+const network = store.network;
 </script>
 
 <style scoped>
