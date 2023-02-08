@@ -99,10 +99,8 @@
   </side-bar>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import Vue, { computed } from "vue";
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
 import OrganizationValidatorsDropdown from "@/components/organization/sidebar/organization-validators-dropdown.vue";
 import NavLink from "@/components/side-bar/nav-link.vue";
@@ -112,64 +110,33 @@ import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import TrustedOrganizationsDropdown from "@/components/organization/sidebar/trusted-organizations-dropdown.vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    TrustedOrganizationsDropdown,
-    SideBar,
-    SimulateNewNode,
-    NavLink,
-    OrganizationValidatorsDropdown,
-    BModal: BModal,
-    BBadge,
-  },
-  directives: { "b-modal": VBModal, "b-tooltip": VBTooltip },
-})
-export default class OrganizationSideBar extends Vue {
-  get store(): Store {
-    return useStore();
-  }
+Vue.directive("b-modal", VBModal);
+Vue.directive("b-tooltip", VBTooltip);
 
-  get selectedOrganization() {
-    if (!this.store.selectedOrganization)
-      throw new Error("No organization selected");
-    return this.store.selectedOrganization;
-  }
+const store = useStore();
+const network = store.network;
 
-  get validators() {
-    return this.selectedOrganization.validators.map((validator) =>
-      this.network.getNodeByPublicKey(validator)
-    );
-  }
+const selectedOrganization = computed(() => {
+  if (!store.selectedOrganization) throw new Error("No organization selected");
+  return store.selectedOrganization;
+});
 
-  get organizationType() {
-    return this.selectedOrganization.isTierOneOrganization
-      ? "T1 Organization"
-      : "Organization";
-  }
+const validators = computed(() => {
+  return selectedOrganization.value.validators.map((validator) =>
+    network.getNodeByPublicKey(validator)
+  );
+});
 
-  get network() {
-    return this.store.network;
-  }
+const organizationType = computed(() => {
+  return selectedOrganization.value.isTierOneOrganization
+    ? "T1 Organization"
+    : "Organization";
+});
 
-  get tomlNodesExport() {
-    let stellarCoreConfigurationGenerator =
-      new StellarCoreConfigurationGenerator(this.network);
-    return stellarCoreConfigurationGenerator.nodesToToml(this.validators);
-  }
-
-  get failAt() {
-    let nrOfValidatingNodes = this.validators.filter(
-      (node) => node.isValidating
-    ).length;
-
-    return (
-      nrOfValidatingNodes - this.selectedOrganization.subQuorumThreshold + 1
-    );
-  }
-}
+const tomlNodesExport = computed(() => {
+  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
+    network
+  );
+  return stellarCoreConfigurationGenerator.nodesToToml(validators.value);
+});
 </script>
-<style scoped>
-.sb-bg-primary {
-  background-color: #1997c6;
-}
-</style>
