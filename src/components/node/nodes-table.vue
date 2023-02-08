@@ -95,7 +95,7 @@
         {{ row.item.type }}
       </template>
       <template v-slot:cell(version)="data">
-        {{ data.value || " " | truncate(28) }}
+        {{ truncate(data.value, 28) || " " }}
       </template>
       <template v-slot:cell(action)="data">
         <node-actions
@@ -119,11 +119,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import Vue, { computed, defineProps, ref, withDefaults } from "vue";
 import { Node } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
 
 import {
   BBadge,
@@ -134,48 +132,31 @@ import {
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import useStore from "@/store/useStore";
+import { useTruncate } from "@/mixins/useTruncate";
 
-@Component({
-  components: {
-    NodeActions,
-    BTable,
-    BPagination,
-    BIconShield: BIconShield,
-    BBadge: BBadge,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class NodesTable extends Vue {
-  @Prop({ default: "" })
-  public filter!: string;
-  @Prop()
-  public fields!: unknown;
-  @Prop()
-  public nodes!: Node[];
-  @Prop({ default: 200 })
-  public perPage!: number;
+Vue.directive("b-tooltip", VBTooltip);
 
-  public sortBy = "index";
-  public sortDesc = true;
-
-  public currentPage = 1;
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get network() {
-    return this.store.network;
-  }
-
-  get totalRows(): number {
-    return this.nodes.length;
-  }
+export interface Props {
+  filter: string;
+  fields: unknown;
+  nodes: Node[];
+  perPage: number;
 }
+
+const { filter, fields, nodes, perPage } = withDefaults(defineProps<Props>(), {
+  filter: "",
+  perPage: 200,
+});
+
+const truncate = useTruncate();
+
+const sortBy = ref("  index");
+const sortDesc = ref(true);
+
+const currentPage = ref(1);
+
+const store = useStore();
+const network = store.network;
+
+const totalRows = computed(() => nodes.length);
 </script>
-
-<style>
-.action {
-  width: 20px;
-}
-</style>
