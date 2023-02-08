@@ -122,13 +122,10 @@
         />
       </div>
     </div>
-    <!--div class="card-footer">
-            Powered by <a href="https://github.com/wiberlin/fbas_analyzer">@wiberlin/fbas_analyzer</a>
-        </div!-->
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   ChartDataset,
   ChartTypeRegistry,
@@ -136,15 +133,12 @@ import {
   ScatterDataPoint,
   TooltipItem,
 } from "chart.js";
-import { Component, Mixins, Prop } from "vue-property-decorator";
 import {
   BButton,
   BButtonGroup,
-  BIconExclamationCircle,
   BIconExclamationTriangle,
   BIconInfoCircle,
   BModal,
-  BTooltip,
   VBModal,
   VBTooltip,
 } from "bootstrap-vue";
@@ -153,665 +147,650 @@ import moment from "moment";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
 import AggregationLineChart from "@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
-import { IsLoadingMixin } from "@/mixins/IsLoadingMixin";
-import { StoreMixin } from "@/mixins/StoreMixin";
 import NetworkStatistics from "@stellarbeat/js-stellar-domain/lib/network-statistics";
+import Vue, { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
+import { useIsLoading } from "@/mixins/useIsLoading";
+import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    AggregationLineChart,
-    DateNavigator,
-    BTooltip,
-    BIconInfoCircle,
-    BButton,
-    BButtonGroup,
-    BIconExclamationCircle,
-    BModal,
-    BIconExclamationTriangle,
+Vue.directive("b-tooltip", VBTooltip);
+Vue.directive("b-modal", VBModal);
+
+const { dimmerClass, isLoading } = useIsLoading();
+
+const props = defineProps({
+  analysisType: {
+    type: String,
+    required: true,
   },
-  directives: { "b-tooltip": VBTooltip, "b-modal": VBModal },
-})
-export default class NetworkAnalysis extends Mixins(
-  IsLoadingMixin,
-  StoreMixin
-) {
-  @Prop()
-  analysisType!: string; //safety or liveness
+  defaultBucketSize: {
+    type: String,
+    required: false,
+    default: "1Y",
+  },
+});
 
-  @Prop({ default: "1Y" })
-  defaultBucketSize!: string;
+const { analysisType, defaultBucketSize } = toRefs(props);
 
-  protected selectedDate!: Date;
-  protected yearStatistics: NetworkStatisticsAggregation[] = [];
-  protected days30Statistics: NetworkStatisticsAggregation[] = [];
-  protected hour24Statistics: NetworkStatistics[] = [];
-  protected initialDataLoaded = false;
-  protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
-  protected bucketSize = "30D";
-  protected failed = false;
-  animated = false;
-  protected showModal = false;
-  protected aggregatedDataSets!: ChartDataset[];
-  protected hour24ChartDataSets: ChartDataset[] | undefined;
+const store = useStore();
+const network = store.network;
+const yearChart = ref<AggregationLineChart | null>(null);
+const monthChart = ref<AggregationLineChart | null>(null);
+const dayChart = ref<AggregationLineChart | null>(null);
+const selectedDate = ref(new Date());
+const yearStatistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
+const days30Statistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
+const hour24Statistics = ref<NetworkStatistics[]>([]);
+const initialDataLoaded = ref(false);
+const statisticsDateTimeNavigator = ref<StatisticsDateTimeNavigator>(
+  new StatisticsDateTimeNavigator(store.measurementsStartDate)
+);
+const bucketSize = ref(defaultBucketSize?.value);
+const failed = ref(false);
+const animated = ref(false);
+const showModal = ref(false);
+const aggregatedDataSets = ref<ChartDataset[]>(getAggregatedDataSets());
+const hour24ChartDataSets = ref<ChartDataset[]>();
+const setType = computed(() => {
+  return props.analysisType === "safety" ? "splitting" : "blocking";
+});
 
-  get setType() {
-    return this.analysisType === "safety" ? "splitting" : "blocking";
+const canBeFiltered = computed(() => {
+  return setType.value === "blocking";
+});
+
+async function updateSelectedDate(newDate: Date) {
+  selectedDate.value = newDate;
+  if (bucketSize.value === "1Y") await updateYearChart();
+  if (bucketSize.value === "30D") await updateDays30Chart();
+  if (bucketSize.value === "24H") await updateHours24Chart();
+}
+
+async function updateHiddenStatus(toBucketSize: string) {
+  if (!hour24ChartDataSets.value) return;
+  if (bucketSize.value === "24H") {
+    aggregatedDataSets.value[0].hidden = hour24ChartDataSets.value[0].hidden;
+    aggregatedDataSets.value[3].hidden = hour24ChartDataSets.value[1].hidden;
+    aggregatedDataSets.value[6].hidden = hour24ChartDataSets.value[2]
+      ? hour24ChartDataSets.value[2].hidden
+      : false;
+    aggregatedDataSets.value[9].hidden = hour24ChartDataSets.value[3]
+      ? hour24ChartDataSets.value[3].hidden
+      : false;
   }
-
-  get canBeFiltered() {
-    return this.setType === "blocking";
-  }
-
-  async updateSelectedDate(newDate: Date) {
-    this.selectedDate = newDate;
-    if (this.bucketSize === "1Y") await this.updateYearChart();
-    if (this.bucketSize === "30D") await this.updateDays30Chart();
-    if (this.bucketSize === "24H") await this.updateHours24Chart();
-  }
-
-  updateHiddenStatus(toBucketSize: string) {
-    if (!this.hour24ChartDataSets) return;
-    if (this.bucketSize === "24H") {
-      this.aggregatedDataSets[0].hidden = this.hour24ChartDataSets[0].hidden;
-      this.aggregatedDataSets[3].hidden = this.hour24ChartDataSets[1].hidden;
-      this.aggregatedDataSets[6].hidden = this.hour24ChartDataSets[2]
-        ? this.hour24ChartDataSets[2].hidden
-        : false;
-      this.aggregatedDataSets[9].hidden = this.hour24ChartDataSets[3]
-        ? this.hour24ChartDataSets[3].hidden
-        : false;
-    }
-    if (toBucketSize === "24H") {
-      this.hour24ChartDataSets[0].hidden = this.aggregatedDataSets[0].hidden;
-      this.hour24ChartDataSets[1].hidden = this.aggregatedDataSets[3].hidden;
-      this.hour24ChartDataSets[2].hidden = this.aggregatedDataSets[6]
-        ? this.aggregatedDataSets[6].hidden
-        : false;
-      this.hour24ChartDataSets[3].hidden = this.aggregatedDataSets[9]
-        ? this.aggregatedDataSets[9].hidden
-        : false;
-    }
-  }
-
-  async select1YView(time?: Date) {
-    this.updateHiddenStatus("1Y");
-    if (time instanceof Date)
-      this.selectedDate = moment(time).startOf("hour").toDate();
-
-    await this.updateYearChart();
-
-    this.bucketSize = "1Y";
-  }
-
-  aggregatedChartLabelFilter(legendItem: LegendItem) {
-    if ([0, 3, 6, 9].includes(legendItem.datasetIndex as number)) return true; //don't show labels for the min max as they are auxiliary lines
-  }
-
-  getAggregatedData(
-    statisticsAggregation: NetworkStatisticsAggregation[],
-    prop: string
-  ): ScatterDataPoint[] {
-    return statisticsAggregation
-      .filter((stat) => stat.crawlCount > 0)
-      .map((stat) => {
-        return {
-          x: stat.time.getTime(),
-          //@ts-ignore
-          y: stat[prop] as number,
-        };
-      });
-  }
-
-  updateAggregatedDataInDataSets(
-    dataSets: ChartDataset[],
-    statisticsAggregation: NetworkStatisticsAggregation[]
-  ) {
-    dataSets.forEach((dataSet) => {
-      switch (dataSet.label) {
-        case "Organization":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetOrgs" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Average"
-          );
-          break;
-        case "min(|Organization|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetOrgs" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Min"
-          );
-          break;
-        case "max(|Organization|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetOrgs" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Max"
-          );
-          break;
-        case "Node":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "Set" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Average"
-          );
-          break;
-        case "min(|Node|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "Set" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Min"
-          );
-          break;
-        case "max(|Node|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "Set" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Max"
-          );
-          break;
-        case "Country":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetCountry" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Average"
-          );
-          break;
-        case "min(|Country|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetCountry" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Min"
-          );
-          break;
-        case "max(|Country|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetCountry" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Max"
-          );
-          break;
-        case "ISP":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetISP" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Average"
-          );
-          break;
-        case "min(|ISP|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetISP" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Min"
-          );
-          break;
-        case "max(|ISP|)":
-          dataSet.data = this.getAggregatedData(
-            statisticsAggregation,
-            "min" +
-              this.capitalizeFirstLetter(this.setType) +
-              "SetISP" +
-              (this.canBeFiltered ? "Filtered" : "") +
-              "Max"
-          );
-          break;
-      }
-    });
-  }
-
-  getAggregatedDataSets() {
-    const lineType: keyof ChartTypeRegistry = "line";
-    let stats: ChartDataset[] = [
-      {
-        label: "Organization",
-        borderColor: "rgba(25, 151, 198,1)", // primary blue
-        backgroundColor: "rgba(25, 151, 198,0.6)", // primary blue
-        borderWidth: 2,
-        fill: false,
-        type: lineType,
-        data: [],
-      },
-      {
-        label: "min(|Organization|)",
-        borderWidth: 4,
-        borderColor: "transparent", // primary blue
-        backgroundColor: "rgba(25,151,198,0.1)",
-        fill: "0", //relative to dataset with index zero
-        type: lineType,
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-      {
-        label: "max(|Organization|)",
-        borderWidth: 4,
-        borderColor: "transparent", // primary blue
-        backgroundColor: "rgba(25,151,198,0.1)",
-        fill: "0",
-        type: lineType,
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-      {
-        label: "Node",
-        fill: false,
-        borderWidth: 2,
-        type: lineType,
-        borderColor: "rgba(27, 201, 142, 1)", // success green
-        backgroundColor: "rgba(27, 201, 142, 1)", // success green
-        data: [],
-      },
-      {
-        label: "min(|Node|)",
-        fill: "3",
-        borderWidth: 4,
-        type: lineType,
-        borderColor: "transparent", // success green
-        backgroundColor: "rgba(27, 201, 142, 0.1)", // success green
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-      {
-        label: "max(|Node|)",
-        fill: "3",
-        borderWidth: 4,
-        type: lineType,
-        borderColor: "transparent", // success green
-        backgroundColor: "rgba(27, 201, 142, 0.1)", // success green
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-
-      {
-        hidden: true,
-        label: "ISP",
-        fill: false,
-        borderWidth: 2,
-        type: lineType as "line", //?
-        borderColor: "rgb(236, 228, 114)", // success green
-        backgroundColor: "rgb(236, 228, 114)", // success green
-        data: [],
-      },
-      {
-        label: "min(|ISP|)",
-        fill: "6",
-        borderWidth: 4,
-        type: lineType,
-        borderColor: "transparent", // success green
-        backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-      {
-        label: "max(|ISP|)",
-        fill: "6",
-        borderWidth: 4,
-        type: lineType,
-        borderColor: "transparent", // success green
-        backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-      {
-        hidden: true,
-        label: "Country",
-        fill: false,
-        borderWidth: 2,
-        type: lineType,
-        borderColor: "rgb(159, 134, 255)",
-        backgroundColor: "rgb(159, 134, 255)",
-        data: [],
-      },
-      {
-        label: "min(|Country|)",
-        fill: "9",
-        borderWidth: 4,
-        type: lineType,
-        borderColor: "transparent", // success green
-        backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-      {
-        label: "max(|Country|)",
-        fill: "9",
-        borderWidth: 4,
-        type: "line",
-        borderColor: "transparent", // success green
-        backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 0,
-        pointHoverRadius: 0,
-      },
-    ];
-
-    return stats;
-  }
-
-  updateDataInDataSets(dataSets: ChartDataset[]) {
-    dataSets.forEach((dataSet) => {
-      switch (dataSet.label) {
-        case "Organization":
-          dataSet.data = this.hour24Statistics.map((stat) => {
-            return {
-              x: stat.time.getTime(),
-              //@ts-ignore
-              y: stat[
-                "min" +
-                  this.capitalizeFirstLetter(this.setType) +
-                  "SetOrgs" +
-                  (this.canBeFiltered ? "Filtered" : "") +
-                  "Size"
-              ],
-            };
-          });
-          break;
-        case "Node":
-          dataSet.data = this.hour24Statistics.map((stat) => {
-            return {
-              x: stat.time.getTime(),
-              //@ts-ignore
-              y: stat[
-                "min" +
-                  this.capitalizeFirstLetter(this.setType) +
-                  "Set" +
-                  (this.canBeFiltered ? "Filtered" : "") +
-                  "Size"
-              ],
-            };
-          });
-          break;
-        case "ISP":
-          dataSet.data = this.hour24Statistics.map((stat) => {
-            return {
-              x: stat.time.getTime(),
-              //@ts-ignore
-              y: stat[
-                "min" +
-                  this.capitalizeFirstLetter(this.setType) +
-                  "SetISP" +
-                  (this.canBeFiltered ? "Filtered" : "") +
-                  "Size"
-              ],
-            };
-          });
-          break;
-        case "Country":
-          dataSet.data = this.hour24Statistics.map((stat) => {
-            return {
-              x: stat.time.getTime(),
-              //@ts-ignore
-              y: stat[
-                "min" +
-                  this.capitalizeFirstLetter(this.setType) +
-                  "SetCountry" +
-                  (this.canBeFiltered ? "Filtered" : "") +
-                  "Size"
-              ],
-            };
-          });
-          break;
-      }
-    });
-  }
-
-  getHour24ChartDataSets(): ChartDataset[] {
-    const lineType: keyof ChartTypeRegistry = "line";
-    let sets: ChartDataset[] = [
-      {
-        label: "Organization",
-        borderColor: "rgba(25, 151, 198,1)", // primary blue
-        backgroundColor: "rgba(25, 151, 198,0.6)", // primary blue
-        borderWidth: 2,
-        fill: false,
-        type: lineType,
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 5,
-      },
-      {
-        label: "Node",
-        borderColor: "rgba(27, 201, 142, 1)", // success green
-        backgroundColor: "rgba(27, 201, 142, 1)", // success green
-        borderWidth: 2,
-        fill: false,
-        type: lineType,
-        data: [],
-        pointRadius: 0,
-        pointHitRadius: 5,
-      },
-    ];
-    sets.push(
-      ...[
-        {
-          label: "ISP",
-          borderColor: "rgba(236, 228, 114, 1)", // success green
-          backgroundColor: "rgba(236, 228, 114, 1)", // success green
-          borderWidth: 2,
-          fill: false,
-          type: lineType,
-          data: [],
-          pointRadius: 0,
-          pointHitRadius: 5,
-        },
-        {
-          label: "Country",
-          borderColor: "rgba(159, 134, 255, 1)", // success green
-          backgroundColor: "rgba(159, 134, 255, 1)", // success green
-          borderWidth: 2,
-          fill: false,
-          type: lineType,
-          data: [],
-          pointRadius: 0,
-          pointHitRadius: 5,
-        },
-      ]
-    );
-
-    return sets;
-  }
-
-  getAggregatedLabels(tooltipItem: TooltipItem<"line">) {
-    let dataSet = this.aggregatedDataSets[tooltipItem.datasetIndex];
-    if (!dataSet.data) return;
-    let avg = (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
-    let dataSet2 = this.aggregatedDataSets[tooltipItem.datasetIndex + 1];
-    if (!dataSet2.data) return;
-    let min = (dataSet2.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
-    let dataSet3 = this.aggregatedDataSets[tooltipItem.datasetIndex + 2];
-    if (!dataSet3.data) return;
-    let max = (dataSet3.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
-    return `Average: ${avg}; Min: ${min}; Max: ${max}`;
-  }
-
-  getLabels(tooltipItem: TooltipItem<"line">) {
-    if (this.hour24ChartDataSets === undefined) return;
-    const dataSet = this.hour24ChartDataSets[tooltipItem.datasetIndex];
-    return (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
-  }
-
-  async select30DayView(time?: Date) {
-    if (time instanceof Date) this.selectedDate = time;
-    await this.updateDays30Chart();
-    this.updateHiddenStatus("30D");
-    this.bucketSize = "30D";
-  }
-
-  async select24HView(time?: Date) {
-    if (!this.hour24ChartDataSets)
-      this.hour24ChartDataSets = this.getHour24ChartDataSets();
-    this.updateHiddenStatus("24H");
-    if (time instanceof Date) this.selectedDate = time;
-
-    await this.updateHours24Chart();
-    this.bucketSize = "24H";
-  }
-
-  async updateSelectedDateAndHighlight(newDate: Date) {
-    await this.updateSelectedDate(newDate);
-    this.animated = true;
-  }
-
-  async updateYearChart() {
-    this.isLoading = true;
-    let oneYearAgo = moment(this.selectedDate).subtract(1, "y").toDate();
-    if (oneYearAgo < this.store.measurementsStartDate) {
-      oneYearAgo.setTime(this.store.measurementsStartDate.getTime());
-      this.selectedDate = moment(this.store.measurementsStartDate)
-        .add(1, "y")
-        .toDate();
-    }
-
-    try {
-      this.failed = false;
-      this.yearStatistics =
-        await this.store.networkMeasurementStore.getMonthStatistics(
-          "stellar-public",
-          oneYearAgo,
-          this.selectedDate
-        );
-      this.updateAggregatedDataInDataSets(
-        this.aggregatedDataSets,
-        this.yearStatistics
-      );
-    } catch (e) {
-      this.failed = true;
-    }
-    this.isLoading = false;
-    this.$nextTick(() => {
-      if (this.$refs["yearChart"])
-        //@ts-ignore
-        (this.$refs["yearChart"] as AggregationLineChart).updateData(); //for some reason watcher doesn't trigger
-    });
-  }
-
-  async updateDays30Chart() {
-    this.isLoading = true;
-    let startOfDay = moment(this.selectedDate).startOf("day").toDate();
-    let days30Ahead = moment(this.selectedDate)
-      .startOf("day")
-      .add(30, "d")
-      .toDate();
-    try {
-      this.failed = false;
-      this.days30Statistics =
-        await this.store.networkMeasurementStore.getDayStatistics(
-          "stellar-public",
-          startOfDay,
-          days30Ahead
-        );
-      this.updateAggregatedDataInDataSets(
-        this.aggregatedDataSets,
-        this.days30Statistics
-      );
-    } catch (e) {
-      this.failed = true;
-    }
-    this.isLoading = false;
-    this.$nextTick(() => {
-      if (this.$refs["monthChart"])
-        //@ts-ignore
-        (this.$refs["monthChart"] as AggregationLineChart).updateData(); //for some reason watcher doesn't trigger
-    });
-  }
-
-  async updateHours24Chart() {
-    this.isLoading = true;
-    let startOfDay = moment(this.selectedDate).utc().startOf("day").toDate();
-    let tomorrow = moment(this.selectedDate)
-      .utc()
-      .startOf("day")
-      .add(1, "d")
-      .toDate();
-    try {
-      this.failed = false;
-      this.hour24Statistics =
-        await this.store.networkMeasurementStore.getStatistics(
-          "stellar-public",
-          startOfDay,
-          tomorrow
-        );
-      this.updateDataInDataSets(this.hour24ChartDataSets as ChartDataset[]);
-    } catch (e) {
-      this.failed = true;
-    }
-    this.isLoading = false;
-    this.$nextTick(() => {
-      if (this.$refs["dayChart"])
-        //@ts-ignore
-        (this.$refs["dayChart"] as AggregationLineChart).updateData(); //for some reason watcher doesn't trigger
-    });
-  }
-
-  public created() {
-    this.aggregatedDataSets = this.getAggregatedDataSets();
-    this.bucketSize = this.defaultBucketSize;
-  }
-
-  public async mounted() {
-    this.statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
-      this.store.measurementsStartDate
-    );
-    if (this.defaultBucketSize === "30D")
-      await this.updateSelectedDate(
-        moment(this.network.time).subtract(29, "d").toDate()
-      );
-    else await this.updateSelectedDate(this.network.time);
-
-    this.initialDataLoaded = true;
-  }
-
-  protected capitalizeFirstLetter(myString: string) {
-    return myString.charAt(0).toUpperCase() + myString.slice(1);
+  if (toBucketSize === "24H") {
+    hour24ChartDataSets.value[0].hidden = aggregatedDataSets.value[0].hidden;
+    hour24ChartDataSets.value[1].hidden = aggregatedDataSets.value[3].hidden;
+    hour24ChartDataSets.value[2].hidden = aggregatedDataSets.value[6].hidden;
+    hour24ChartDataSets.value[3].hidden = aggregatedDataSets.value[9].hidden;
   }
 }
-</script>
 
-<style scoped></style>
+async function select1YView(time?: Date) {
+  await updateHiddenStatus("1Y");
+  if (time instanceof Date)
+    selectedDate.value = moment(time).startOf("hour").toDate();
+
+  await updateYearChart();
+
+  bucketSize.value = "1Y";
+}
+
+function aggregatedChartLabelFilter(legendItem: LegendItem) {
+  if ([0, 3, 6, 9].includes(legendItem.datasetIndex as number)) return true; //don't show labels for the min max as they are auxiliary lines
+}
+
+function getAggregatedData(
+  statisticsAggregation: NetworkStatisticsAggregation[],
+  prop: string
+): ScatterDataPoint[] {
+  return statisticsAggregation
+    .filter((stat) => stat.crawlCount > 0)
+    .map((stat) => {
+      return {
+        x: stat.time.getTime(),
+        //@ts-ignore
+        y: stat[prop] as number,
+      };
+    });
+}
+
+function updateAggregatedDataInDataSets(
+  dataSets: ChartDataset[],
+  statisticsAggregation: NetworkStatisticsAggregation[]
+) {
+  dataSets.forEach((dataSet) => {
+    switch (dataSet.label) {
+      case "Organization":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetOrgs" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Average"
+        );
+        break;
+      case "min(|Organization|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetOrgs" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Min"
+        );
+        break;
+      case "max(|Organization|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetOrgs" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Max"
+        );
+        break;
+      case "Node":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "Set" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Average"
+        );
+        break;
+      case "min(|Node|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "Set" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Min"
+        );
+        break;
+      case "max(|Node|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "Set" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Max"
+        );
+        break;
+      case "Country":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetCountry" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Average"
+        );
+        break;
+      case "min(|Country|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetCountry" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Min"
+        );
+        break;
+      case "max(|Country|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetCountry" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Max"
+        );
+        break;
+      case "ISP":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetISP" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Average"
+        );
+        break;
+      case "min(|ISP|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetISP" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Min"
+        );
+        break;
+      case "max(|ISP|)":
+        dataSet.data = getAggregatedData(
+          statisticsAggregation,
+          "min" +
+            capitalizeFirstLetter(setType.value) +
+            "SetISP" +
+            (canBeFiltered.value ? "Filtered" : "") +
+            "Max"
+        );
+        break;
+    }
+  });
+}
+
+function getAggregatedDataSets() {
+  const lineType: keyof ChartTypeRegistry = "line";
+  let stats: ChartDataset[] = [
+    {
+      label: "Organization",
+      borderColor: "rgba(25, 151, 198,1)", // primary blue
+      backgroundColor: "rgba(25, 151, 198,0.6)", // primary blue
+      borderWidth: 2,
+      fill: false,
+      type: lineType,
+      data: [],
+    },
+    {
+      label: "min(|Organization|)",
+      borderWidth: 4,
+      borderColor: "transparent", // primary blue
+      backgroundColor: "rgba(25,151,198,0.1)",
+      fill: "0", //relative to dataset with index zero
+      type: lineType,
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+    {
+      label: "max(|Organization|)",
+      borderWidth: 4,
+      borderColor: "transparent", // primary blue
+      backgroundColor: "rgba(25,151,198,0.1)",
+      fill: "0",
+      type: lineType,
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+    {
+      label: "Node",
+      fill: false,
+      borderWidth: 2,
+      type: lineType,
+      borderColor: "rgba(27, 201, 142, 1)", // success green
+      backgroundColor: "rgba(27, 201, 142, 1)", // success green
+      data: [],
+    },
+    {
+      label: "min(|Node|)",
+      fill: "3",
+      borderWidth: 4,
+      type: lineType,
+      borderColor: "transparent", // success green
+      backgroundColor: "rgba(27, 201, 142, 0.1)", // success green
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+    {
+      label: "max(|Node|)",
+      fill: "3",
+      borderWidth: 4,
+      type: lineType,
+      borderColor: "transparent", // success green
+      backgroundColor: "rgba(27, 201, 142, 0.1)", // success green
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+
+    {
+      hidden: true,
+      label: "ISP",
+      fill: false,
+      borderWidth: 2,
+      type: lineType as "line", //?
+      borderColor: "rgb(236, 228, 114)", // success green
+      backgroundColor: "rgb(236, 228, 114)", // success green
+      data: [],
+    },
+    {
+      label: "min(|ISP|)",
+      fill: "6",
+      borderWidth: 4,
+      type: lineType,
+      borderColor: "transparent", // success green
+      backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+    {
+      label: "max(|ISP|)",
+      fill: "6",
+      borderWidth: 4,
+      type: lineType,
+      borderColor: "transparent", // success green
+      backgroundColor: "rgba(236, 228, 114, 0.1)", // success green
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+    {
+      hidden: true,
+      label: "Country",
+      fill: false,
+      borderWidth: 2,
+      type: lineType,
+      borderColor: "rgb(159, 134, 255)",
+      backgroundColor: "rgb(159, 134, 255)",
+      data: [],
+    },
+    {
+      label: "min(|Country|)",
+      fill: "9",
+      borderWidth: 4,
+      type: lineType,
+      borderColor: "transparent", // success green
+      backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+    {
+      label: "max(|Country|)",
+      fill: "9",
+      borderWidth: 4,
+      type: "line",
+      borderColor: "transparent", // success green
+      backgroundColor: "rgba(159, 134, 255, 0.1)", // success green
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      pointHoverRadius: 0,
+    },
+  ];
+
+  return stats;
+}
+
+function updateDataInDataSets(dataSets: ChartDataset[]) {
+  dataSets.forEach((dataSet) => {
+    switch (dataSet.label) {
+      case "Organization":
+        dataSet.data = hour24Statistics.value.map((stat) => {
+          return {
+            x: stat.time.getTime(),
+            //@ts-ignore
+            y: stat[
+              "min" +
+                capitalizeFirstLetter(setType.value) +
+                "SetOrgs" +
+                (canBeFiltered.value ? "Filtered" : "") +
+                "Size"
+            ],
+          };
+        });
+        break;
+      case "Node":
+        dataSet.data = hour24Statistics.value.map((stat) => {
+          return {
+            x: stat.time.getTime(),
+            //@ts-ignore
+            y: stat[
+              "min" +
+                capitalizeFirstLetter(setType.value) +
+                "Set" +
+                (canBeFiltered.value ? "Filtered" : "") +
+                "Size"
+            ],
+          };
+        });
+        break;
+      case "ISP":
+        dataSet.data = hour24Statistics.value.map((stat) => {
+          return {
+            x: stat.time.getTime(),
+            //@ts-ignore
+            y: stat[
+              "min" +
+                capitalizeFirstLetter(setType.value) +
+                "SetISP" +
+                (canBeFiltered.value ? "Filtered" : "") +
+                "Size"
+            ],
+          };
+        });
+        break;
+      case "Country":
+        dataSet.data = hour24Statistics.value.map((stat) => {
+          return {
+            x: stat.time.getTime(),
+            //@ts-ignore
+            y: stat[
+              "min" +
+                capitalizeFirstLetter(setType.value) +
+                "SetCountry" +
+                (canBeFiltered.value ? "Filtered" : "") +
+                "Size"
+            ],
+          };
+        });
+        break;
+    }
+  });
+}
+
+function getHour24ChartDataSets(): ChartDataset[] {
+  const lineType: keyof ChartTypeRegistry = "line";
+  let sets: ChartDataset[] = [
+    {
+      label: "Organization",
+      borderColor: "rgba(25, 151, 198,1)", // primary blue
+      backgroundColor: "rgba(25, 151, 198,0.6)", // primary blue
+      borderWidth: 2,
+      fill: false,
+      type: lineType,
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 5,
+    },
+    {
+      label: "Node",
+      borderColor: "rgba(27, 201, 142, 1)", // success green
+      backgroundColor: "rgba(27, 201, 142, 1)", // success green
+      borderWidth: 2,
+      fill: false,
+      type: lineType,
+      data: [],
+      pointRadius: 0,
+      pointHitRadius: 5,
+    },
+  ];
+  sets.push(
+    ...[
+      {
+        label: "ISP",
+        borderColor: "rgba(236, 228, 114, 1)", // success green
+        backgroundColor: "rgba(236, 228, 114, 1)", // success green
+        borderWidth: 2,
+        fill: false,
+        type: lineType,
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 5,
+      },
+      {
+        label: "Country",
+        borderColor: "rgba(159, 134, 255, 1)", // success green
+        backgroundColor: "rgba(159, 134, 255, 1)", // success green
+        borderWidth: 2,
+        fill: false,
+        type: lineType,
+        data: [],
+        pointRadius: 0,
+        pointHitRadius: 5,
+      },
+    ]
+  );
+
+  return sets;
+}
+
+function getAggregatedLabels(tooltipItem: TooltipItem<"line">) {
+  let dataSet = aggregatedDataSets.value[tooltipItem.datasetIndex];
+  if (!dataSet.data) return;
+  let avg = (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+  let dataSet2 = aggregatedDataSets.value[tooltipItem.datasetIndex + 1];
+  if (!dataSet2.data) return;
+  let min = (dataSet2.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+  let dataSet3 = aggregatedDataSets.value[tooltipItem.datasetIndex + 2];
+  if (!dataSet3.data) return;
+  let max = (dataSet3.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+  return `Average: ${avg}; Min: ${min}; Max: ${max}`;
+}
+
+function getLabels(tooltipItem: TooltipItem<"line">) {
+  if (hour24ChartDataSets.value === undefined) return;
+  const dataSet = hour24ChartDataSets.value[tooltipItem.datasetIndex];
+  return (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+}
+
+async function select30DayView(time?: Date) {
+  if (time instanceof Date) selectedDate.value = time;
+  await updateDays30Chart();
+  await updateHiddenStatus("30D");
+  bucketSize.value = "30D";
+}
+
+async function select24HView(time?: Date) {
+  if (!hour24ChartDataSets.value)
+    hour24ChartDataSets.value = getHour24ChartDataSets();
+  await updateHiddenStatus("24H");
+  if (time instanceof Date) selectedDate.value = time;
+
+  await updateHours24Chart();
+  bucketSize.value = "24H";
+}
+
+async function updateSelectedDateAndHighlight(newDate: Date) {
+  await updateSelectedDate(newDate);
+  animated.value = true;
+}
+
+async function updateYearChart() {
+  isLoading.value = true;
+  let oneYearAgo = moment(selectedDate.value).subtract(1, "y").toDate();
+  if (oneYearAgo < store.measurementsStartDate) {
+    oneYearAgo.setTime(store.measurementsStartDate.getTime());
+    selectedDate.value = moment(store.measurementsStartDate)
+      .add(1, "y")
+      .toDate();
+  }
+
+  try {
+    failed.value = false;
+    yearStatistics.value =
+      await store.networkMeasurementStore.getMonthStatistics(
+        "stellar-public",
+        oneYearAgo,
+        selectedDate.value
+      );
+    updateAggregatedDataInDataSets(
+      aggregatedDataSets.value,
+      yearStatistics.value
+    );
+  } catch (e) {
+    failed.value = true;
+  }
+  isLoading.value = false;
+  nextTick(() => {
+    if (yearChart.value)
+      //@ts-ignore
+      yearChart.value.updateData(); //for some reason watcher doesn't trigger
+  });
+}
+
+async function updateDays30Chart() {
+  console.log("updateDays30Chart");
+  isLoading.value = true;
+  let startOfDay = moment(selectedDate.value).startOf("day").toDate();
+  let days30Ahead = moment(selectedDate.value)
+    .startOf("day")
+    .add(30, "d")
+    .toDate();
+  try {
+    failed.value = false;
+    days30Statistics.value =
+      await store.networkMeasurementStore.getDayStatistics(
+        "stellar-public",
+        startOfDay,
+        days30Ahead
+      );
+    updateAggregatedDataInDataSets(
+      aggregatedDataSets.value,
+      days30Statistics.value
+    );
+  } catch (e) {
+    failed.value = true;
+  }
+  isLoading.value = false;
+  nextTick(() => {
+    if (monthChart.value)
+      //@ts-ignore
+      monthChart.value.updateData(); //for some reason watcher doesn't trigger
+  });
+}
+
+async function updateHours24Chart() {
+  isLoading.value = true;
+  let startOfDay = moment(selectedDate.value).utc().startOf("day").toDate();
+  let tomorrow = moment(selectedDate.value)
+    .utc()
+    .startOf("day")
+    .add(1, "d")
+    .toDate();
+  try {
+    failed.value = false;
+    hour24Statistics.value = await store.networkMeasurementStore.getStatistics(
+      "stellar-public",
+      startOfDay,
+      tomorrow
+    );
+    updateDataInDataSets(hour24ChartDataSets.value as ChartDataset[]);
+  } catch (e) {
+    failed.value = true;
+  }
+  isLoading.value = false;
+  nextTick(() => {
+    if (dayChart.value)
+      //@ts-ignore
+      dayChart.value.updateData(); //for some reason watcher doesn't trigger
+  });
+}
+
+onMounted(async () => {
+  if (defaultBucketSize.value === "30D")
+    await updateSelectedDate(moment(network.time).subtract(29, "d").toDate());
+  else await updateSelectedDate(network.time);
+
+  initialDataLoaded.value = true;
+});
+
+function capitalizeFirstLetter(myString: string) {
+  return myString.charAt(0).toUpperCase() + myString.slice(1);
+}
+</script>
