@@ -41,55 +41,52 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
+<script setup lang="ts">
 import { Organization } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { DropdownMixin } from "@/components/side-bar/dropdown-mixin";
-import NavPagination from "@/components/side-bar/nav-pagination.vue";
-import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
+import useStore from "@/store/useStore";
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router/composables";
+import { useDropdown } from "@/components/side-bar/useDropdown";
 
-@Component({
-  components: {
-    OrganizationActions,
-    NodeActions,
-    NavPagination,
-    NavLink,
-  },
-})
-export default class OrganizationValidatorsDropdown extends Mixins(
-  DropdownMixin
-) {
-  @Prop()
-  public organization!: Organization;
+const props = defineProps<{
+  organization: Organization;
+}>();
 
-  get trustedOrganizations() {
-    let trustedOrganizations = new Set<Organization>();
-    this.organization.validators.forEach((publicKey) => {
-      let validator = this.network.getNodeByPublicKey(publicKey);
-      this.network
-        .getTrustedOrganizations(validator.quorumSet)
-        .forEach((org) => {
-          if (org.id !== this.organization.id) trustedOrganizations.add(org);
-        });
+const store = useStore();
+const network = store.network;
+const route = useRoute();
+const router = useRouter();
+
+const { showing, toggleShow } = useDropdown(
+  true,
+  defineEmits(["toggleExpand"])
+);
+
+const trustedOrganizations = computed(() => {
+  let trustedOrganizations = new Set<Organization>();
+  props.organization.validators.forEach((publicKey) => {
+    let validator = network.getNodeByPublicKey(publicKey);
+    network.getTrustedOrganizations(validator.quorumSet).forEach((org) => {
+      if (org.id !== props.organization.id) trustedOrganizations.add(org);
     });
-    return Array.from(trustedOrganizations);
-  }
+  });
+  return Array.from(trustedOrganizations);
+});
 
-  public selectOrganization(organization: Organization) {
-    this.$router.push({
-      name: "organization-dashboard",
-      params: { organizationId: organization.id },
-      query: {
-        center: "1",
-        "no-scroll": "0",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
+function selectOrganization(organization: Organization) {
+  router.push({
+    name: "organization-dashboard",
+    params: { organizationId: organization.id },
+    query: {
+      center: "1",
+      "no-scroll": "0",
+      view: route.query.view,
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
 }
 </script>
 
