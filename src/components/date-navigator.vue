@@ -56,10 +56,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import Vue, { nextTick, ref, toRefs, watch } from "vue";
 import moment from "moment";
 import {
   BButton,
@@ -75,124 +73,109 @@ import {
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import { Dictionary } from "vue-router/types/router";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  name: "date-navigator",
-  components: {
-    BButton,
-    BIconChevronRight,
-    BIconClock,
-    BFormDatepicker,
-    BFormTimepicker,
-    BIconChevronLeft,
-    BIconCalendar,
-    BButtonGroup,
+Vue.directive("b-tooltip", VBTooltip);
+const props = defineProps({
+  selectedDate: {
+    type: Date,
+    required: true,
   },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class DateNavigator extends Vue {
-  @Prop()
-  selectedDate!: Date;
-  @Prop()
-  bucketSize!: string;
-  @Prop({ default: false })
-  showTime!: boolean;
+  bucketSize: {
+    type: String,
+    required: true,
+  },
+  showTime: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-  protected statisticsDateTimeNavigator!: StatisticsDateTimeNavigator;
+const { selectedDate, bucketSize, showTime } = toRefs(props);
 
-  datePickerDate: Date = new Date();
-  time = "00:00";
-  timeKey = "00:00";
+const store = useStore();
+const emit = defineEmits(["dateChanged"]);
 
-  canGoBack() {
-    return this.statisticsDateTimeNavigator.canGoBack(
-      this.bucketSize,
-      this.datePickerDate
+const statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
+  store.measurementsStartDate
+);
+
+const datePickerDate = ref(selectedDate.value);
+const time = ref(moment(selectedDate.value).format("HH:mm"));
+const timeKey = ref(time.value);
+
+function canGoBack() {
+  return statisticsDateTimeNavigator.canGoBack(
+    bucketSize.value,
+    datePickerDate.value
+  );
+}
+
+function goBack() {
+  nextTick(() => {
+    datePickerDate.value = statisticsDateTimeNavigator.goBack(
+      bucketSize?.value,
+      datePickerDate.value
     );
-  }
+    time.value = moment(datePickerDate.value).format("HH:mm");
+    timeKey.value = time.value;
+    emit("dateChanged", datePickerDate.value);
+  });
+}
 
-  goBack() {
-    this.$nextTick(() => {
-      this.datePickerDate = this.statisticsDateTimeNavigator.goBack(
-        this.bucketSize,
-        this.datePickerDate
-      );
-      this.time = moment(this.datePickerDate).format("HH:mm");
-      this.timeKey = this.time;
-      this.$emit("dateChanged", this.datePickerDate);
-    });
-  }
-
-  goForward() {
-    this.$nextTick(() => {
-      this.datePickerDate = this.statisticsDateTimeNavigator.goForward(
-        this.bucketSize,
-        this.datePickerDate
-      );
-      this.time = moment(this.datePickerDate).format("HH:mm");
-      this.timeKey = this.time;
-      this.$emit("dateChanged", this.datePickerDate);
-    });
-  }
-
-  @Watch("selectedDate")
-  async onSelectedDateChanged() {
-    this.datePickerDate = this.selectedDate;
-    this.time = moment(this.selectedDate).format("HH:mm");
-    this.timeKey = this.time;
-  }
-
-  @Watch("datePickerDate", {})
-  async onDatePickerDateChanged(to: string, from: string | null) {
-    if (
-      this.datePickerDate &&
-      from !== null &&
-      this.selectedDate !== this.datePickerDate
-    ) {
-      this.time = moment(this.datePickerDate).format("HH:mm");
-      this.timeKey = this.time;
-      this.$emit("dateChanged", new Date(this.datePickerDate));
-    }
-  }
-
-  timeInputHandler() {
-    if (
-      this.time !==
-      moment(this.datePickerDate).startOf("minutes").format("HH:mm:ss")
-    ) {
-      this.datePickerDate = moment(this.datePickerDate)
-        .hours(Number(this.time.substr(0, 2)))
-        .minutes(Number(this.time.substr(3, 2)))
-        .toDate();
-      this.time = moment(this.datePickerDate).format("HH:mm");
-      this.timeKey = this.time;
-      this.$emit("dateChanged", this.datePickerDate);
-    }
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-
-  timeTravel() {
-    let query = this.store.copyAndModifyObject(this.$route.query, [
-      { key: "at", value: this.datePickerDate.toISOString() },
-    ]);
-    this.$router.push({
-      name: this.$route.name ? this.$route.name : undefined,
-      params: this.$route.params,
-      query: query as Dictionary<string>,
-    });
-  }
-
-  public async created() {
-    this.statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
-      this.store.measurementsStartDate
+function goForward() {
+  nextTick(() => {
+    datePickerDate.value = statisticsDateTimeNavigator.goForward(
+      bucketSize?.value,
+      datePickerDate.value
     );
-    this.datePickerDate = this.selectedDate;
-    this.time = moment(this.selectedDate).format("HH:mm");
-    this.timeKey = this.time; //needed for animation trigger
+    time.value = moment(datePickerDate.value).format("HH:mm");
+    timeKey.value = time.value;
+    emit("dateChanged", datePickerDate.value);
+  });
+}
+
+watch(selectedDate, async () => {
+  datePickerDate.value = selectedDate.value;
+  time.value = moment(selectedDate.value).format("HH:mm");
+  timeKey.value = time.value;
+});
+
+watch(datePickerDate, async () => {
+  if (datePickerDate.value && selectedDate.value !== datePickerDate.value) {
+    time.value = moment(datePickerDate.value).format("HH:mm");
+    timeKey.value = time.value;
+    emit("dateChanged", new Date(datePickerDate.value));
   }
+});
+
+function timeInputHandler() {
+  if (
+    time.value !==
+    moment(datePickerDate.value).startOf("minutes").format("HH:mm:ss")
+  ) {
+    datePickerDate.value = moment(datePickerDate.value)
+      .hours(Number(time.value.substring(0, 2)))
+      .minutes(Number(time.value.substring(3, 2)))
+      .toDate();
+    time.value = moment(datePickerDate.value).format("HH:mm");
+    timeKey.value = time.value;
+    emit("dateChanged", datePickerDate.value);
+  }
+}
+
+const route = useRoute();
+const router = useRouter();
+
+function timeTravel() {
+  let query = store.copyAndModifyObject(route.query, [
+    { key: "at", value: datePickerDate.value.toISOString() },
+  ]);
+  router.push({
+    name: route.name ? route.name : undefined,
+    params: route.params,
+    query: query as Dictionary<string>,
+  });
 }
 </script>
 
