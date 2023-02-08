@@ -45,9 +45,7 @@
   </b-dropdown>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import {
   BDropdown,
   BDropdownItem,
@@ -61,45 +59,31 @@ import {
   BDropdownItemButton,
 } from "bootstrap-vue";
 
-import { Network, Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+import { Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import useStore from "@/store/useStore";
+import useClipboard from "vue-clipboard3";
+import { toRefs } from "vue";
 
-@Component({
-  components: {
-    BDropdown,
-    BDropdownItem,
-    BDropdownText,
-    BIconThreeDotsVertical,
-    BDropdownHeader,
-    BIconXCircle,
-    BIconGearWide,
-    BIconClipboard,
-    BIconLightning,
-    BDropdownItemButton,
-  },
-})
-export default class NodeActions extends Vue {
-  @Prop()
-  public node!: Node;
-  @Prop({ default: false })
-  public supportsDelete!: boolean;
-  @Prop()
-  public quorumSet!: QuorumSet;
-  @Prop({ default: true })
-  public supportsHaltingAnalysis!: boolean;
+export interface Props {
+  node: Node;
+  supportsDelete?: boolean;
+  quorumSet?: QuorumSet;
+  supportsHaltingAnalysis?: boolean;
+}
 
-  get store(): Store {
-    return useStore();
-  }
+const props = withDefaults(defineProps<Props>(), {
+  supportsDelete: false,
+  supportsHaltingAnalysis: true,
+});
+const { node, supportsDelete, quorumSet, supportsHaltingAnalysis } =
+  toRefs(props);
 
-  get network(): Network {
-    return this.store.network;
-  }
+const store = useStore();
+const network = store.network;
+const { toClipboard } = useClipboard();
 
-  copyPublicKey() {
-    this.$copyText(this.node.publicKey);
-  }
+function copyPublicKey() {
+  toClipboard(node.value.publicKey);
 }
 </script>
 
