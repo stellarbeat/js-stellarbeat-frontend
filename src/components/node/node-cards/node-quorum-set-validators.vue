@@ -31,81 +31,68 @@
     />
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
-import Vue from "vue";
-import { Network, Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { BBadge } from "bootstrap-vue";
 import NodesTable from "@/components/node/nodes-table.vue";
-import { BBadge, BIconSearch } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: { NodesTable, BIconSearch: BIconSearch, BBadge: BBadge },
-})
-export default class NodeQuorumSetValidators extends Vue {
-  @Prop()
-  node!: Node;
+const props = defineProps<{
+  node: Node;
+}>();
+const store = useStore();
+const network = store.network;
+const filter = ref("");
 
-  protected filter = "";
-
-  get fields() {
-    if (!this.store.isSimulation) {
-      return [
-        { key: "name", label: "Quorumset validator", sortable: true },
-        { key: "index", label: "index", sortable: true },
-        {
-          key: "validating24Hour",
-          label: "24H validating",
-          sortable: true,
-        },
-        {
-          key: "validating30Days",
-          label: "30D validating",
-          sortable: true,
-        },
-        { key: "version", label: "version", sortable: true },
-        { key: "country", label: "country", sortable: true },
-        { key: "isp", label: "isp", sortable: true },
-        { key: "action", label: "", sortable: false, tdClass: "action" },
-      ];
-    } else {
-      return [
-        { key: "name", label: "Quorumset validator", sortable: true },
-        { key: "action", label: "", sortable: false, tdClass: "action" },
-      ];
-    }
+const fields = computed(() => {
+  if (!store.isSimulation) {
+    return [
+      { key: "name", label: "Quorumset validator", sortable: true },
+      { key: "index", label: "index", sortable: true },
+      {
+        key: "validating24Hour",
+        label: "24H validating",
+        sortable: true,
+      },
+      {
+        key: "validating30Days",
+        label: "30D validating",
+        sortable: true,
+      },
+      { key: "version", label: "version", sortable: true },
+      { key: "country", label: "country", sortable: true },
+      { key: "isp", label: "isp", sortable: true },
+      { key: "action", label: "", sortable: false, tdClass: "action" },
+    ];
+  } else {
+    return [
+      { key: "name", label: "Quorumset validator", sortable: true },
+      { key: "action", label: "", sortable: false, tdClass: "action" },
+    ];
   }
+});
 
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get validators() {
-    return QuorumSet.getAllValidators(this.node.quorumSet)
-      .map((publicKey) => this.network.getNodeByPublicKey(publicKey))
-      .map((validator) => {
-        return {
-          isFullValidator: validator.isFullValidator,
-          name: validator.displayName,
-          version: validator.versionStr,
-          index: validator.index,
-          validating24Hour: validator.statistics.has24HourStats
-            ? validator.statistics.validating24HoursPercentage + "%"
-            : "NA",
-          validating30Days: validator.statistics.has30DayStats
-            ? validator.statistics.validating30DaysPercentage + "%"
-            : "NA",
-          country: validator.geoData.countryName,
-          isp: validator.isp,
-          publicKey: validator.publicKey,
-        };
-      });
-  }
-}
+const validators = computed(() => {
+  return QuorumSet.getAllValidators(props.node.quorumSet)
+    .map((publicKey) => network.getNodeByPublicKey(publicKey))
+    .map((validator) => {
+      return {
+        isFullValidator: validator.isFullValidator,
+        name: validator.displayName,
+        version: validator.versionStr,
+        index: validator.index,
+        validating24Hour: validator.statistics.has24HourStats
+          ? validator.statistics.validating24HoursPercentage + "%"
+          : "NA",
+        validating30Days: validator.statistics.has30DayStats
+          ? validator.statistics.validating30DaysPercentage + "%"
+          : "NA",
+        country: validator.geoData.countryName,
+        isp: validator.isp,
+        publicKey: validator.publicKey,
+      };
+    });
+});
 </script>
 <style scoped></style>
