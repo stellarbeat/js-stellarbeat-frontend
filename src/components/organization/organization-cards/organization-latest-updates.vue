@@ -98,31 +98,26 @@
         <div class="loader"></div>
       </div>
     </div>
-    <b-modal ref="modal-diff" title="Diff" size="lg">
+    <b-modal ref="modalDiff" title="Diff" size="lg">
       <div v-html="diffModalHtml"></div>
     </b-modal>
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop, Watch } from "vue-property-decorator";
-import Vue from "vue";
+<script setup lang="ts">
+import Vue, { Ref, ref, toRefs, watch } from "vue";
 import {
-  Network,
   Organization,
   OrganizationSnapShot,
   PublicKey,
 } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
-import { Delta, formatters, create, DiffPatcher } from "jsondiffpatch";
+import { Delta, formatters, create } from "jsondiffpatch";
 import "jsondiffpatch/dist/formatters-styles/html.css";
 
 import {
   VBTooltip,
-  BTable,
   BModal,
   VBModal,
   BButton,
-  BBadge,
   BListGroup,
   BListGroupItem,
   BIconFileDiff,
@@ -132,6 +127,7 @@ import {
   BIconExclamationTriangle,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import { useRoute, useRouter } from "vue-router/composables";
 
 interface Update {
   key: string;
@@ -155,162 +151,155 @@ interface SnapshotForDelta {
   keybase: string | null;
 }
 
-@Component({
-  components: {
-    BTable,
-    BModal,
-    BButton,
-    BListGroup,
-    BListGroupItem,
-    BBadge,
-    BIconFileDiff,
-    BButtonGroup,
-    BIconClock,
-    BButtonToolbar,
-    BIconExclamationTriangle,
-  },
-  directives: { "b-tooltip": VBTooltip, "b-modal": VBModal },
-})
-export default class OrganizationLatestUpdates extends Vue {
-  protected differ!: DiffPatcher;
-  protected diffModalHtml = "<p>No update selected</p>";
-  protected deltas: Map<string, Delta | undefined> = new Map();
-  protected updatesPerDate: {
+Vue.directive("b-tooltip", VBTooltip);
+Vue.directive("b-modal", VBModal);
+
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+
+const differ = create({});
+const diffModalHtml = ref("<p>No update selected</p>");
+const deltas: Map<string, Delta | undefined> = new Map();
+
+const updatesPerDate: Ref<
+  {
     date: Date;
     updates: Update[];
     snapshot: SnapshotForDelta;
-  }[] = [];
-  protected isLoading = true;
-  protected failed = false;
-  protected snapShots: SnapshotForDelta[] = [];
-  @Prop()
-  protected organization!: Organization;
-  @Watch("organization")
-  async onOrganizationChanged() {
-    await this.getSnapshots();
-  }
-  showDiff(snapShot: SnapshotForDelta) {
-    formatters.html.showUnchanged(true);
-    this.diffModalHtml = formatters.html.format(
-      this.deltas.get(snapShot.startDate.toISOString()) as Delta,
-      snapShot
+  }[]
+> = ref([]);
+
+const isLoading = ref(true);
+const failed = ref(false);
+const modalDiff: Ref<BModal | null> = ref(null);
+
+const props = defineProps<{
+  organization: Organization;
+}>();
+
+const organization = toRefs(props).organization;
+
+watch(
+  organization,
+  async () => {
+    await getSnapshots();
+  },
+  { immediate: true }
+);
+
+function showDiff(snapShot: SnapshotForDelta) {
+  if (!modalDiff.value) return;
+  formatters.html.showUnchanged(true);
+  diffModalHtml.value = formatters.html.format(
+    deltas.get(snapShot.startDate.toISOString()) as Delta,
+    snapShot
+  );
+  modalDiff.value.show();
+}
+
+async function getSnapshots() {
+  let snapshots: SnapshotForDelta[] = [];
+  try {
+    deltas.clear();
+    updatesPerDate.value = [];
+    let fetchedSnapshots = await store.fetchOrganizationSnapshotsById(
+      organization.value.id
     );
-    (this.$refs["modal-diff"] as BModal).show();
-  }
-
-  get store(): Store {
-    return useStore();
-  }
-
-  async getSnapshots() {
-    let snapshots: SnapshotForDelta[] = [];
-    try {
-      this.deltas = new Map();
-      this.updatesPerDate = [];
-      let fetchedSnapshots = await this.store.fetchOrganizationSnapshotsById(
-        this.organization.id
-      );
-      snapshots = fetchedSnapshots.map((snapshot: OrganizationSnapShot) => {
-        return {
-          validators: snapshot.organization.validators.map(
-            (validator: PublicKey) =>
-              this.network.getNodeByPublicKey(validator) &&
-              this.network.getNodeByPublicKey(validator).name
-                ? (this.network.getNodeByPublicKey(validator).name as string)
-                : validator
-          ),
-          startDate: snapshot.startDate,
-          endDate: snapshot.endDate,
-          id: snapshot.organization.id,
-          name: snapshot.organization.name,
-          dba: snapshot.organization.dba,
-          url: snapshot.organization.url,
-          officialEmail: snapshot.organization.officialEmail,
-          phoneNumber: snapshot.organization.phoneNumber,
-          physicalAddress: snapshot.organization.physicalAddress,
-          twitter: snapshot.organization.twitter,
-          github: snapshot.organization.github,
-          description: snapshot.organization.description,
-          keybase: snapshot.organization.keybase,
-        };
-      });
-      let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
-      for (let i = snapshots.length - 2; i >= 0; i--) {
-        let updates: Update[] = [];
-        [
-          "validators",
-          "name",
-          "dba",
-          "url",
-          "officialEmail",
-          "phoneNumber",
-          "physicalAddress",
-          "twitter",
-          "github",
-          "description",
-          "keybase",
-        ]
-          .filter((key) =>
-            key === "validators"
-              ? JSON.stringify(snapshots[i][key].sort(validatorSort)) !==
-                JSON.stringify(snapshots[i + 1][key].sort(validatorSort))
-              : //@ts-ignore
-                snapshots[i][key] !== snapshots[i + 1][key]
-          )
-          .forEach((changedKey) =>
-            updates.push({
-              key: changedKey,
-              //@ts-ignore
-              value: snapshots[i][changedKey],
-            })
-          );
-
-        if (
-          snapshots[i]["startDate"].getTime() !==
-          snapshots[i + 1]["endDate"].getTime()
-        ) {
-          updates.push({ key: "archival", value: "unArchived" });
-        }
-
-        this.updatesPerDate.push({
-          date: snapshots[i].startDate,
-          updates: updates,
-          snapshot: snapshots[i],
-        });
-
-        this.deltas.set(
-          snapshots[i].startDate.toISOString(),
-          this.differ.diff(snapshots[i + 1], snapshots[i])
-        );
-      }
-      this.updatesPerDate.reverse();
-    } catch (e) {
-      this.isLoading = false;
-      this.failed = true;
-    }
-
-    this.isLoading = false;
-    return snapshots;
-  }
-
-  async timeTravel(snapshot: SnapshotForDelta) {
-    this.store.isLoading = true;
-    await this.store.timeTravel(snapshot.startDate);
-    this.store.isLoading = false;
-  }
-
-  async mounted() {
-    this.differ = create({
-      /*propertyFilter: function (name: string, context: any) {
-                    return !['startDate', 'endDate'].includes(name);
-                },*/
+    snapshots = fetchedSnapshots.map((snapshot: OrganizationSnapShot) => {
+      return {
+        validators: snapshot.organization.validators.map(
+          (validator: PublicKey) =>
+            store.network.getNodeByPublicKey(validator) &&
+            store.network.getNodeByPublicKey(validator).name
+              ? (store.network.getNodeByPublicKey(validator).name as string)
+              : validator
+        ),
+        startDate: snapshot.startDate,
+        endDate: snapshot.endDate,
+        id: snapshot.organization.id,
+        name: snapshot.organization.name,
+        dba: snapshot.organization.dba,
+        url: snapshot.organization.url,
+        officialEmail: snapshot.organization.officialEmail,
+        phoneNumber: snapshot.organization.phoneNumber,
+        physicalAddress: snapshot.organization.physicalAddress,
+        twitter: snapshot.organization.twitter,
+        github: snapshot.organization.github,
+        description: snapshot.organization.description,
+        keybase: snapshot.organization.keybase,
+      };
     });
-    this.snapShots = await this.getSnapshots();
+    let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
+    for (let i = snapshots.length - 2; i >= 0; i--) {
+      let updates: Update[] = [];
+      [
+        "validators",
+        "name",
+        "dba",
+        "url",
+        "officialEmail",
+        "phoneNumber",
+        "physicalAddress",
+        "twitter",
+        "github",
+        "description",
+        "keybase",
+      ]
+        .filter((key) =>
+          key === "validators"
+            ? JSON.stringify(snapshots[i][key].sort(validatorSort)) !==
+              JSON.stringify(snapshots[i + 1][key].sort(validatorSort))
+            : //@ts-ignore
+              snapshots[i][key] !== snapshots[i + 1][key]
+        )
+        .forEach((changedKey) =>
+          updates.push({
+            key: changedKey,
+            //@ts-ignore
+            value: snapshots[i][changedKey],
+          })
+        );
+
+      if (
+        snapshots[i]["startDate"].getTime() !==
+        snapshots[i + 1]["endDate"].getTime()
+      ) {
+        updates.push({ key: "archival", value: "unArchived" });
+      }
+
+      updatesPerDate.value.push({
+        date: snapshots[i].startDate,
+        updates: updates,
+        snapshot: snapshots[i],
+      });
+
+      deltas.set(
+        snapshots[i].startDate.toISOString(),
+        differ.diff(snapshots[i + 1], snapshots[i])
+      );
+    }
+    updatesPerDate.value.reverse();
+  } catch (e) {
+    isLoading.value = false;
+    failed.value = true;
   }
 
-  get network(): Network {
-    return this.store.network;
-  }
+  isLoading.value = false;
+  return snapshots;
+}
+
+function timeTravel(snapshot: SnapshotForDelta) {
+  router.push({
+    name: route.name ? route.name : undefined,
+    params: route.params,
+    query: {
+      view: route.query.view,
+      "no-scroll": "1",
+      network: route.query.network,
+      at: snapshot.startDate.toISOString(),
+    },
+  });
 }
 </script>
 
