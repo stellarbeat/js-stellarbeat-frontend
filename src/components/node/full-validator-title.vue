@@ -17,6 +17,7 @@ import { useTruncate } from "@/mixins/useTruncate";
 
 const truncate = useTruncate();
 import Vue from "vue";
+import { Node } from "@stellarbeat/js-stellar-domain";
 Vue.directive("b-tooltip", VBTooltip);
 
 defineProps<{

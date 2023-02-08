@@ -18,8 +18,8 @@
               Public key
             </td>
             <td class="px-0 text-right">
-              {{ node.publicKey.substr(0, 7) }}...{{
-                node.publicKey.substr(51, 100)
+              {{ node.publicKey.substring(0, 7) }}...{{
+                node.publicKey.substring(51, 100)
               }}
               <b-button
                 size="sm"
@@ -45,7 +45,7 @@
               Version
             </td>
             <td class="px-0 text-right">
-              {{ node.versionStr | truncate(35) }}
+              {{ truncate(node.versionStr, 35) }}
             </td>
           </tr>
           <tr class="text-gray">
@@ -77,50 +77,28 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import Vue from "vue";
-import { Network, Node } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
-import {
-  BAlert,
-  BBadge,
-  BButton,
-  BIconClipboard,
-  BIconExclamationTriangle,
-  BIconShield,
-  VBTooltip,
-} from "bootstrap-vue";
+import { Node } from "@stellarbeat/js-stellar-domain";
+import { BBadge, BButton, BIconClipboard, VBTooltip } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
+import useClipboard from "vue-clipboard3";
 import useStore from "@/store/useStore";
+import { useTruncate } from "@/mixins/useTruncate";
 
-@Component({
-  components: {
-    FullValidatorTitle,
-    BIconExclamationTriangle: BIconExclamationTriangle,
-    BAlert: BAlert,
-    BBadge: BBadge,
-    BIconClipboard: BIconClipboard,
-    BButton: BButton,
-    BIconShield: BIconShield,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class NodeInfo extends Vue {
-  @Prop()
-  protected node!: Node;
+Vue.directive("b-tooltip", VBTooltip);
 
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const network = store.network;
+const props = defineProps<{
+  node: Node;
+}>();
 
-  get network(): Network {
-    return this.store.network;
-  }
+const { toClipboard } = useClipboard();
+const truncate = useTruncate();
 
-  copyPublicKey() {
-    this.$copyText(this.node.publicKey);
-  }
+function copyPublicKey() {
+  toClipboard(props.node.publicKey);
 }
 </script>
 
