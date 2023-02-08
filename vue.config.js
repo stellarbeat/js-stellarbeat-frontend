@@ -1,19 +1,15 @@
 /* eslint-disable */
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
-const VueSSRServerPlugin = require("vue-server-renderer/server-plugin");
-const nodeExternals = require("webpack-node-externals");
-const VueSSRClientPlugin = require("vue-server-renderer/client-plugin");
-const webpack = require("webpack");
 
 module.exports = {
   css: {
     extract: true,
     sourceMap: true,
   },
-  outputDir: !process.env.SSR ? "./dist-client" : "./dist-server",
+  outputDir: "./dist-client",
   configureWebpack: {
-    entry: !process.env.SSR ? "./src/entry-client.ts" : "./src/entry-server.ts",
+    entry: "./src/entry-client.ts",
     plugins: [
       // To strip all locales except “en”
       new MomentLocalesPlugin(),
@@ -32,14 +28,13 @@ module.exports = {
       })
     ],
     optimization: {
-      minimize: !process.env.SSR,
-      splitChunks: !process.env.SSR
-        ? {
+      minimize: true,
+      splitChunks:
+         {
             chunks: "all",
             maxSize: 250000,
             minSize: 100000,
           }
-        : false,
     },
     resolve: {
       alias: {
@@ -80,32 +75,6 @@ module.exports = {
         },
       ],
     },
-  },
-
-  chainWebpack: (config) => {
-    if (process.env.SSR) {
-      config.devtool("source-map");
-      config.target("node");
-      config.output.libraryTarget("commonjs2");
-      config.plugin("ssr-server").use(new VueSSRServerPlugin());
-      config.plugins.delete("hmr");
-      config.plugins.delete("preload");
-      config.plugins.delete("prefetch");
-      config.plugins.delete("friendly-errors");
-      config.plugins.delete("webpack-bundle-analyzer");
-      config.plugin("limit-chunk-count-plugin").use(
-        new webpack.optimize.LimitChunkCountPlugin({
-          maxChunks: 1, //needed for mini css extract plugin to work server side
-        })
-      );
-      config.externals(
-        nodeExternals({
-          allowlist: /\.(css|vue)$/,
-        })
-      );
-    } else {
-      config.plugin("ssr-client").use(new VueSSRClientPlugin({}));
-    }
   },
 
   pluginOptions: {
