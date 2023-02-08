@@ -75,14 +75,8 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import NodesCountryDistribution from "@/components/network/cards/nodes-country-distribution.vue";
-import NodesVersions from "@/components/network/cards/nodes-versions.vue";
-import ValidatorsServerLoad from "@/components/network/cards/validator-load.vue";
-import { Network, Node, Organization } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+<script setup lang="ts">
+import { computed } from "vue";
 import HistoryCard from "@/components/charts/history-card.vue";
 import OrganizationProfile from "@/components/organization/organization-cards/organization-profile.vue";
 import OrganizationValidators from "@/components/organization/organization-cards/organization-validators.vue";
@@ -92,48 +86,12 @@ import OrganizationLatestUpdates from "@/components/organization/organization-ca
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
-@Component({
-  components: {
-    LazyHydrate,
-    OrganizationLatestUpdates,
-    OrganizationStatisticsSubQuorum30DAvailability,
-    OrganizationStatisticsSubQuorum24hAvailability,
-    OrganizationValidators,
-    OrganizationProfile,
-    HistoryCard,
-    ValidatorsServerLoad,
-    NodesVersions,
-    NodesCountryDistribution,
-    BAlert,
-  },
-})
-export default class OrganizationDashboard extends Vue {
-  get validators(): Node[] {
-    return this.organization.validators
-      .map((publicKey) => this.network.getNodeByPublicKey(publicKey))
-      .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
-  }
 
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const network = store.network;
 
-  get organization(): Organization {
-    if (!this.store.selectedOrganization)
-      throw new Error("No organization selected");
-    return this.store.selectedOrganization;
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get failAt() {
-    let nrOfValidatingNodes = this.organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator))
-      .filter((node) => node.isValidating).length;
-
-    return nrOfValidatingNodes - this.organization.subQuorumThreshold + 1;
-  }
-}
+const organization = computed(() => {
+  if (!store.selectedOrganization) throw new Error("No organization selected");
+  return store.selectedOrganization;
+});
 </script>
