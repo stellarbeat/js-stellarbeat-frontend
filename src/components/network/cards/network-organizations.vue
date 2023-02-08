@@ -26,7 +26,7 @@
       :filter="filter"
       :organizations="organizations"
       :fields="fields"
-      per-page="5"
+      :per-page="5"
     />
   </div>
 </template>

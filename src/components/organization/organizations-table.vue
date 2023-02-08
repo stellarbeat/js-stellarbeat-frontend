@@ -178,14 +178,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import Vue, { computed, ref, toRefs } from "vue";
 import { Organization } from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
 
 import {
-  BBadge,
   BIconInfoCircle,
   BIconShield,
   BPagination,
@@ -195,44 +192,31 @@ import {
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    OrganizationActions,
-    BTable,
-    BPagination,
-    BIconShield: BIconShield,
-    BBadge: BBadge,
-    BIconInfoCircle: BIconInfoCircle,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class OrganizationsTable extends Vue {
-  @Prop({ default: "" })
-  public filter!: string;
-  @Prop()
-  public fields!: unknown;
-  @Prop()
-  public organizations!: Organization[];
-  @Prop({ default: 200 })
-  public perPage!: number;
-  @Prop({ default: "subQuorum30DAvailability" })
-  public sortBy!: string;
-  public sortDesc = true;
+Vue.directive("b-tooltip", VBTooltip);
 
-  public currentPage = 1;
-
-  get store(): Store {
-    return useStore();
-  }
-
-  get network() {
-    return this.store.network;
-  }
-
-  get totalRows(): number {
-    return this.organizations.length;
-  }
+export interface Props {
+  filter?: string;
+  fields: unknown;
+  organizations: Organization[];
+  perPage?: number;
+  sortBy?: string;
 }
+
+const props = withDefaults(defineProps<Props>(), {
+  filter: "",
+  perPage: 200,
+  sortBy: "subQuorum30DAvailability",
+});
+
+const { filter, fields, organizations, perPage, sortBy } = toRefs(props);
+
+const sortDesc = ref(true);
+const currentPage = ref(1);
+
+const store = useStore();
+const network = store.network;
+
+const totalRows = computed(() => props.organizations.length);
 </script>
 
 <style scoped>
@@ -241,7 +225,7 @@ ul {
 }
 
 .validator-list {
-  padding-left: 0px;
-  margin-bottom: 0px;
+  padding-left: 0;
+  margin-bottom: 0;
 }
 </style>

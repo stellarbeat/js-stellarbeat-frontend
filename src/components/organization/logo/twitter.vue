@@ -17,13 +17,5 @@
   </svg>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-
-@Component({
-  name: "twitter",
-})
-export default class Twitter extends Vue {}
-</script>
+<script setup lang="ts"></script>
 <style scoped></style>

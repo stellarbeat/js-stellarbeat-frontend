@@ -140,7 +140,7 @@ export interface Props {
   filter?: string;
   fields: unknown;
   nodes: Node[];
-  perPage: number;
+  perPage?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {

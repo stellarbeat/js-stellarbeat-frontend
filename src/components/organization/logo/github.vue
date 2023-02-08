@@ -17,13 +17,5 @@
   </svg>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component } from "vue-property-decorator";
-
-@Component({
-  name: "github",
-})
-export default class Github extends Vue {}
-</script>
+<script setup lang="ts"></script>
 <style scoped></style>
