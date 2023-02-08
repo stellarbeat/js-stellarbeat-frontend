@@ -15,7 +15,7 @@
       <b-dropdown-header> Simulation options </b-dropdown-header>
       <div v-if="supportsHalt">
         <b-dropdown-item
-          v-if="!network.isOrganizationBlocked(organization)"
+          v-if="!store.network.isOrganizationBlocked(organization)"
           v-on:click.prevent.stop="
             store.toggleOrganizationAvailability(organization)
           "
@@ -73,8 +73,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Mixins, Prop } from "vue-property-decorator";
+<script setup lang="ts">
 import {
   BDropdown,
   BDropdownItem,
@@ -82,9 +81,7 @@ import {
   BDropdownHeader,
   BIconXCircle,
   BIconPlusCircle,
-  BIconGearWide,
   BIconLightning,
-  BDropdownItemButton,
   BModal,
   BDropdownText,
   VBModal,
@@ -92,73 +89,62 @@ import {
 
 import { Organization } from "@stellarbeat/js-stellar-domain";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
-import { StoreMixin } from "@/mixins/StoreMixin";
+import Vue, { computed, ref, Ref, toRefs } from "vue";
+import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    AddOrganizationsTable,
-    BDropdown,
-    BDropdownText,
-    BDropdownItem,
-    BIconThreeDotsVertical,
-    BDropdownHeader,
-    BIconXCircle,
-    BIconGearWide,
-    BIconLightning,
-    BDropdownItemButton,
-    BIconPlusCircle,
-    BModal,
-  },
-  directives: { "b-modal": VBModal },
-})
-export default class OrganizationActions extends Mixins(StoreMixin) {
-  @Prop()
-  public organization!: Organization;
-  @Prop({ default: false })
-  public supportsDelete!: boolean;
-  @Prop({ default: false })
-  public supportsAdd!: boolean;
-  @Prop({ default: true })
-  public supportsHalt!: boolean;
+Vue.directive("b-modal", VBModal);
 
-  public organizationsToAdd: Organization[] = [];
-  public id!: number;
+interface Props {
+  organization: Organization;
+  supportsDelete?: boolean;
+  supportsAdd?: boolean;
+  supportsHalt?: boolean;
+}
 
-  get trustedOrganizationIds() {
-    let trustedOrganizationIds = new Set<string>();
-    this.organization.validators.forEach((publicKey) => {
-      let validator = this.network.getNodeByPublicKey(publicKey);
-      this.network
-        .getTrustedOrganizations(validator.quorumSet)
-        .forEach((org) => {
-          if (org.id !== this.organization.id)
-            trustedOrganizationIds.add(org.id);
-        });
-    });
-    return Array.from(trustedOrganizationIds);
-  }
+const props = withDefaults(defineProps<Props>(), {
+  supportsDelete: false,
+  supportsAdd: false,
+  supportsHalt: true,
+});
 
-  public get possibleOrganizationsToAdd() {
-    return this.store.network.organizations.filter(
-      (organization) => this.trustedOrganizationIds.indexOf(organization.id) < 0
+const { organization, supportsDelete, supportsAdd, supportsHalt } =
+  toRefs(props);
+
+const store = useStore();
+
+const organizationsToAdd: Ref<Organization[]> = ref([]);
+const id: Ref<number> = ref(store.getUniqueId());
+
+const trustedOrganizationIds = computed(() => {
+  let trustedOrganizationIds = new Set<string>();
+  organization.value.validators.forEach((publicKey) => {
+    let validator = store.network.getNodeByPublicKey(publicKey);
+    store.network
+      .getTrustedOrganizations(validator.quorumSet)
+      .forEach((org) => {
+        if (org.id !== organization.value.id)
+          trustedOrganizationIds.add(org.id);
+      });
+  });
+  return Array.from(trustedOrganizationIds);
+});
+
+const possibleOrganizationsToAdd = computed(() => {
+  return store.network.organizations.filter(
+    (organization) => trustedOrganizationIds.value.indexOf(organization.id) < 0
+  );
+});
+
+function organizationsToAddModalOk() {
+  if (organizationsToAdd.value.length > 0) {
+    store.addOrganizationsToOrganization(
+      organizationsToAdd.value,
+      organization.value
     );
   }
+}
 
-  organizationsToAddModalOk() {
-    if (this.organizationsToAdd.length > 0) {
-      this.store.addOrganizationsToOrganization(
-        this.organizationsToAdd,
-        this.organization
-      );
-    }
-  }
-
-  onOrganizationsSelected(organizations: Organization[]) {
-    this.organizationsToAdd = organizations;
-  }
-
-  created() {
-    this.id = this.store.getUniqueId();
-  }
+function onOrganizationsSelected(organizations: Organization[]) {
+  organizationsToAdd.value = organizations;
 }
 </script>
