@@ -106,20 +106,13 @@
   </b-card>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop, Watch } from "vue-property-decorator";
+<script setup lang="ts">
+import { computed, onMounted, ref, toRefs, watch } from "vue";
 import {
   NetworkGraphNode,
   QuorumSet as NetworkQuorumSet,
 } from "@stellar/halting-analysis/src";
-import {
-  Network,
-  PublicKey,
-  QuorumSet,
-  Vertex,
-} from "@stellarbeat/js-stellar-domain";
-import Store from "@/store/Store";
+import { PublicKey, QuorumSet, Vertex } from "@stellarbeat/js-stellar-domain";
 import {
   BAlert,
   BButton,
@@ -134,196 +127,166 @@ import { AggregateChange } from "@/services/change-queue/changes/aggregate-chang
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
 import useStore from "@/store/useStore";
 
-@Component({
-  name: "halting-analysis",
-  components: {
-    BCard: BCard,
-    BForm: BForm,
-    BButton: BButton,
-    BFormSelect: BFormSelect,
-    BAlert: BAlert,
-    BFormInput: BFormInput,
-    BFormGroup: BFormGroup,
-    BIconX: BIconX,
-  },
-})
-export default class HaltingAnalysis extends Vue {
-  @Prop()
-  protected publicKey!: PublicKey;
+const props = defineProps({
+  publicKey: { type: String, required: true },
+});
 
-  protected showAnalysisResult = false;
-  protected numberOfNodeFailures = 2;
-  protected numberOfNodeFailuresInputState: boolean | null = null;
-  protected nodeFailures: { value: string[]; text: string }[] = [];
-  protected selectedFailure: PublicKey[] | null = null;
-  protected isLoading = false;
-  protected simulated = false;
+const publicKey = toRefs(props).publicKey;
 
-  protected haltingAnalysisWorker = new Worker(
-    new URL(
-      "./../../../../workers/halting-analysisv1.worker.ts",
-      import.meta.url
+const store = useStore();
+const network = store.network;
+const showAnalysisResult = ref(false);
+const numberOfNodeFailures = ref(2);
+const numberOfNodeFailuresInputState = ref<boolean | null>(null);
+const nodeFailures = ref<{ value: string[]; text: string }[]>([]);
+const selectedFailure = ref<PublicKey[] | null>(null);
+const isLoading = ref(false);
+const simulated = ref(false);
+
+const haltingAnalysisWorker = new Worker(
+  new URL("./../../../../workers/halting-analysisv1.worker.ts", import.meta.url)
+);
+
+const dimmerClass = computed(() => {
+  return {
+    dimmer: true,
+    active: isLoading.value,
+  };
+});
+
+watch(publicKey, () => {
+  nodeFailures.value = [];
+  selectedFailure.value = null;
+  simulated.value = false;
+  showAnalysisResult.value = false;
+});
+
+const vertex = computed(() => {
+  return network.nodesTrustGraph.getVertex(publicKey?.value);
+});
+
+const node = computed(() => {
+  return network.getNodeByPublicKey(publicKey?.value);
+});
+
+function getNetworkGraphNodes() {
+  return Array.from(network.nodesTrustGraph.vertices.values()) //todo only nodes in transitive quorum set
+    .map((myVertex) =>
+      mapVertexToNetworkGraphNode(myVertex, myVertex === vertex.value)
+    );
+}
+
+function simulateFailure() {
+  if (selectedFailure.value === null) {
+    return;
+  }
+  simulated.value = true;
+  let aggregateChange = new AggregateChange(
+    selectedFailure.value.map(
+      (failurePublicKey) =>
+        new EntityPropertyUpdate(
+          network.getNodeByPublicKey(failurePublicKey),
+          "isValidating",
+          false
+        )
     )
   );
 
-  get store(): Store {
-    return useStore();
-  }
-
-  get network(): Network {
-    return this.store.network;
-  }
-
-  get dimmerClass() {
-    return {
-      dimmer: true,
-      active: this.isLoading,
-    };
-  }
-
-  @Watch("publicKey")
-  public onPublicKeyChanged() {
-    this.nodeFailures = [];
-    this.selectedFailure = null;
-    this.simulated = false;
-    this.showAnalysisResult = false;
-  }
-
-  get vertex() {
-    return this.network.nodesTrustGraph.getVertex(this.publicKey);
-  }
-
-  get node() {
-    return this.network.getNodeByPublicKey(this.publicKey);
-  }
-
-  getNetworkGraphNodes() {
-    return Array.from(this.network.nodesTrustGraph.vertices.values()) //todo only nodes in transitive quorum set
-      .map((vertex) =>
-        this.mapVertexToNetworkGraphNode(vertex, vertex === this.vertex)
-      );
-  }
-
-  simulateFailure() {
-    if (this.selectedFailure === null) {
-      return;
-    }
-    this.simulated = true;
-    let aggregateChange = new AggregateChange(
-      this.selectedFailure.map(
-        (failurePublicKey) =>
-          new EntityPropertyUpdate(
-            this.network.getNodeByPublicKey(failurePublicKey),
-            "isValidating",
-            false
-          )
-      )
-    );
-
-    this.store.processChange(aggregateChange);
-  }
-
-  resetFailureSimulation() {
-    if (this.selectedFailure === null) {
-      return;
-    }
-    let aggregateChange = new AggregateChange(
-      this.selectedFailure.map(
-        (failurePublicKey) =>
-          new EntityPropertyUpdate(
-            this.network.getNodeByPublicKey(failurePublicKey),
-            "isValidating",
-            true
-          )
-      )
-    );
-
-    this.store.processChange(aggregateChange);
-    this.simulated = false;
-  }
-
-  restartHaltingAnalysis() {
-    this.isLoading = true;
-    this.simulated = false;
-    this.haltingAnalysisWorker.postMessage({
-      networkGraphNodes: this.getNetworkGraphNodes(),
-      numberOfNodeFailures: this.numberOfNodeFailures,
-    });
-  }
-
-  mapVertexToNetworkGraphNode(vertex: Vertex, isRoot: boolean) {
-    return {
-      distance: isRoot ? 0 : 1,
-      node: vertex.key,
-      status: !this.network.isNodeFailing(
-        this.network.getNodeByPublicKey(vertex.key)
-      )
-        ? "tracking"
-        : "missing",
-      qset: !this.network.isNodeFailing(
-        this.network.getNodeByPublicKey(vertex.key)
-      )
-        ? this.mapQuorumSetToNetworkQuorumSet(
-            this.network.getNodeByPublicKey(vertex.key).quorumSet
-          )
-        : undefined,
-    } as NetworkGraphNode;
-  }
-
-  mapQuorumSetToNetworkQuorumSet(quorumSet: QuorumSet): NetworkQuorumSet {
-    let innerQSets = quorumSet.innerQuorumSets.map((innerQSet) =>
-      this.mapQuorumSetToNetworkQuorumSet(innerQSet)
-    );
-    let v = [];
-    v.push(...quorumSet.validators);
-    innerQSets.forEach((innerQSet) => v.push(innerQSet));
-    return {
-      t: quorumSet.threshold,
-      v: v,
-    };
-  }
-
-  mounted() {
-    this.haltingAnalysisWorker.onmessage = (event: {
-      data: { type: string; failures: PublicKey[][] };
-    }) => {
-      switch (event.data.type) {
-        case "end":
-          {
-            this.nodeFailures = event.data.failures.map(
-              (failure: Array<PublicKey>) => {
-                return {
-                  value: failure,
-                  text: failure
-                    .map((publicKey) =>
-                      this.network.getNodeByPublicKey(publicKey).name
-                        ? this.network.getNodeByPublicKey(publicKey).displayName
-                        : publicKey.substr(0, 5)
-                    )
-                    .join(", "),
-                };
-              }
-            );
-            if (this.nodeFailures.length > 0) {
-              this.selectedFailure = this.nodeFailures[0].value;
-            }
-            this.showAnalysisResult = true;
-            this.isLoading = false;
-          }
-          break;
-      }
-    };
-  }
+  store.processChange(aggregateChange);
 }
+
+function resetFailureSimulation() {
+  if (selectedFailure.value === null) {
+    return;
+  }
+  let aggregateChange = new AggregateChange(
+    selectedFailure.value.map(
+      (failurePublicKey) =>
+        new EntityPropertyUpdate(
+          network.getNodeByPublicKey(failurePublicKey),
+          "isValidating",
+          true
+        )
+    )
+  );
+
+  store.processChange(aggregateChange);
+  simulated.value = false;
+}
+
+function restartHaltingAnalysis() {
+  isLoading.value = true;
+  simulated.value = false;
+  haltingAnalysisWorker.postMessage({
+    networkGraphNodes: getNetworkGraphNodes(),
+    numberOfNodeFailures: numberOfNodeFailures.value,
+  });
+}
+
+function mapVertexToNetworkGraphNode(vertex: Vertex, isRoot: boolean) {
+  return {
+    distance: isRoot ? 0 : 1,
+    node: vertex.key,
+    status: !network.isNodeFailing(network.getNodeByPublicKey(vertex.key))
+      ? "tracking"
+      : "missing",
+    qset: !network.isNodeFailing(network.getNodeByPublicKey(vertex.key))
+      ? mapQuorumSetToNetworkQuorumSet(
+          network.getNodeByPublicKey(vertex.key).quorumSet
+        )
+      : undefined,
+  } as NetworkGraphNode;
+}
+
+function mapQuorumSetToNetworkQuorumSet(
+  quorumSet: QuorumSet
+): NetworkQuorumSet {
+  let innerQSets = quorumSet.innerQuorumSets.map((innerQSet) =>
+    mapQuorumSetToNetworkQuorumSet(innerQSet)
+  );
+  let v = [];
+  v.push(...quorumSet.validators);
+  innerQSets.forEach((innerQSet) => v.push(innerQSet));
+  return {
+    t: quorumSet.threshold,
+    v: v,
+  };
+}
+
+onMounted(() => {
+  haltingAnalysisWorker.onmessage = (event: {
+    data: { type: string; failures: PublicKey[][] };
+  }) => {
+    switch (event.data.type) {
+      case "end":
+        {
+          nodeFailures.value = event.data.failures.map(
+            (failure: Array<PublicKey>) => {
+              return {
+                value: failure,
+                text: failure
+                  .map((publicKey) =>
+                    network.getNodeByPublicKey(publicKey).name
+                      ? network.getNodeByPublicKey(publicKey).displayName
+                      : publicKey.substr(0, 5)
+                  )
+                  .join(", "),
+              };
+            }
+          );
+          if (nodeFailures.value.length > 0) {
+            selectedFailure.value = nodeFailures.value[0].value;
+          }
+          showAnalysisResult.value = true;
+          isLoading.value = false;
+        }
+        break;
+    }
+  };
+});
 </script>
 
 <style scoped>
-.my-card-title {
-  font-size: 1.125rem;
-  line-height: 1.2;
-  font-weight: 400;
-}
-
 .nr-node-failures-input {
   margin-left: 5px;
   margin-right: 5px;
