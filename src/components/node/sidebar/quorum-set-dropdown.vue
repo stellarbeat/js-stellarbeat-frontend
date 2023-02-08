@@ -82,8 +82,8 @@ import { useDropdown } from "@/components/side-bar/useDropdown";
 
 export interface Props {
   quorumSet: QuorumSet;
-  parentQuorumSet: QuorumSet;
-  level: number;
+  parentQuorumSet?: QuorumSet;
+  level?: number;
   expand: boolean;
 }
 

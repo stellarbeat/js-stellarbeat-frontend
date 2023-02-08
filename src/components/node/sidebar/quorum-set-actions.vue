@@ -121,25 +121,18 @@
       title="Stellar Core Config"
       ok-only
       ok-title="Close"
-      v-on:show="loadTomlExport(id)"
+      v-on:show="loadTomlExport()"
     >
       <pre><code>{{tomlNodesExport}}</code></pre>
     </b-modal>
   </div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
+<script setup lang="ts">
+import Vue, { computed, ref, toRefs } from "vue";
 
-import {
-  Network,
-  Node,
-  Organization,
-  QuorumSet,
-} from "@stellarbeat/js-stellar-domain";
+import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
 import AddValidatorsTable from "@/components/node/tools/simulation/add-validators-table.vue";
-import Store from "@/store/Store";
 import {
   BButton,
   BDropdown,
@@ -152,7 +145,6 @@ import {
   BIconDownload,
   BIconPencil,
   BIconPlusCircle,
-  BIconSearch,
   BIconThreeDotsVertical,
   BIconXCircle,
   BModal,
@@ -162,159 +154,120 @@ import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/li
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    AddOrganizationsTable,
-    AddValidatorsTable,
-    BModal: BModal,
-    BIconSearch: BIconSearch,
-    BDropdown: BDropdown,
-    BDropdownForm: BDropdownForm,
-    BButton: BButton,
-    BFormGroup: BFormGroup,
-    BFormInput: BFormInput,
-    BIconPencil: BIconPencil,
-    BIconXCircle: BIconXCircle,
-    BDropdownItem: BDropdownItem,
-    BIconPlusCircle: BIconPlusCircle,
-    BDropdownHeader: BDropdownHeader,
-    BIconThreeDotsVertical: BIconThreeDotsVertical,
-    BIconDownload: BIconDownload,
-    BDropdownDivider: BDropdownDivider,
-  },
-  directives: { "b-modal": VBModal },
-})
-export default class QuorumSetActions extends Vue {
-  @Prop()
-  public quorumSet!: QuorumSet;
-  @Prop({ default: null })
-  public parentQuorumSet!: QuorumSet;
-  @Prop()
-  public level!: number;
+Vue.directive("b-modal", VBModal);
 
-  public editingThreshold = false;
-  public newThreshold!: number;
-  public id: number = Math.ceil(Math.random() * 1000);
-  public validatorsToAdd: string[] = [];
-  public organizationsToAdd: Organization[] = [];
-  public inputState: boolean | null = null;
-  protected tomlNodesExport = "";
+export interface Props {
+  quorumSet: QuorumSet;
+  parentQuorumSet?: QuorumSet | null | undefined;
+  level?: number | undefined;
+}
+const props = withDefaults(defineProps<Props>(), {
+  level: 0,
+  parentQuorumSet: null,
+});
+const { quorumSet, parentQuorumSet, level } = toRefs(props);
+const emit = defineEmits(["expand"]);
 
-  get store(): Store {
-    return useStore();
+const editingThreshold = ref(false);
+const newThreshold = ref(quorumSet.value.threshold);
+const id = ref(Math.ceil(Math.random() * 1000));
+const validatorsToAdd = ref<string[]>([]);
+const organizationsToAdd = ref<Organization[]>([]);
+const inputState = ref<boolean | null>(null);
+const tomlNodesExport = ref("");
+
+const store = useStore();
+const network = store.network;
+
+function deleteQuorumSet() {
+  if (!parentQuorumSet.value) return;
+  store.deleteInnerQuorumSet(quorumSet.value, parentQuorumSet.value);
+}
+
+const possibleOrganizationsToAdd = computed(() => {
+  let trustedOrganizations = network
+    .getTrustedOrganizations(quorumSet.value)
+    .map((org) => org.id);
+
+  return store.network.organizations.filter(
+    (organization) => trustedOrganizations.indexOf(organization.id) < 0
+  );
+});
+
+const possibleValidatorsToAdd = computed(() => {
+  return network.nodes.filter(
+    (node: Node) =>
+      node.isValidator &&
+      QuorumSet.getAllValidators(quorumSet.value).indexOf(node.publicKey) < 0
+  );
+});
+
+function addValidatorsToQuorumSet(
+  toQuorumSet: QuorumSet,
+  validators: string[]
+) {
+  store.addValidators(toQuorumSet, validators);
+}
+
+function addOrganizationsToQuorumSet(
+  toQuorumSet: QuorumSet,
+  organizations: Organization[]
+) {
+  store.addOrganizations(toQuorumSet, organizations);
+}
+
+function addQuorumSet() {
+  store.addInnerQuorumSet(quorumSet.value);
+  emit("expand");
+}
+
+function saveThresholdFromInput() {
+  if (newThreshold.value <= 0) {
+    inputState.value = false;
+    return;
   }
 
-  get network(): Network {
-    return this.store.network;
+  inputState.value = null;
+  editingThreshold.value = false;
+  //@ts-ignore
+  this.$refs.dropdown.hide(true);
+  store.editQuorumSetThreshold(quorumSet.value, Number(newThreshold.value));
+}
+
+function onValidatorsSelected(validators: Node[]) {
+  validatorsToAdd.value = validators.map(
+    (validator: Node) => validator.publicKey
+  );
+}
+
+function onOrganizationsSelected(organizations: Organization[]) {
+  organizationsToAdd.value = organizations;
+}
+
+function validatorsToAddModalOk() {
+  if (validatorsToAdd.value.length > 0) {
+    addValidatorsToQuorumSet(quorumSet.value, validatorsToAdd.value);
+    emit("expand");
   }
+}
 
-  get selectedNode() {
-    return this.store.selectedNode;
+function organizationsToAddModalOk() {
+  if (organizationsToAdd.value.length > 0) {
+    addOrganizationsToQuorumSet(quorumSet.value, organizationsToAdd.value);
   }
+}
 
-  public deleteQuorumSet() {
-    this.store.deleteInnerQuorumSet(this.quorumSet, this.parentQuorumSet);
-  }
-
-  public get possibleOrganizationsToAdd() {
-    let trustedOrganizations = this.network
-      .getTrustedOrganizations(this.quorumSet)
-      .map((org) => org.id);
-
-    return this.store.network.organizations.filter(
-      (organization) => trustedOrganizations.indexOf(organization.id) < 0
-    );
-  }
-
-  public get possibleValidatorsToAdd() {
-    const selectedNode = this.store.selectedNode;
-    if (!selectedNode) throw new Error("No selected node");
-    return this.store.network.nodes.filter(
-      (node: Node) =>
-        node.isValidator &&
-        QuorumSet.getAllValidators(selectedNode.quorumSet).indexOf(
-          node.publicKey
-        ) < 0
-    );
-  }
-
-  public addValidatorsToQuorumSet(
-    toQuorumSet: QuorumSet,
-    validators: string[]
-  ) {
-    this.store.addValidators(toQuorumSet, validators);
-  }
-
-  public addOrganizationsToQuorumSet(
-    toQuorumSet: QuorumSet,
-    organizations: Organization[]
-  ) {
-    this.store.addOrganizations(toQuorumSet, organizations);
-  }
-
-  public addQuorumSet() {
-    this.store.addInnerQuorumSet(this.quorumSet);
-    this.$emit("expand");
-  }
-
-  public saveThresholdFromInput() {
-    if (this.newThreshold <= 0) {
-      this.inputState = false;
-      return;
-    }
-
-    this.inputState = null;
-    this.editingThreshold = false;
-    //@ts-ignore
-    this.$refs.dropdown.hide(true);
-    this.store.editQuorumSetThreshold(
-      this.quorumSet,
-      Number(this.newThreshold)
-    );
-  }
-
-  onValidatorsSelected(validators: Node[]) {
-    this.validatorsToAdd = validators.map(
-      (validator: Node) => validator.publicKey
-    );
-  }
-
-  onOrganizationsSelected(organizations: Organization[]) {
-    this.organizationsToAdd = organizations;
-  }
-
-  validatorsToAddModalOk() {
-    if (this.validatorsToAdd.length > 0) {
-      this.addValidatorsToQuorumSet(this.quorumSet, this.validatorsToAdd);
-      this.$emit("expand");
-    }
-  }
-
-  organizationsToAddModalOk() {
-    if (this.organizationsToAdd.length > 0) {
-      this.addOrganizationsToQuorumSet(this.quorumSet, this.organizationsToAdd);
-    }
-  }
-
-  loadTomlExport() {
-    let stellarCoreConfigurationGenerator =
-      new StellarCoreConfigurationGenerator(this.network);
-    this.tomlNodesExport = stellarCoreConfigurationGenerator.quorumSetToToml(
-      this.quorumSet
-    );
-  }
-
-  created() {
-    this.newThreshold = this.quorumSet.threshold;
-  }
+function loadTomlExport() {
+  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
+    network
+  );
+  tomlNodesExport.value = stellarCoreConfigurationGenerator.quorumSetToToml(
+    quorumSet.value
+  );
 }
 </script>
 
 <style scoped>
-.inline {
-  display: flex !important;
-}
-
 .thresholdEdit {
   margin-left: 10px;
   width: 45px !important;

@@ -33,77 +33,56 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Mixins } from "vue-property-decorator";
-import { Network, Node, Organization } from "@stellarbeat/js-stellar-domain";
+<script setup lang="ts">
+import { Node, Organization } from "@stellarbeat/js-stellar-domain";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { DropdownMixin } from "@/components/side-bar/dropdown-mixin";
-import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
-import Store from "@/store/Store";
-import { BIconSearch } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
 import useStore from "@/store/useStore";
+import { useDropdown } from "@/components/side-bar/useDropdown";
+import { computed, defineEmits } from "vue";
+import { useRoute, useRouter } from "vue-router/composables";
 
-@Component({
-  components: {
-    OrganizationActions,
-    NodeActions,
-    NavPagination,
-    NavLink,
-    BIconSearch: BIconSearch,
-  },
-})
-export default class OrganizationValidatorsDropdown extends Mixins(
-  DropdownMixin
-) {
-  @Prop()
-  public organization!: Organization;
+const props = defineProps<{
+  organization: Organization;
+}>();
 
-  get store(): Store {
-    return useStore();
-  }
+const store = useStore();
+const network = store.network;
+const route = useRoute();
+const router = useRouter();
+const emit = defineEmits(["toggleExpand"]);
+const { showing, toggleShow } = useDropdown(true, emit);
+const validators = computed(() =>
+  props.organization.validators.map((validator) =>
+    network.getNodeByPublicKey(validator)
+  )
+);
 
-  get network(): Network {
-    return this.store.network;
-  }
+function getDisplayName(validator: Node) {
+  if (validator.name) return validator.name;
 
-  get validators() {
-    return this.organization.validators.map((validator) =>
-      this.network.getNodeByPublicKey(validator)
-    );
-  }
+  return (
+    validator.publicKey.substring(0, 7) +
+    "..." +
+    validator.publicKey.substring(50, 100)
+  );
+}
 
-  getDisplayName(validator: Node) {
-    if (validator.name) return validator.name;
+function selectValidator(validator: Node) {
+  if (route.params.publicKey && route.params.publicKey === validator.publicKey)
+    return;
 
-    return (
-      validator.publicKey.substr(0, 7) +
-      "..." +
-      validator.publicKey.substr(50, 100)
-    );
-  }
-
-  public selectValidator(validator: Node) {
-    if (
-      this.$route.params.publicKey &&
-      this.$route.params.publicKey === validator.publicKey
-    )
-      return;
-
-    this.$router.push({
-      name: "node-dashboard",
-      params: { publicKey: validator.publicKey },
-      query: {
-        center: "1",
-        "no-scroll": "1",
-        view: this.$route.query.view,
-        network: this.$route.query.network,
-        at: this.$route.query.at,
-      },
-    });
-  }
+  router.push({
+    name: "node-dashboard",
+    params: { publicKey: validator.publicKey },
+    query: {
+      center: "1",
+      "no-scroll": "1",
+      view: route.query.view,
+      network: route.query.network,
+      at: route.query.at,
+    },
+  });
 }
 </script>
-
-<style scoped></style>
