@@ -142,16 +142,14 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
 import Vue from "vue";
-import { Network, Organization } from "@stellarbeat/js-stellar-domain";
-import { Component, Prop } from "vue-property-decorator";
+import { Organization } from "@stellarbeat/js-stellar-domain";
 import Github from "@/components/organization/logo/github.vue";
 import Twitter from "@/components/organization/logo/twitter.vue";
 import {
   BAlert,
   BBadge,
-  BIconExclamationCircle,
   BIconLink,
   BIconMap,
   BIconShield,
@@ -162,42 +160,13 @@ import {
 import Stellar from "@/components/organization/logo/stellar.vue";
 import useStore from "@/store/useStore";
 
-@Component({
-  components: {
-    Stellar,
-    Twitter,
-    Github,
-    BAlert: BAlert,
-    BIconExclamationTriangle: BIconExclamationCircle,
-    BBadge: BBadge,
-    BIconLink: BIconLink,
-    BIconShield: BIconShield,
-    BIconMap: BIconMap,
-    BIconEnvelope,
-    BIconPhone,
-  },
-  directives: { "b-tooltip": VBTooltip },
-})
-export default class OrganizationProfile extends Vue {
-  @Prop()
-  organization!: Organization;
+Vue.directive("b-tooltip", VBTooltip);
 
-  get network(): Network {
-    return this.store.network;
-  }
+defineProps<{
+  organization: Organization;
+}>();
 
-  get store() {
-    return useStore();
-  }
-
-  get notAllArchivesUpToDate() {
-    return this.organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator))
-      .some((validator) => {
-        return validator.historyUrl !== null && !validator.isFullValidator;
-      });
-  }
-}
+const store = useStore();
 </script>
 
 <style scoped>
