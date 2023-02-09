@@ -63,7 +63,7 @@ import {
   BListGroup,
   BListGroupItem,
 } from "bootstrap-vue";
-import { OrganizationSnapShot } from "@stellarbeat/js-stellar-domain";
+import { OrganizationSnapShot } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
 import { onMounted, Ref, ref } from "vue";

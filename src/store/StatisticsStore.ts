@@ -3,7 +3,7 @@ import Store from "@/store/Store";
 import {
   isArray,
   isObject,
-} from "@stellarbeat/js-stellar-domain/lib/typeguards";
+} from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 
 export interface StatisticsAggregation extends Statistics {
   crawlCount: number;

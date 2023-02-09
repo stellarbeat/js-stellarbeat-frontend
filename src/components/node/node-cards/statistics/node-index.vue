@@ -18,7 +18,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import Gauge from "@/components/charts/gauge.vue";
 
 defineProps<{

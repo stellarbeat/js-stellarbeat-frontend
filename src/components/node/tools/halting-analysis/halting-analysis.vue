@@ -112,7 +112,11 @@ import {
   NetworkGraphNode,
   QuorumSet as NetworkQuorumSet,
 } from "@stellar/halting-analysis/src";
-import { PublicKey, QuorumSet, Vertex } from "@stellarbeat/js-stellar-domain";
+import {
+  PublicKey,
+  QuorumSet,
+  Vertex,
+} from "@stellarbeat/js-stellarbeat-shared";
 import {
   BAlert,
   BButton,

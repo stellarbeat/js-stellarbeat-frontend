@@ -1,4 +1,4 @@
-import { Edge, Network, TrustGraph } from "@stellarbeat/js-stellar-domain";
+import { Edge, Network, TrustGraph } from "@stellarbeat/js-stellarbeat-shared";
 
 export default class ViewEdge {
   key: string;

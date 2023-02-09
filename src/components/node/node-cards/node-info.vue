@@ -79,7 +79,7 @@
 </template>
 <script setup lang="ts">
 import Vue from "vue";
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import { BBadge, BButton, BIconClipboard, VBTooltip } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
 import useClipboard from "vue-clipboard3";

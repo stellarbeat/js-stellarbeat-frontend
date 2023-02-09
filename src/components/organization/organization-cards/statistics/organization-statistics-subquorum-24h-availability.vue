@@ -29,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import Vue from "vue";
-import { Organization } from "@stellarbeat/js-stellar-domain";
+import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import Gauge from "@/components/charts/gauge.vue";
 import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
 

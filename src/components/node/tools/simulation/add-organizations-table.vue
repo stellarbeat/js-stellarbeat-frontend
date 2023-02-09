@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import Vue, { onMounted, ref } from "vue";
 
-import { Node, Organization } from "@stellarbeat/js-stellar-domain";
+import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
 import {
   BFormInput,
   BIconShield,

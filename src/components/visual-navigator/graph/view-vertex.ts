@@ -1,4 +1,8 @@
-import { Network, TrustGraph, Vertex } from "@stellarbeat/js-stellar-domain";
+import {
+  Network,
+  TrustGraph,
+  Vertex,
+} from "@stellarbeat/js-stellarbeat-shared";
 
 export default class ViewVertex {
   key: string;

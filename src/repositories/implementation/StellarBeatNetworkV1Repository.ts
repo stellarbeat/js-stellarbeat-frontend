@@ -1,4 +1,4 @@
-import { Network } from "@stellarbeat/js-stellar-domain";
+import { Network } from "@stellarbeat/js-stellarbeat-shared";
 import axios from "axios";
 import { err, ok, Result } from "neverthrow";
 import { NetworkRepository } from "@/repositories/NetworkRepository";

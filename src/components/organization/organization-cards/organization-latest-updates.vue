@@ -109,7 +109,7 @@ import {
   Organization,
   OrganizationSnapShot,
   PublicKey,
-} from "@stellarbeat/js-stellar-domain";
+} from "@stellarbeat/js-stellarbeat-shared";
 import { Delta, formatters, create } from "jsondiffpatch";
 import "jsondiffpatch/dist/formatters-styles/html.css";
 

@@ -1,4 +1,4 @@
-import { QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import { NetworkChange } from "@/services/change-queue/network-change-queue";
 
 export class InnerQuorumSetAdd implements NetworkChange {

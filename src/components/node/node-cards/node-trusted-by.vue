@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts">
 import { computed } from "vue";
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import NodesTable from "@/components/node/nodes-table.vue";
 import { BBadge } from "bootstrap-vue";
 import useStore from "@/store/useStore";

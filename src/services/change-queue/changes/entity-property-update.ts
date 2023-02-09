@@ -1,5 +1,9 @@
 import { NetworkChange } from "@/services/change-queue/network-change-queue";
-import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import {
+  Node,
+  Organization,
+  QuorumSet,
+} from "@stellarbeat/js-stellarbeat-shared";
 
 type Entity = Node | Organization | QuorumSet;
 

@@ -180,7 +180,7 @@
 
 <script setup lang="ts">
 import Vue, { computed, ref, toRefs } from "vue";
-import { Organization } from "@stellarbeat/js-stellar-domain";
+import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 
 import {
   BIconInfoCircle,

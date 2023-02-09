@@ -87,7 +87,7 @@ import {
   VBModal,
 } from "bootstrap-vue";
 
-import { Organization } from "@stellarbeat/js-stellar-domain";
+import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
 import Vue, { computed, ref, Ref, toRefs } from "vue";
 import useStore from "@/store/useStore";

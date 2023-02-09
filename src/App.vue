@@ -87,7 +87,7 @@ import Navbar from "@/components/layout/Navbar.vue";
 import Github from "@/components/organization/logo/github.vue";
 import CustomNetwork from "@/components/network/tools/modify-network.vue";
 import { BAlert, BIconEnvelope } from "bootstrap-vue";
-import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
 import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router/composables";

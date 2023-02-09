@@ -86,7 +86,7 @@ import {
   BBadge,
 } from "bootstrap-vue";
 import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
-import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
+import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import Vue, { computed, Ref, ref, toRefs, withDefaults } from "vue";
 import useStore from "@/store/useStore";
 

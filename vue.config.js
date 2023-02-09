@@ -22,7 +22,7 @@ module.exports = {
           {
             from: "*.json",
             to: "schemas/",
-            context: "node_modules/@stellarbeat/js-stellar-domain/schemas/",
+            context: "node_modules/@stellarbeat/js-stellarbeat-shared/schemas/",
           },
         ],
       })

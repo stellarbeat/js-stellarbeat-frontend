@@ -143,7 +143,7 @@
 </template>
 <script setup lang="ts">
 import Vue, { Ref, ref, toRefs, watch } from "vue";
-import { Node, PublicKey, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { Node, PublicKey, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import { Delta, formatters, create } from "jsondiffpatch";
 import "jsondiffpatch/dist/formatters-styles/html.css";
 
@@ -159,7 +159,7 @@ import {
   BIconClock,
   BButtonToolbar,
 } from "bootstrap-vue";
-import { isArray } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { isArray } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 

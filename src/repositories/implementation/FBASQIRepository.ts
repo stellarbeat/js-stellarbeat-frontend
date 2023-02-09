@@ -1,5 +1,9 @@
 import { NetworkRepository } from "@/repositories/NetworkRepository";
-import { Network, Node, Organization } from "@stellarbeat/js-stellar-domain";
+import {
+  Network,
+  Node,
+  Organization,
+} from "@stellarbeat/js-stellarbeat-shared";
 import { ok, Result } from "neverthrow";
 
 export class FBASQIRepository implements NetworkRepository {

@@ -1,4 +1,4 @@
-import { Network, TrustGraph } from "@stellarbeat/js-stellar-domain";
+import { Network, TrustGraph } from "@stellarbeat/js-stellarbeat-shared";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 

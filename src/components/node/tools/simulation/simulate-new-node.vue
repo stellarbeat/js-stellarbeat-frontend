@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 
 import { BFormInput, BModal } from "bootstrap-vue";
 import useStore from "@/store/useStore";

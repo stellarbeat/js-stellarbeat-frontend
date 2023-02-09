@@ -8,7 +8,7 @@ import {
   PublicKey,
   QuorumSet,
   QuorumSetService,
-} from "@stellarbeat/js-stellar-domain";
+} from "@stellarbeat/js-stellarbeat-shared";
 import {
   NetworkChange,
   NetworkChangeQueue,
@@ -24,12 +24,12 @@ import StatisticsStore from "@/store/StatisticsStore";
 import NodeStatisticsStore from "@/store/NodeStatisticsStore";
 import OrganizationStatisticsStore from "@/store/OrganizationStatisticsStore";
 import NetworkStatisticsStore from "@/store/NetworkStatisticsStore";
-import { NodeSnapShot } from "@stellarbeat/js-stellar-domain/lib/node-snap-shot";
+import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-shot";
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
-import { isString } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
 import Config, { NetworkContext, NetworkId } from "@/config/Config";
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
@@ -78,15 +78,18 @@ export default class Store {
 
   private defaultNetworkId = "public";
 
-  //todo: change of network context = new store? What about time travel? Time travel should be domain concept?
   //todo: networkContext should be injected?
   constructor() {
     //todo: inject
     const appConfig = new Config();
     this.networkContexts = appConfig.networkContexts;
-    this.networkContext = this.networkContexts.get(this.defaultNetworkId)!;
+    const networkContext = this.networkContexts.get(this.defaultNetworkId);
+    if (!networkContext) throw new Error("No default network context found");
+    this.networkContext = networkContext;
+    if (!this.networkContext.apiBaseUrl)
+      throw new Error("No api base url found");
     this.historyArchiveScanRepository = new RESTHistoryArchiveScanRepository(
-      this.networkContext.apiBaseUrl!
+      this.networkContext.apiBaseUrl
     );
     this.appConfig = appConfig;
   }
@@ -132,12 +135,6 @@ export default class Store {
     const newNetworkContext = this.getNetworkContextFromNetworkId(networkId);
     if (newNetworkContext) {
       this.networkContext = newNetworkContext;
-      return await this.fetchNetwork(at);
-    }
-  }
-
-  async timeTravel(at: Date | undefined) {
-    if (this.timeTravelDate?.getTime() !== at?.getTime()) {
       return await this.fetchNetwork(at);
     }
   }
@@ -272,7 +269,6 @@ export default class Store {
 
     if (networkResult.isOk()) {
       this.setNetwork(networkResult.value);
-      this.isLocalNetwork;
       this.isLoading = false;
       return;
     }

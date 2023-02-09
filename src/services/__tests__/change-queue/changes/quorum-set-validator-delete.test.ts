@@ -1,4 +1,4 @@
-import { QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import { QuorumSetValidatorDelete } from "@/services/change-queue/changes/quorum-set-validator-delete";
 
 describe("quorum set delete validator", () => {

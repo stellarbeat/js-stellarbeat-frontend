@@ -1,6 +1,10 @@
 import { NetworkRepository } from "@/repositories/NetworkRepository";
 import { ok, Result } from "neverthrow";
-import { Network, Node, Organization } from "@stellarbeat/js-stellar-domain";
+import {
+  Network,
+  Node,
+  Organization,
+} from "@stellarbeat/js-stellarbeat-shared";
 
 export class FBASRepository implements NetworkRepository {
   find(): Promise<Result<Network, Error>> {

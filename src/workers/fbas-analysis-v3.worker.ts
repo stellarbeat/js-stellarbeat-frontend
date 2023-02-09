@@ -7,7 +7,11 @@ import init, {
   analyze_symmetric_top_tier,
   MergeBy,
 } from "@stellarbeat/stellar_analysis_web";
-import { Node, Organization, PublicKey } from "@stellarbeat/js-stellar-domain";
+import {
+  Node,
+  Organization,
+  PublicKey,
+} from "@stellarbeat/js-stellarbeat-shared";
 
 //@ts-ignore
 const ctx: Worker = self;

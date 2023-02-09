@@ -31,7 +31,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Organization } from "@stellarbeat/js-stellar-domain";
+import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import OrganizationsTable from "@/components/organization/organizations-table.vue";
 import useStore from "@/store/useStore";

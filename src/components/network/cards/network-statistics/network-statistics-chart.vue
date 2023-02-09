@@ -18,7 +18,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-moment";
-import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
+import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import { defineEmits, onBeforeUnmount, onMounted, ref } from "vue";
 
 const chart = ref<Chart>();

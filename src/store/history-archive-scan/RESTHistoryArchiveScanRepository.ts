@@ -1,5 +1,5 @@
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
-import { HistoryArchiveScan } from "@stellarbeat/js-stellar-domain";
+import { HistoryArchiveScan } from "@stellarbeat/js-stellarbeat-shared";
 import axios from "axios";
 
 export class RESTHistoryArchiveScanRepository

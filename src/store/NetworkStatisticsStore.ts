@@ -1,6 +1,6 @@
 import StatisticsStore from "@/store/StatisticsStore";
-import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
-import NetworkStatistics from "@stellarbeat/js-stellar-domain/lib/network-statistics";
+import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
+import NetworkStatistics from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics";
 
 export default class NetworkStatisticsStore {
   protected statisticsStore: StatisticsStore;

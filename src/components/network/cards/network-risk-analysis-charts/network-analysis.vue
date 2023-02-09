@@ -144,10 +144,10 @@ import {
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
 import moment from "moment";
-import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
+import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import AggregationLineChart from "@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
-import NetworkStatistics from "@stellarbeat/js-stellar-domain/lib/network-statistics";
+import NetworkStatistics from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics";
 import Vue, { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
 import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";

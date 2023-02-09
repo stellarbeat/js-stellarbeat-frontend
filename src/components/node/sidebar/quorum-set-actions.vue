@@ -131,7 +131,11 @@
 <script setup lang="ts">
 import Vue, { computed, ref, toRefs } from "vue";
 
-import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import {
+  Node,
+  Organization,
+  QuorumSet,
+} from "@stellarbeat/js-stellarbeat-shared";
 import AddValidatorsTable from "@/components/node/tools/simulation/add-validators-table.vue";
 import {
   BButton,
@@ -150,7 +154,7 @@ import {
   BModal,
   VBModal,
 } from "bootstrap-vue";
-import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
+import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellarbeat-shared/lib/stellar-core-configuration-generator";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
 import useStore from "@/store/useStore";
 

@@ -33,7 +33,7 @@
 </template>
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import { BBadge } from "bootstrap-vue";
 import NodesTable from "@/components/node/nodes-table.vue";
 import useStore from "@/store/useStore";

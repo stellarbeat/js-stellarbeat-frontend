@@ -1,6 +1,6 @@
 import { NetworkChangeQueue } from "../../change-queue/network-change-queue";
 import { EntityPropertyUpdate } from "../../change-queue/changes/entity-property-update";
-import { Node, Network } from "@stellarbeat/js-stellar-domain";
+import { Node, Network } from "@stellarbeat/js-stellarbeat-shared";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 
 jest.mock("./../../change-queue/changes/entity-property-update");

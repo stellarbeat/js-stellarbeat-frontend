@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { Node, Organization } from "@stellarbeat/js-stellar-domain";
+import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";

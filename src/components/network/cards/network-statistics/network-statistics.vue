@@ -288,7 +288,7 @@
 
 <script setup lang="ts">
 import moment from "moment";
-import NetworkStatisticsAggregation from "@stellarbeat/js-stellar-domain/lib/network-statistics-aggregation";
+import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import NetworkStatisticsCard from "@/components/network/cards/network-statistics/network-statistics-card.vue";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";

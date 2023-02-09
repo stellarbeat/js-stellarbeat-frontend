@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import NavLink from "@/components/side-bar/nav-link.vue";
 import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";

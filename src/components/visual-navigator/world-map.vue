@@ -50,7 +50,7 @@ import {
   ref,
   watch,
 } from "vue";
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
 /* eslint-disable */
 //ssr voodoo because leaflet uses window global only available in browser

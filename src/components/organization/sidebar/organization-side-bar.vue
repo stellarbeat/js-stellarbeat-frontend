@@ -101,7 +101,7 @@
 
 <script setup lang="ts">
 import Vue, { computed } from "vue";
-import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellar-domain/lib/stellar-core-configuration-generator";
+import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellarbeat-shared/lib/stellar-core-configuration-generator";
 import OrganizationValidatorsDropdown from "@/components/organization/sidebar/organization-validators-dropdown.vue";
 import NavLink from "@/components/side-bar/nav-link.vue";
 import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-node.vue";

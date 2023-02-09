@@ -107,13 +107,17 @@ import {
   BListGroupItem,
   BModal,
 } from "bootstrap-vue";
-import { Node, Organization, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import {
+  Node,
+  Organization,
+  QuorumSet,
+} from "@stellarbeat/js-stellarbeat-shared";
 import { ModifyNetwork as ModifyNetworkChange } from "@/services/change-queue/changes/modify-network";
 import useStore from "@/store/useStore";
-import { defineExpose, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const validateSchema = require("@stellarbeat/js-stellar-domain/lib/network-schema");
+const validateSchema = require("@stellarbeat/js-stellarbeat-shared/lib/network-schema");
 
 type BasicQuorumSet = {
   validators: string[];

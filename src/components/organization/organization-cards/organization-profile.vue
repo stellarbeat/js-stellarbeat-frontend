@@ -144,7 +144,7 @@
 </template>
 <script setup lang="ts">
 import Vue from "vue";
-import { Organization } from "@stellarbeat/js-stellar-domain";
+import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import Github from "@/components/organization/logo/github.vue";
 import Twitter from "@/components/organization/logo/twitter.vue";
 import {

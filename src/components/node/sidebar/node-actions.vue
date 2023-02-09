@@ -59,7 +59,7 @@ import {
   BDropdownItemButton,
 } from "bootstrap-vue";
 
-import { Node, QuorumSet } from "@stellarbeat/js-stellar-domain";
+import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";
 import useClipboard from "vue-clipboard3";
 import { toRefs } from "vue";

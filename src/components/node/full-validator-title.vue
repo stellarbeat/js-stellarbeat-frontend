@@ -17,7 +17,7 @@ import { useTruncate } from "@/composables/useTruncate";
 
 const truncate = useTruncate();
 import Vue from "vue";
-import { Node } from "@stellarbeat/js-stellar-domain";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 Vue.directive("b-tooltip", VBTooltip);
 
 defineProps<{

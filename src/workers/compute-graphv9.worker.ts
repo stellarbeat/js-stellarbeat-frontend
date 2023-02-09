@@ -9,7 +9,7 @@ import {
 } from "d3-force";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
-import { isObject } from "@stellarbeat/js-stellar-domain/lib/typeguards";
+import { isObject } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 
 //@ts-ignore
 const ctx: Worker = self;

@@ -1526,17 +1526,13 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellar-domain@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellar-domain/-/js-stellar-domain-4.1.2.tgz#945822d9d425c6921407c4ef45bc8a23ca376bc0"
-  integrity sha512-RqKBYWjYcyfR3g/7wVTuTS8vEZsK9drtPMt2mTJ9Vde3Av60cyocgTs5WHXSDgsolq/tc0UtqLgbiFrK32dkmw==
+"@stellarbeat/js-stellarbeat-shared@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-5.1.0.tgz#49b24931f30004466accffcc684e4caaa59d6fd7"
+  integrity sha512-MJErKiXT6GpwGWF4dJTtDJVUyVF+YYY8ATpIC/IDo5NIbW1ZlSnmRytu5EryCR9cFPHC9thDZUEEb7MIgHruSw==
   dependencies:
     "@iarna/toml" "^2.2.5"
-    latest-semver "^3.0.0"
     neverthrow "^4.3.1"
-    semver "^7.3.8"
-    semver-compare "^1.0.0"
-    to-semver "^3.0.0"
 
 "@stellarbeat/stellar_analysis_web@^0.6.2":
   version "0.6.2"
@@ -3159,13 +3155,6 @@ clean-css@^5.2.2:
   integrity sha512-lCr8OHhiWCTw4v8POJovCoh4T7I9U11yVsPjMWWnnMmp9ZowCxyad1Pathle/9HjaDp+fdQKjO9fQydE6RHTZg==
   dependencies:
     source-map "~0.6.0"
-
-clean-semver@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/clean-semver/-/clean-semver-2.1.0.tgz#05ee0f85a5f6d2a83b058ea2d23722becff63996"
-  integrity sha512-a5sIRLwP078fc3/AEDfSxD8GmMBJlxYCUnRfXjldyy9RjwXxNVuK9hLwDar4sceJhZp6G+66ukNZsVFIqN28jg==
-  dependencies:
-    semver "^7.3.2"
 
 clean-stack@^2.0.0:
   version "2.2.0"
@@ -5930,13 +5919,6 @@ klona@^2.0.4, klona@^2.0.5:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
 
-latest-semver@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/latest-semver/-/latest-semver-3.0.0.tgz#d3ba7fdfb618183389849b30226d50fe084a8440"
-  integrity sha512-e7oJ4X2ZRmLOHXiysxfaONdo837vFRW5XRam5XdhRaqkyONNTDEej8DQts5XoIl72cGlbKukrj39DhkpT5KRQA==
-  dependencies:
-    to-semver "^3.0.0"
-
 launch-editor-middleware@^2.2.1:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/launch-editor-middleware/-/launch-editor-middleware-2.6.0.tgz#2ba4fe4b695d7fe3d44dee86b6d46d57b8332dfd"
@@ -7582,11 +7564,6 @@ selfsigned@^2.1.1:
   dependencies:
     node-forge "^1"
 
-semver-compare@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/semver-compare/-/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
-  integrity sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==
-
 "semver@2 || 3 || 4 || 5", semver@^5.5.0, semver@^5.6.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
@@ -8191,14 +8168,6 @@ to-regex-range@^5.0.1:
   integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
   dependencies:
     is-number "^7.0.0"
-
-to-semver@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/to-semver/-/to-semver-3.0.0.tgz#432c637dd031d526fcacf7afa348193f4da07d78"
-  integrity sha512-/e3TUJVC6EvKYBzwcZh7I6OlJD0hAbpHZcISS8RbVwWm5aPEo8HDK9IkgOtnJO0AOGK8GTDrAQEUgZjFHbuk2w==
-  dependencies:
-    clean-semver "^2.1.0"
-    semver "^7.3.2"
 
 toidentifier@1.0.1:
   version "1.0.1"
