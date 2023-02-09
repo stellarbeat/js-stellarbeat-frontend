@@ -13,7 +13,7 @@ export class RESTHistoryArchiveScanRepository
         this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url)
       );
 
-      if (result.data) {
+      if (result.status === 200 && result.data) {
         return HistoryArchiveScan.fromJSON(result.data);
       }
 
