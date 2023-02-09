@@ -23,14 +23,7 @@ import {
 } from "chart.js";
 import "chartjs-adapter-moment";
 
-import {
-  defineEmits,
-  defineExpose,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  withDefaults,
-} from "vue";
+import { onBeforeUnmount, onMounted, ref, withDefaults } from "vue";
 
 const chart = ref<Chart>();
 

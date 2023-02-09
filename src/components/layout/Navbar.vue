@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
-      <div class="header py-3 my-header">
+      <div class="header py-2 my-header">
         <div class="container-fluid" style="max-width: 1360px">
           <div class="d-flex justify-content-between w-100">
             <div class="d-flex">

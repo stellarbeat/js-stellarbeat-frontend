@@ -135,15 +135,7 @@ import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 import { isObject } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
-import {
-  computed,
-  defineEmits,
-  onMounted,
-  PropType,
-  ref,
-  toRefs,
-  watch,
-} from "vue";
+import { computed, onMounted, PropType, ref, toRefs, watch } from "vue";
 import { useTruncate } from "@/composables/useTruncate";
 
 const props = defineProps({

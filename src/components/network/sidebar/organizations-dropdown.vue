@@ -42,7 +42,7 @@ import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import NavLink from "@/components/side-bar/nav-link.vue";
 import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
-import { computed, defineEmits } from "vue";
+import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
 import useStore from "@/store/useStore";
 import { useDropdown } from "@/composables/useDropdown";
