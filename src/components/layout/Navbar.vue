@@ -53,7 +53,7 @@
                   </div>
                   <a
                     href="https://github.com/stellarbeat"
-                    class="btn btn-sm bt btn-primary"
+                    class="btn btn-sm btn-secondary gray"
                     target="_blank"
                     rel="noopener"
                   >
@@ -62,7 +62,7 @@
                   >
                   <a
                     href="mailto:info@stellarbeat.io"
-                    class="btn btn-sm bt btn-primary ml-2"
+                    class="btn btn-sm btn-secondary ml-2 gray"
                     target="_blank"
                   >
                     <b-icon-envelope />
@@ -344,11 +344,11 @@ const homeActiveClass = computed(() => {
 @import "src/assets/custom";
 .brand-title {
   color: $primary;
-  font-weight: 500;
-  filter: brightness(1.2);
+  font-weight: 600;
+  filter: brightness(1.3);
 }
 .brand-tagline {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .collapser {

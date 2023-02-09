@@ -5,7 +5,7 @@ import { FBASRepository } from "@/repositories/implementation/FBASRepository";
 import { FBASQIRepository } from "@/repositories/implementation/FBASQIRepository";
 
 export interface NetworkContext {
-  networkId: NetworkId; //todo: id
+  networkId: NetworkId;
   name: string;
   repository: NetworkRepository;
   enableNotify: boolean;
@@ -34,8 +34,7 @@ export default class Config {
   constructor() {
     this.blogUrl = process.env["VUE_APP_BLOG_URL"];
     this.apiDocUrl = process.env["VUE_APP_API_DOC_URL"];
-    if (!isString(process.env["VUE_APP_PUBLIC_API_URL"]))
-      throw new Error("VUE_APP_PUBLIC_API_URL not set");
+
     if (isString(process.env["VUE_APP_BRAND_NAME"]))
       this.brandName = process.env["VUE_APP_BRAND_NAME"];
     if (isString(process.env["VUE_APP_BRAND_TAGLINE"]))
@@ -46,6 +45,9 @@ export default class Config {
       this.brandImgAlt = process.env["VUE_APP_BRAND_IMG_ALT"];
     if (process.env["VUE_APP_ENABLE_BRAND_IMG"])
       this.enableBrandImg = process.env["VUE_APP_ENABLE_BRAND_IMG"] === "1";
+
+    if (!isString(process.env["VUE_APP_PUBLIC_API_URL"]))
+      throw new Error("VUE_APP_PUBLIC_API_URL not set");
 
     //todo: can be made more generic by defining available networks in config. This will do for now.
     this.networkContexts.set("public", {
@@ -72,7 +74,10 @@ export default class Config {
         : true,
     });
 
-    if (isString(process.env["VUE_APP_TEST_API_URL"]))
+    if (isString(process.env["VUE_APP_TEST_API_URL"])) {
+      if (!isString(process.env["VUE_APP_TEST_API_URL"]))
+        throw new Error("VUE_APP_TEST_API_URL not set");
+
       this.networkContexts.set("test", {
         networkId: "test",
         name: "Testnet",
@@ -96,6 +101,7 @@ export default class Config {
           ? process.env["VUE_APP_TEST_ENABLE_CONFIG_EXPORT"] === "1"
           : true,
       });
+    }
 
     if (process.env["VUE_APP_ENABLE_DEMO_NETWORKS"] === "1") {
       this.networkContexts.set("fbas", {

@@ -59,7 +59,7 @@
           <div class="nav-item d-none d-lg-flex pr-0">
             <a
               href="https://github.com/stellarbeat"
-              class="btn btn-sm bt btn-primary"
+              class="btn btn-sm bt btn-secondary gray"
               target="_blank"
               rel="noopener"
             >
@@ -69,7 +69,7 @@
             <a
               href="mailto:info@stellarbeat.io"
               rel="noopener"
-              class="btn btn-sm bt btn-primary ml-2"
+              class="btn btn-sm bt btn-secondary gray ml-2"
               target="_blank"
             >
               <b-icon-envelope />

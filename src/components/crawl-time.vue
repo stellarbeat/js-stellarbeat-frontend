@@ -3,7 +3,7 @@
     <b-form-datepicker
       size="sm"
       v-model="time"
-      class="date-picker p-0"
+      class="date-picker p-0 gray"
       :date-format-options="{
         year: 'numeric',
         month: 'short',
@@ -24,14 +24,16 @@
     >
       <template v-slot:button-content></template>
     </b-form-timepicker>
-    <button
+    <b-button
+      size="sm"
+      @click="timeTravel"
+      variant="secondary"
+      class="time-travel-btn"
       v-b-tooltip.hover
       title="Travel to selected time"
-      class="btn btn-sm btn-primary time-travel-btn"
-      @click="timeTravel"
     >
       <b-icon-clock />
-    </button>
+    </b-button>
   </div>
 </template>
 
@@ -44,6 +46,7 @@ import {
   BFormTimepicker,
   BFormDatepicker,
   VBTooltip,
+  BButton,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
@@ -88,13 +91,15 @@ function timeTravel() {
 }
 
 .time-travel-btn {
+  color: #1997c6;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
 .time-picker {
-  width: 100px;
+  width: 120px;
   border-radius: 0;
+  border-right: none;
 }
 </style>
 <style></style>
