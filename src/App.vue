@@ -56,7 +56,7 @@
           >
             Terms and Conditions
           </router-link>
-          <div class="nav-item d-none d-lg-flex pr-0">
+          <div class="nav-item d-lg-flex pr-0">
             <a
               href="https://github.com/stellarbeat"
               class="btn btn-sm bt btn-secondary gray"
