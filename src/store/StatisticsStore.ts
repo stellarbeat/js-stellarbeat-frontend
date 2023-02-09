@@ -1,3 +1,5 @@
+// noinspection ES6MissingAwait
+
 import axios, { AxiosResponse } from "axios";
 import Store from "@/store/Store";
 import {

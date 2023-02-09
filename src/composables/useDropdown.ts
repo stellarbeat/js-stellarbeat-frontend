@@ -2,7 +2,7 @@ import { onMounted, ref } from "vue";
 
 export function useDropdown(
   expand: boolean,
-  emit: (event: "toggleExpand", ...args: any[]) => void
+  emit: (event: "toggleExpand", ...args: unknown[]) => void
 ) {
   const currentPage = ref(1);
   const perPage = ref(10);

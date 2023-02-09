@@ -25,7 +25,6 @@ export default class ViewGraph {
     this.stronglyConnectedEdges = [];
   }
 
-  //todo: network is only needed to set failing status, but is a too heavy dependency
   static fromNodes(
     network: Network,
     trustGraph: TrustGraph,
@@ -55,22 +54,10 @@ export default class ViewGraph {
       viewGraph.classifyVertex(viewVertex, selectedKeys);
     });
 
-    trustGraph.stronglyConnectedComponents
-      .filter((scc) => scc.size > 1)
-      .forEach((scc, i) => {
-        viewGraph.stronglyConnectedComponents[i] = Array.from(scc)
-          .filter(
-            (vertexKey) => !trustGraph.networkTransitiveQuorumSet.has(vertexKey)
-          )
-          .map(
-            (vertexKey) => viewGraph.viewVertices.get(vertexKey) as ViewVertex
-          );
-      });
-
+    this.mapStronglyConnectedComponents(trustGraph, viewGraph);
     return viewGraph;
   }
 
-  //todo: network is only needed to set failing status, but is a too heavy dependency
   static fromOrganizations(
     network: Network,
     trustGraph: TrustGraph,
@@ -78,9 +65,6 @@ export default class ViewGraph {
     selectedKeys: string[] = []
   ) {
     const viewGraph = new ViewGraph();
-
-    //let trustGraphBuilder = new TrustGraphBuilder(trustGraph);
-    //let organizationTrustGraph = trustGraphBuilder.buildGraphFromOrganizations(trustGraph.nodesTrustGraph);
 
     Array.from(trustGraph.edges).forEach((edge) => {
       const viewEdge = ViewEdge.fromOrganizationEdge(edge, trustGraph, network);
@@ -104,6 +88,15 @@ export default class ViewGraph {
       viewGraph.classifyVertex(viewVertex, selectedKeys);
     });
 
+    this.mapStronglyConnectedComponents(trustGraph, viewGraph);
+
+    return viewGraph;
+  }
+
+  private static mapStronglyConnectedComponents(
+    trustGraph: TrustGraph,
+    viewGraph: ViewGraph
+  ) {
     trustGraph.stronglyConnectedComponents
       .filter((scc) => scc.size > 1)
       .forEach((scc, i) => {
@@ -115,8 +108,6 @@ export default class ViewGraph {
             (vertexKey) => viewGraph.viewVertices.get(vertexKey) as ViewVertex
           );
       });
-
-    return viewGraph;
   }
 
   get transitiveQuorumSetCoordinates() {

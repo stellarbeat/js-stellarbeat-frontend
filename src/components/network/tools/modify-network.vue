@@ -67,7 +67,7 @@
           >Clear</b-button
         >
         <b-button @click="initModifiedNetworkString">Reset</b-button>
-        <b-button v-clipboard="modifiedNetworkString">Copy JSON</b-button>
+        <b-button @click="copyJson">Copy JSON</b-button>
       </b-button-group>
     </template>
     <template #modal-footer="{ ok, cancel }">
@@ -115,6 +115,7 @@ import {
 import { ModifyNetwork as ModifyNetworkChange } from "@/services/change-queue/changes/modify-network";
 import useStore from "@/store/useStore";
 import { Ref, ref } from "vue";
+import useClipboard from "vue-clipboard3";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const validateSchema = require("@stellarbeat/js-stellarbeat-shared/lib/network-schema");
@@ -129,7 +130,7 @@ type BasicOrganization = {
   id: string;
   name: string;
   validators: string[];
-  subQuorumAvailable: boolean;
+  subQuorumAvailable?: boolean;
 };
 
 type BasicNode = {
@@ -141,11 +142,12 @@ type BasicNode = {
     countryName: string;
   };
   isp: string;
-  isValidating: boolean;
-  active: boolean;
+  isValidating?: boolean;
+  active?: boolean;
 };
 
 const store = useStore();
+const { toClipboard } = useClipboard();
 
 const modalVisible = ref(false);
 const modifiedNetworkString = ref("");
@@ -271,6 +273,10 @@ const initModifiedNetworkString = () => {
   modifiedNetworkString.value = JSON.stringify(modifiedNetwork, null, 2);
   isValid.value = true;
 };
+
+function copyJson() {
+  toClipboard(modifiedNetworkString.value);
+}
 
 defineExpose({
   showModal,

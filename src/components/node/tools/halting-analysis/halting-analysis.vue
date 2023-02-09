@@ -272,7 +272,7 @@ onMounted(() => {
                   .map((publicKey) =>
                     network.getNodeByPublicKey(publicKey).name
                       ? network.getNodeByPublicKey(publicKey).displayName
-                      : publicKey.substr(0, 5)
+                      : publicKey.substring(0, 5)
                   )
                   .join(", "),
               };

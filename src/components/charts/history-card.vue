@@ -256,7 +256,7 @@ const twentyFourHourBarChartData = computed((): { x: Date; y: number }[] => {
       .startOf("hour")
       .toISOString();
     let twentyFourHourValue = twentyFourHourMap.get(hourBucketString);
-    if (twentyFourHourValue === undefined) twentyFourHourValue = [];
+    if (!twentyFourHourValue) twentyFourHourValue = [];
     twentyFourHourValue.push(measurement[measurementProperty.value]);
     twentyFourHourMap.set(hourBucketString, twentyFourHourValue);
   });
