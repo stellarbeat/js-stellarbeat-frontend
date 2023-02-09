@@ -1,51 +1,25 @@
-#Stellarbeat frontend 
+# Stellarbeat frontend 
+Frontend website for https://stellarbeat.io. 
 
-## Install
+Built with the https://vuejs.org/ framework. (Migration to vue3 is in progress, currently on 2.7) 
+
+Shared code with backend can be found at https://github.com/stellarbeat/js-stellarbeat-shared/
+
+Backend (API) code can be found at https://github.com/stellarbeat/js-stellarbeat-backend
+
+## Usage 
+### installation
 `yarn install`
 
-development: 
+Copy .env.dist to .env and fill in the values.
+
+### development mode
 `yarn run serve` 
 
-production:
+### production build
+production build:
 `yarn run build`
 
-## Quorum Monitor
-### Explore
-Explore and gain insight on the network through various visualisations & analysis.
-### simulate
-Adapt the network by updating quorumSets, adding/removing nodes, toggling nodes on/off and see the results live in the browser. 
-### export
-- quorum set configurations
-- network simulation results
-
-# Stellarbeat Architecture
-Nodejs modules that can be reused on frontend and backend. This should provide us with a manageable/reusable codebase and allow us to simulate/process live in the browser and push heavier computations to the backend. 
-## Modules
-### domain
-Domain classes like node, quorumset, network
-### connector
-General purpose library that connects the stellar-core and can issue commands
-### crawler
-Uses the connector to crawl the network
-### stellarbeat backend
-Initiates the crawler and augments the nodes with statistics (uptime,...) and other data like displayname, location,...
-Provides persistent storage. Provides api
-Exposes the nodes & analytic processes. e.g. 
-
-`GET /nodes/{publicKey}`
-
-`POST /compute/quorum-intersection`
-
-### stellarbeat frontend
-Frontend that contains various visualisations and tools like quorum monitor, node map, node version pie chart,...
-
-## Technology
-### nodejs
-https://nodejs.org/en/
-
-### vuejs
-https://vuejs.org/
-
-### d3js
-https://d3js.org/
+## Pre-rendering 
+Pre-rendering is handled by https://prerender.io/
 
