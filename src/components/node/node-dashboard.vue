@@ -240,7 +240,7 @@ async function fetchHistoryArchiveScan() {
 
 const historyArchiveErrorDescription = computed(() => {
   if (historyArchiveScan.value === null)
-    return "Verification error in history archive detected. ";
+    return "Verification error in history archive detected. Repair ";
 
   let message = `Archive verification error at <a href=${historyArchiveScan.value.errorUrl} target="_blank">${historyArchiveScan.value.errorUrl}</a>: ${historyArchiveScan.value.errorMessage}. `;
 
@@ -250,9 +250,13 @@ const historyArchiveErrorDescription = computed(() => {
   return message;
 });
 
-watch(selectedNode, () => {
-  if (selectedNode.value && selectedNode.value.historyUrl)
-    fetchHistoryArchiveScan();
-});
+watch(
+  selectedNode,
+  () => {
+    if (selectedNode.value && selectedNode.value.historyUrl)
+      fetchHistoryArchiveScan();
+  },
+  { immediate: true }
+);
 </script>
 <style scoped></style>
