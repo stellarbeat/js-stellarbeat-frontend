@@ -11,6 +11,7 @@ if (prerenderToken) {
 }
 
 app.use(history());
+app.set("x-powered-by", false);
 
 let cacheTime = 86400000 * 7; //7 day cache for assets
 app.use(function (req, res, next) {
