@@ -1,3 +1,4 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/stellarbeat/js-stellarbeat-backend/badge.svg)](https://snyk.io/test/github/stellarbeat/js-stellarbeat-frontend)
 # Stellarbeat frontend 
 Frontend website for https://stellarbeat.io. 
 
