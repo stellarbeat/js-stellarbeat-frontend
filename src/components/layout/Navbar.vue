@@ -336,10 +336,11 @@ const homeActiveClass = computed(() => {
 @import "src/assets/custom";
 .brand-title {
   color: #4a4a4a; // $primary;
-  font-weight: 700;
-  font-family: "Abel", sans-serif;
-  font-size: 27px;
-  margin-top: 0px;
+  font-weight: normal;
+  font-style: normal;
+  font-family: "Poppins", sans-serif;
+  font-size: 23px;
+  margin-top: 4px;
   margin-left: 3px;
   //filter: brightness(1.5);
 }
