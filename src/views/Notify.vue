@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="page-header mt-2">
+    <div class="page-header mt-2 py-3">
       <h1 class="page-title mr-2">Notify</h1>
     </div>
     <div class="card">
@@ -31,7 +31,7 @@
 <script lang="ts">
 export default {
   metaInfo: {
-    title: "Notify - Stellarbeat.io",
+    title: "Notify - Stellarbeat",
     meta: [
       {
         name: "description",

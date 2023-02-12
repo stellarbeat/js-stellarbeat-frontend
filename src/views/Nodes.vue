@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="page-header d-flex justify-content-between">
+      <div class="page-header d-flex justify-content-between py-3">
         <div class="d-flex align-items-center">
           <h1 class="page-title">Nodes</h1>
           <simulation-badge />
@@ -215,7 +215,7 @@ const getOrganization = (node: Node) => {
 <script lang="ts">
 export default {
   metaInfo: {
-    title: "Nodes overview - Stellarbeat.io",
+    title: "Nodes overview - Stellarbeat",
     meta: [
       {
         name: "description",

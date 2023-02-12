@@ -1,6 +1,3 @@
-//$blue:#1997c6;
-$graph-primary: #1687b2;
-
 @import "src/assets/tabler-ui/variables";
 @import "node_modules/bootstrap/scss/bootstrap.scss";
 @import "src/assets/tabler-ui/dashboard/dashboard";
@@ -18,5 +15,6 @@ $graph-primary: #1687b2;
   min-width: 0px !important;
 }
 a {
-  color: #1687b2;
+  color: $blue;
 }
+$graph-primary: $blue;

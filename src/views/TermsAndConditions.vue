@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div class="page-header mt-2">
+    <div class="page-header mt-2 py-3">
       <h1 class="page-title">Terms and Conditions</h1>
     </div>
     <div class="card">
       <div class="card-body">
         <h2><strong>Terms and Conditions</strong></h2>
 
-        <p>Welcome to stellarbeat.io!</p>
+        <p>Welcome to Stellarbeat.io!</p>
 
         <p>
           These terms and conditions outline the rules and regulations for the

@@ -3,7 +3,7 @@
     <b-form-datepicker
       size="sm"
       v-model="time"
-      class="date-picker p-0 gray"
+      class="date-picker p-0"
       :date-format-options="{
         year: 'numeric',
         month: 'short',
@@ -11,6 +11,7 @@
       }"
       :min="minSelectedDate"
       :max="new Date()"
+      no-highlight-today
     >
       <template v-slot:button-content>
         <b-icon-calendar class="text-gray" />
@@ -78,12 +79,14 @@ function timeTravel() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "src/assets/custom";
 .date-picker {
   width: auto;
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
   border-right: 0;
+  color: green !important;
 }
 
 .crawl-time-component {
@@ -102,4 +105,9 @@ function timeTravel() {
   border-right: none;
 }
 </style>
-<style></style>
+
+<style>
+.crawl-time-component .form-control {
+  color: #868e96ff;
+}
+</style>

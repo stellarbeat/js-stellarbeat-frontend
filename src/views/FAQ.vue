@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="page-header mt-2">
+    <div class="page-header mt-2 py-3">
       <h1 class="page-title">FAQ</h1>
     </div>
     <div class="card">
@@ -142,7 +142,7 @@ import Github from "@/components/organization/logo/github.vue";
 <script lang="ts">
 export default {
   metaInfo: {
-    title: "FAQ - Stellarbeat.io",
+    title: "FAQ - Stellarbeat",
     meta: [{ name: "Frequently asked questions", content: "Help faq" }],
   },
 };

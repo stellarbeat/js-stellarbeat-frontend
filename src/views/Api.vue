@@ -62,7 +62,7 @@
 export default {
   name: "api",
   metaInfo: {
-    title: "API - Stellarbeat.io",
+    title: "API - Stellarbeat",
     meta: [
       { name: "description", content: "Connect your app through our api" },
     ],

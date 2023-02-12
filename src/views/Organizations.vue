@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <div class="page-header d-flex justify-content-between">
+      <div class="page-header d-flex justify-content-between py-3">
         <div class="d-flex align-items-center">
           <h1 class="page-title">Organizations</h1>
           <simulation-badge />
@@ -115,7 +115,7 @@ const getValidators = (organization: Organization) => {
 <script lang="ts">
 export default {
   metaInfo: {
-    title: "Organizations - Stellarbeat.io",
+    title: "Organizations - Stellarbeat",
     meta: [
       {
         name: "description",

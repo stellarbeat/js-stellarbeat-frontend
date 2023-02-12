@@ -138,12 +138,12 @@ watch(
 <script lang="ts">
 export default {
   metaInfo: {
-    title: "Stellarbeat.io - Stellar network visibility",
+    title: "Stellarbeat - Stellar network explorer",
     meta: [
       {
         name: "description",
         content:
-          "Giving insight into the Stellar network through various tools & visualizations.",
+          "Insight into the Stellar network through various tools & visualizations.",
       },
     ],
   },

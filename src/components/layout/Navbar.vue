@@ -1,30 +1,22 @@
 <template>
   <div>
     <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
-      <div class="header py-2 my-header">
+      <div class="header py-4 my-header">
         <div class="container-fluid" style="max-width: 1360px">
           <div class="d-flex justify-content-between w-100">
             <div class="d-flex">
               <router-link
                 v-if="enableBrandImage"
-                class="header-brand mr-0 mt-2"
+                class="header-brand mr-0 mt-0"
                 :to="{ name: 'network-dashboard' }"
               >
                 <img
                   :src="brandImageSource"
-                  width="27.833"
-                  height="32"
-                  class="header-brand-img"
+                  class="header-brand-img mr-0"
                   :alt="brandImage.alt"
                 />
               </router-link>
-              <div class="d-none d-lg-flex" style="width: 264px"></div>
-            </div>
-            <div class="d-flex flex-column mr-0">
               <h2 class="brand-title mb-0">{{ brandName }}</h2>
-              <h6 class="text-muted brand-tagline mb-0">
-                {{ brandTagline }}
-              </h6>
             </div>
             <div class="d-none d-lg-flex">
               <div class="d-flex">
@@ -32,8 +24,8 @@
                   <b-nav-item-dropdown
                     v-if="store.networkContexts.size > 1 && !store.isLoading"
                     style="width: 137px"
-                    toggle-class="gray"
-                    class="text-gray nav-link px-0"
+                    toggle-class="text-default"
+                    class="text-default nav-link px-0"
                   >
                     <template #button-content>
                       {{ store.getNetworkContextName() }}
@@ -53,7 +45,7 @@
                   </div>
                   <a
                     href="https://github.com/stellarbeat"
-                    class="btn btn-sm btn-secondary gray"
+                    class="btn btn-sm btn-outline-primary"
                     target="_blank"
                     rel="noopener"
                   >
@@ -62,7 +54,7 @@
                   >
                   <a
                     href="mailto:info@stellarbeat.io"
-                    class="btn btn-sm btn-secondary ml-2 gray"
+                    class="btn btn-sm btn-outline-primary ml-2"
                     target="_blank"
                   >
                     <b-icon-envelope />
@@ -343,9 +335,13 @@ const homeActiveClass = computed(() => {
 <style lang="scss" scoped>
 @import "src/assets/custom";
 .brand-title {
-  color: $primary;
-  font-weight: 600;
-  filter: brightness(1.3);
+  color: #4a4a4a; // $primary;
+  font-weight: 700;
+  font-family: "Abel", sans-serif;
+  font-size: 27px;
+  margin-top: 0px;
+  margin-left: 3px;
+  //filter: brightness(1.5);
 }
 .brand-tagline {
   font-weight: 600;
