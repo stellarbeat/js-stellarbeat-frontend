@@ -99,8 +99,8 @@
                 <rect
                   style="fill: white; opacity: 0.7; text-transform: lowercase"
                   :width="getVertexTextRectWidthPx(vertex)"
-                  height="12px"
-                  y="11"
+                  height="13px"
+                  y="10"
                   :x="getVertexTextRectX(vertex)"
                   rx="2"
                   :class="{
