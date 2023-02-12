@@ -99,8 +99,8 @@
                 <rect
                   style="fill: white; opacity: 0.7; text-transform: lowercase"
                   :width="getVertexTextRectWidthPx(vertex)"
-                  height="15px"
-                  y="9"
+                  height="12px"
+                  y="11"
                   :x="getVertexTextRectX(vertex)"
                   rx="2"
                   :class="{
@@ -224,7 +224,7 @@ function getVertexTransform(vertex: ViewVertex): string {
 }
 
 function getVertexTextRectWidth(vertex: ViewVertex) {
-  return (truncate(vertex.label, 10).length / 10) * 70;
+  return (truncate(vertex.label, 10).length / 10) * 60;
 }
 
 function getVertexTextRectWidthPx(vertex: ViewVertex) {
