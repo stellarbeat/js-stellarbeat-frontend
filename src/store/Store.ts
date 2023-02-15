@@ -19,7 +19,7 @@ import { InnerQuorumSetDelete } from "@/services/change-queue/changes/inner-quor
 import { InnerQuorumSetAdd } from "@/services/change-queue/changes/inner-quorum-set-add";
 import { QuorumSetValidatorsAdd } from "@/services/change-queue/changes/quorum-set-validators-add";
 import { NetworkAddNode } from "@/services/change-queue/changes/network-add-node";
-import Vue from "vue";
+import { reactive, UnwrapNestedRefs } from "vue";
 import StatisticsStore from "@/store/StatisticsStore";
 import NodeStatisticsStore from "@/store/NodeStatisticsStore";
 import OrganizationStatisticsStore from "@/store/OrganizationStatisticsStore";
@@ -34,19 +34,29 @@ import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/R
 import Config, { NetworkContext, NetworkId } from "@/config/Config";
 import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
 
-export default class Store {
-  protected _network?: Network;
-  protected _networkChangeQueue?: NetworkChangeQueue;
-  protected _networkAnalyzer?: NetworkAnalyzer;
-  public measurementsStartDate: Date = new Date("2019-06-01");
-  public isLoading = true;
-  public fetchingDataFailed = false;
-  public networkReCalculated = 0; //to update graph views
-  public centerNode?: Node = undefined;
-  public selectedNode?: Node = undefined;
+interface Data {
+  isLoading: boolean;
+  network: Network | null;
+  networkChangeQueue: NetworkChangeQueue | null;
+  networkAnalyzer: NetworkAnalyzer | null;
+  selectedNode?: Node;
+  centerNode?: Node;
+  uniqueId: number;
+  isHaltingAnalysisVisible: boolean;
+  haltingAnalysisPublicKey?: string;
+  fetchingDataFailed: boolean;
+  measurementsStartDate: Date;
+  networkReCalculated: number; //to update graph views in one go, instead on every individual network change
+  isNetworkAnalysisVisible: boolean;
+  isTimeTravel: boolean;
+  networkAnalysisMergeBy: MergeBy;
+  timeTravelDate?: Date;
+  includeWatcherNodes: boolean;
+  selectedOrganization?: Organization;
+}
 
+export default class Store {
   public networkContext: NetworkContext;
-  public selectedOrganization?: Organization = undefined;
   protected measurementStore: StatisticsStore = new StatisticsStore(this);
   public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(
     this.measurementStore
@@ -55,28 +65,37 @@ export default class Store {
     new NetworkStatisticsStore(this.measurementStore);
   public organizationMeasurementStore: OrganizationStatisticsStore =
     new OrganizationStatisticsStore(this.measurementStore);
-  public isHaltingAnalysisVisible = false;
-  public isNetworkAnalysisVisible = false;
-  public networkAnalysisMergeBy: MergeBy = MergeBy.DoNotMerge;
-  public isTimeTravel = false;
-  public timeTravelDate?: Date;
-  public includeWatcherNodes = false;
   public watcherNodeFilter = (node: Node) => {
     return this.includeWatcherNodes || node.isValidator;
   };
 
-  protected _haltingAnalysisPublicKey?: string = undefined;
-
-  protected _uniqueId = 0;
-
   public historyArchiveScanRepository: HistoryArchiveScanRepository;
-
   public networkContexts: Map<NetworkId, NetworkContext> = new Map();
 
   //todo: move higher up
   public appConfig: Config;
-
   private defaultNetworkId = "public";
+
+  private data: UnwrapNestedRefs<Data> = reactive<Data>({
+    isLoading: true,
+    network: null,
+    networkChangeQueue: null,
+    networkAnalyzer: null,
+    selectedNode: undefined,
+    centerNode: undefined,
+    uniqueId: 0,
+    isHaltingAnalysisVisible: false,
+    haltingAnalysisPublicKey: undefined,
+    fetchingDataFailed: false,
+    measurementsStartDate: new Date("2019-06-01"),
+    networkReCalculated: 0,
+    isNetworkAnalysisVisible: false,
+    isTimeTravel: false,
+    networkAnalysisMergeBy: MergeBy.DoNotMerge,
+    timeTravelDate: undefined,
+    includeWatcherNodes: false,
+    selectedOrganization: undefined,
+  });
 
   //todo: networkContext should be injected?
   constructor() {
@@ -94,10 +113,90 @@ export default class Store {
     this.appConfig = appConfig;
   }
 
-  get network(): Network {
-    if (!this._network) throw new Error("Network not loaded correctly");
+  get isLoading(): boolean {
+    return this.data.isLoading;
+  }
 
-    return this._network;
+  set isLoading(value: boolean) {
+    this.data.isLoading = value;
+  }
+
+  set isTimeTravel(value: boolean) {
+    this.data.isTimeTravel = value;
+  }
+
+  get isTimeTravel(): boolean {
+    return this.data.isTimeTravel;
+  }
+
+  set timeTravelDate(value: Date | undefined) {
+    this.data.timeTravelDate = value;
+  }
+
+  get timeTravelDate(): Date | undefined {
+    return this.data.timeTravelDate;
+  }
+
+  get networkAnalysisMergeBy(): MergeBy {
+    return this.data.networkAnalysisMergeBy;
+  }
+
+  set networkAnalysisMergeBy(value: MergeBy) {
+    this.data.networkAnalysisMergeBy = value;
+  }
+
+  get isNetworkAnalysisVisible(): boolean {
+    return this.data.isNetworkAnalysisVisible;
+  }
+
+  set isNetworkAnalysisVisible(value: boolean) {
+    this.data.isNetworkAnalysisVisible = value;
+  }
+  get networkReCalculated(): number {
+    return this.data.networkReCalculated;
+  }
+
+  set selectedNode(node: Node | undefined) {
+    this.data.selectedNode = node;
+  }
+
+  get selectedNode(): Node | undefined {
+    return this.data.selectedNode;
+  }
+
+  set selectedOrganization(organization: Organization | undefined) {
+    this.data.selectedOrganization = organization;
+  }
+
+  get selectedOrganization(): Organization | undefined {
+    return this.data.selectedOrganization;
+  }
+
+  set centerNode(node: Node | undefined) {
+    this.data.centerNode = node;
+  }
+
+  get centerNode(): Node | undefined {
+    return this.data.centerNode;
+  }
+
+  get measurementsStartDate(): Date {
+    return this.data.measurementsStartDate;
+  }
+
+  get includeWatcherNodes(): boolean {
+    return this.data.includeWatcherNodes;
+  }
+
+  //used in v-model
+  set includeWatcherNodes(value: boolean) {
+    this.data.includeWatcherNodes = value;
+  }
+
+  get network(): Network {
+    if (!this.data.network) throw new Error("Network not loaded correctly");
+
+    return <Network>this.data.network;
   }
 
   //@deprecated
@@ -108,6 +207,14 @@ export default class Store {
   //@deprecated
   get networkId(): string {
     return this.networkContext.networkId;
+  }
+
+  get fetchingDataFailed(): boolean {
+    return this.data.fetchingDataFailed;
+  }
+
+  set fetchingDataFailed(value: boolean) {
+    this.data.fetchingDataFailed = value;
   }
 
   getNetworkContextFromNetworkId(
@@ -140,30 +247,29 @@ export default class Store {
   }
 
   protected setNetwork(network: Network) {
-    Vue.set(this, "_network", network);
-    Vue.set(this, "_networkAnalyzer", new NetworkAnalyzer(this.network));
-    Vue.set(
-      this,
-      "_networkChangeQueue",
-      new NetworkChangeQueue(this.network, this.networkAnalyzer)
+    this.data.network = network;
+    this.data.networkAnalyzer = new NetworkAnalyzer(this.network);
+    this.data.networkChangeQueue = new NetworkChangeQueue(
+      this.network,
+      this.networkAnalyzer
     );
-    this.networkReCalculated++;
+    this.data.networkReCalculated++;
   }
 
   get changeQueue(): NetworkChangeQueue {
-    if (!this._networkChangeQueue) {
+    if (!this.data.networkChangeQueue) {
       throw new Error("Network not loaded correctly");
     }
 
-    return this._networkChangeQueue;
+    return <NetworkChangeQueue>this.data.networkChangeQueue;
   }
 
   get networkAnalyzer(): NetworkAnalyzer {
-    if (!this._networkAnalyzer) {
+    if (!this.data.networkAnalyzer) {
       throw new Error("Network not loaded correctly");
     }
 
-    return this._networkAnalyzer;
+    return <NetworkAnalyzer>this.data.networkAnalyzer;
   }
 
   public getNetworkContextName(networkId?: NetworkId): string | undefined {
@@ -173,16 +279,24 @@ export default class Store {
   }
 
   getUniqueId() {
-    return this._uniqueId++;
+    return this.data.uniqueId++;
   }
 
   public showHaltingAnalysis(node: Node) {
-    this.isHaltingAnalysisVisible = true;
-    this._haltingAnalysisPublicKey = node.publicKey;
+    this.data.isHaltingAnalysisVisible = true;
+    this.data.haltingAnalysisPublicKey = node.publicKey;
+  }
+
+  get isHaltingAnalysisVisible(): boolean {
+    return this.data.isHaltingAnalysisVisible;
+  }
+
+  set isHaltingAnalysisVisible(value: boolean) {
+    this.data.isHaltingAnalysisVisible = value;
   }
 
   get haltingAnalysisPublicKey() {
-    return this._haltingAnalysisPublicKey;
+    return this.data.haltingAnalysisPublicKey;
   }
 
   async fetchNodeSnapshotsByPublicKey(id: PublicKey): Promise<NodeSnapShot[]> {
@@ -416,7 +530,7 @@ export default class Store {
 
   public processChange(change: NetworkChange) {
     this.changeQueue.execute(change);
-    this.networkReCalculated++;
+    this.data.networkReCalculated++;
   }
 
   get isSimulation(): boolean {
@@ -436,7 +550,7 @@ export default class Store {
       return;
     }
     this.changeQueue.undo();
-    this.networkReCalculated++;
+    this.data.networkReCalculated++;
   }
 
   public redoUpdate() {
@@ -444,12 +558,12 @@ export default class Store {
       return;
     }
     this.changeQueue.redo();
-    this.networkReCalculated++;
+    this.data.networkReCalculated++;
   }
 
   public addNodeToNetwork(node: Node) {
     this.changeQueue.execute(new NetworkAddNode(this.network, node));
-    this.networkReCalculated++;
+    this.data.networkReCalculated++;
   }
 
   public resetUpdates() {
@@ -457,7 +571,7 @@ export default class Store {
       return;
     }
     this.changeQueue.reset();
-    this.networkReCalculated++;
+    this.data.networkReCalculated++;
   }
 
   //todo: needs better location

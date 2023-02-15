@@ -1526,13 +1526,13 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellarbeat-shared@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-5.1.0.tgz#49b24931f30004466accffcc684e4caaa59d6fd7"
-  integrity sha512-MJErKiXT6GpwGWF4dJTtDJVUyVF+YYY8ATpIC/IDo5NIbW1ZlSnmRytu5EryCR9cFPHC9thDZUEEb7MIgHruSw==
+"@stellarbeat/js-stellarbeat-shared@^5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-5.3.0.tgz#a135db34f312b4bf2937ddb499404650273d8730"
+  integrity sha512-OWYAMJ/qWMID292rQcHDEr9AXPSfcBKcWTY2AqmSBaIixi9pJN6PGCEZUgcFR+rMFwMSf4lsu7bK3uJ8jPiS+w==
   dependencies:
     "@iarna/toml" "^2.2.5"
-    neverthrow "^4.3.1"
+    neverthrow "^6.0.0"
 
 "@stellarbeat/stellar_analysis_web@^0.6.2":
   version "0.6.2"
@@ -6392,6 +6392,11 @@ neverthrow@^4.3.1:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-4.4.2.tgz#70d74112207183a0fb1e17251a9b4d995415103b"
   integrity sha512-QVY0ylzBF71pUdLshRrqtweMgqKnE3R37/T82Z5bhO/z8P9z96PC/5pEl2FmiZSy0p+3lsjKerh6jmTWM5fv2g==
+
+neverthrow@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-6.0.0.tgz#bacd7661cade296ccc5c35760bb3b679214155b6"
+  integrity sha512-kPZKRs4VkdloCGQXPoP84q4sT/1Z+lYM61AXyV8wWa2hnuo5KpPBF2S3crSFnMrOgUISmEBP8Vo/ngGZX60NhA==
 
 nice-try@^1.0.4:
   version "1.0.5"
