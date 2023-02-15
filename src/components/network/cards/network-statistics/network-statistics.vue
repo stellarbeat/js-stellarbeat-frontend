@@ -301,8 +301,10 @@ import NetworkStatisticsCard from "@/components/network/cards/network-statistics
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
 import { onMounted, ref, Ref } from "vue";
+import useNetworkMeasurementsStore from "@/store/useNetworkMeasurementsStore";
 
 const store = useStore();
+const networkMeasurementStore = useNetworkMeasurementsStore();
 const network = store.network;
 const { isLoading } = useIsLoading();
 
@@ -312,16 +314,13 @@ const yearStatistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
 onMounted(async () => {
   if (!store.isSimulation && store.networkContext.enableHistory) {
     let oneYearAgo = moment(store.network.time).subtract(1, "y").toDate();
-    yearStatistics.value =
-      await store.networkMeasurementStore.getMonthStatistics(
-        "stellar-public",
-        oneYearAgo,
-        store.network.time
-      );
+    yearStatistics.value = await networkMeasurementStore.getMonthStatistics(
+      "stellar-public",
+      oneYearAgo,
+      store.network.time
+    );
   }
   isLoading.value = false;
   initialDataLoaded.value = true;
 });
 </script>
-
-<style scoped></style>

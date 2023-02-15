@@ -151,6 +151,7 @@ import NetworkStatistics from "@stellarbeat/js-stellarbeat-shared/lib/network-st
 import Vue, { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
 import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
+import useNetworkMeasurementsStore from "@/store/useNetworkMeasurementsStore";
 
 Vue.directive("b-tooltip", VBTooltip);
 Vue.directive("b-modal", VBModal);
@@ -172,6 +173,7 @@ const props = defineProps({
 const { analysisType, defaultBucketSize } = toRefs(props);
 
 const store = useStore();
+const networkMeasurementStore = useNetworkMeasurementsStore();
 const network = store.network;
 const yearChart = ref<AggregationLineChart | null>(null);
 const monthChart = ref<AggregationLineChart | null>(null);
@@ -703,12 +705,11 @@ async function updateYearChart() {
 
   try {
     failed.value = false;
-    yearStatistics.value =
-      await store.networkMeasurementStore.getMonthStatistics(
-        "stellar-public",
-        oneYearAgo,
-        selectedDate.value
-      );
+    yearStatistics.value = await networkMeasurementStore.getMonthStatistics(
+      "stellar-public",
+      oneYearAgo,
+      selectedDate.value
+    );
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
       yearStatistics.value
@@ -733,12 +734,11 @@ async function updateDays30Chart() {
     .toDate();
   try {
     failed.value = false;
-    days30Statistics.value =
-      await store.networkMeasurementStore.getDayStatistics(
-        "stellar-public",
-        startOfDay,
-        days30Ahead
-      );
+    days30Statistics.value = await networkMeasurementStore.getDayStatistics(
+      "stellar-public",
+      startOfDay,
+      days30Ahead
+    );
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
       days30Statistics.value
@@ -764,7 +764,7 @@ async function updateHours24Chart() {
     .toDate();
   try {
     failed.value = false;
-    hour24Statistics.value = await store.networkMeasurementStore.getStatistics(
+    hour24Statistics.value = await networkMeasurementStore.getStatistics(
       "stellar-public",
       startOfDay,
       tomorrow

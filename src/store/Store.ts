@@ -20,10 +20,6 @@ import { InnerQuorumSetAdd } from "@/services/change-queue/changes/inner-quorum-
 import { QuorumSetValidatorsAdd } from "@/services/change-queue/changes/quorum-set-validators-add";
 import { NetworkAddNode } from "@/services/change-queue/changes/network-add-node";
 import { reactive, UnwrapNestedRefs } from "vue";
-import StatisticsStore from "@/store/StatisticsStore";
-import NodeStatisticsStore from "@/store/NodeStatisticsStore";
-import OrganizationStatisticsStore from "@/store/OrganizationStatisticsStore";
-import NetworkStatisticsStore from "@/store/NetworkStatisticsStore";
 import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-shot";
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
@@ -57,14 +53,6 @@ interface Data {
 
 export default class Store {
   public networkContext: NetworkContext;
-  protected measurementStore: StatisticsStore = new StatisticsStore(this);
-  public nodeMeasurementStore: NodeStatisticsStore = new NodeStatisticsStore(
-    this.measurementStore
-  );
-  public networkMeasurementStore: NetworkStatisticsStore =
-    new NetworkStatisticsStore(this.measurementStore);
-  public organizationMeasurementStore: OrganizationStatisticsStore =
-    new OrganizationStatisticsStore(this.measurementStore);
   public watcherNodeFilter = (node: Node) => {
     return this.includeWatcherNodes || node.isValidator;
   };

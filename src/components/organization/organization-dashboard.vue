@@ -36,7 +36,7 @@
               :entityId="organization.id"
               :fetchDayMeasurements="
                 (organizationId, from, to) =>
-                  store.organizationMeasurementStore.getDayStatistics(
+                  organizationMeasurementStore.getDayStatistics(
                     organizationId,
                     from,
                     to
@@ -44,7 +44,7 @@
               "
               :fetchMeasurements="
                 (organizationId, from, to) =>
-                  store.organizationMeasurementStore.getStatistics(
+                  organizationMeasurementStore.getStatistics(
                     organizationId,
                     from,
                     to
@@ -86,8 +86,10 @@ import OrganizationLatestUpdates from "@/components/organization/organization-ca
 import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import useOrganizationMeasurementsStore from "@/store/useOrganizationMeasurementsStore";
 
 const store = useStore();
+const organizationMeasurementStore = useOrganizationMeasurementsStore();
 const network = store.network;
 
 const organization = computed(() => {

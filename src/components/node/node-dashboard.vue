@@ -82,11 +82,11 @@
             :entityId="selectedNode.publicKey"
             :fetchDayMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
             "
             :fetchMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getStatistics(publicKey, from, to)
+                nodeMeasurementStore.getStatistics(publicKey, from, to)
             "
             :dayMeasurementProperty="'isValidatingCount'"
             :measurementProperty="'isValidating'"
@@ -100,11 +100,11 @@
             :entityId="selectedNode.publicKey"
             :fetchDayMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
             "
             :fetchMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getStatistics(publicKey, from, to)
+                nodeMeasurementStore.getStatistics(publicKey, from, to)
             "
             :dayMeasurementProperty="'isActiveCount'"
             :measurementProperty="'isActive'"
@@ -124,11 +124,11 @@
             :entityId="selectedNode.publicKey"
             :fetchDayMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
             "
             :fetchMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getStatistics(publicKey, from, to)
+                nodeMeasurementStore.getStatistics(publicKey, from, to)
             "
             :dayMeasurementProperty="'isFullValidatorCount'"
             :measurementProperty="'isFullValidator'"
@@ -147,11 +147,11 @@
             :entityId="selectedNode.publicKey"
             :fetchDayMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
             "
             :fetchMeasurements="
               (publicKey, from, to) =>
-                store.nodeMeasurementStore.getStatistics(publicKey, from, to)
+                nodeMeasurementStore.getStatistics(publicKey, from, to)
             "
             :dayMeasurementProperty="'isOverloadedCount'"
             :measurementProperty="'isOverLoaded'"
@@ -216,8 +216,10 @@ import NodeStatistics30DOverloaded from "@/components/node/node-cards/statistics
 import NodeStatistics30DActive from "@/components/node/node-cards/statistics/node-statistics-30D-active.vue";
 import NodeStatistics30DValidating from "@/components/node/node-cards/statistics/node-statistics-30D-validating.vue";
 import NodeStatistics24HValidating from "@/components/node/node-cards/statistics/node-statistics-24H-validating.vue";
+import useNodeMeasurementsStore from "@/store/useNodeMeasurementsStore";
 
 const store = useStore();
+const nodeMeasurementStore = useNodeMeasurementsStore();
 const network = store.network;
 const selectedNode = computed(() => store.selectedNode);
 
@@ -259,4 +261,3 @@ watch(
   { immediate: true }
 );
 </script>
-<style scoped></style>
