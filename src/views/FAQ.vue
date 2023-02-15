@@ -19,7 +19,11 @@
         <h3>Why is my node not showing up?</h3>
         <p>
           A common issue is a closed port (default: 11625). Send us an
-          <a href="mailto:info@stellarbeat.io" target="_blank" rel="noopener">
+          <a
+            :href="`mailto:${store.appConfig.brandEmail}`"
+            target="_blank"
+            rel="noopener"
+          >
             e-mail</a
           >
           if the problem persists.
@@ -138,11 +142,16 @@ Age = Time since discovery
 
 <script setup lang="ts">
 import Github from "@/components/organization/logo/github.vue";
+import useStore from "@/store/useStore";
+const store = useStore();
 </script>
 <script lang="ts">
+import * as myUseStore from "@/store/useStore";
+const myStore = myUseStore.default();
+
 export default {
   metaInfo: {
-    title: "FAQ - Stellarbeat",
+    title: `FAQ | ${myStore.appConfig.brandName}`,
     meta: [{ name: "Frequently asked questions", content: "Help faq" }],
   },
 };

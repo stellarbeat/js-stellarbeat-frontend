@@ -18,11 +18,11 @@
     </p>
     <h3>Limitations of the analysis</h3>
     <p class="my-4">
-      Stellarbeat indicates a node as 'not validating' if it was not validating
-      in the latest crawl, a specific time window. However a node could be very
-      slow or catching up. If other (fast) nodes of a network blocking set are
-      down, the slow node could catch up and the network would continue to
-      validate. Hence this graph is a risk analysis.<br />
+      A node is 'not validating' if it was not validating in the latest crawl, a
+      specific time window. However a node could be very slow or catching up. If
+      other (fast) nodes of a network blocking set are down, the slow node could
+      catch up and the network would continue to validate. Hence this graph is a
+      risk analysis.<br />
       For ISP and country information of nodes we rely on the
       <a href="https://ipstack.com/">IPstack api</a>. This data is not
       guaranteed to be correct.

@@ -182,10 +182,13 @@
 </template>
 
 <script lang="ts">
+import * as myUseStore from "@/store/useStore";
+const myStore = myUseStore.default();
+
 export default {
   name: "terms-and-conditions",
   metaInfo: {
-    title: "Terms and Conditions - Stellarbeat.io",
+    title: `Terms and conditions | ${myStore.appConfig.brandName}`,
     meta: [{ name: "description", content: "Terms and conditions." }],
   },
 };

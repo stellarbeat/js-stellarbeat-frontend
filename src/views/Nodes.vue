@@ -213,9 +213,12 @@ const getOrganization = (node: Node) => {
 </script>
 
 <script lang="ts">
+import * as myUseStore from "@/store/useStore";
+const myStore = myUseStore.default();
+
 export default {
   metaInfo: {
-    title: "Nodes overview - Stellarbeat",
+    title: `Nodes | ${myStore.appConfig.brandName}`,
     meta: [
       {
         name: "description",

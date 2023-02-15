@@ -29,9 +29,12 @@
 </template>
 
 <script lang="ts">
+import * as myUseStore from "@/store/useStore";
+const myStore = myUseStore.default();
+
 export default {
   metaInfo: {
-    title: "Notify - Stellarbeat",
+    title: `Notify | ${myStore.appConfig.brandName}`,
     meta: [
       {
         name: "description",

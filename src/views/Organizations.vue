@@ -113,9 +113,12 @@ const getValidators = (organization: Organization) => {
 };
 </script>
 <script lang="ts">
+import * as myUseStore from "@/store/useStore";
+const myStore = myUseStore.default();
+
 export default {
   metaInfo: {
-    title: "Organizations - Stellarbeat",
+    title: `Organizations | ${myStore.appConfig.brandName}`,
     meta: [
       {
         name: "description",

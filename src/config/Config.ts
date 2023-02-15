@@ -25,11 +25,13 @@ export default class Config {
   networkContexts: Map<NetworkId, NetworkContext> = new Map();
   apiDocUrl?: string;
   blogUrl?: string;
-  brandName = "Stellarbeat.io";
-  brandTagline = "Stellar network visibility";
-  brandImgSrc = "logo.svg"; //assets folder
-  brandImgAlt = "https://stellarbeat.io";
-  enableBrandImg = true;
+  brandName = "Stellarbeat";
+  brandTagline = "Stellar network explorer";
+  brandDescription =
+    "Stellarbeat is a network explorer for the Stellar network. It provides a list of all nodes and organizations. It tracks various metrics and provides a history of changes. And it allows you to simulate different network conditions and topologies";
+  brandLogoSrc = "logo.svg"; //assets folder
+  brandLogoAlt = "https://stellarbeat.io";
+  brandEmail = "info@stellarbeat.io";
 
   constructor() {
     this.blogUrl = process.env["VUE_APP_BLOG_URL"];
@@ -39,12 +41,14 @@ export default class Config {
       this.brandName = process.env["VUE_APP_BRAND_NAME"];
     if (isString(process.env["VUE_APP_BRAND_TAGLINE"]))
       this.brandTagline = process.env["VUE_APP_BRAND_TAGLINE"];
-    if (isString(process.env["VUE_APP_BRAND_IMG_SRC"]))
-      this.brandImgSrc = process.env["VUE_APP_BRAND_IMG_SRC"];
-    if (isString(process.env["VUE_APP_BRAND_IMG_ALT"]))
-      this.brandImgAlt = process.env["VUE_APP_BRAND_IMG_ALT"];
-    if (process.env["VUE_APP_ENABLE_BRAND_IMG"])
-      this.enableBrandImg = process.env["VUE_APP_ENABLE_BRAND_IMG"] === "1";
+    if (isString(process.env["VUE_APP_BRAND_DESCRIPTION"]))
+      this.brandDescription = process.env["VUE_APP_BRAND_DESCRIPTION"];
+    if (isString(process.env["VUE_APP_BRAND_LOGO_SRC"]))
+      this.brandLogoSrc = process.env["VUE_APP_BRAND_LOGO_SRC"];
+    if (isString(process.env["VUE_APP_BRAND_LOGO_ALT"]))
+      this.brandLogoAlt = process.env["VUE_APP_BRAND_LOGO_ALT"];
+    if (isString(process.env["VUE_APP_BRAND_EMAIL"]))
+      this.brandEmail = process.env["VUE_APP_BRAND_EMAIL"];
 
     if (!isString(process.env["VUE_APP_PUBLIC_API_URL"]))
       throw new Error("VUE_APP_PUBLIC_API_URL not set");

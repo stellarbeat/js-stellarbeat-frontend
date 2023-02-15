@@ -4,10 +4,9 @@
       <navbar
         :brand-tagline="store.appConfig.brandTagline"
         :brand-name="store.appConfig.brandName"
-        :enable-brand-image="store.appConfig.enableBrandImg"
-        :brand-image="{
-          alt: store.appConfig.brandImgAlt,
-          src: store.appConfig.brandImgSrc,
+        :brand-logo="{
+          alt: store.appConfig.brandLogoAlt,
+          src: store.appConfig.brandLogoSrc,
         }"
         :api-doc-url="store.appConfig.apiDocUrl"
         :blog-url="store.appConfig.blogUrl"
@@ -67,7 +66,7 @@
               Github</a
             >
             <a
-              href="mailto:info@stellarbeat.io"
+              :href="`mailto:${store.appConfig.brandEmail}`"
               rel="noopener"
               class="btn btn-sm bt btn-secondary gray ml-2"
               target="_blank"
@@ -92,9 +91,7 @@ import useStore from "@/store/useStore";
 import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router/composables";
 
-const errorMessage = ref(
-  "Could not connect to stellarbeat.io api, please refresh the page"
-);
+const errorMessage = ref("Could not connect to api, please refresh the page");
 
 const store = useStore();
 const showError = store.fetchingDataFailed;
@@ -136,14 +133,16 @@ watch(
 </script>
 
 <script lang="ts">
+import * as myUseStore from "@/store/useStore";
+const myStore = myUseStore.default();
+
 export default {
   metaInfo: {
-    title: "Stellarbeat - Stellar network explorer",
+    title: `${myStore.appConfig.brandTagline} | ${myStore.appConfig.brandName}`,
     meta: [
       {
         name: "description",
-        content:
-          "Insight into the Stellar network through various tools & visualizations.",
+        content: myStore.appConfig.brandDescription,
       },
     ],
   },

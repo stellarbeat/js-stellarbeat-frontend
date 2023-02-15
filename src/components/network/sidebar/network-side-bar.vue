@@ -4,7 +4,7 @@
       {{ store.getNetworkContextName() }}
     </template>
     <template v-slot:sub-title>
-      Network
+      Overview
       <b-badge v-if="store.networkAnalyzer.manualMode" variant="default"
         >Risks not analyzed</b-badge
       >

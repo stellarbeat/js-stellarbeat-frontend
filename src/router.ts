@@ -87,12 +87,6 @@ export function createRouter() {
           import(/* webpackChunkName: "faq" */ "@/views/FAQ.vue"),
       },
       {
-        name: "api",
-        path: "/api",
-        component: () =>
-          import(/* webpackChunkName: "api" */ "@/views/Api.vue"),
-      },
-      {
         path: "/notify",
         component: () =>
           import(/* webpackChunkName: "api" */ "@/views/Notify.vue"),

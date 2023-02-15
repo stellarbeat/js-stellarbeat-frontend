@@ -6,14 +6,13 @@
           <div class="d-flex justify-content-between w-100">
             <div class="d-flex">
               <router-link
-                v-if="enableBrandImage"
                 class="header-brand mr-0 mt-0"
                 :to="{ name: 'network-dashboard' }"
               >
                 <img
-                  :src="brandImageSource"
+                  :src="brandLogoSource"
                   class="header-brand-img mr-0"
-                  :alt="brandImage.alt"
+                  :alt="brandLogo.alt"
                 />
               </router-link>
               <h2 class="brand-title mb-0">{{ brandName }}</h2>
@@ -53,7 +52,7 @@
                     Github</a
                   >
                   <a
-                    href="mailto:info@stellarbeat.io"
+                    :href="`mailto:${store.appConfig.brandEmail}`"
                     class="btn btn-sm btn-outline-primary ml-2"
                     target="_blank"
                   >
@@ -252,7 +251,7 @@ import Search from "@/components/search.vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 
-export interface BrandImage {
+export interface BrandLogo {
   src: string;
   alt: string;
 }
@@ -294,12 +293,8 @@ const props = defineProps({
   mailTo: {
     type: String,
   },
-  enableBrandImage: {
-    type: Boolean,
-    default: true,
-  },
-  brandImage: {
-    type: Object as PropType<BrandImage>,
+  brandLogo: {
+    type: Object as PropType<BrandLogo>,
   },
 });
 
@@ -307,8 +302,8 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-const brandImageSource = ref(
-  props.brandImage?.src ? require(`@/assets/logo.svg`) : ""
+const brandLogoSource = ref(
+  props.brandLogo?.src ? require(`@/assets/logo.svg`) : ""
 ); //require needs to happen before mount
 const navigateToNetwork = (networkId: string) => {
   if (networkId === store.networkContext.networkId) return;
