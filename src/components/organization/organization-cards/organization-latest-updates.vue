@@ -128,6 +128,7 @@ import {
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
+import useOrganizationSnapshotRepository from "@/repositories/useOrganizationSnapshotRepository";
 
 interface Update {
   key: string;
@@ -155,6 +156,7 @@ Vue.directive("b-tooltip", VBTooltip);
 Vue.directive("b-modal", VBModal);
 
 const store = useStore();
+const organizationSnapshotRepository = useOrganizationSnapshotRepository();
 const router = useRouter();
 const route = useRoute();
 
@@ -203,33 +205,41 @@ async function getSnapshots() {
   try {
     deltas.clear();
     updatesPerDate.value = [];
-    let fetchedSnapshots = await store.fetchOrganizationSnapshotsById(
-      organization.value.id
+    const fetchedSnapshotsOrError =
+      await organizationSnapshotRepository.findForOrganization(
+        organization.value.id,
+        store.network.time
+      );
+    if (fetchedSnapshotsOrError.isErr()) {
+      failed.value = true;
+      return [];
+    }
+    snapshots = fetchedSnapshotsOrError.value.map(
+      (snapshot: OrganizationSnapShot) => {
+        return {
+          validators: snapshot.organization.validators.map(
+            (validator: PublicKey) =>
+              store.network.getNodeByPublicKey(validator) &&
+              store.network.getNodeByPublicKey(validator).name
+                ? (store.network.getNodeByPublicKey(validator).name as string)
+                : validator
+          ),
+          startDate: snapshot.startDate,
+          endDate: snapshot.endDate,
+          id: snapshot.organization.id,
+          name: snapshot.organization.name,
+          dba: snapshot.organization.dba,
+          url: snapshot.organization.url,
+          officialEmail: snapshot.organization.officialEmail,
+          phoneNumber: snapshot.organization.phoneNumber,
+          physicalAddress: snapshot.organization.physicalAddress,
+          twitter: snapshot.organization.twitter,
+          github: snapshot.organization.github,
+          description: snapshot.organization.description,
+          keybase: snapshot.organization.keybase,
+        };
+      }
     );
-    snapshots = fetchedSnapshots.map((snapshot: OrganizationSnapShot) => {
-      return {
-        validators: snapshot.organization.validators.map(
-          (validator: PublicKey) =>
-            store.network.getNodeByPublicKey(validator) &&
-            store.network.getNodeByPublicKey(validator).name
-              ? (store.network.getNodeByPublicKey(validator).name as string)
-              : validator
-        ),
-        startDate: snapshot.startDate,
-        endDate: snapshot.endDate,
-        id: snapshot.organization.id,
-        name: snapshot.organization.name,
-        dba: snapshot.organization.dba,
-        url: snapshot.organization.url,
-        officialEmail: snapshot.organization.officialEmail,
-        phoneNumber: snapshot.organization.phoneNumber,
-        physicalAddress: snapshot.organization.physicalAddress,
-        twitter: snapshot.organization.twitter,
-        github: snapshot.organization.github,
-        description: snapshot.organization.description,
-        keybase: snapshot.organization.keybase,
-      };
-    });
     let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
     for (let i = snapshots.length - 2; i >= 0; i--) {
       let updates: Update[] = [];

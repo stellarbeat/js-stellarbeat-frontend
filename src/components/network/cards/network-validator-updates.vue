@@ -67,8 +67,10 @@ import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-s
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
 import { onMounted, Ref, ref } from "vue";
+import useNodeSnapshotRepository from "@/repositories/useNodeSnapshotRepository";
 
 const store = useStore();
+const nodeSnapshotRepository = useNodeSnapshotRepository();
 const network = store.network;
 
 const { isLoading, dimmerClass } = useIsLoading();
@@ -77,10 +79,11 @@ const failed = ref(false);
 const snapshots: Ref<NodeSnapShot[]> = ref([]);
 
 async function getSnapshots() {
+  const result = await nodeSnapshotRepository.find(network.time);
   let snapshots: NodeSnapShot[] = [];
-  try {
-    snapshots = await store.fetchNodeSnapshots();
-  } catch (e) {
+  if (result.isOk()) {
+    snapshots = result.value;
+  } else {
     failed.value = true;
   }
   isLoading.value = false;

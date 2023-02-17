@@ -193,7 +193,12 @@ const validate = () => {
 const load = () => {
   let nodesMap = new Map<string, Node>();
   let nodes = modifiedNetwork.nodes.map((basicNode) => {
-    let node = Node.fromJSON(basicNode);
+    let node = new Node(basicNode.publicKey);
+    node.geoData.countryCode = basicNode.geoData.countryCode;
+    node.geoData.countryName = basicNode.geoData.countryName;
+    node.isp = basicNode.isp;
+    node.name = basicNode.name;
+    node.quorumSet = QuorumSet.fromBaseQuorumSet(basicNode.quorumSet);
     node.isValidating =
       basicNode.isValidating === undefined ? true : basicNode.isValidating;
     node.active = basicNode.active === undefined ? true : basicNode.active;
@@ -204,7 +209,10 @@ const load = () => {
   let organizations: Organization[] = [];
   if (modifiedNetwork.organizations) {
     organizations = modifiedNetwork.organizations.map((basicOrganization) => {
-      let organization = Organization.fromJSON(basicOrganization);
+      let organization = new Organization(
+        basicOrganization.id,
+        basicOrganization.name
+      );
       organization.validators = basicOrganization.validators;
       organization.validators.forEach((validatorPublicKey) => {
         let validator = nodesMap.get(validatorPublicKey);

@@ -14,7 +14,7 @@ export class RESTHistoryArchiveScanRepository
       );
 
       if (result.status === 200 && result.data) {
-        return HistoryArchiveScan.fromJSON(result.data);
+        return HistoryArchiveScan.fromHistoryArchiveScanV1(result.data);
       }
 
       return null;

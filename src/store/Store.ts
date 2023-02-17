@@ -1,11 +1,7 @@
-import axios from "axios";
 import {
   Network,
   Node,
   Organization,
-  OrganizationId,
-  OrganizationSnapShot,
-  PublicKey,
   QuorumSet,
   QuorumSetService,
 } from "@stellarbeat/js-stellarbeat-shared";
@@ -20,7 +16,6 @@ import { InnerQuorumSetAdd } from "@/services/change-queue/changes/inner-quorum-
 import { QuorumSetValidatorsAdd } from "@/services/change-queue/changes/quorum-set-validators-add";
 import { NetworkAddNode } from "@/services/change-queue/changes/network-add-node";
 import { reactive, UnwrapNestedRefs } from "vue";
-import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-shot";
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
@@ -285,74 +280,6 @@ export default class Store {
 
   get haltingAnalysisPublicKey() {
     return this.data.haltingAnalysisPublicKey;
-  }
-
-  async fetchNodeSnapshotsByPublicKey(id: PublicKey): Promise<NodeSnapShot[]> {
-    const params: Record<string, unknown> = {};
-    params["at"] = this.network.time;
-    const result = await axios.get(
-      this.networkContext.apiBaseUrl + "/v1/node/" + id + "/snapshots",
-      { params }
-    );
-    if (result.data) {
-      return result.data.map((item: Record<string, unknown>) =>
-        NodeSnapShot.fromJSON(item)
-      );
-    }
-
-    return [];
-  }
-
-  async fetchNodeSnapshots(): Promise<NodeSnapShot[]> {
-    const params: Record<string, unknown> = {};
-    params["at"] = this.network.time;
-    const result = await axios.get(
-      this.networkContext.apiBaseUrl + "/v1/node-snapshots",
-      {
-        params,
-      }
-    );
-    if (result.data) {
-      return result.data.map((item: Record<string, unknown>) =>
-        NodeSnapShot.fromJSON(item)
-      );
-    }
-
-    return [];
-  }
-
-  async fetchOrganizationSnapshotsById(
-    id: OrganizationId
-  ): Promise<OrganizationSnapShot[]> {
-    const params: Record<string, unknown> = {};
-    params["at"] = this.network.time;
-    const result = await axios.get(
-      this.networkContext.apiBaseUrl + "/v1/organization/" + id + "/snapshots",
-      { params }
-    );
-    if (result.data) {
-      return result.data.map((item: Record<string, unknown>) =>
-        OrganizationSnapShot.fromJSON(item)
-      );
-    }
-
-    return [];
-  }
-
-  async fetchOrganizationSnapshots(): Promise<OrganizationSnapShot[]> {
-    const params: Record<string, unknown> = {};
-    params["at"] = this.network.time;
-    const result = await axios.get(
-      this.networkContext.apiBaseUrl + "/v1/organization-snapshots",
-      { params }
-    );
-    if (result.data) {
-      return result.data.map((item: Record<string, unknown>) =>
-        OrganizationSnapShot.fromJSON(item)
-      );
-    }
-
-    return [];
   }
 
   private async fetchNetwork(at?: Date): Promise<void> {

@@ -162,6 +162,7 @@ import {
 import { isArray } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
+import useNodeSnapshotRepository from "@/repositories/useNodeSnapshotRepository";
 
 interface Update {
   key: string;
@@ -222,6 +223,7 @@ const updatesPerDate: Ref<
 > = ref([]);
 
 const store = useStore();
+const nodeSnapshotRepository = useNodeSnapshotRepository();
 const network = store.network;
 const router = useRouter();
 const route = useRoute();
@@ -268,10 +270,17 @@ async function getSnapshots() {
   try {
     deltas.clear();
     updatesPerDate.value = [];
-    let fetchedSnapshots = await store.fetchNodeSnapshotsByPublicKey(
-      node.value.publicKey
+    const fetchedSnapshotsOrError = await nodeSnapshotRepository.findForNode(
+      node.value.publicKey,
+      network.time
     );
-    snapshots = fetchedSnapshots.map((snapshot) => {
+    if (fetchedSnapshotsOrError.isErr()) {
+      console.log(fetchedSnapshotsOrError.error);
+      failed.value = true;
+      return [];
+    }
+
+    snapshots = fetchedSnapshotsOrError.value.map((snapshot) => {
       let quorumSet: QuorumSet;
       if (!snapshot.node.quorumSet) quorumSet = new QuorumSet(0);
       else quorumSet = mapValidatorsToNames(snapshot.node.quorumSet);

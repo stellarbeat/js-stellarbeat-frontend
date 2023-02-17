@@ -67,8 +67,10 @@ import { OrganizationSnapShot } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
 import { onMounted, Ref, ref } from "vue";
+import useOrganizationSnapshotRepository from "@/repositories/useOrganizationSnapshotRepository";
 
 const store = useStore();
+const organizationSnapshotRepository = useOrganizationSnapshotRepository();
 const network = store.network;
 const { isLoading, dimmerClass } = useIsLoading();
 const failed = ref(false);
@@ -76,10 +78,14 @@ const snapshots: Ref<OrganizationSnapShot[]> = ref([]);
 
 async function getSnapshots() {
   let snapshots: OrganizationSnapShot[] = [];
-  try {
-    snapshots = await store.fetchOrganizationSnapshots();
-  } catch (e) {
+  const snapshotsOrError = await organizationSnapshotRepository.find(
+    network.time
+  );
+  if (snapshotsOrError.isErr()) {
+    console.log(snapshotsOrError.error);
     failed.value = true;
+  } else {
+    snapshots = snapshotsOrError.value;
   }
   isLoading.value = false;
   return snapshots;

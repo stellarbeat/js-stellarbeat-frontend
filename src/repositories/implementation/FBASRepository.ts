@@ -4,6 +4,7 @@ import {
   Network,
   Node,
   Organization,
+  QuorumSet,
 } from "@stellarbeat/js-stellarbeat-shared";
 
 export class FBASRepository implements NetworkRepository {
@@ -27,7 +28,12 @@ export class FBASRepository implements NetworkRepository {
         validators: ["sdf1", "sdf2"],
         subQuorumAvailable: true,
       },
-    ].map((organization) => Organization.fromJSON(organization));
+    ].map((organization) => {
+      const org = new Organization(organization.id, organization.name);
+      org.validators = organization.validators;
+      org.subQuorumAvailable = organization.subQuorumAvailable;
+      return org;
+    });
     const nodes = [
       {
         ip: "localhost",
@@ -37,22 +43,14 @@ export class FBASRepository implements NetworkRepository {
         active: true,
         overLoaded: false,
         organizationId: "sdf",
-        quorumSet: {
-          threshold: 2,
-          validators: [],
-          innerQuorumSets: [
-            {
-              threshold: 1,
-              validators: ["lb1", "lb2"],
-              innerQuorumSets: [],
-            },
-            {
-              threshold: 1,
-              validators: ["sp1", "sp2"],
-              innerQuorumSets: [],
-            },
-          ],
-        },
+        quorumSet: new QuorumSet(
+          2,
+          [],
+          [
+            new QuorumSet(1, ["lb1", "lb2"], []),
+            new QuorumSet(1, ["sp1", "sp2"], []),
+          ]
+        ),
         isValidator: true,
         isValidating: true,
       },
@@ -64,22 +62,14 @@ export class FBASRepository implements NetworkRepository {
         active: true,
         overLoaded: false,
         organizationId: "sdf",
-        quorumSet: {
-          threshold: 2,
-          validators: [],
-          innerQuorumSets: [
-            {
-              threshold: 1,
-              validators: ["lb1", "lb2"],
-              innerQuorumSets: [],
-            },
-            {
-              threshold: 1,
-              validators: ["sp1", "sp2"],
-              innerQuorumSets: [],
-            },
-          ],
-        },
+        quorumSet: new QuorumSet(
+          2,
+          [],
+          [
+            new QuorumSet(1, ["lb1", "lb2"], []),
+            new QuorumSet(1, ["sp1", "sp2"], []),
+          ]
+        ),
         isValidator: true,
         isValidating: true,
       },
@@ -91,22 +81,14 @@ export class FBASRepository implements NetworkRepository {
         active: true,
         overLoaded: false,
         organizationId: "lb",
-        quorumSet: {
-          threshold: 2,
-          validators: [],
-          innerQuorumSets: [
-            {
-              threshold: 1,
-              validators: ["sdf1", "sdf2"],
-              innerQuorumSets: [],
-            },
-            {
-              threshold: 1,
-              validators: ["sp1", "sp2"],
-              innerQuorumSets: [],
-            },
-          ],
-        },
+        quorumSet: new QuorumSet(
+          2,
+          [],
+          [
+            new QuorumSet(1, ["sdf1", "sdf2"], []),
+            new QuorumSet(1, ["sp1", "sp2"], []),
+          ]
+        ),
         isValidator: true,
         isValidating: true,
       },
@@ -118,22 +100,14 @@ export class FBASRepository implements NetworkRepository {
         active: true,
         overLoaded: false,
         organizationId: "lb",
-        quorumSet: {
-          threshold: 2,
-          validators: [],
-          innerQuorumSets: [
-            {
-              threshold: 1,
-              validators: ["sdf1", "sdf2"],
-              innerQuorumSets: [],
-            },
-            {
-              threshold: 1,
-              validators: ["sp1", "sp2"],
-              innerQuorumSets: [],
-            },
-          ],
-        },
+        quorumSet: new QuorumSet(
+          2,
+          [],
+          [
+            new QuorumSet(1, ["sdf1", "sdf2"], []),
+            new QuorumSet(1, ["sp1", "sp2"], []),
+          ]
+        ),
         isValidator: true,
         isValidating: true,
       },
@@ -145,22 +119,14 @@ export class FBASRepository implements NetworkRepository {
         organizationId: "sp",
         active: true,
         overLoaded: false,
-        quorumSet: {
-          threshold: 2,
-          validators: [],
-          innerQuorumSets: [
-            {
-              threshold: 1,
-              validators: ["sdf1", "sdf2"],
-              innerQuorumSets: [],
-            },
-            {
-              threshold: 1,
-              validators: ["lb1", "lb2"],
-              innerQuorumSets: [],
-            },
-          ],
-        },
+        quorumSet: new QuorumSet(
+          2,
+          [],
+          [
+            new QuorumSet(1, ["sdf1", "sdf2"], []),
+            new QuorumSet(1, ["lb1", "lb2"], []),
+          ]
+        ),
         isValidator: true,
         isValidating: true,
       },
@@ -172,26 +138,27 @@ export class FBASRepository implements NetworkRepository {
         active: true,
         overLoaded: false,
         organizationId: "sp",
-        quorumSet: {
-          threshold: 2,
-          validators: [],
-          innerQuorumSets: [
-            {
-              threshold: 1,
-              validators: ["sdf1", "sdf2"],
-              innerQuorumSets: [],
-            },
-            {
-              threshold: 1,
-              validators: ["lb1", "lb2"],
-              innerQuorumSets: [],
-            },
-          ],
-        },
+        quorumSet: new QuorumSet(
+          2,
+          [],
+          [
+            new QuorumSet(1, ["sdf1", "sdf2"], []),
+            new QuorumSet(1, ["lb1", "lb2"], []),
+          ]
+        ),
         isValidator: true,
         isValidating: true,
       },
-    ].map((node) => Node.fromJSON(node));
+    ].map((node) => {
+      const myNode = new Node(node.publicKey, node.ip, node.port);
+      myNode.name = node.name;
+      myNode.active = node.active;
+      myNode.overLoaded = node.overLoaded;
+      myNode.organizationId = node.organizationId;
+      myNode.quorumSet = node.quorumSet;
+      myNode.isValidating = node.isValidating;
+      return myNode;
+    });
     const network = new Network(nodes, organizations);
     network.networkStatistics.hasQuorumIntersection = false;
     network.networkStatistics.minBlockingSetCountryFilteredSize = 2;

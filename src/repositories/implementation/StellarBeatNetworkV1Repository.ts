@@ -13,19 +13,16 @@ export class StellarBeatNetworkV1Repository implements NetworkRepository {
       if (at) {
         params["at"] = at.toISOString();
       }
-
       const result = await axios.get(this.apiBaseUrl + "/v1", {
         params,
       });
-      if (result.data) {
-        return ok(Network.fromJSON(result.data));
-      }
+      if (!result.data) return err(new Error("No data property in result"));
 
-      return err(new Error("No data property in result"));
+      return ok(Network.fromJSON(result.data));
     } catch (error) {
       console.log(error);
       if (error instanceof Error) return err(error);
-      return err(new Error("Error fetching network"));
+      return err(new Error("Error fetching Network"));
     }
   }
 }
