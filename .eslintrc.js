@@ -33,4 +33,5 @@ module.exports = {
       },
     },
   ],
+  ignorePatterns: ['/*', '!/src']
 };

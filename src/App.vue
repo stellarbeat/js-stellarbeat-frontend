@@ -150,25 +150,8 @@ export default {
 </script>
 
 <style scoped>
-.action-bar {
-  background-color: #eaebed;
-  padding: 2px;
-}
-
 .full {
   background: #f5f7fb;
-}
-
-.collapser {
-  background: white;
-}
-
-.my-header {
-  width: 100%;
-}
-
-.my-navbar-toggle {
-  border: none;
 }
 </style>
 
