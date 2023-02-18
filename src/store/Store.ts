@@ -21,9 +21,7 @@ import { AggregateChange } from "@/services/change-queue/changes/aggregate-chang
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
-import { RESTHistoryArchiveScanRepository } from "@/store/history-archive-scan/RESTHistoryArchiveScanRepository";
 import Config, { NetworkContext, NetworkId } from "@/config/Config";
-import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
 
 interface Data {
   isLoading: boolean;
@@ -52,7 +50,6 @@ export default class Store {
     return this.includeWatcherNodes || node.isValidator;
   };
 
-  public historyArchiveScanRepository: HistoryArchiveScanRepository;
   public networkContexts: Map<NetworkId, NetworkContext> = new Map();
 
   //todo: move higher up
@@ -90,9 +87,6 @@ export default class Store {
     this.networkContext = networkContext;
     if (!this.networkContext.apiBaseUrl)
       throw new Error("No api base url found");
-    this.historyArchiveScanRepository = new RESTHistoryArchiveScanRepository(
-      this.networkContext.apiBaseUrl
-    );
     this.appConfig = appConfig;
   }
 

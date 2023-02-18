@@ -1,4 +1,4 @@
-import { HistoryArchiveScanRepository } from "@/store/history-archive-scan/HistoryArchiveScanRepository";
+import { HistoryArchiveScanRepository } from "@/repositories/HistoryArchiveScanRepository";
 import { HistoryArchiveScan } from "@stellarbeat/js-stellarbeat-shared";
 import axios from "axios";
 

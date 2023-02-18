@@ -217,8 +217,10 @@ import NodeStatistics30DActive from "@/components/node/node-cards/statistics/nod
 import NodeStatistics30DValidating from "@/components/node/node-cards/statistics/node-statistics-30D-validating.vue";
 import NodeStatistics24HValidating from "@/components/node/node-cards/statistics/node-statistics-24H-validating.vue";
 import useNodeMeasurementsStore from "@/store/useNodeMeasurementsStore";
+import useHistoryArchiveScanRepository from "@/repositories/useHistoryArchiveScanRepository";
 
 const store = useStore();
+const historyArchiveScanRepository = useHistoryArchiveScanRepository();
 const nodeMeasurementStore = useNodeMeasurementsStore();
 const network = store.network;
 const selectedNode = computed(() => store.selectedNode);
@@ -232,10 +234,9 @@ async function fetchHistoryArchiveScan() {
   if (!selectedNode.value.historyUrl) return;
 
   fetchingLatestHistoryArchiveScan.value = true;
-  historyArchiveScan.value =
-    await store.historyArchiveScanRepository.findLatest(
-      selectedNode.value.historyUrl
-    );
+  historyArchiveScan.value = await historyArchiveScanRepository.findLatest(
+    selectedNode.value.historyUrl
+  );
 
   fetchingLatestHistoryArchiveScan.value = false;
 }
