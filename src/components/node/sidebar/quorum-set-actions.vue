@@ -162,8 +162,8 @@ Vue.directive("b-modal", VBModal);
 
 export interface Props {
   quorumSet: QuorumSet;
-  parentQuorumSet?: QuorumSet | null | undefined;
-  level?: number | undefined;
+  parentQuorumSet: QuorumSet | null | undefined;
+  level: number | undefined;
 }
 const props = withDefaults(defineProps<Props>(), {
   level: 0,
@@ -182,6 +182,8 @@ const tomlNodesExport = ref("");
 
 const store = useStore();
 const network = store.network;
+
+const dropdown = ref<BDropdown | null>(null);
 
 function deleteQuorumSet() {
   if (!parentQuorumSet.value) return;
@@ -233,8 +235,7 @@ function saveThresholdFromInput() {
 
   inputState.value = null;
   editingThreshold.value = false;
-  //@ts-ignore
-  this.$refs.dropdown.hide(true);
+  if (dropdown.value) dropdown.value.hide(true);
   store.editQuorumSetThreshold(quorumSet.value, Number(newThreshold.value));
 }
 
