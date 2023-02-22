@@ -41,9 +41,8 @@ const network = store.network;
 const filter = ref("");
 
 const fields = computed(() => {
-  let fields = [{ key: "name", label: "Node", sortable: true }];
-  //@ts-ignore
-  fields.push();
+  let fields = [{ key: "name", label: "Organization", sortable: true }];
+
   if (!store.isSimulation && store.networkContext.enableHistory) {
     fields.push({
       key: "subQuorum30DAvailability",

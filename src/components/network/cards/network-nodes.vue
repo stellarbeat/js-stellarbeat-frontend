@@ -28,6 +28,8 @@
       :nodes="validators"
       :fields="fields"
       :per-page="5"
+      :sort-by="'index'"
+      :sort-by-desc="true"
     />
   </div>
 </template>

@@ -141,18 +141,19 @@ export interface Props {
   fields: unknown;
   nodes: Node[];
   perPage?: number;
+  sortBy?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   filter: "",
   perPage: 200,
+  sortBy: "index",
 });
 
-const { filter, fields, nodes, perPage } = toRefs(props);
+const { filter, fields, nodes, perPage, sortBy } = toRefs(props);
 
 const truncate = useTruncate();
 
-const sortBy = ref("  index");
 const sortDesc = ref(true);
 
 const currentPage = ref(1);
