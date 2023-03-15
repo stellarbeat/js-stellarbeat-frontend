@@ -53,7 +53,7 @@
     "vue-scrollto": "^2.20.0",
     "vue2-leaflet": "^2.7.1",
     "vue2-leaflet-markercluster": "^3.1.0",
-    "webpack": "^5.75.0"
+    "webpack": "^5.76.0"
   },
   "devDependencies": {
     "@open-wc/webpack-import-meta-loader": "^0.4.7",
