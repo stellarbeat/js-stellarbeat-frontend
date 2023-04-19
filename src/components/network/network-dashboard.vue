@@ -42,14 +42,19 @@
     </div>
     <div class="row row-cards row-deck gauges">
       <LazyHydrate when-visible>
-        <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
+        <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
           <NodesCountryDistribution />
         </div>
       </LazyHydrate>
 
       <LazyHydrate when-visible>
-        <div class="col-lg-6 col-xl-6" v-if="!store.isSimulation">
+        <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
           <NodesVersions />
+        </div>
+      </LazyHydrate>
+      <LazyHydrate when-visible>
+        <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
+          <ValidatorLoad />
         </div>
       </LazyHydrate>
     </div>
@@ -145,6 +150,7 @@ import LazyHydrate from "vue-lazy-hydration";
 import NetworkHorizon from "@/components/network/cards/network-horizon.vue";
 import NetworkRiskRadarChart from "@/components/network/cards/network-risk-analysis-charts/network-risk-radar-chart.vue";
 import useStore from "@/store/useStore";
+import ValidatorLoad from "@/components/network/cards/validator-load.vue";
 
 const store = useStore();
 const network = store.network;
