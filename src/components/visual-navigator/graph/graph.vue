@@ -10,7 +10,7 @@
         height="100%"
       >
         <g ref="grid">
-          <g v-if="!isLoading">
+          <g v-if="!isLoading && viewGraph">
             <path
               class="edge"
               v-for="edge in viewGraph.regularEdges.filter(
@@ -36,7 +36,11 @@
               :class="getEdgeClassObject(edge)"
             />
             <g
-              v-if="selectedVertices.length > 0 && optionHighlightTrustingNodes"
+              v-if="
+                selectedVertices &&
+                selectedVertices.length > 0 &&
+                optionHighlightTrustingNodes
+              "
             >
               <path
                 class="edge incoming"
@@ -51,7 +55,11 @@
               />
             </g>
             <g
-              v-if="selectedVertices.length > 0 && optionHighlightTrustedNodes"
+              v-if="
+                selectedVertices &&
+                selectedVertices.length > 0 &&
+                optionHighlightTrustedNodes
+              "
             >
               <path
                 class="edge outgoing"

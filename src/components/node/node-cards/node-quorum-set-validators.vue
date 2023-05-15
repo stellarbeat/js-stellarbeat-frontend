@@ -32,10 +32,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ComputedRef, ref } from "vue";
 import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import { BBadge } from "bootstrap-vue";
-import NodesTable from "@/components/node/nodes-table.vue";
+import NodesTable, { TableNode } from "@/components/node/nodes-table.vue";
 import useStore from "@/store/useStore";
 
 const props = defineProps<{
@@ -73,7 +73,7 @@ const fields = computed(() => {
   }
 });
 
-const validators = computed(() => {
+const validators: ComputedRef<TableNode[]> = computed(() => {
   return QuorumSet.getAllValidators(props.node.quorumSet)
     .map((publicKey) => network.getNodeByPublicKey(publicKey))
     .map((validator) => {
@@ -95,4 +95,3 @@ const validators = computed(() => {
     });
 });
 </script>
-<style scoped></style>

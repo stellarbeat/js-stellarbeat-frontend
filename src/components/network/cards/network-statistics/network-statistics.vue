@@ -175,7 +175,7 @@
     </div>
     <div class="col-md-6 col-lg-3 col-xl-3">
       <network-statistics-card
-        :value="network.networkStatistics.topTierSize"
+        :value="network.networkStatistics.topTierSize ?? false"
         :is-loading="isLoading || store.networkAnalyzer.analyzing"
         title="Top tier validators"
         tooltip="Number of validators in the top tier"
@@ -208,7 +208,7 @@
     </div>
     <div class="col-md-6 col-lg-3 col-xl-3">
       <network-statistics-card
-        :value="network.networkStatistics.topTierOrgsSize"
+        :value="network.networkStatistics.topTierOrgsSize ?? false"
         :is-loading="isLoading || store.networkAnalyzer.analyzing"
         title="Top tier organizations"
         :unknown="store.networkAnalyzer.manualMode"
@@ -260,7 +260,7 @@
     </div>
     <div class="col-md-6 col-lg-3 col-xl-3">
       <network-statistics-card
-        :value="network.networkStatistics.hasQuorumIntersection"
+        :value="network.networkStatistics.hasQuorumIntersection ?? false"
         :unknown="store.networkAnalyzer.manualMode"
         :is-bool="true"
         :is-loading="isLoading || store.networkAnalyzer.analyzing"

@@ -12,7 +12,7 @@
                 <img
                   :src="brandLogoSource"
                   class="header-brand-img mr-0"
-                  :alt="brandLogo.alt"
+                  :alt="brandLogo ? brandLogo.alt : undefined"
                 />
               </router-link>
               <h2 class="brand-title mb-0">{{ brandName }}</h2>

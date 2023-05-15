@@ -82,9 +82,12 @@
             name: 'organization-dashboard',
             params: {
               organizationId: data.item.organizationId,
+            },
+            query: {
               view: $route.query.view,
               network: $route.query.network,
               at: $route.query.at,
+              center: true,
             },
           }"
         >
@@ -121,13 +124,13 @@
 
 <script setup lang="ts">
 import Vue, { computed, ref, toRefs, withDefaults } from "vue";
-import { Node } from "@stellarbeat/js-stellarbeat-shared";
 
 import {
   BBadge,
   BIconShield,
   BPagination,
   BTable,
+  BvTableFieldArray,
   VBTooltip,
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
@@ -138,8 +141,8 @@ Vue.directive("b-tooltip", VBTooltip);
 
 export interface Props {
   filter?: string;
-  fields: unknown;
-  nodes: Node[];
+  fields: BvTableFieldArray;
+  nodes: TableNode[];
   perPage?: number;
   sortBy?: string;
 }
@@ -162,4 +165,15 @@ const store = useStore();
 const network = store.network;
 
 const totalRows = computed(() => nodes.value.length);
+
+export type TableNode = {
+  name: string;
+  publicKey: string;
+  organization?: string;
+  organizationId?: string;
+  type?: string;
+  version?: string;
+  action?: string;
+  isFullValidator?: boolean;
+};
 </script>

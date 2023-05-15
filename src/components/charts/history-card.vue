@@ -1,5 +1,5 @@
 <template>
-  <div class="card" style="">
+  <div class="card">
     <div class="card-header pl-3 d-flex flex-wrap">
       <b-button-group size="sm" class="mr-3">
         <b-button :pressed="chartView === '30D'" @click="select30DayView"
@@ -84,8 +84,9 @@ import { BButton, BButtonGroup } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
-import { computed, onMounted, ref, toRefs, watch } from "vue";
+import { computed, ComputedRef, onMounted, ref, toRefs, watch } from "vue";
 import BarChartDay from "@/components/charts/bar-chart-day.vue";
+import { ScatterDataPoint } from "chart.js";
 
 const { isLoading, dimmerClass } = useIsLoading();
 
@@ -136,25 +137,22 @@ const failed = ref(false);
 const chartView = ref("30D");
 const animated = ref(false);
 
-async function select30DayView(time?: Date) {
-  if (time instanceof Date) selectedDate.value = time;
+async function select30DayView(time?: number) {
+  if (time) selectedDate.value = new Date(time);
 
   await updateDayHistoryChart();
   chartView.value = "30D";
 }
 
-async function select24HView(time?: Date) {
-  if (time instanceof Date)
-    selectedDate.value = moment(time).startOf("day").toDate();
+async function select24HView(time?: number) {
+  if (time) selectedDate.value = moment(time).startOf("day").toDate();
 
   await update24HourHistoryChart();
   chartView.value = "24H";
 }
 
-async function select1HView(time?: Date) {
-  if (time instanceof Date)
-    selectedDate.value = moment(time).startOf("hour").toDate();
-
+async function select1HView(time?: number) {
+  if (time) selectedDate.value = moment(time).startOf("hour").toDate();
   await update24HourHistoryChart();
 
   chartView.value = "1H";
@@ -218,7 +216,7 @@ async function update24HourHistoryChart() {
   isLoading.value = false;
 }
 
-const thirtyDaysBarChartData = computed(() => {
+const thirtyDaysBarChartData: ComputedRef<ScatterDataPoint[]> = computed(() => {
   function getY(measurement: StatisticsAggregation) {
     const value = //@ts-ignore
       measurement[dayMeasurementProperty.value] / measurement.crawlCount;
@@ -228,12 +226,12 @@ const thirtyDaysBarChartData = computed(() => {
   return thirtyDayMeasurements.value.map((measurement) => {
     if (!inverted.value) {
       return {
-        x: measurement.time as Date,
+        x: measurement.time.getTime(),
         y: getY(measurement),
       };
     } else {
       return {
-        x: measurement.time as Date,
+        x: measurement.time.getTime(),
         y: Number(
           (
             ((measurement.crawlCount -
@@ -248,7 +246,7 @@ const thirtyDaysBarChartData = computed(() => {
   });
 });
 
-const twentyFourHourBarChartData = computed((): { x: Date; y: number }[] => {
+const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
   let twentyFourHourMap = new Map<string, number[]>();
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   twentyFourHourMeasurements.value.forEach((measurement: any) => {
@@ -261,11 +259,11 @@ const twentyFourHourBarChartData = computed((): { x: Date; y: number }[] => {
     twentyFourHourMap.set(hourBucketString, twentyFourHourValue);
   });
 
-  let twentyFourHourAverages: { x: Date; y: number }[] = [];
+  let twentyFourHourAverages: { x: number; y: number }[] = [];
   twentyFourHourMap.forEach((measurements, hourString) => {
     if (inverted.value) {
       twentyFourHourAverages.push({
-        x: new Date(hourString),
+        x: new Date(hourString).getTime(),
         y: Number(
           (
             100 -
@@ -276,7 +274,7 @@ const twentyFourHourBarChartData = computed((): { x: Date; y: number }[] => {
       });
     } else {
       twentyFourHourAverages.push({
-        x: new Date(hourString),
+        x: new Date(hourString).getTime(),
         y: Number(
           (
             (measurements.reduce((a, b) => a + b, 0) / measurements.length) *
@@ -290,27 +288,29 @@ const twentyFourHourBarChartData = computed((): { x: Date; y: number }[] => {
   return twentyFourHourAverages;
 });
 
-const oneHourLineChartData = computed((): { x: Date; y: number }[] => {
-  return twentyFourHourMeasurements.value
-    .filter(
-      (measurement) =>
-        measurement.time.getHours() ===
-        moment(selectedDate.value).add(0, "hour").toDate().getHours()
-    )
-    .map((measurement: any) => {
-      if (!inverted.value) {
-        return {
-          x: measurement.time as Date,
-          y: measurement[measurementProperty.value],
-        };
-      } else {
-        return {
-          x: measurement.time as Date,
-          y: measurement[measurementProperty.value],
-        };
-      }
-    });
-});
+const oneHourLineChartData: ComputedRef<ScatterDataPoint[]> = computed(
+  (): { x: number; y: number }[] => {
+    return twentyFourHourMeasurements.value
+      .filter(
+        (measurement) =>
+          measurement.time.getHours() ===
+          moment(selectedDate.value).add(0, "hour").toDate().getHours()
+      )
+      .map((measurement: any) => {
+        if (!inverted.value) {
+          return {
+            x: measurement.time.getTime(),
+            y: measurement[measurementProperty.value],
+          };
+        } else {
+          return {
+            x: measurement.time.getTime(),
+            y: measurement[measurementProperty.value],
+          };
+        }
+      });
+  }
+);
 
 onMounted(async () => {
   selectedDate.value = statisticsDateTimeNavigator.getInitialSelectedDate(
@@ -321,4 +321,3 @@ onMounted(async () => {
   rendered.value = true;
 });
 </script>
-<style scoped></style>

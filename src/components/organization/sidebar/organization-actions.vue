@@ -33,7 +33,7 @@
         </b-dropdown-text>
       </div>
       <b-dropdown-item
-        v-if="supportsDelete"
+        v-if="supportsDelete && store.selectedOrganization"
         v-on:click="
           store.removeOrganizationFromOrganization(
             organization,

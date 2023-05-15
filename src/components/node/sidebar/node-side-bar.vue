@@ -26,7 +26,7 @@
       </b-badge>
     </template>
     <template v-slot:explore-list-items>
-      <li class="sb-nav-item" v-if="hasOrganization">
+      <li class="sb-nav-item" v-if="hasOrganization && organization">
         <organization-validators-dropdown
           :organization="organization"
           :expand="true"

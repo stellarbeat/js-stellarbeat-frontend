@@ -7,7 +7,10 @@
       <div class="card-body">
         <router-view />
       </div>
-      <div class="card-footer" v-show="!$route.name.match('privacy')">
+      <div
+        class="card-footer"
+        v-show="$route.name && !$route.name.match('privacy')"
+      >
         <div class="d-flex privacy-link">
           <router-link
             class="nav-link"

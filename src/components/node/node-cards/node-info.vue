@@ -101,5 +101,3 @@ function copyPublicKey() {
   toClipboard(props.node.publicKey);
 }
 </script>
-
-<style scoped></style>

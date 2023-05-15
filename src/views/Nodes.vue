@@ -84,10 +84,10 @@ Age = Time since discovery
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
-import NodesTable from "@/components/node/nodes-table.vue";
+import NodesTable, { TableNode } from "@/components/node/nodes-table.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
-import { computed, ref } from "vue";
+import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 
 defineProps({
@@ -161,7 +161,7 @@ const getNodeType = (node: Node): string => {
   return "Watcher";
 };
 
-const nodes = computed(() => {
+const nodes: ComputedRef<TableNode[]> = computed(() => {
   return store.network.nodes
     .filter((node) => node.active || optionShowInactive.value)
     .filter((node) => node.isValidator || optionShowWatchers.value)

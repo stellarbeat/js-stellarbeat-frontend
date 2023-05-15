@@ -43,8 +43,9 @@
               </div>
               <b-badge
                 v-if="
+                  snapshot.organization.dateDiscovered &&
                   snapshot.startDate.getTime() ===
-                  snapshot.organization.dateDiscovered.getTime()
+                    snapshot.organization.dateDiscovered.getTime()
                 "
                 variant="success"
                 >New</b-badge

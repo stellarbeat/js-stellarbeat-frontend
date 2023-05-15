@@ -29,12 +29,15 @@
       class="row row-cards row-deck"
       v-if="
         store.isHaltingAnalysisVisible &&
+        store.haltingAnalysisPublicKey &&
         !network.getNodeByPublicKey(store.haltingAnalysisPublicKey).unknown
       "
       id="halting-analysis-card"
     >
       <div class="col-12">
-        <HaltingAnalysis :publicKey="store.haltingAnalysisPublicKey">
+        <HaltingAnalysis
+          :publicKey="store.haltingAnalysisPublicKey ?? 'unknown'"
+        >
         </HaltingAnalysis>
       </div>
     </div>

@@ -45,8 +45,8 @@
 </template>
 
 <script setup lang="ts">
-import { BTable, BPagination } from "bootstrap-vue";
-import { computed, ref, toRefs } from "vue";
+import { BTable, BPagination, BvTableFieldArray } from "bootstrap-vue";
+import { computed, ComputedRef, ref, toRefs } from "vue";
 
 const props = defineProps({
   items: {
@@ -72,11 +72,11 @@ const { title, items } = toRefs(props);
 const perPage = ref(5);
 const currentPage = ref(1);
 
-const fields = computed(() => {
+const fields: ComputedRef<BvTableFieldArray> = computed(() => {
   return [
     {
       key: "key",
-      label: title,
+      label: title?.value,
     },
   ];
 });
@@ -101,8 +101,6 @@ const rows = computed(() => {
   font-weight: 700;
 }
 
-.my-tbody tr td {
-}
 .horizontal-list {
   display: flex;
   flex-wrap: wrap;
@@ -111,6 +109,7 @@ const rows = computed(() => {
   margin-bottom: 0;
   padding-left: 0;
 }
+
 .horizontal-list-item {
   margin-right: 4px;
 }

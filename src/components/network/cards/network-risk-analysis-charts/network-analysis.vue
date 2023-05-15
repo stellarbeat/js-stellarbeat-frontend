@@ -186,12 +186,12 @@ const initialDataLoaded = ref(false);
 const statisticsDateTimeNavigator = ref<StatisticsDateTimeNavigator>(
   new StatisticsDateTimeNavigator(store.measurementsStartDate)
 );
-const bucketSize = ref(defaultBucketSize?.value);
+const bucketSize = ref(defaultBucketSize?.value ?? "1Y");
 const failed = ref(false);
 const animated = ref(false);
 const showModal = ref(false);
 const aggregatedDataSets = ref<ChartDataset[]>(getAggregatedDataSets());
-const hour24ChartDataSets = ref<ChartDataset[]>();
+const hour24ChartDataSets = ref<ChartDataset[]>([]);
 const setType = computed(() => {
   return props.analysisType === "safety" ? "splitting" : "blocking";
 });
@@ -652,23 +652,23 @@ function getHour24ChartDataSets(): ChartDataset[] {
   return sets;
 }
 
-function getAggregatedLabels(tooltipItem: TooltipItem<"line">) {
+function getAggregatedLabels(tooltipItem: TooltipItem<"line">): string {
   let dataSet = aggregatedDataSets.value[tooltipItem.datasetIndex];
-  if (!dataSet.data) return;
+  if (!dataSet.data) return "";
   let avg = (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
   let dataSet2 = aggregatedDataSets.value[tooltipItem.datasetIndex + 1];
-  if (!dataSet2.data) return;
+  if (!dataSet2.data) return "";
   let min = (dataSet2.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
   let dataSet3 = aggregatedDataSets.value[tooltipItem.datasetIndex + 2];
-  if (!dataSet3.data) return;
+  if (!dataSet3.data) return "";
   let max = (dataSet3.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
   return `Average: ${avg}; Min: ${min}; Max: ${max}`;
 }
 
-function getLabels(tooltipItem: TooltipItem<"line">) {
-  if (hour24ChartDataSets.value === undefined) return;
+function getLabels(tooltipItem: TooltipItem<"line">): string {
+  if (hour24ChartDataSets.value.length === 0) return "0";
   const dataSet = hour24ChartDataSets.value[tooltipItem.datasetIndex];
-  return (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y;
+  return (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y.toString();
 }
 
 async function select30DayView(time?: Date) {
@@ -679,7 +679,7 @@ async function select30DayView(time?: Date) {
 }
 
 async function select24HView(time?: Date) {
-  if (!hour24ChartDataSets.value)
+  if (hour24ChartDataSets.value.length === 0)
     hour24ChartDataSets.value = getHour24ChartDataSets();
   await updateHiddenStatus("24H");
   if (time instanceof Date) selectedDate.value = time;

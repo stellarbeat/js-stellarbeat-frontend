@@ -33,6 +33,7 @@
                   },
                 }"
                 :class="
+                  isString($route.query.view) &&
                   ['graph', undefined].includes($route.query.view) &&
                   'router-link-exact-active'
                 "
@@ -55,6 +56,7 @@
                   },
                 }"
                 :class="
+                  isString($route.query.view) &&
                   ['graph-org'].includes($route.query.view) &&
                   'router-link-exact-active'
                 "
@@ -222,6 +224,7 @@ import {
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
+import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 Vue.directive("b-tooltip", VBTooltip);
 const WorldMap = defineAsyncComponent(
   () => import("@/components/visual-navigator/world-map.vue")

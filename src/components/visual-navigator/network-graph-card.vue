@@ -22,7 +22,15 @@ import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 import { TrustGraphBuilder } from "@stellarbeat/js-stellarbeat-shared";
-import { computed, onBeforeUnmount, onMounted, Ref, ref, watch } from "vue";
+import {
+  computed,
+  ComputedRef,
+  onBeforeUnmount,
+  onMounted,
+  Ref,
+  ref,
+  watch,
+} from "vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 
@@ -181,11 +189,11 @@ function updateGraph(merge = false) {
 
 const graph = ref(null);
 
-const selectedVertices = computed(() => {
+const selectedVertices: ComputedRef<ViewVertex[]> = computed(() => {
   if (selectedKeys.value.length > 0 && viewGraph)
     return selectedKeys.value
       .map((key) => viewGraph.value.viewVertices.get(key))
-      .filter((vertex) => vertex);
+      .filter((vertex) => vertex !== undefined) as ViewVertex[];
   return [];
 });
 

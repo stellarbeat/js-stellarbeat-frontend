@@ -41,8 +41,10 @@ import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
-import OrganizationsTable from "@/components/organization/organizations-table.vue";
-import { computed, ref } from "vue";
+import OrganizationsTable, {
+  TableOrganization,
+} from "@/components/organization/organizations-table.vue";
+import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 
 defineProps({
@@ -82,7 +84,7 @@ const fields = computed(() => {
   }
 });
 
-const organizations = computed(() => {
+const organizations: ComputedRef<TableOrganization[]> = computed(() => {
   return store.network.organizations.map((organization) => {
     return {
       name: organization.name,

@@ -180,13 +180,13 @@
 
 <script setup lang="ts">
 import Vue, { computed, ref, toRefs } from "vue";
-import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 
 import {
   BIconInfoCircle,
   BIconShield,
   BPagination,
   BTable,
+  BvTableFieldArray,
   VBTooltip,
 } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
@@ -196,8 +196,8 @@ Vue.directive("b-tooltip", VBTooltip);
 
 export interface Props {
   filter?: string;
-  fields: unknown;
-  organizations: Organization[];
+  fields: BvTableFieldArray;
+  organizations: TableOrganization[];
   perPage?: number;
   sortBy?: string;
 }
@@ -217,6 +217,21 @@ const store = useStore();
 const network = store.network;
 
 const totalRows = computed(() => props.organizations.length);
+
+export type TableOrganization = {
+  name: string;
+  id: string;
+  isTierOneOrganization?: boolean;
+  failAt?: number;
+  hasWarning?: boolean;
+  warning?: string;
+  dangers?: string;
+  blocked?: boolean;
+  subQuorum24HAvailability?: string;
+  subQuorum30DAvailability?: string;
+  email?: string;
+  keybase?: string;
+};
 </script>
 
 <style scoped>

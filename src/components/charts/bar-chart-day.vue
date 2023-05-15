@@ -214,5 +214,3 @@ onBeforeUnmount(() => {
   }
 });
 </script>
-
-<style scoped></style>

@@ -4,9 +4,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ComputedRef } from "vue";
 import { Organization } from "@stellarbeat/js-stellarbeat-shared";
-import NodesTable from "@/components/node/nodes-table.vue";
+import NodesTable, { TableNode } from "@/components/node/nodes-table.vue";
 import useStore from "@/store/useStore";
 
 const props = defineProps<{
@@ -28,7 +28,7 @@ const fields = computed(() => {
   return fields;
 });
 
-const validators = computed(() => {
+const validators: ComputedRef<TableNode[]> = computed(() => {
   return props.organization.validators
     .map((publicKey) => store.network.getNodeByPublicKey(publicKey))
     .map((validator) => {

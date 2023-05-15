@@ -24,7 +24,7 @@
     </b-dropdown-text>
     <b-dropdown-item
       v-if="supportsDelete"
-      v-on:click="store.deleteValidatorFromQuorumSet(quorumSet, node)"
+      v-on:click="deleteValidatorFromQuorumSet(node, quorumSet)"
       @click.prevent.stop
     >
       <b-icon-x-circle scale="0.9" />
@@ -81,6 +81,14 @@ const { node, supportsDelete, quorumSet, supportsHaltingAnalysis } =
 const store = useStore();
 const network = store.network;
 const { toClipboard } = useClipboard();
+
+const deleteValidatorFromQuorumSet = (
+  node: Node,
+  quorumSet: QuorumSet | undefined
+) => {
+  if (!quorumSet) return;
+  store.deleteValidatorFromQuorumSet(quorumSet, node);
+};
 
 function copyPublicKey() {
   toClipboard(node.value.publicKey);

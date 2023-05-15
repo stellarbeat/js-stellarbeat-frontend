@@ -98,10 +98,7 @@ onMounted(() => {
       },
       onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
         if (activeElements[0] && activeElements[0].index >= 0)
-          emit(
-            "click-date",
-            (data.value[activeElements[0].index].x as unknown as Date).getTime()
-          );
+          emit("click-date", data.value[activeElements[0].index].x);
       },
       plugins: {
         tooltip: {
@@ -187,5 +184,3 @@ onBeforeUnmount(() => {
   lineChart.destroy();
 });
 </script>
-
-<style scoped></style>
