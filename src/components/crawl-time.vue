@@ -72,7 +72,7 @@ function timeTravel() {
       network: route.query.network,
       at: moment(time.value)
         .hours(Number(crawlTime.value.substring(0, 2)))
-        .minutes(Number(crawlTime.value.substring(3, 2)))
+        .minutes(Number(crawlTime.value.substring(3, 5)))
         .toISOString(),
     },
   });
