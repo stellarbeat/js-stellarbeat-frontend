@@ -93,7 +93,7 @@
                                 {{ store.network.maxLedgerVersion }}
                               </td>
                             </tr>
-                            <tr>
+                            <tr v-if="store.network.quorumSetConfiguration">
                               <td class="px-0 info-title">Quorum set</td>
                               <td class="text-left">
                                 <pre><code>{{ prettifyBaseQuorumSet(store.network.quorumSetConfiguration, store.network) }}</code></pre>
