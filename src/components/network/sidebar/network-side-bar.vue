@@ -1,5 +1,9 @@
 <template>
-  <side-bar :sticky-key="'stellar-public'" icon="house">
+  <side-bar
+    :sticky-key="'stellar-public'"
+    icon="house"
+    :has-info-section="true"
+  >
     <template v-slot:title>
       {{ store.getNetworkContextName() }}
     </template>
@@ -43,7 +47,7 @@
     <template v-slot:tool-list-items>
       <li class="sb-nav-item" v-if="store.networkContext.enableConfigExport">
         <nav-link
-          :title="'Stellar core config'"
+          :title="'Stellar core quorum set'"
           v-b-modal.tomlExportModal
           :show-icon="true"
           icon="download"
@@ -53,7 +57,7 @@
         lazy
         size="lg"
         id="tomlExportModal"
-        title="Stellar Core Config"
+        title="Stellar Core quorum set"
         ok-only
         ok-title="Close"
       >

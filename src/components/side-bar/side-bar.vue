@@ -41,6 +41,72 @@
               <ul class="sb-nav-list">
                 <slot name="tool-list-items"></slot>
               </ul>
+
+              <h6 class="sb-navbar-heading">Info</h6>
+              <div class="overflow">
+                <div>
+                  <ul class="sb-nav-list">
+                    <li class="sb-nav-item">
+                      <nav-link
+                        :title="'Stellarbeat configuration'"
+                        :show-icon="true"
+                        v-b-modal.networkProps
+                        icon="info-circle"
+                      ></nav-link>
+                      <b-modal
+                        lazy
+                        id="networkProps"
+                        size="lg"
+                        title="Stellarbeat configuration"
+                        ok-only
+                        ok-title="Close"
+                      >
+                        <table class="table card-table">
+                          <tbody class="text-gray">
+                            <tr>
+                              <td class="px-0 info-title">Overlay version</td>
+                              <td class="px-0 text-right">
+                                {{ store.network.overlayVersion }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-0 info-title">
+                                Minimum overlay version
+                              </td>
+                              <td class="px-0 text-right">
+                                {{ store.network.overlayMinVersion }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-0 info-title">
+                                Latest Stellar Core version
+                              </td>
+                              <td class="px-0 text-right">
+                                {{ store.network.stellarCoreVersion }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-0 info-title">
+                                Maximum ledger version
+                              </td>
+                              <td class="px-0 text-right">
+                                {{ store.network.maxLedgerVersion }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="px-0 info-title">Quorum set</td>
+                              <td class="text-left">
+                                <pre><code>{{ prettifyBaseQuorumSet(store.network.quorumSetConfiguration, store.network) }}</code></pre>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </b-modal>
+                    </li>
+                    <slot name="info"></slot>
+                  </ul>
+                </div>
+              </div>
               <h6 class="sb-navbar-heading mt-3">Options</h6>
               <ul class="sb-nav-list">
                 <li class="sb-nav-item">
@@ -72,13 +138,18 @@ import {
   BFormCheckbox,
   BIconBullseye,
   BIconBuilding,
+  BModal,
+  BIconInfoCircle,
 } from "bootstrap-vue";
 
 import Vue from "vue";
 Vue.component("BIconBullseye", BIconBullseye);
 Vue.component("BIconBuilding", BIconBuilding);
+Vue.component("BIconInfoCircle", BIconInfoCircle);
 
 import useStore from "@/store/useStore";
+import NavLink from "@/components/side-bar/nav-link.vue";
+import { BaseQuorumSet, Network } from "@stellarbeat/js-stellarbeat-shared";
 
 defineProps({
   stickyKey: String,
@@ -90,6 +161,21 @@ defineProps({
 });
 
 const store = useStore();
+
+function prettifyBaseQuorumSet(
+  qSet: BaseQuorumSet,
+  network: Network
+): Record<string, unknown> {
+  return {
+    threshold: qSet.threshold,
+    validators: qSet.validators.map(
+      (validator) => network.getNodeByPublicKey(validator).displayName
+    ),
+    innerQuorumSets: qSet.innerQuorumSets.map((innerQSet) =>
+      prettifyBaseQuorumSet(innerQSet, network)
+    ),
+  };
+}
 
 onMounted(() => {
   stickybits("#sticky");
@@ -132,5 +218,8 @@ onMounted(() => {
 
 .sb-nav-list {
   padding-left: 0;
+}
+.info-title {
+  font-weight: 600;
 }
 </style>

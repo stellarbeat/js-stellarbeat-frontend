@@ -1534,10 +1534,10 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellarbeat-shared@^6.0.0-2":
-  version "6.0.0-2"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-6.0.0-2.tgz#709af6b1a573b38c7a272568daf8f9b329f23209"
-  integrity sha512-YaEGH5365Q901cSfUcrQmuC7mPBHgJxS8LA9R8quv6ms7I/bac66HDv7fb6gkB+sjEGAf1qP+z+ejS6n2406PA==
+"@stellarbeat/js-stellarbeat-shared@^6.0.0-5":
+  version "6.0.0-5"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-6.0.0-5.tgz#6e98274da025387d219d9de7e55df05be7a99112"
+  integrity sha512-ka3IRe6SzaSBHQKbCz/vT0dAzt7pecVzo0bfNLl9svR9HiwNovfL5U7i02AoT6awJtaX7lgF2/8+I59mIh/7jQ==
   dependencies:
     "@iarna/toml" "^2.2.5"
     neverthrow "^6.0.0"
