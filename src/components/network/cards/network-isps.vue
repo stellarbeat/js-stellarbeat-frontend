@@ -1,5 +1,11 @@
 <template>
   <div class="card" id="isp-list-card">
+    <div class="card-header pl-3">
+      <h1 class="card-title">
+        {{ store.includeWatcherNodes ? "Node " : "Validator " }} ISPs
+      </h1>
+    </div>
+
     <div class="d-flex flex-column align-items-center justify-content-end">
       <b-table
         striped
@@ -19,7 +25,7 @@
         <template v-slot:cell(count)="data">
           {{ data.value }}
         </template>
-        <!--template v-slot:cell(action)="row">
+        <template v-slot:cell(action)="row">
           <b-dropdown
             right
             size="sm"
@@ -34,14 +40,15 @@
             </template>
             <b-dropdown-header> Simulation options </b-dropdown-header>
             <div>
-              <b-dropdown-item v-on:click.prevent.stop="alert()">
+              <b-dropdown-item
+                v-on:click.prevent.stop="simulateFailure(row.item.ispKey)"
+              >
                 <b-icon-lightning scale="0.9" />
-                {{ "Simulate failure" }}
-                {{ row.item.isp }}
+                Halt nodes with ISP
               </b-dropdown-item>
             </div>
           </b-dropdown>
-        </template!-->
+        </template>
       </b-table>
       <div
         class="d-flex justify-content-end m-1"
@@ -60,7 +67,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import {
   BDropdown,
   BDropdownHeader,
@@ -71,6 +78,9 @@ import {
   BTable,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
+import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
+import VueScrollTo from "vue-scrollto";
 
 const store = useStore();
 const network = store.network;
@@ -80,21 +90,39 @@ const sortBy = ref("count");
 const sortDesc = ref(true);
 const currentPage = ref(1);
 
-const ispList = computed(() => {
-  const ispKeyMap = new Map<string, string>();
+const ispToKeyMap = computed(() => {
+  const map = new Map<string, string>();
   network.nodes
     .filter((node) => node.isValidator || store.includeWatcherNodes)
     .forEach((node) => {
       if (node.isp) {
         const ispKey = removeSpecialCharacters(node.isp.toLowerCase());
-        if (ispKeyMap.has(ispKey)) {
-          ispKeyMap.set(ispKey, node.isp);
+        map.set(node.isp, ispKey);
+      }
+    });
+
+  return map;
+});
+
+const keyToIspMap = computed(() => {
+  const map = new Map<string, string>();
+  network.nodes
+    .filter((node) => node.isValidator || store.includeWatcherNodes)
+    .forEach((node) => {
+      if (node.isp) {
+        const ispKey = removeSpecialCharacters(node.isp.toLowerCase());
+        if (map.has(ispKey)) {
+          map.set(ispKey, node.isp);
         } else {
-          ispKeyMap.set(ispKey, node.isp);
+          map.set(ispKey, node.isp);
         }
       }
     });
 
+  return map;
+});
+
+const ispList = computed(() => {
   const getIspKeyCountsArray = getCountsArray(
     (
       network.nodes
@@ -105,13 +133,28 @@ const ispList = computed(() => {
     ).map((isp) => removeSpecialCharacters(isp.toLowerCase()))
   );
 
-  return getIspKeyCountsArray.map((isp) => {
+  return getIspKeyCountsArray.map((ispKeyCount) => {
     return {
-      isp: ispKeyMap.get(isp.isp) as string,
-      count: isp.count,
+      isp: keyToIspMap.value.get(ispKeyCount.isp) as string,
+      ispKey: ispKeyCount.isp,
+      count: ispKeyCount.count,
     };
   });
 });
+
+const simulateFailure = function (ispKey: string) {
+  let aggregateChange = new AggregateChange(
+    network.nodes
+      .filter((node) => node.isp && ispToKeyMap.value.get(node.isp) === ispKey)
+      .map((node) => new EntityPropertyUpdate(node, "isValidating", false))
+  );
+
+  store.processChange(aggregateChange);
+
+  nextTick(() => {
+    VueScrollTo.scrollTo("#content");
+  });
+};
 
 const totalRows = computed(() => ispList.value.length);
 
