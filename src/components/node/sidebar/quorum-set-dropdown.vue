@@ -16,6 +16,7 @@
       :has-warnings="hasWarnings"
       :warnings="quorumSetWarnings"
       :has-danger="
+        store.selectedNode &&
         store.network.isQuorumSetBlocked(store.selectedNode, quorumSet)
       "
       :dangers="quorumSetDangers"
@@ -40,10 +41,12 @@
         :dangers="
           'Node not validating ' +
           (store.network.isQuorumSetBlocked(validator)
-            ? ': quorumset not reaching threshold'
+            ? ': quorum-set not reaching threshold'
             : '')
         "
-        :has-warnings="store.network.nodeHasWarnings(validator)"
+        :has-warnings="
+          NodeWarningDetector.nodeHasWarning(validator, store.network)
+        "
         :warnings="store.network.getNodeWarningReasons(validator)"
       >
         <template v-slot:action-dropdown>
@@ -79,6 +82,7 @@ import useStore from "@/store/useStore";
 import { computed, toRefs, withDefaults } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
 import { useDropdown } from "@/composables/useDropdown";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 export interface Props {
   quorumSet: QuorumSet;

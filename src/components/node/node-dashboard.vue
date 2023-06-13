@@ -19,7 +19,7 @@
     </b-alert>
     <b-alert
       :show="
-        network.nodeHasWarnings(selectedNode) &&
+        NodeWarningDetector.nodeHasWarning(selectedNode, network) &&
         !network.historyArchiveHasError(selectedNode)
       "
       variant="warning"
@@ -218,6 +218,7 @@ import NodeStatistics30DValidating from "@/components/node/node-cards/statistics
 import NodeStatistics24HValidating from "@/components/node/node-cards/statistics/node-statistics-24H-validating.vue";
 import useNodeMeasurementsStore from "@/store/useNodeMeasurementsStore";
 import useHistoryArchiveScanRepository from "@/repositories/useHistoryArchiveScanRepository";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 const store = useStore();
 const historyArchiveScanRepository = useHistoryArchiveScanRepository();

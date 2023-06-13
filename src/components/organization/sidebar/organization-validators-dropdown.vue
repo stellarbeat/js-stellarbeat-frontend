@@ -16,7 +16,7 @@
         :is-link-in-dropdown="true"
         :has-danger="network.isNodeFailing(validator)"
         :dangers="network.getNodeFailingReason(validator).description"
-        :has-warnings="network.nodeHasWarnings(validator)"
+        :has-warnings="NodeWarningDetector.nodeHasWarning(validator, network)"
         :warnings="network.getNodeWarningReasons(validator)"
       >
         <template v-slot:action-dropdown>
@@ -35,6 +35,7 @@ import { useDropdown } from "@/composables/useDropdown";
 import useStore from "@/store/useStore";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 const props = defineProps<{
   organization: Organization;

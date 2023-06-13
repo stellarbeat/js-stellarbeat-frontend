@@ -60,8 +60,9 @@
           </b-badge>
           <b-badge
             v-else-if="
-              network.nodeHasWarnings(
-                network.getNodeByPublicKey(data.item.publicKey)
+              NodeWarningDetector.nodeHasWarning(
+                network.getNodeByPublicKey(data.item.publicKey),
+                network
               )
             "
             v-b-tooltip="
@@ -136,6 +137,7 @@ import {
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import useStore from "@/store/useStore";
 import { useTruncate } from "@/composables/useTruncate";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 Vue.directive("b-tooltip", VBTooltip);
 

@@ -20,7 +20,7 @@
             v-on:click="selectNode(node)"
             :title="getDisplayName(node)"
             :isLinkInDropdown="true"
-            :has-warnings="network.nodeHasWarnings(node)"
+            :has-warnings="NodeWarningDetector.nodeHasWarning(node, network)"
             :warnings="network.getNodeWarningReasons(node)"
             :has-danger="network.isNodeFailing(node)"
             :dangers="network.getNodeFailingReason(node).label"
@@ -50,6 +50,7 @@ import { computed } from "vue";
 import useStore from "@/store/useStore";
 import { useDropdown } from "@/composables/useDropdown";
 import { useRoute, useRouter } from "vue-router/composables";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 const props = defineProps<{
   nodes: Node[];
@@ -87,8 +88,9 @@ const paginatedNodes = computed(() => {
 
 const hasGeneralValidatorsWarning = computed(() => {
   return (
-    props.nodes.some((node) => network.nodeHasWarnings(node)) ||
-    props.nodes.some((node) => network.isNodeFailing(node))
+    props.nodes.some((node) =>
+      NodeWarningDetector.nodeHasWarning(node, network)
+    ) || props.nodes.some((node) => network.isNodeFailing(node))
   );
 });
 

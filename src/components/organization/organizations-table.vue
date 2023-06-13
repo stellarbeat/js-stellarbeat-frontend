@@ -52,7 +52,9 @@
                 >{{ network.getNodeFailingReason(validator).label }}</span
               >
               <span
-                v-else-if="network.nodeHasWarnings(validator)"
+                v-else-if="
+                  NodeWarningDetector.nodeHasWarning(validator, network)
+                "
                 class="badge sb-badge badge-warning ml-1"
                 v-b-tooltip:hover="network.getNodeWarningReasons(validator)"
               >
@@ -191,6 +193,7 @@ import {
 } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
 import useStore from "@/store/useStore";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 Vue.directive("b-tooltip", VBTooltip);
 

@@ -18,7 +18,7 @@
         >{{ network.getNodeFailingReason(selectedNode).label }}
       </b-badge>
       <b-badge
-        v-else-if="network.nodeHasWarnings(selectedNode)"
+        v-else-if="NodeWarningDetector.nodeHasWarning(selectedNode, network)"
         variant="warning"
         v-b-tooltip="network.getNodeWarningReasons(selectedNode)"
       >
@@ -123,6 +123,7 @@ import SideBar from "@/components/side-bar/side-bar.vue";
 import { BBadge, BModal, VBModal } from "bootstrap-vue";
 import QuorumSlices from "@/components/node/tools/quorum-slices.vue";
 import useStore from "@/store/useStore";
+import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 Vue.directive("b-modal", VBModal);
 
