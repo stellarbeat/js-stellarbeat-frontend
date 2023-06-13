@@ -47,7 +47,12 @@
         :has-warnings="
           NodeWarningDetector.nodeHasWarning(validator, store.network)
         "
-        :warnings="store.network.getNodeWarningReasons(validator)"
+        :warnings="
+          NodeWarningDetector.getPrimaryNodeWarningReason(
+            validator,
+            store.network
+          )
+        "
       >
         <template v-slot:action-dropdown>
           <node-actions

@@ -24,7 +24,11 @@
       "
       variant="warning"
     >
-      {{ network.getNodeWarningReasons(selectedNode) }}
+      {{
+        NodeWarningDetector.getNodeWarningReasons(selectedNode, network).join(
+          "\n"
+        )
+      }}
     </b-alert>
     <b-alert
       :show="historyArchiveScan ? historyArchiveScan.isSlow : false"

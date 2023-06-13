@@ -66,8 +66,9 @@
               )
             "
             v-b-tooltip="
-              network.getNodeWarningReasons(
-                network.getNodeByPublicKey(data.item.publicKey)
+              NodeWarningDetector.getPrimaryNodeWarningReason(
+                network.getNodeByPublicKey(data.item.publicKey),
+                network
               )
             "
             variant="warning"

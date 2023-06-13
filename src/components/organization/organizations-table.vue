@@ -56,7 +56,12 @@
                   NodeWarningDetector.nodeHasWarning(validator, network)
                 "
                 class="badge sb-badge badge-warning ml-1"
-                v-b-tooltip:hover="network.getNodeWarningReasons(validator)"
+                v-b-tooltip:hover="
+                  NodeWarningDetector.getPrimaryNodeWarningReason(
+                    validator,
+                    network
+                  )
+                "
               >
                 Warning
               </span>

@@ -20,7 +20,9 @@
       <b-badge
         v-else-if="NodeWarningDetector.nodeHasWarning(selectedNode, network)"
         variant="warning"
-        v-b-tooltip="network.getNodeWarningReasons(selectedNode)"
+        v-b-tooltip="
+          NodeWarningDetector.getNodeWarningReasons(selectedNode, network)
+        "
       >
         Warning
       </b-badge>

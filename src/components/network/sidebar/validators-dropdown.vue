@@ -21,7 +21,9 @@
             :title="getDisplayName(node)"
             :isLinkInDropdown="true"
             :has-warnings="NodeWarningDetector.nodeHasWarning(node, network)"
-            :warnings="network.getNodeWarningReasons(node)"
+            :warnings="
+              NodeWarningDetector.getPrimaryNodeWarningReason(node, network)
+            "
             :has-danger="network.isNodeFailing(node)"
             :dangers="network.getNodeFailingReason(node).label"
           >
