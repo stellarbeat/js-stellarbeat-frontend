@@ -1,4 +1,5 @@
 import { Network, Node } from "@stellarbeat/js-stellarbeat-shared";
+import { SemanticVersionComparer } from "@/services/SemanticVersionComparer";
 
 export class NodeWarningDetector {
   static nodeHasWarning(node: Node, network: Network) {
@@ -13,6 +14,17 @@ export class NodeWarningDetector {
 
     if (network.isFullValidatorWithOutOfDateArchive(node)) {
       reasons.push("History archive not up-to-date");
+    }
+
+    if (
+      node.versionStr &&
+      network.stellarCoreVersion &&
+      SemanticVersionComparer.isBehind(
+        node.versionStr,
+        network.stellarCoreVersion
+      )
+    ) {
+      reasons.push("Stellar-core version behind");
     }
 
     return reasons;
