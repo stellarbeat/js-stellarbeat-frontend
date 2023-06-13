@@ -1,5 +1,5 @@
 export class SemanticVersionComparer {
-  isBehind(sourceVersion: string, targetVersion: string) {
+  static isBehind(sourceVersion: string, targetVersion: string) {
     const regex = /v?(\d+\.\d+\.\d+)/;
     const sourceMatch = sourceVersion.match(regex);
     const parsedSourceVersion = sourceMatch ? sourceMatch[1] : null;
