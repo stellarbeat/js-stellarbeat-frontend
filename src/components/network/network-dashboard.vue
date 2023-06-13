@@ -131,6 +131,11 @@
           <network-horizon />
         </div>
       </LazyHydrate>
+      <LazyHydrate when-visible>
+        <div class="col-lg-6 col-12">
+          <network-isps />
+        </div>
+      </LazyHydrate>
     </div>
   </div>
 </template>
@@ -151,6 +156,7 @@ import NetworkHorizon from "@/components/network/cards/network-horizon.vue";
 import NetworkRiskRadarChart from "@/components/network/cards/network-risk-analysis-charts/network-risk-radar-chart.vue";
 import useStore from "@/store/useStore";
 import ValidatorLoad from "@/components/network/cards/validator-load.vue";
+import NetworkIsps from "@/components/network/cards/network-isps.vue";
 
 const store = useStore();
 const network = store.network;
