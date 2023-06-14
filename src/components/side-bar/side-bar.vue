@@ -64,13 +64,25 @@
                         <table class="table card-table">
                           <tbody class="text-gray">
                             <tr>
-                              <td class="px-0 info-title">Overlay version</td>
+                              <td class="px-0 info-title">
+                                <b-icon-info-circle
+                                  v-b-tooltip.hover="
+                                    'Overlay version stellarbeat uses to connect to other nodes'
+                                  "
+                                ></b-icon-info-circle>
+                                Overlay version
+                              </td>
                               <td class="px-0 text-right">
                                 {{ store.network.overlayVersion }}
                               </td>
                             </tr>
                             <tr>
                               <td class="px-0 info-title">
+                                <b-icon-info-circle
+                                  v-b-tooltip.hover="
+                                    'Minimum allowed overlay version for nodes'
+                                  "
+                                ></b-icon-info-circle>
                                 Minimum overlay version
                               </td>
                               <td class="px-0 text-right">
@@ -79,7 +91,12 @@
                             </tr>
                             <tr>
                               <td class="px-0 info-title">
-                                Latest Stellar Core version
+                                <b-icon-info-circle
+                                  v-b-tooltip.hover="
+                                    'Stellar core version to determine if a node is outdated'
+                                  "
+                                ></b-icon-info-circle>
+                                Stellar Core version
                               </td>
                               <td class="px-0 text-right">
                                 {{ store.network.stellarCoreVersion }}
@@ -87,6 +104,11 @@
                             </tr>
                             <tr>
                               <td class="px-0 info-title">
+                                <b-icon-info-circle
+                                  v-b-tooltip.hover="
+                                    'Maximum supported ledger version'
+                                  "
+                                ></b-icon-info-circle>
                                 Maximum ledger version
                               </td>
                               <td class="px-0 text-right">
@@ -94,9 +116,18 @@
                               </td>
                             </tr>
                             <tr v-if="store.network.quorumSetConfiguration">
-                              <td class="px-0 info-title">Quorum set</td>
+                              <td class="px-0 info-title">
+                                <b-icon-info-circle
+                                  v-b-tooltip.hover="
+                                    'Quorum set to decide the correct externalized ledger values and basis for network analysis'
+                                  "
+                                ></b-icon-info-circle>
+                                Quorum set
+                              </td>
                               <td class="text-left">
-                                <pre><code>{{ prettifyBaseQuorumSet(store.network.quorumSetConfiguration, store.network) }}</code></pre>
+                                <pre><code>{{
+                                                                prettifyBaseQuorumSet(store.network.quorumSetConfiguration, store.network)
+                                                                }}</code></pre>
                               </td>
                             </tr>
                           </tbody>
@@ -143,6 +174,7 @@ import {
 } from "bootstrap-vue";
 
 import Vue from "vue";
+
 Vue.component("BIconBullseye", BIconBullseye);
 Vue.component("BIconBuilding", BIconBuilding);
 Vue.component("BIconInfoCircle", BIconInfoCircle);
@@ -219,6 +251,7 @@ onMounted(() => {
 .sb-nav-list {
   padding-left: 0;
 }
+
 .info-title {
   font-weight: 600;
 }
