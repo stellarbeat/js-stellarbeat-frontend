@@ -8017,10 +8017,10 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==
 
-prerender-node@^3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/prerender-node/-/prerender-node-3.5.0.tgz#2d2f6bb24977a48f16c10235cd444caaaea7f247"
-  integrity sha512-sx+ONyy3meEPmlixmeezcOSNg45Z9hzlUN5R6STPHzllWtf5EUBWh6lRV8/29IzPI+VWqIJ32EeV/5JbjvbSKg==
+prerender-node@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/prerender-node/-/prerender-node-3.7.0.tgz#30de48138b52ceb2f70da7cf0401f2c3a05ec99f"
+  integrity sha512-FuhXsH0RIjxMbR/K/+S6lpnFu+lgkYd7Vy9qTob2Tp7h7p7n1NYmslPpCEz8xLYwIMgbU9vrTOoxXy5/gRY8mA==
 
 prettier-linter-helpers@^1.0.0:
   version "1.0.0"
