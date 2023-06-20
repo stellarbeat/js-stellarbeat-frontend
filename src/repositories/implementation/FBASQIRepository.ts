@@ -218,8 +218,11 @@ export class FBASQIRepository implements NetworkRepository {
     ].map((node) => {
       const myNode = new Node(node.publicKey, node.ip, node.port);
       myNode.name = node.name;
+      myNode.active = node.active;
+      myNode.overLoaded = node.overLoaded;
       myNode.organizationId = node.organizationId;
       myNode.quorumSet = node.quorumSet;
+      myNode.isValidating = node.isValidating;
 
       return myNode;
     });

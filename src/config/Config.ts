@@ -119,6 +119,7 @@ export default class Config {
         enableHorizon: false,
         enableValidatorLoad: false,
         enableConfigExport: false,
+        apiBaseUrl: "localhost",
       });
 
       this.networkContexts.set("fbas2", {
@@ -132,6 +133,7 @@ export default class Config {
         enableHorizon: false,
         enableValidatorLoad: false,
         enableConfigExport: false,
+        apiBaseUrl: "localhost",
       });
     }
   }

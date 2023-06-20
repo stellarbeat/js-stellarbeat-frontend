@@ -5,9 +5,29 @@
     </b-alert>
 
     <b-alert
+      :show="NodeWarningDetector.nodeHasWarning(selectedNode, network)"
+      variant="warning"
+    >
+      <strong>Detected warning(s)</strong>
+      <ul class="pl-3 ml-0">
+        <li
+          v-bind:key="reason"
+          v-for="reason in NodeWarningDetector.getNodeWarningReasons(
+            selectedNode,
+            network
+          )"
+        >
+          {{ reason }}.
+        </li>
+      </ul>
+    </b-alert>
+
+    <b-alert
       :show="network.historyArchiveHasError(selectedNode)"
       variant="warning"
     >
+      <strong>History archive issue details</strong>
+      <br />
       <span v-html="historyArchiveErrorDescription"></span>
       with
       <a
@@ -16,19 +36,6 @@
         >Stellar Archivist</a
       >
       and purge your cache afterwards.
-    </b-alert>
-    <b-alert
-      :show="
-        NodeWarningDetector.nodeHasWarning(selectedNode, network) &&
-        !network.historyArchiveHasError(selectedNode)
-      "
-      variant="warning"
-    >
-      {{
-        NodeWarningDetector.getNodeWarningReasons(selectedNode, network).join(
-          "\n"
-        )
-      }}
     </b-alert>
     <b-alert
       :show="historyArchiveScan ? historyArchiveScan.isSlow : false"
