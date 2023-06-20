@@ -80,7 +80,7 @@ import moment from "moment";
 import DateNavigator from "@/components/date-navigator.vue";
 import LineChartHour from "@/components/charts/line-chart-hour.vue";
 import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
-import { BButton, BButtonGroup } from "bootstrap-vue";
+import { BButton, BButtonGroup, BIconExclamationTriangle } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";

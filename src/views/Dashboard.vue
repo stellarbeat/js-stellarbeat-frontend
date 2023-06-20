@@ -11,9 +11,13 @@
       </div>
       <crawl-time v-if="!store.isSimulation" />
     </div>
-    <b-alert v-if="selectedNode" :show="selectedNode.unknown" variant="warning"
+    <b-alert
+      :show="selectedNode ? selectedNode.unknown : false"
+      variant="warning"
       >Selected node with public key:
-      <strong>{{ selectedNode.publicKey }}</strong>
+      <strong>{{
+        selectedNode ? selectedNode.publicKey : "UNKNOWN PUBLIC KEY"
+      }}</strong>
       is unknown or archived
     </b-alert>
     <b-alert
@@ -104,8 +108,7 @@ defineProps({
 
 const store = useStore();
 const network = store.network;
-const selectedNode = store.selectedNode;
-const selectedOrganization = store.selectedOrganization;
+
 const route = useRoute();
 const router = useRouter();
 
@@ -147,6 +150,9 @@ watch(
   },
   { immediate: true }
 );
+
+const selectedNode = computed(() => store.selectedNode);
+const selectedOrganization = computed(() => store.selectedOrganization);
 
 const haltingAnalysisPublicKey = computed(() => {
   return store.haltingAnalysisPublicKey;
