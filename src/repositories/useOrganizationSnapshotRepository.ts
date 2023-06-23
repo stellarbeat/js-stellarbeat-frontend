@@ -5,7 +5,8 @@ const store = useStore();
 
 let repo: OrganizationSnapshotRepository | null = null;
 export default function (): OrganizationSnapshotRepository {
-  if (repo !== null) return repo;
+  if (repo !== null && repo.apiBaseUrl === store.networkContext.apiBaseUrl)
+    return repo;
 
   const apiBaseUrl = store.networkContext.apiBaseUrl;
   if (!apiBaseUrl) throw new Error("apiBaseUrl is not set");

@@ -3,7 +3,7 @@ import axios from "axios";
 import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-shot";
 
 export class NodeSnapshotRepository {
-  constructor(private apiBaseUrl: string) {}
+  constructor(public readonly apiBaseUrl: string) {}
 
   async find(at: Date): Promise<Result<NodeSnapShot[], Error>> {
     try {

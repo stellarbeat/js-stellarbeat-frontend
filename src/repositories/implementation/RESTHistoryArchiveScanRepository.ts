@@ -5,7 +5,11 @@ import axios from "axios";
 export class RESTHistoryArchiveScanRepository
   implements HistoryArchiveScanRepository
 {
-  constructor(private baseApiUrl: string) {}
+  constructor(private readonly baseApiUrl: string) {}
+
+  get apiBaseUrl(): string {
+    return this.baseApiUrl;
+  }
 
   async findLatest(url: string): Promise<HistoryArchiveScan | null> {
     try {

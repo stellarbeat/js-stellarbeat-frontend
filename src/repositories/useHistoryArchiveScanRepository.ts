@@ -6,7 +6,8 @@ const store = useStore();
 
 let repo: HistoryArchiveScanRepository | null = null;
 export default function (): HistoryArchiveScanRepository {
-  if (repo !== null) return repo;
+  if (repo !== null && repo.apiBaseUrl === store.networkContext.apiBaseUrl)
+    return repo;
 
   const apiBaseUrl = store.networkContext.apiBaseUrl;
   if (!apiBaseUrl) throw new Error("apiBaseUrl is not set");

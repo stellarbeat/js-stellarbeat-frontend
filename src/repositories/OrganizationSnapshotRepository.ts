@@ -3,7 +3,7 @@ import { OrganizationSnapShot } from "@stellarbeat/js-stellarbeat-shared";
 import axios from "axios";
 
 export class OrganizationSnapshotRepository {
-  constructor(private apiBaseUrl: string) {}
+  constructor(public readonly apiBaseUrl: string) {}
 
   async find(at: Date): Promise<Result<OrganizationSnapShot[], Error>> {
     try {
