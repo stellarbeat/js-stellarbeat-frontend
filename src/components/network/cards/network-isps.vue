@@ -155,7 +155,13 @@ const simulateFailure = function (ispKey: string) {
   let aggregateChange = new AggregateChange(
     network.nodes
       .filter((node) => node.isp && ispToKeyMap.value.get(node.isp) === ispKey)
-      .map((node) => new EntityPropertyUpdate(node, "isValidating", false))
+      .map((node) => {
+        return [
+          new EntityPropertyUpdate(node, "isValidating", false),
+          new EntityPropertyUpdate(node, "activeInScp", false),
+        ];
+      })
+      .flat()
   );
 
   store.processChange(aggregateChange);
