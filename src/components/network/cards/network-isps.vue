@@ -93,7 +93,10 @@ const currentPage = ref(1);
 const ispToKeyMap = computed(() => {
   const map = new Map<string, string>();
   network.nodes
-    .filter((node) => node.isValidator || store.includeWatcherNodes)
+    .filter(
+      (node) =>
+        (node.isValidator && node.isValidating) || store.includeWatcherNodes
+    )
     .forEach((node) => {
       if (node.isp) {
         const ispKey = removeSpecialCharacters(node.isp.toLowerCase());
@@ -107,7 +110,10 @@ const ispToKeyMap = computed(() => {
 const keyToIspMap = computed(() => {
   const map = new Map<string, string>();
   network.nodes
-    .filter((node) => node.isValidator || store.includeWatcherNodes)
+    .filter(
+      (node) =>
+        (node.isValidator && node.isValidating) || store.includeWatcherNodes
+    )
     .forEach((node) => {
       if (node.isp) {
         const ispKey = removeSpecialCharacters(node.isp.toLowerCase());
@@ -127,7 +133,10 @@ const ispList = computed(() => {
     (
       network.nodes
         .filter(
-          (node) => node.isp && (node.isValidator || store.includeWatcherNodes)
+          (node) =>
+            node.isp &&
+            ((node.isValidator && node.isValidating) ||
+              store.includeWatcherNodes)
         )
         .map((node) => node.isp) as string[]
     ).map((isp) => removeSpecialCharacters(isp.toLowerCase()))
