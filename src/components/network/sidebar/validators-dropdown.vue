@@ -76,15 +76,23 @@ const sortedNodes = computed(() => {
     return nodeA.displayName.localeCompare(nodeB.displayName);
   };
 
-  let failingNodes = props.nodes
-    .filter((node) => network.isNodeFailing(node))
+  let nodesWithWarningsOrDangers = props.nodes
+    .filter(
+      (node) =>
+        network.isNodeFailing(node) ||
+        NodeWarningDetector.nodeHasWarning(node, network)
+    )
     .sort(sort);
 
-  let nonFailingNodes = props.nodes
-    .filter((node) => !network.isNodeFailing(node))
+  let remainingNodes = props.nodes
+    .filter(
+      (node) =>
+        !network.isNodeFailing(node) &&
+        !NodeWarningDetector.nodeHasWarning(node, network)
+    )
     .sort(sort);
 
-  return failingNodes.concat(nonFailingNodes);
+  return nodesWithWarningsOrDangers.concat(remainingNodes);
 });
 
 const paginatedNodes = computed(() => {
