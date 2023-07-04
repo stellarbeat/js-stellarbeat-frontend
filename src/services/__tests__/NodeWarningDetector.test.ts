@@ -80,7 +80,7 @@ describe("NodeWarningDetector", () => {
     });
   });
 
-  describe("getPrimaryNodeWarningReason", () => {
+  describe("getNodeWarningReasonsConcatenated", () => {
     it("returns empty string if node has no warnings", () => {
       const node = new Node("a");
       node.historyUrl = "http://localhost:11626";
@@ -92,7 +92,7 @@ describe("NodeWarningDetector", () => {
       ).toEqual("");
     });
 
-    it('returns "History archive issue detected" if node is a full validator with out of date archive and has other warnings', () => {
+    it("returns concatenated warnings", () => {
       const node = new Node("a");
       node.historyUrl = "http://localhost:11626";
       node.isFullValidator = false;
@@ -102,7 +102,9 @@ describe("NodeWarningDetector", () => {
       network.stellarCoreVersion = "11.0.0";
       expect(
         NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
-      ).toEqual("History archive issue detected");
+      ).toEqual(
+        "History archive issue detected | History archive not up-to-date | Stellar-core version behind"
+      );
     });
   });
 });

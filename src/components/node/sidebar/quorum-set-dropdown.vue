@@ -15,10 +15,7 @@
       :secondary="!isRoot"
       :has-warnings="hasWarnings"
       :warnings="quorumSetWarnings"
-      :has-danger="
-        store.selectedNode &&
-        store.network.isQuorumSetBlocked(store.selectedNode, quorumSet)
-      "
+      :has-danger="hasDangers"
       :dangers="quorumSetDangers"
     >
       <template v-slot:action-dropdown>
@@ -88,6 +85,8 @@ import { computed, toRefs, withDefaults } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
 import { useDropdown } from "@/composables/useDropdown";
 import { NodeWarningDetector } from "@/services/NodeWarningDetector";
+import { QuorumSetWarningDetector } from "@/services/QuorumSetWarningDetector";
+import { QuorumSetDangerDetector } from "@/services/QuorumSetDangerDetector";
 
 export interface Props {
   quorumSet: QuorumSet;
@@ -111,7 +110,7 @@ const { showing, toggleShow } = useDropdown(expand.value, emit);
 
 const quorumSetDangers = computed(() => {
   if (!store.selectedNode) throw new Error("No node selected");
-  return QuorumSetService.getQuorumSetDangers(
+  return QuorumSetDangerDetector.getQuorumSetDangers(
     store.selectedNode,
     props.quorumSet,
     store.network
@@ -119,11 +118,26 @@ const quorumSetDangers = computed(() => {
 });
 
 const quorumSetWarnings = computed(() => {
-  return QuorumSetService.getQuorumSetWarnings(props.quorumSet, store.network);
+  return QuorumSetWarningDetector.getQuorumSetWarnings(
+    props.quorumSet,
+    store.network
+  );
+});
+
+const hasDangers = computed(() => {
+  if (!store.selectedNode) throw new Error("No node selected");
+  return QuorumSetDangerDetector.quorumSetHasDangers(
+    store.selectedNode,
+    props.quorumSet,
+    store.network
+  );
 });
 
 const hasWarnings = computed(() => {
-  return QuorumSetService.quorumSetHasWarnings(props.quorumSet, store.network);
+  return QuorumSetWarningDetector.quorumSetHasWarnings(
+    props.quorumSet,
+    store.network
+  );
 });
 
 const classObject = computed(() => {

@@ -103,15 +103,12 @@ const generalValidatorsWarning = computed(() => {
   if (props.nodes.some((node) => network.isNodeFailing(node)))
     return "Some nodes are failing";
 
-  if (props.nodes.some((node) => network.historyArchiveHasError(node)))
-    return "Verification error in history archive";
-
   if (
     props.nodes.some((node) =>
-      network.isFullValidatorWithOutOfDateArchive(node)
+      NodeWarningDetector.nodeHasWarning(node, network)
     )
   )
-    return "Some history archives not up-to-date";
+    return "Some nodes have warnings";
 
   return "";
 });
