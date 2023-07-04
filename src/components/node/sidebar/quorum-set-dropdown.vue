@@ -48,7 +48,7 @@
           NodeWarningDetector.nodeHasWarning(validator, store.network)
         "
         :warnings="
-          NodeWarningDetector.getPrimaryNodeWarningReason(
+          NodeWarningDetector.getNodeWarningReasonsConcatenated(
             validator,
             store.network
           )

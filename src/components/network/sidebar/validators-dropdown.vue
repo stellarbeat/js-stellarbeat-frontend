@@ -22,7 +22,10 @@
             :isLinkInDropdown="true"
             :has-warnings="NodeWarningDetector.nodeHasWarning(node, network)"
             :warnings="
-              NodeWarningDetector.getPrimaryNodeWarningReason(node, network)
+              NodeWarningDetector.getNodeWarningReasonsConcatenated(
+                node,
+                network
+              )
             "
             :has-danger="network.isNodeFailing(node)"
             :dangers="network.getNodeFailingReason(node).label"

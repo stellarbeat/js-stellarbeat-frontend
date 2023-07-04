@@ -88,7 +88,7 @@ describe("NodeWarningDetector", () => {
       node.historyArchiveHasError = false;
       const network = new Network([node]);
       expect(
-        NodeWarningDetector.getPrimaryNodeWarningReason(node, network)
+        NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
       ).toEqual("");
     });
 
@@ -101,7 +101,7 @@ describe("NodeWarningDetector", () => {
       const network = new Network([node]);
       network.stellarCoreVersion = "11.0.0";
       expect(
-        NodeWarningDetector.getPrimaryNodeWarningReason(node, network)
+        NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
       ).toEqual("History archive issue detected");
     });
   });

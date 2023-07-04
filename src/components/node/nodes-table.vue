@@ -66,7 +66,7 @@
               )
             "
             v-b-tooltip="
-              NodeWarningDetector.getPrimaryNodeWarningReason(
+              NodeWarningDetector.getNodeWarningReasonsConcatenated(
                 network.getNodeByPublicKey(data.item.publicKey),
                 network
               )

@@ -30,11 +30,10 @@ export class NodeWarningDetector {
     return reasons;
   }
 
-  static getPrimaryNodeWarningReason(node: Node, network: Network): string {
-    const reasons = NodeWarningDetector.getNodeWarningReasons(node, network);
-    if (reasons.length === 0) {
-      return "";
-    }
-    return reasons[0];
+  static getNodeWarningReasonsConcatenated(
+    node: Node,
+    network: Network
+  ): string {
+    return NodeWarningDetector.getNodeWarningReasons(node, network).join(" | ");
   }
 }

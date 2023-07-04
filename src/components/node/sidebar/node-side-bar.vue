@@ -21,7 +21,10 @@
         v-else-if="NodeWarningDetector.nodeHasWarning(selectedNode, network)"
         variant="warning"
         v-b-tooltip="
-          NodeWarningDetector.getPrimaryNodeWarningReason(selectedNode, network)
+          NodeWarningDetector.getNodeWarningReasonsConcatenated(
+            selectedNode,
+            network
+          )
         "
       >
         Warning

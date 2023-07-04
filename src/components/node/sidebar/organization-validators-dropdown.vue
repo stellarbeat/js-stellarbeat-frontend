@@ -24,7 +24,10 @@
         :dangers="network.getNodeFailingReason(validator).description"
         :has-warnings="NodeWarningDetector.nodeHasWarning(validator, network)"
         :warnings="
-          NodeWarningDetector.getPrimaryNodeWarningReason(validator, network)
+          NodeWarningDetector.getNodeWarningReasonsConcatenated(
+            validator,
+            network
+          )
         "
       >
         <template v-slot:action-dropdown>

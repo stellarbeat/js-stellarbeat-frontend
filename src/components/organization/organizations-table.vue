@@ -57,7 +57,7 @@
                 "
                 class="badge sb-badge badge-warning ml-1"
                 v-b-tooltip:hover="
-                  NodeWarningDetector.getPrimaryNodeWarningReason(
+                  NodeWarningDetector.getNodeWarningReasonsConcatenated(
                     validator,
                     network
                   )
