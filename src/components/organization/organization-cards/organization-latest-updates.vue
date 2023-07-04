@@ -60,6 +60,10 @@
                     Keybase account changed to
                     {{ update.value || "empty" }}
                   </div>
+                  <div v-if="update.key === 'horizon'">
+                    Horizon url changed to
+                    <p class="ml-2">"{{ update.value || "empty" }}"</p>
+                  </div>
                   <div v-if="update.key === 'description'">
                     Description changed to
                     <p class="ml-2">"{{ update.value || "empty" }}"</p>
@@ -221,7 +225,10 @@ async function getSnapshots() {
             (validator: PublicKey) =>
               store.network.getNodeByPublicKey(validator) &&
               store.network.getNodeByPublicKey(validator).name
-                ? (store.network.getNodeByPublicKey(validator).name as string)
+                ? (store.network.getNodeByPublicKey(validator).name as string) +
+                  " (" +
+                  validator +
+                  ")"
                 : validator
           ),
           startDate: snapshot.startDate,
@@ -237,6 +244,7 @@ async function getSnapshots() {
           github: snapshot.organization.github,
           description: snapshot.organization.description,
           keybase: snapshot.organization.keybase,
+          horizon: snapshot.organization.horizonUrl,
         };
       }
     );
@@ -255,6 +263,7 @@ async function getSnapshots() {
         "github",
         "description",
         "keybase",
+        "horizon",
       ]
         .filter((key) =>
           key === "validators"
