@@ -8,10 +8,26 @@
         {{ store.getOrganizationFailingReason(organization) }}
       </b-alert>
       <b-alert
-        :show="store.organizationHasWarnings(organization)"
+        :show="
+          OrganizationWarningDetector.organizationHasWarnings(
+            organization,
+            store.network
+          )
+        "
         variant="warning"
       >
-        {{ store.getOrganizationWarningReason(organization) }}
+        <strong>Detected warning(s)</strong>
+        <ul class="pl-3 ml-0">
+          <li
+            v-bind:key="reason"
+            v-for="reason in OrganizationWarningDetector.getOrganizationWarningReasons(
+              organization,
+              network
+            )"
+          >
+            {{ reason }}.
+          </li>
+        </ul>
       </b-alert>
       <div class="row row-cards row-deck" v-if="!store.isSimulation">
         <LazyHydrate when-visible>
@@ -87,6 +103,7 @@ import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import useOrganizationMeasurementsStore from "@/store/useOrganizationMeasurementsStore";
+import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 
 const store = useStore();
 const organizationMeasurementStore = useOrganizationMeasurementsStore();

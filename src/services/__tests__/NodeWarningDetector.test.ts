@@ -46,7 +46,7 @@ describe("NodeWarningDetector", () => {
       node.isFullValidator = false;
       const network = new Network([node]);
       expect(NodeWarningDetector.getNodeWarningReasons(node, network)).toEqual([
-        "History archive not up-to-date",
+        "History archive behind",
       ]);
     });
     it('returns "History archive issue detected" if node has history archive error', () => {
@@ -103,7 +103,7 @@ describe("NodeWarningDetector", () => {
       expect(
         NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
       ).toEqual(
-        "History archive issue detected | History archive not up-to-date | Stellar-core version behind"
+        "History archive issue detected | History archive behind | Stellar-core version behind"
       );
     });
   });

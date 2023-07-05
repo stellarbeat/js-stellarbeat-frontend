@@ -6,7 +6,12 @@
       v-on:click="toggleShow"
       :showDropdownToggle="true"
       :drop-down-showing="showing"
-      :has-warnings="store.someOrganizationsHaveWarnings(trustedOrganizations)"
+      :has-warnings="
+        OrganizationWarningDetector.someOrganizationsHaveWarnings(
+          trustedOrganizations,
+          store.network
+        )
+      "
       :warnings="'Some organizations have warnings'"
     >
       <template v-slot:action-dropdown>
@@ -27,8 +32,18 @@
         :is-link-in-dropdown="true"
         :has-danger="network.isOrganizationFailing(organization)"
         :dangers="store.getOrganizationFailingReason(organization)"
-        :has-warnings="store.organizationHasWarnings(organization)"
-        :warnings="store.getOrganizationWarningReason(organization)"
+        :has-warnings="
+          OrganizationWarningDetector.organizationHasWarnings(
+            organization,
+            store.network
+          )
+        "
+        :warnings="
+          OrganizationWarningDetector.getOrganizationWarningReasons(
+            organization,
+            store.network
+          ).join(' | ')
+        "
       >
         <template v-slot:action-dropdown>
           <organization-actions
@@ -49,6 +64,7 @@ import useStore from "@/store/useStore";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
 import { useDropdown } from "@/composables/useDropdown";
+import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 
 const props = defineProps<{
   organization: Organization;

@@ -13,21 +13,25 @@ export class NodeWarningDetector {
     }
 
     if (network.isFullValidatorWithOutOfDateArchive(node)) {
-      reasons.push("History archive not up-to-date");
+      reasons.push("History archive behind");
     }
 
-    if (
+    if (NodeWarningDetector.nodeVersionBehind(node, network)) {
+      reasons.push("Stellar-core version behind");
+    }
+
+    return reasons;
+  }
+
+  static nodeVersionBehind(node: Node, network: Network) {
+    return (
       node.versionStr &&
       network.stellarCoreVersion &&
       SemanticVersionComparer.isBehind(
         node.versionStr,
         network.stellarCoreVersion
       )
-    ) {
-      reasons.push("Stellar-core version behind");
-    }
-
-    return reasons;
+    );
   }
 
   static getNodeWarningReasonsConcatenated(

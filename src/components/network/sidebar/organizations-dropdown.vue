@@ -20,7 +20,12 @@
         :title="organization.name"
         :is-link-in-dropdown="true"
         :has-warnings="hasWarnings(organization)"
-        :warnings="store.getOrganizationWarningReason(organization)"
+        :warnings="
+          OrganizationWarningDetector.getOrganizationWarningReasons(
+            organization,
+            store.network
+          ).join(' | ')
+        "
         :has-danger="!organization.subQuorumAvailable"
         :dangers="store.getOrganizationFailingReason(organization)"
       >
@@ -46,6 +51,7 @@ import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router/composables";
 import useStore from "@/store/useStore";
 import { useDropdown } from "@/composables/useDropdown";
+import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 
 const props = defineProps<{
   organizations: Organization[];
@@ -84,7 +90,10 @@ function selectOrganization(organization: Organization) {
 }
 
 function hasWarnings(organization: Organization) {
-  return store.organizationHasWarnings(organization);
+  return OrganizationWarningDetector.organizationHasWarnings(
+    organization,
+    store.network
+  );
 }
 </script>
 

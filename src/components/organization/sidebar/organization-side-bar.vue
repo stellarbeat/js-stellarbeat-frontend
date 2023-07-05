@@ -23,10 +23,18 @@
         }}
       </b-badge>
       <b-badge
-        v-else-if="store.organizationHasWarnings(selectedOrganization)"
+        v-else-if="
+          OrganizationWarningDetector.organizationHasWarnings(
+            selectedOrganization,
+            store.network
+          )
+        "
         variant="warning"
         v-b-tooltip:hover="
-          store.getOrganizationWarningReason(selectedOrganization)
+          OrganizationWarningDetector.getOrganizationWarningReasons(
+            selectedOrganization,
+            store.network
+          ).join(' | ')
         "
       >
         Warning
@@ -109,6 +117,7 @@ import SideBar from "@/components/side-bar/side-bar.vue";
 import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
 import TrustedOrganizationsDropdown from "@/components/organization/sidebar/trusted-organizations-dropdown.vue";
 import useStore from "@/store/useStore";
+import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 
 Vue.directive("b-modal", VBModal);
 Vue.directive("b-tooltip", VBTooltip);

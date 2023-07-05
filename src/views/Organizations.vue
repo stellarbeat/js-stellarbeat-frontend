@@ -46,6 +46,7 @@ import OrganizationsTable, {
 } from "@/components/organization/organizations-table.vue";
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
+import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 
 defineProps({
   isLoading: {
@@ -96,8 +97,14 @@ const organizations: ComputedRef<TableOrganization[]> = computed(() => {
       id: organization.id,
       failAt: store.getOrganizationFailAt(organization),
       dangers: store.getOrganizationFailingReason(organization),
-      hasWarning: store.organizationHasWarnings(organization),
-      warning: store.getOrganizationWarningReason(organization),
+      hasWarning: OrganizationWarningDetector.organizationHasWarnings(
+        organization,
+        store.network
+      ),
+      warning: OrganizationWarningDetector.getOrganizationWarningReasons(
+        organization,
+        store.network
+      ).join(" | "),
       blocked: store.network.isOrganizationBlocked(organization),
       subQuorum24HAvailability: organization.subQuorum24HoursAvailability + "%",
       subQuorum30DAvailability: organization.subQuorum30DaysAvailability + "%",

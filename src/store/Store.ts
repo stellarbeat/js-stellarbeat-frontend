@@ -492,47 +492,6 @@ export default class Store {
     }
   }
 
-  public organizationHasWarnings(organization: Organization) {
-    return (
-      this.organizationHasOutOfDateHistoryArchives(organization) ||
-      this.getOrganizationFailAt(organization) === 1 ||
-      this.organizationHasHistoryArchivesWithError(organization)
-    );
-  }
-  public organizationHasOutOfDateHistoryArchives(organization: Organization) {
-    return organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator))
-      .some((validator) => validator.historyUrl && !validator.isFullValidator);
-  }
-
-  public organizationHasHistoryArchivesWithError(organization: Organization) {
-    return organization.validators
-      .map((validator) => this.network.getNodeByPublicKey(validator))
-      .some(
-        (validator) => validator.historyUrl && validator.historyArchiveHasError
-      );
-  }
-
-  getOrganizationWarningReason(organization: Organization) {
-    if (this.getOrganizationFailAt(organization) === 1)
-      return "If one more validator fails, this organization will fail";
-
-    if (this.organizationHasHistoryArchivesWithError(organization)) {
-      return "History archive verification issue detected";
-    }
-
-    if (this.organizationHasOutOfDateHistoryArchives(organization))
-      return "Not all history archives up-to-date";
-  }
-
-  someOrganizationsHaveWarnings(organizations: Organization[]) {
-    return organizations.some(
-      (organization) =>
-        this.organizationHasWarnings(organization) ||
-        this.network.isOrganizationFailing(organization)
-    );
-  }
-
   getOrganizationFailAt(organization: Organization) {
     const nrOfValidatingNodes = organization.validators
       .map((validator) => this.network.getNodeByPublicKey(validator))
