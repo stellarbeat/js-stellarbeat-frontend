@@ -32,6 +32,13 @@
           </tr>
           <tr class="text-gray">
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
+              host
+            </td>
+            <td class="px-0 text-right">{{ node.host }}</td>
+          </tr>
+
+          <tr class="text-gray">
+            <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
               ip:port
             </td>
             <td class="px-0 text-right">{{ node.key }}</td>
