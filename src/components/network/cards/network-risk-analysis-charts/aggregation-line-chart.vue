@@ -17,6 +17,7 @@ import {
   LineController,
   LineElement,
   Point,
+  PointElement,
   TimeScale,
   Tooltip,
   TooltipItem,
@@ -75,7 +76,8 @@ function initializeBarChart() {
     LineController,
     Legend,
     Tooltip,
-    LinearScale
+    LinearScale,
+    PointElement
   );
   chart.value = new Chart(chartElement.value as HTMLCanvasElement, {
     type: "line",
