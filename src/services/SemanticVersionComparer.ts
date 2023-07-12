@@ -25,6 +25,10 @@ export class SemanticVersionComparer {
       if (semVerPart < latestSemVerPart) {
         return true;
       }
+
+      if (semVerPart > latestSemVerPart) {
+        return false;
+      }
     }
 
     return false;
