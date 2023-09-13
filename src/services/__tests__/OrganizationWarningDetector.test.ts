@@ -184,6 +184,42 @@ describe("OrganizationWarningDetector", () => {
       ).toEqual([]);
     });
   });
+  describe("Stellar.toml issue", () => {
+    test("returns true if Stellar.toml issue", () => {
+      const { organization, network } = setupSUT();
+      organization.tomlState = "UnsupportedVersion";
+      expect(
+        OrganizationWarningDetector.organizationHasWarnings(
+          organization,
+          network
+        )
+      ).toBeTruthy();
+
+      expect(
+        OrganizationWarningDetector.getOrganizationWarningReasons(
+          organization,
+          network
+        )
+      ).toEqual(["Stellar.toml issue: unsupported version"]);
+    });
+    test("returns false if no Stellar.toml issue", () => {
+      const { organization, network } = setupSUT();
+      organization.tomlState = "Ok";
+      expect(
+        OrganizationWarningDetector.organizationHasWarnings(
+          organization,
+          network
+        )
+      ).toBeFalsy();
+
+      expect(
+        OrganizationWarningDetector.getOrganizationWarningReasons(
+          organization,
+          network
+        )
+      ).toEqual([]);
+    });
+  });
 
   describe("organization wil almost fail", () => {
     test("returns true if one more failing validator fails the organization", () => {

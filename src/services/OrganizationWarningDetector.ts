@@ -83,6 +83,15 @@ export class OrganizationWarningDetector {
     )
       reasons.push("Stellar-core version behind");
 
+    if (!["Ok", "Unknown"].includes(organization.tomlState))
+      reasons.push(
+        "Stellar.toml issue: " +
+          organization.tomlState
+            .split(/(?=[A-Z])/)
+            .join(" ")
+            .toLowerCase()
+      );
+
     return reasons;
   }
 

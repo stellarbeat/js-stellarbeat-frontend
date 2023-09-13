@@ -1937,12 +1937,13 @@
   version "1.1.0"
   resolved "https://github.com/stellarbeat/halting-analysis#816e6578cac8261b39b0b8047ed2d7b45ca8378b"
 
-"@stellarbeat/js-stellarbeat-shared@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-6.0.0.tgz#c3c93a1baae7fc755d511f5c17400a0945e4d414"
-  integrity sha512-bpWIt1a92zFSngViMJPxOfDvYigVjXPaALceNBleo78hyMZvvFpCSy7mbYa1Qf6lVCsMVhe19IWwZqsZWMvdZw==
+"@stellarbeat/js-stellarbeat-shared@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@stellarbeat/js-stellarbeat-shared/-/js-stellarbeat-shared-6.1.0.tgz#4e6c36f531909dd3492785244b788a82499ef85b"
+  integrity sha512-68GdFi7iUDauvK1mOa1it/hv0hyVX6zzTkCpqS/oyIrHjC+5qMv1wA1oIEzTceCpK/NTy3npiYzCFdQoTbJx+A==
   dependencies:
     "@iarna/toml" "^2.2.5"
+    ajv "^8.12.0"
     neverthrow "^6.0.0"
 
 "@stellarbeat/stellar_analysis_web@^0.6.2":
@@ -3107,7 +3108,7 @@ ajv@^6.10.0, ajv@^6.12.2, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
+ajv@^8.0.0, ajv@^8.0.1, ajv@^8.12.0, ajv@^8.8.0:
   version "8.12.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
   integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
