@@ -200,8 +200,20 @@ function prettifyBaseQuorumSet(
 ): Record<string, unknown> {
   return {
     threshold: qSet.threshold,
-    validators: qSet.validators.map(
-      (validator) => network.getNodeByPublicKey(validator).displayName
+    validators: qSet.validators.map((validator) =>
+      network.getNodeByPublicKey(validator).name
+        ? network.getNodeByPublicKey(validator).name +
+          " (" +
+          network.getNodeByPublicKey(validator).publicKey.substring(0, 4) +
+          "..." +
+          network
+            .getNodeByPublicKey(validator)
+            .publicKey.substring(
+              50,
+              network.getNodeByPublicKey(validator).publicKey.length
+            ) +
+          ")"
+        : network.getNodeByPublicKey(validator).displayName
     ),
     innerQuorumSets: qSet.innerQuorumSets.map((innerQSet) =>
       prettifyBaseQuorumSet(innerQSet, network)
