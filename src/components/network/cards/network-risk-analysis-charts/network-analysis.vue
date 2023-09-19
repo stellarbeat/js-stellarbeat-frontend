@@ -3,13 +3,17 @@
     <div class="card-header px-3 d-flex flex-wrap justify-content-between">
       <div class="d-flex flex-wrap">
         <b-button-group size="sm" class="mr-3">
-          <b-button :pressed="bucketSize === '1Y'" @click="select1YView"
+          <b-button :pressed="bucketSize === '1Y'" @click="select1YViewDefault"
             >1Y</b-button
           >
-          <b-button :pressed="bucketSize === '30D'" @click="select30DayView"
+          <b-button
+            :pressed="bucketSize === '30D'"
+            @click="select30DayViewDefault"
             >30D</b-button
           >
-          <b-button :pressed="bucketSize === '24H'" @click="select24HView"
+          <b-button
+            :pressed="bucketSize === '24H'"
+            @click="select24HViewDefault"
             >24H</b-button
           >
         </b-button-group>
@@ -227,10 +231,14 @@ async function updateHiddenStatus(toBucketSize: string) {
   }
 }
 
+async function select1YViewDefault() {
+  const time = moment(network.time).subtract(1, "y").toDate();
+  await select1YView(time);
+}
+
 async function select1YView(time?: Date) {
   await updateHiddenStatus("1Y");
-  if (time instanceof Date)
-    selectedDate.value = moment(time).startOf("hour").toDate();
+  if (time instanceof Date) selectedDate.value = time;
 
   await updateYearChart();
 
@@ -671,11 +679,21 @@ function getLabels(tooltipItem: TooltipItem<"line">): string {
   return (dataSet.data[tooltipItem.dataIndex] as ScatterDataPoint).y.toString();
 }
 
+async function select30DayViewDefault() {
+  const time = moment(network.time).subtract(30, "d").toDate();
+  await select30DayView(time);
+}
+
 async function select30DayView(time?: Date) {
   if (time instanceof Date) selectedDate.value = time;
   await updateDays30Chart();
   await updateHiddenStatus("30D");
   bucketSize.value = "30D";
+}
+
+async function select24HViewDefault() {
+  const time = moment(network.time).subtract(1, "d").toDate();
+  await select24HView(time);
 }
 
 async function select24HView(time?: Date) {
@@ -695,20 +713,15 @@ async function updateSelectedDateAndHighlight(newDate: Date) {
 
 async function updateYearChart() {
   isLoading.value = true;
-  let oneYearAgo = moment(selectedDate.value).subtract(1, "y").toDate();
-  if (oneYearAgo < store.measurementsStartDate) {
-    oneYearAgo.setTime(store.measurementsStartDate.getTime());
-    selectedDate.value = moment(store.measurementsStartDate)
-      .add(1, "y")
-      .toDate();
-  }
+  const from = selectedDate.value;
+  const to = moment(selectedDate.value).add(1, "y").toDate();
 
   try {
     failed.value = false;
     yearStatistics.value = await networkMeasurementStore.getMonthStatistics(
       "stellar-public",
-      oneYearAgo,
-      selectedDate.value
+      from,
+      to
     );
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
@@ -753,18 +766,14 @@ async function updateDays30Chart() {
 
 async function updateHours24Chart() {
   isLoading.value = true;
-  let startOfDay = moment(selectedDate.value).utc().startOf("day").toDate();
-  let tomorrow = moment(selectedDate.value)
-    .utc()
-    .startOf("day")
-    .add(1, "d")
-    .toDate();
+  let from = selectedDate.value;
+  let to = moment(from).add(1, "d").toDate();
   try {
     failed.value = false;
     hour24Statistics.value = await networkMeasurementStore.getStatistics(
       "stellar-public",
-      startOfDay,
-      tomorrow
+      from,
+      to
     );
     updateDataInDataSets(hour24ChartDataSets.value as ChartDataset[]);
   } catch (e) {
@@ -779,9 +788,9 @@ async function updateHours24Chart() {
 }
 
 onMounted(async () => {
-  if (defaultBucketSize.value === "30D")
-    await updateSelectedDate(moment(network.time).subtract(29, "d").toDate());
-  else await updateSelectedDate(network.time);
+  if (defaultBucketSize.value === "30D") await select30DayViewDefault();
+  else if (defaultBucketSize?.value === "1Y") await select1YViewDefault();
+  else await select24HViewDefault();
 
   initialDataLoaded.value = true;
 });
