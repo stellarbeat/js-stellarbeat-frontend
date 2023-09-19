@@ -727,14 +727,14 @@ async function updateYearChart() {
 
 async function updateDays30Chart() {
   isLoading.value = true;
-  let startOfDay = selectedDate.value;
-  let days30Ahead = moment(selectedDate.value).add(30, "d").toDate();
+  let from = selectedDate.value;
+  let to = moment(selectedDate.value).add(30, "d").toDate();
   try {
     failed.value = false;
     days30Statistics.value = await networkMeasurementStore.getDayStatistics(
       network.id ?? "stellar-public",
-      startOfDay,
-      days30Ahead
+      from,
+      to
     );
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
