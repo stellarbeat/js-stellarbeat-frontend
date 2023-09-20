@@ -2,13 +2,13 @@
   <div class="card">
     <div class="card-header pl-3 d-flex flex-wrap">
       <b-button-group size="sm" class="mr-3">
-        <b-button :pressed="chartView === '30D'" @click="select30DayView"
+        <b-button :pressed="chartView === '30D'" @click="select30DayViewDefault"
           >30D</b-button
         >
-        <b-button :pressed="chartView === '24H'" @click="select24HView"
+        <b-button :pressed="chartView === '24H'" @click="select24HViewDefault"
           >24H</b-button
         >
-        <b-button :pressed="chartView === '1H'" @click="select1HView"
+        <b-button :pressed="chartView === '1H'" @click="select1HViewDefault"
           >1H</b-button
         >
       </b-button-group>
@@ -126,6 +126,7 @@ const store = useStore();
 
 const thirtyDayMeasurements = ref<StatisticsAggregation[]>([]);
 const twentyFourHourMeasurements = ref<Statistics[]>([]);
+const oneHourLineChartData = ref<ScatterDataPoint[]>([]);
 
 const statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
   store.measurementsStartDate
@@ -137,24 +138,38 @@ const failed = ref(false);
 const chartView = ref("30D");
 const animated = ref(false);
 
-async function select30DayView(time?: number) {
-  if (time) selectedDate.value = new Date(time);
+async function select30DayViewDefault() {
+  const time = moment(store.network.time).subtract(30, "d").toDate();
+  await select30DayView(time);
+}
 
+async function select30DayView(time?: Date) {
+  if (time) selectedDate.value = time;
   await updateDayHistoryChart();
   chartView.value = "30D";
 }
 
-async function select24HView(time?: number) {
-  if (time) selectedDate.value = moment(time).startOf("day").toDate();
+async function select24HViewDefault() {
+  const time = moment(store.network.time).subtract(1, "d").toDate();
+  await select24HView(time);
+}
+
+async function select24HView(time?: Date) {
+  if (time) selectedDate.value = time;
 
   await update24HourHistoryChart();
   chartView.value = "24H";
 }
 
-async function select1HView(time?: number) {
-  if (time) selectedDate.value = moment(time).startOf("hour").toDate();
-  await update24HourHistoryChart();
+async function select1HViewDefault() {
+  selectedDate.value = moment(store.network.time).subtract(1, "hour").toDate();
+  await select1HView(selectedDate.value);
+}
 
+async function select1HView(time?: Date) {
+  if (time) selectedDate.value = time;
+  await update24HourHistoryChart("h");
+  computeOneHourLineChartData();
   chartView.value = "1H";
 }
 
@@ -164,19 +179,26 @@ function updateView(view: string) {
 
 async function updateSelectedDate(newDate: string) {
   selectedDate.value = new Date(newDate);
-  if (chartView.value === "30D") await updateDayHistoryChart();
-  else await update24HourHistoryChart();
+  await updateChartData();
 }
 
 async function updateSelectedDateAndHighlight(newDate: string) {
-  await updateSelectedDate(newDate);
+  selectedDate.value = new Date(newDate);
   animated.value = true;
 }
 
 watch(entityId, async () => {
-  if (chartView.value === "30D") await updateDayHistoryChart();
-  else await update24HourHistoryChart();
+  await updateChartData();
 });
+
+async function updateChartData() {
+  if (chartView.value === "30D") await updateDayHistoryChart();
+  else if (chartView.value === "24H") await update24HourHistoryChart();
+  else {
+    await update24HourHistoryChart();
+    computeOneHourLineChartData();
+  }
+}
 
 const chartContainer = ref<HTMLDivElement | null>(null);
 const chartWidth = computed(() => {
@@ -186,13 +208,13 @@ const chartWidth = computed(() => {
 
 async function updateDayHistoryChart() {
   isLoading.value = true;
-  let thirtyDaysAgo = moment(selectedDate.value).subtract(29, "d").toDate();
+  let to = moment(selectedDate.value).add(30, "d");
   try {
     failed.value = false;
     thirtyDayMeasurements.value = await fetchDayMeasurements.value(
       entityId.value,
-      thirtyDaysAgo,
-      moment(selectedDate.value).add(1, "day").startOf("day").toDate()
+      moment(selectedDate.value).toDate(),
+      to.toDate()
     );
   } catch (e) {
     failed.value = true;
@@ -200,15 +222,15 @@ async function updateDayHistoryChart() {
   isLoading.value = false;
 }
 
-async function update24HourHistoryChart() {
+async function update24HourHistoryChart(unit: "h" | "d" = "d") {
   isLoading.value = true;
-  let tomorrow = moment(selectedDate.value).startOf("day").add(1, "d").toDate();
+  let to = moment(selectedDate.value).add(1, unit);
   try {
     failed.value = false;
     twentyFourHourMeasurements.value = await fetchMeasurements.value(
       entityId.value,
-      moment(selectedDate.value).startOf("day").toDate(),
-      tomorrow
+      moment(selectedDate.value).toDate(),
+      to.toDate()
     );
   } catch (e) {
     failed.value = true;
@@ -288,36 +310,37 @@ const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
   return twentyFourHourAverages;
 });
 
-const oneHourLineChartData: ComputedRef<ScatterDataPoint[]> = computed(
-  (): { x: number; y: number }[] => {
-    return twentyFourHourMeasurements.value
-      .filter(
-        (measurement) =>
-          measurement.time.getHours() ===
-          moment(selectedDate.value).add(0, "hour").toDate().getHours()
+const computeOneHourLineChartData = (): void => {
+  oneHourLineChartData.value = twentyFourHourMeasurements.value
+    .filter((measurement) =>
+      moment(measurement.time).isBetween(
+        moment(selectedDate.value),
+        moment(selectedDate.value).add(1, "hour"),
+        undefined,
+        "(]"
       )
-      .map((measurement: any) => {
-        if (!inverted.value) {
-          return {
-            x: measurement.time.getTime(),
-            y: measurement[measurementProperty.value],
-          };
-        } else {
-          return {
-            x: measurement.time.getTime(),
-            y: measurement[measurementProperty.value],
-          };
-        }
-      });
-  }
-);
+    )
+    .map((measurement: any) => {
+      if (!inverted.value) {
+        return {
+          x: measurement.time.getTime(),
+          y: measurement[measurementProperty.value],
+        };
+      } else {
+        return {
+          x: measurement.time.getTime(),
+          y: measurement[measurementProperty.value],
+        };
+      }
+    });
+};
 
 onMounted(async () => {
   selectedDate.value = statisticsDateTimeNavigator.getInitialSelectedDate(
     chartView.value,
     store.network.time
   );
-  await updateDayHistoryChart();
+  await select30DayViewDefault();
   rendered.value = true;
 });
 </script>
