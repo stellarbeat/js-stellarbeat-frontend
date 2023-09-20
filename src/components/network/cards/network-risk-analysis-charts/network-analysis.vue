@@ -707,7 +707,7 @@ async function select24HView(time?: Date) {
 }
 
 async function updateSelectedDateAndHighlight(newDate: Date) {
-  await updateSelectedDate(newDate);
+  selectedDate.value = newDate;
   animated.value = true;
 }
 
