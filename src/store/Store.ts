@@ -42,6 +42,7 @@ interface Data {
   timeTravelDate?: Date;
   includeWatcherNodes: boolean;
   selectedOrganization?: Organization;
+  latestTermsChangeTimestamp: number;
 }
 
 export default class Store {
@@ -75,6 +76,7 @@ export default class Store {
     timeTravelDate: undefined,
     includeWatcherNodes: false,
     selectedOrganization: undefined,
+    latestTermsChangeTimestamp: new Date("2023-01-01").getTime(), //todo: better location
   });
 
   //todo: networkContext should be injected?
@@ -88,6 +90,10 @@ export default class Store {
     if (!this.networkContext.apiBaseUrl)
       throw new Error("No api base url found");
     this.appConfig = appConfig;
+  }
+
+  get latestTermsChangeTimestamp(): number {
+    return this.data.latestTermsChangeTimestamp;
   }
 
   get isLoading(): boolean {

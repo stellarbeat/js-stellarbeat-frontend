@@ -1,5 +1,6 @@
 <template>
   <div>
+    <consent />
     <div>
       <div class="page-header d-flex justify-content-between py-3">
         <div class="d-flex align-items-center">
@@ -89,6 +90,7 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
+import Consent from "@/components/consent.vue";
 
 defineProps({
   isLoading: {

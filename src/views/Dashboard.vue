@@ -1,5 +1,6 @@
 <template>
   <div>
+    <consent></consent>
     <div class="page-header d-flex justify-content-between py-3">
       <div class="d-flex align-items-center">
         <h2 class="page-title">Network explorer</h2>
@@ -85,6 +86,7 @@ import { computed, defineAsyncComponent, nextTick, watch } from "vue";
 import HaltingAnalysis from "@/components/node/tools/halting-analysis/halting-analysis.vue";
 import NetworkVisualNavigator from "@/components/visual-navigator/network-visual-navigator.vue";
 import CrawlTime from "@/components/crawl-time.vue";
+import Consent from "@/components/consent.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BAlert } from "bootstrap-vue";

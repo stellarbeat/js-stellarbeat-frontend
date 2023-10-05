@@ -40,40 +40,59 @@
     <footer class="footer">
       <div class="container-fluid" style="max-width: 1360px">
         <div class="d-flex justify-content-between mx-4">
-          <router-link
-            active-class="active"
-            class="nav-link"
-            :to="{
-              name: 'terms-and-conditions',
-              query: {
-                view: $route.query.view,
-                network: $route.query.network,
-                at: $route.query.at,
-              },
-            }"
-            exact
-          >
-            Terms and Conditions
-          </router-link>
+          <div class="">
+            <router-link
+              active-class="active"
+              class="nav-link"
+              :to="{
+                name: 'terms-and-conditions',
+                query: {
+                  view: $route.query.view,
+                  network: $route.query.network,
+                  at: $route.query.at,
+                },
+              }"
+              exact
+            >
+              Terms and Conditions
+            </router-link>
+            <router-link
+              active-class="active"
+              class="nav-link"
+              :to="{
+                name: 'privacy',
+                query: {
+                  view: $route.query.view,
+                  network: $route.query.network,
+                  at: $route.query.at,
+                },
+              }"
+              exact
+            >
+              Privacy Policy
+            </router-link>
+          </div>
           <div class="nav-item d-lg-flex pr-0">
-            <a
-              href="https://github.com/stellarbeat"
-              class="btn btn-sm bt btn-secondary gray"
-              target="_blank"
-              rel="noopener"
-            >
-              <github />
-              Github</a
-            >
-            <a
-              :href="`mailto:${store.appConfig.brandEmail}`"
-              rel="noopener"
-              class="btn btn-sm bt btn-secondary gray ml-2"
-              target="_blank"
-            >
-              <b-icon-envelope />
-              Mail</a
-            >
+            <div class="d-flex">
+              <a
+                href="https://github.com/stellarbeat"
+                class="btn btn-sm bt btn-secondary gray"
+                target="_blank"
+                rel="noopener"
+              >
+                <github />
+                Github</a
+              >
+              <a
+                :href="`mailto:${store.appConfig.brandEmail}`"
+                rel="noopener"
+                class="btn btn-sm bt btn-secondary gray ml-2"
+                target="_blank"
+              >
+                <b-icon-envelope />
+                Mail</a
+              >
+            </div>
           </div>
         </div>
       </div>

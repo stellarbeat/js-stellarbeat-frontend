@@ -1,5 +1,6 @@
 <template>
   <div>
+    <consent></consent>
     <div>
       <div class="page-header d-flex justify-content-between py-3">
         <div class="d-flex align-items-center">
@@ -47,6 +48,7 @@ import OrganizationsTable, {
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
+import Consent from "@/components/consent.vue";
 
 defineProps({
   isLoading: {

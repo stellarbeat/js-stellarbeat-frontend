@@ -1,5 +1,6 @@
 <template>
   <div>
+    <consent />
     <div class="page-header mt-2 py-3">
       <h1 class="page-title mr-2">Notify</h1>
     </div>
@@ -33,9 +34,11 @@
 
 <script lang="ts">
 import * as myUseStore from "@/store/useStore";
+import Consent from "@/components/consent.vue";
 const myStore = myUseStore.default();
 
 export default {
+  components: { Consent },
   metaInfo: {
     title: `Notify | ${myStore.appConfig.brandName}`,
     meta: [
