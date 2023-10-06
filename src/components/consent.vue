@@ -60,21 +60,21 @@ const onAccept = () => {
 const onDecline = () => {
   window.location.href = "https://dashboard.stellar.org";
 };
+
+const checkConsent = () => {
+  if (
+    !userConsentManager.userHasGivenConsent(store.latestTermsChangeTimestamp)
+  ) {
+    consentModal.value?.show();
+  }
+};
+
 onMounted(() => {
-  console.log("MOUNT");
-  if (
-    !userConsentManager.userHasGivenConsent(store.latestTermsChangeTimestamp)
-  ) {
-    consentModal.value?.show();
-  }
+  checkConsent();
 });
+
 onBeforeRouteUpdate((to, from, next) => {
-  console.log("ROUTE UPDATE");
-  if (
-    !userConsentManager.userHasGivenConsent(store.latestTermsChangeTimestamp)
-  ) {
-    consentModal.value?.show();
-  }
+  checkConsent();
   next();
 });
 </script>
