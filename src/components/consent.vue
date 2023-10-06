@@ -47,6 +47,7 @@ import useStore from "@/store/useStore";
 import { BModal } from "bootstrap-vue";
 import useUserConsentManager from "@/store/useUserConsentManager";
 import { onMounted, ref, Ref } from "vue";
+import { onBeforeRouteUpdate } from "vue-router/composables";
 const store = useStore();
 const userConsentManager = useUserConsentManager();
 const consentModal: Ref<BModal | null> = ref(null);
@@ -60,11 +61,21 @@ const onDecline = () => {
   window.location.href = "https://dashboard.stellar.org";
 };
 onMounted(() => {
+  console.log("MOUNT");
   if (
     !userConsentManager.userHasGivenConsent(store.latestTermsChangeTimestamp)
   ) {
     consentModal.value?.show();
   }
+});
+onBeforeRouteUpdate((to, from, next) => {
+  console.log("ROUTE UPDATE");
+  if (
+    !userConsentManager.userHasGivenConsent(store.latestTermsChangeTimestamp)
+  ) {
+    consentModal.value?.show();
+  }
+  next();
 });
 </script>
 <style scoped></style>
