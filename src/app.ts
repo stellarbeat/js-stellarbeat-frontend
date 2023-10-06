@@ -12,6 +12,7 @@ import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
 
+console.log("BOOTING UP");
 const isProd = process.env.NODE_ENV === "production";
 
 Vue.config.productionTip = false;
