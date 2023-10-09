@@ -25,8 +25,8 @@
           <a href="https://heroku.com" target="_blank">Heroku</a> (EU region).
         </p>
         <p>
-          Your email address will be deleted when you unsubscribe to all your
-          event subscriptions.
+          Your email address will be deleted when you unsubscribe on the notify
+          page.
         </p>
 
         <h5>Localstorage</h5>

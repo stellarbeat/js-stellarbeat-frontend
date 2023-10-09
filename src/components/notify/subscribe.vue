@@ -8,12 +8,11 @@
     </div>
     <div v-else>
       <h4>Subscribe to</h4>
-      <b-form @submit="onSubmit" @reset="onReset">
+      <b-form @submit.prevent="onSubscribe" @reset="onReset">
         <b-alert variant="success" :show="requested"
-          >Subscription request received, you will receive an email
-          shortly.</b-alert
+          >Request received, you will receive an email shortly.</b-alert
         >
-        <b-alert variant="danger" :show="subscribeError"
+        <b-alert variant="danger" :show="submitError"
           >Something went wrong, please try again later or contact
           support.</b-alert
         >
@@ -83,11 +82,58 @@
             trim
           ></b-form-input>
         </b-form-group>
+        <b-form-group id="consent-group">
+          <b-form-checkbox
+            id="consent-checkbox"
+            v-model="consented"
+            name="consent-checkbox"
+            value="accepted"
+            unchecked-value="not_accepted"
+            required
+            :state="consented === 'accepted'"
+          >
+            I have read, understood, and agree to be bound by the
+            <router-link
+              :to="{
+                name: 'terms-and-conditions',
+                query: {
+                  view: $route.query.view,
+                  network: $route.query.network,
+                  at: $route.query.at,
+                },
+              }"
+              exact
+              >Terms and Conditions</router-link
+            >
+            and our
+            <router-link
+              :to="{
+                name: 'privacy',
+                query: {
+                  view: $route.query.view,
+                  network: $route.query.network,
+                  at: $route.query.at,
+                },
+              }"
+              exact
+              >Privacy Policy</router-link
+            >
+          </b-form-checkbox>
+        </b-form-group>
         <b-button
           type="submit"
           variant="primary"
+          @click="onSubscribe"
           :disabled="!(emailAddressState === true)"
           >Create or update subscriptions</b-button
+        >
+        <b-button
+          class="ml-2"
+          type="submit"
+          @click="onUnsubscribe"
+          variant="danger"
+          :disabled="!(emailAddressState === true && consented === 'accepted')"
+          >Unsubscribe and remove email address</b-button
         >
         <b-button type="reset" variant="default">Clear form</b-button>
       </b-form>
@@ -171,8 +217,9 @@ const network = store.network;
 
 const emailAddress = ref("");
 const requested = ref(false);
+const consented = ref("not_accepted");
 const requesting = ref(false);
-const subscribeError = ref(false);
+const submitError = ref(false);
 const networkSubscription = ref(false);
 const selectedNodes: Ref<SelectNode[] | null> = ref(null);
 const nodes: Ref<SelectNode[]> = ref([]);
@@ -200,7 +247,7 @@ function searchNodes(query: string) {
 }
 
 const emailAddressState = computed(() => {
-  if (emailAddress.value === "") return null;
+  if (emailAddress.value === "") return false;
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(emailAddress.value.toLowerCase());
@@ -216,6 +263,7 @@ function resetForm() {
   selectedOrganizations.value = null;
   selectedNodes.value = null;
   networkSubscription.value = false;
+  consented.value = "not_accepted";
 }
 
 function getSelectedEventSourceIds(): EventSourceId[] {
@@ -250,11 +298,11 @@ function getSelectedEventSourceIds(): EventSourceId[] {
   return eventSourceIds;
 }
 
-async function onSubmit(event: Event) {
+async function onSubscribe(event: Event) {
   event.preventDefault();
-  subscribeError.value = false;
+  submitError.value = false;
   requested.value = false;
-  if (emailAddressState.value !== true) return;
+  if (!emailAddressState.value || consented.value !== "accepted") return;
   try {
     requesting.value = true;
     await axios.post(process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription", {
@@ -266,7 +314,30 @@ async function onSubmit(event: Event) {
     resetForm();
   } catch (e) {
     requesting.value = false;
-    subscribeError.value = true;
+    submitError.value = true;
+  }
+}
+
+async function onUnsubscribe(event: Event) {
+  event.preventDefault();
+  submitError.value = false;
+  requested.value = false;
+  if (!emailAddressState.value || consented.value !== "accepted") return;
+  try {
+    requesting.value = true;
+    await axios.post(
+      process.env.VUE_APP_PUBLIC_API_URL +
+        "/v1/subscription/request-unsubscribe",
+      {
+        emailAddress: emailAddress.value,
+      }
+    );
+    requested.value = true;
+    requesting.value = false;
+    resetForm();
+  } catch (e) {
+    requesting.value = false;
+    submitError.value = true;
   }
 }
 
