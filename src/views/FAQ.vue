@@ -1,6 +1,6 @@
 <template>
   <div>
-    <consent> </consent>
+    <!--consent> </consent!-->
     <div class="page-header mt-2 py-3">
       <h1 class="page-title">FAQ</h1>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <consent></consent>
+    <!--consent></consent!-->
     <div class="page-header d-flex justify-content-between py-3">
       <div class="d-flex align-items-center">
         <h2 class="page-title">Network explorer</h2>
