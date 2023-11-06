@@ -11,13 +11,19 @@
 
         <p>
           These terms and conditions outline the rules and regulations for the
-          use of stellarbeat.io's Website, located at https://stellarbeat.io.
+          use of stellarbeat.io's Website, the notification service and the API,
+          located at stellarbeat.io.
         </p>
 
         <p>
           By accessing this website we assume you accept these terms and
           conditions. Do not continue to use stellarbeat.io if you do not agree
           to take all of the terms and conditions stated on this page.
+        </p>
+
+        <p v-if="owner">
+          Stellarbeat.io is a free service provided by
+          {{ owner }}.
         </p>
 
         <p>
@@ -180,6 +186,11 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+console.log(process.env.VUE_APP_OWNER);
+const owner = process.env.VUE_APP_OWNER;
+</script>
 
 <script lang="ts">
 import * as myUseStore from "@/store/useStore";
