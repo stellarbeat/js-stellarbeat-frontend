@@ -8,7 +8,12 @@
     </div>
     <div v-else>
       <h4>Subscribe to</h4>
-      <b-form @submit.prevent="onSubscribe" @reset="onReset">
+      <b-form
+        @submit.prevent="onSubscribe"
+        @reset="onReset"
+        novalidate
+        :validated="validated"
+      >
         <b-alert variant="success" :show="requested"
           >Request received, you will receive an email shortly.</b-alert
         >
@@ -90,7 +95,6 @@
             value="accepted"
             unchecked-value="not_accepted"
             required
-            :state="consented === 'accepted'"
           >
             I have read, understood, and agree to be bound by the
             <router-link
@@ -120,11 +124,7 @@
             >
           </b-form-checkbox>
         </b-form-group>
-        <b-button
-          type="submit"
-          variant="primary"
-          @click="onSubscribe"
-          :disabled="!(emailAddressState === true)"
+        <b-button type="submit" variant="primary" @click="onSubscribe"
           >Create or update subscriptions</b-button
         >
         <b-button
@@ -224,6 +224,7 @@ const networkSubscription = ref(false);
 const selectedNodes: Ref<SelectNode[] | null> = ref(null);
 const nodes: Ref<SelectNode[]> = ref([]);
 const selectedOrganizations: Ref<SelectedOrganization[] | null> = ref(null);
+const validated = ref(false);
 
 const organizations: ComputedRef<SelectedOrganization[]> = computed(() => {
   return network.organizations.map((org) => {
@@ -247,7 +248,8 @@ function searchNodes(query: string) {
 }
 
 const emailAddressState = computed(() => {
-  if (emailAddress.value === "") return false;
+  console.log("STATE");
+  if (emailAddress.value === "") return null;
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(emailAddress.value.toLowerCase());
@@ -299,6 +301,7 @@ function getSelectedEventSourceIds(): EventSourceId[] {
 }
 
 async function onSubscribe(event: Event) {
+  validated.value = true;
   event.preventDefault();
   submitError.value = false;
   requested.value = false;
