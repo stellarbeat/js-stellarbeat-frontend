@@ -32,7 +32,8 @@ describe("UserConsentManager", () => {
     consentManager.giveConsent(100000); // Simulate terms change
     consentManager.giveConsent(200000); // Update consent
 
-    expect(localStorage.getItem("consent")).toBe("true");
+    expect(consentManager.userHasGivenConsent(200000)).toBe(true);
+
     expect(localStorage.getItem("consentTimestamp")).toBe("200000");
   });
 });

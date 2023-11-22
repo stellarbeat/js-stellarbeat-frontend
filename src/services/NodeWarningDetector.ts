@@ -1,5 +1,8 @@
-import { Network, Node } from "@stellarbeat/js-stellarbeat-shared";
-import { SemanticVersionComparer } from "@/services/SemanticVersionComparer";
+import {
+  Network,
+  Node,
+  SemanticVersionComparer,
+} from "@stellarbeat/js-stellarbeat-shared";
 
 export class NodeWarningDetector {
   static nodeHasWarning(node: Node, network: Network) {
