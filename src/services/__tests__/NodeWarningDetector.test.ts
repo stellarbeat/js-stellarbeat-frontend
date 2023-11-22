@@ -78,6 +78,15 @@ describe("NodeWarningDetector", () => {
         "Stellar-core version behind",
       ]);
     });
+
+    it('returns "Could not connect to node" if node has connectivity error', () => {
+      const node = new Node("a");
+      node.connectivityError = true;
+      const network = new Network();
+      expect(NodeWarningDetector.getNodeWarningReasons(node, network)).toEqual([
+        "Could not connect to node",
+      ]);
+    });
   });
 
   describe("getNodeWarningReasonsConcatenated", () => {

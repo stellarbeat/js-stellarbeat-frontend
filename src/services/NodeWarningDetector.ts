@@ -20,6 +20,10 @@ export class NodeWarningDetector {
       reasons.push("Stellar-core version behind");
     }
 
+    if (node.connectivityError) {
+      reasons.push("Could not connect to node");
+    }
+
     return reasons;
   }
 

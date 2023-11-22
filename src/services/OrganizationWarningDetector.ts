@@ -25,6 +25,15 @@ export class OrganizationWarningDetector {
       );
   }
 
+  public static organizationHasValidatorsThatWeCouldNotConnectTo(
+    organization: Organization,
+    network: Network
+  ) {
+    return organization.validators
+      .map((validator) => network.getNodeByPublicKey(validator))
+      .some((validator) => validator.connectivityError);
+  }
+
   public static organizationHasOutOfDateHistoryArchives(
     organization: Organization,
     network: Network
@@ -82,6 +91,14 @@ export class OrganizationWarningDetector {
       )
     )
       reasons.push("Stellar-core version behind");
+
+    if (
+      OrganizationWarningDetector.organizationHasValidatorsThatWeCouldNotConnectTo(
+        organization,
+        network
+      )
+    )
+      reasons.push("Could not connect to all validators");
 
     if (!["Ok", "Unknown"].includes(organization.tomlState))
       reasons.push(
