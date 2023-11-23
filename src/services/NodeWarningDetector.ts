@@ -1,8 +1,4 @@
-import {
-  Network,
-  Node,
-  SemanticVersionComparer,
-} from "@stellarbeat/js-stellarbeat-shared";
+import { Network, Node } from "@stellarbeat/js-stellarbeat-shared";
 
 export class NodeWarningDetector {
   static nodeHasWarning(node: Node, network: Network) {
@@ -19,7 +15,7 @@ export class NodeWarningDetector {
       reasons.push("History archive behind");
     }
 
-    if (NodeWarningDetector.nodeVersionBehind(node, network)) {
+    if (node.stellarCoreVersionBehind) {
       reasons.push("Stellar-core version behind");
     }
 
@@ -28,17 +24,6 @@ export class NodeWarningDetector {
     }
 
     return reasons;
-  }
-
-  static nodeVersionBehind(node: Node, network: Network) {
-    return (
-      node.versionStr &&
-      network.stellarCoreVersion &&
-      SemanticVersionComparer.isBehind(
-        node.versionStr,
-        network.stellarCoreVersion
-      )
-    );
   }
 
   static getNodeWarningReasonsConcatenated(

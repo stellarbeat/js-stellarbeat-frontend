@@ -20,9 +20,7 @@ export class OrganizationWarningDetector {
   ) {
     return organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))
-      .some((validator) =>
-        NodeWarningDetector.nodeVersionBehind(validator, network)
-      );
+      .some((validator) => validator.stellarCoreVersionBehind);
   }
 
   public static organizationHasValidatorsThatWeCouldNotConnectTo(
