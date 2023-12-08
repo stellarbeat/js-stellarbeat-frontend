@@ -340,7 +340,11 @@ onMounted(() => {
     .on("zoom", (event) => {
       d3Grid.attr("transform", event.transform);
     })
-    .scaleExtent([1, 3]);
+    .scaleExtent([1, 3])
+    .translateExtent([
+      [-width(), -height()],
+      [width(), height()],
+    ]);
   transformAndZoom();
 });
 
