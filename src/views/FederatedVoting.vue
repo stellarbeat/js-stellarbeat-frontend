@@ -1,6 +1,11 @@
 <template>
   <div>
-    <simulation-control class="control-spacing" />
+    <div class="page-header d-flex justify-content-between py-3">
+      <div class="d-flex align-items-center">
+        <h2 class="page-title">Federated Voting</h2>
+      </div>
+    </div>
+    <simulation-control class="card-spacing" />
     <div class="card graph">
       <Graph
         ref="graph"
@@ -69,7 +74,7 @@ const handleVertexSelected = (vertex: ViewVertex) => {
 </script>
 
 <style scoped>
-.control-spacing {
+.card-spacing {
   margin-bottom: 10px;
 }
 

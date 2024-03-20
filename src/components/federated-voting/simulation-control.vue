@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar">
+  <nav class="card navbar">
     <div class="button-group">
       <b-button @click="backward" class="navbar-item">
         <b-icon-arrow-counterclockwise class="icon-color" />
@@ -14,6 +14,8 @@
         <b-icon-arrow-clockwise class="icon-color" />
       </b-button>
     </div>
+
+    <scenario-selector />
   </nav>
 </template>
 
@@ -26,6 +28,7 @@ import {
   BIconArrowClockwise,
 } from "bootstrap-vue";
 import { ref } from "vue";
+import ScenarioSelector from "@/components/federated-voting/scenario-selector.vue";
 
 let isPlaying = ref(false);
 
@@ -52,9 +55,9 @@ const pause = () => {
 .navbar {
   display: flex;
   padding: 1em;
-  justify-content: center;
+  justify-content: space-between;
+  flex-direction: row;
   background-color: white;
-  border: 1px solid lightgray;
 }
 
 .icon-color {

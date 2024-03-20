@@ -1,10 +1,10 @@
 import { reactive } from "vue";
 
-class FederatedVotingStore {
+class UseFederatedVotingStore {
   scenarios: string[] = ["FBAS QI scenario"];
   selectedScenario: string = this.scenarios[0];
 }
 
-export const federatedVotingStore = reactive<FederatedVotingStore>(
-  new FederatedVotingStore()
+export const federatedVotingStore = reactive<UseFederatedVotingStore>(
+  new UseFederatedVotingStore()
 );
