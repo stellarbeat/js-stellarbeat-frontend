@@ -1,0 +1,19 @@
+.fv-dropdown {
+    width: 200px;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.fv-dropdown:focus {
+    outline: none;
+}
+
+.fv-dropdown option {
+    padding: 5px;
+}
