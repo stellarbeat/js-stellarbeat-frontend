@@ -22,7 +22,45 @@
               :key="edge.key"
               v-bind:d="getEdgePath(edge)"
               :class="getEdgeClassObject(edge)"
-            />
+              :id="edge.key"
+            >
+              <!-- Define the dot -->
+            </path>
+            <g v-if="propagationEnabled">
+              <circle
+                visibility="hidden"
+                r="5"
+                class="propagation-circle"
+                v-for="edge in viewGraph.regularEdges.filter(
+                  (mEdge) =>
+                    (!mEdge.isFailing || optionShowFailingEdges) &&
+                    (mEdge.isPartOfTransitiveQuorumSet ||
+                      !optionTransitiveQuorumSetOnly)
+                )"
+                :key="'propagation:' + edge.key"
+                :id="'propagation:' + edge.key"
+              >
+                <!-- Animate the dot along the path -->
+                <animateMotion
+                  begin="indefinite"
+                  dur="1s"
+                  repeatCount="1"
+                  fill="freeze"
+                >
+                  <mpath :href="'#' + edge.key" />
+                </animateMotion>
+                <animate
+                  id="radiusAnimation"
+                  attributeName="r"
+                  begin="indefinite"
+                  dur="0.5s"
+                  from="5"
+                  to="10"
+                />
+              </circle>
+            </g>
+            <!-- Define the dot -->
+
             <path
               class="edge"
               v-for="edge in viewGraph.stronglyConnectedEdges.filter(
@@ -98,7 +136,10 @@
                   !optionTransitiveQuorumSetOnly
               )"
               :key="vertex.key"
-              v-on:click="vertexSelected(vertex)"
+              v-on:click="
+                vertexSelected(vertex);
+                startPropagationAnimation(vertex.key);
+              "
             >
               <circle :r="5" v-bind:class="getVertexClassObject(vertex)">
                 <title>{{ vertex.label }}</title>
@@ -137,7 +178,7 @@
 
 <script setup lang="ts">
 import * as zoom from "d3-zoom";
-import { select, Selection } from "d3-selection";
+import { select, selectAll, Selection } from "d3-selection";
 import GraphStronglyConnectedComponent from "@/components/visual-navigator/graph/graph-strongly-connected-component.vue";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
@@ -190,6 +231,16 @@ const props = defineProps({
   viewGraph: {
     type: Object as PropType<ViewGraph>,
     required: true,
+  },
+  initialZoom: {
+    type: Number,
+    required: false,
+    default: 1,
+  },
+  propagationEnabled: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 
@@ -401,7 +452,7 @@ onMounted(() => {
 function transformAndZoom() {
   let transform = zoom.zoomIdentity
     .translate(width() / 2, height() / 2)
-    .scale(1);
+    .scale(props.initialZoom);
   d3svg.call(graphZoom).call(graphZoom.transform, transform);
 }
 
@@ -428,6 +479,33 @@ function getEdgePath(edge: ViewEdge) {
     edge.target.y
   );
 }
+
+function startPropagationAnimation(key: string) {
+  const circles = selectAll(`.propagation-circle[id^='propagation:${key}:']`);
+  circles.each(function () {
+    const circle = select(this);
+    //@ts-ignore
+    const motionAnimation = this.querySelector("animateMotion");
+    //@ts-ignore
+    const radiusAnimation = this.querySelector("#radiusAnimation");
+    if (motionAnimation) {
+      // Set the circle to visible when the animation starts
+      circle.style("visibility", "visible");
+      motionAnimation.beginElement();
+
+      // Start the radius animation when the motion animation ends
+      motionAnimation.addEventListener("endEvent", function () {
+        if (radiusAnimation) {
+          radiusAnimation.beginElement();
+          radiusAnimation.addEventListener("endEvent", function () {
+            circle.style("visibility", "hidden");
+          });
+        }
+      });
+    }
+  });
+}
+
 onBeforeUnmount(() => {
   computeGraphWorker.terminate();
 });
@@ -529,5 +607,12 @@ text {
 .rect-selected {
   stroke: yellow;
   stroke-width: 1.5;
+}
+.propagation-circle {
+  fill: $graph-primary;
+  opacity: 0.5;
+  stroke: $graph-primary;
+  stroke-width: 0.5px;
+  stroke-opacity: 0.5;
 }
 </style>

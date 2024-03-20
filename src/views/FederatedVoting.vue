@@ -20,6 +20,8 @@
         :optionHighlightTrustedNodes="true"
         :optionShowRegularEdges="true"
         :optionTransitiveQuorumSetOnly="false"
+        :initial-zoom="2"
+        :propagation-enabled="true"
       />
     </div>
   </div>
@@ -54,7 +56,6 @@ onMounted(async () => {
 
   const trustGraph = network.nodesTrustGraph;
   viewGraph.value = ViewGraph.fromNodes(network, trustGraph, viewGraph.value);
-  console.log(viewGraph.value.viewVertices);
 });
 
 const getNetwork = async () => {
@@ -68,7 +69,6 @@ const getNetwork = async () => {
 };
 
 const handleVertexSelected = (vertex: ViewVertex) => {
-  console.log("Vertex selected", vertex);
   selectedVertices.value = [vertex];
 };
 </script>
@@ -79,6 +79,6 @@ const handleVertexSelected = (vertex: ViewVertex) => {
 }
 
 .graph {
-  height: 350px;
+  height: 450px;
 }
 </style>
