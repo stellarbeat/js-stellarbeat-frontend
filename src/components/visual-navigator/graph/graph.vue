@@ -219,6 +219,14 @@ watch(
   }
 );
 
+watch(selectedVertices, () => {
+  viewGraph?.value?.reClassifyEdges(
+    selectedVertices.value.map((vertex) => vertex.key)
+  );
+  viewGraph?.value?.reClassifyVertices(
+    selectedVertices.value.map((vertex) => vertex.key)
+  );
+});
 watch(viewGraph, () => {
   isLoading.value = true;
   computeGraphWorker.postMessage({

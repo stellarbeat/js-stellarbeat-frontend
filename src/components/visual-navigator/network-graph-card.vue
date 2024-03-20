@@ -64,8 +64,6 @@ const props = defineProps({
 
 const type = computed(() => props.type);
 const store = useStore();
-const selectedNode = computed(() => store.selectedNode);
-const selectedOrganization = computed(() => store.selectedOrganization);
 const networkReCalculated = computed(() => store.networkReCalculated);
 
 watch(networkReCalculated, () => {
@@ -74,20 +72,6 @@ watch(networkReCalculated, () => {
   }
   updateGraph(true);
 });
-
-watch(selectedNode, () => {
-  reclassify();
-});
-
-watch(selectedOrganization, () => {
-  reclassify();
-});
-
-function reclassify() {
-  let mySelectedKeys = selectedKeys.value;
-  viewGraph.value.reClassifyEdges(mySelectedKeys);
-  viewGraph.value.reClassifyVertices(mySelectedKeys);
-}
 
 watch(type, () => {
   updateGraph();
