@@ -20,17 +20,8 @@
 import Graph from "@/components/visual-navigator/graph/graph.vue";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
-import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 import { TrustGraphBuilder } from "@stellarbeat/js-stellarbeat-shared";
-import {
-  computed,
-  ComputedRef,
-  onBeforeUnmount,
-  onMounted,
-  Ref,
-  ref,
-  watch,
-} from "vue";
+import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 
@@ -38,7 +29,6 @@ const router = useRouter();
 const route = useRoute();
 const viewGraph: Ref<ViewGraph> = ref(new ViewGraph());
 let networkId: string;
-let computeGraphWorker: Worker;
 const isLoading = ref(true);
 
 const props = defineProps({
@@ -180,11 +170,6 @@ function updateGraph(merge = false) {
       merge ? viewGraph.value : undefined,
       selectedKeys.value
     );
-
-  computeGraphWorker.postMessage({
-    vertices: Array.from(viewGraph.value.viewVertices.values()),
-    edges: Array.from(viewGraph.value.viewEdges.values()),
-  });
 }
 
 const graph = ref(null);
@@ -197,27 +182,11 @@ const selectedVertices: ComputedRef<ViewVertex[]> = computed(() => {
   return [];
 });
 
-const centerVertex = computed(() => {
+const centerVertex: ComputedRef<ViewVertex | undefined> = computed(() => {
   if (store.centerNode && viewGraph)
     return viewGraph.value.viewVertices.get(store.centerNode.publicKey);
   return undefined;
 });
-
-function mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
-  vertices.forEach((updatedVertex: ViewVertex) => {
-    let vertex = viewGraph.value.viewVertices.get(updatedVertex.key);
-    if (!vertex) return;
-    vertex.x = updatedVertex.x;
-    vertex.y = updatedVertex.y;
-  });
-
-  edges.forEach((updatedEdge: ViewEdge) => {
-    let edge = viewGraph.value.viewEdges.get(updatedEdge.key);
-    if (!edge) return;
-    edge.source = updatedEdge.source;
-    edge.target = updatedEdge.target;
-  });
-}
 
 onMounted(() => {
   if (type.value === "node")
@@ -235,29 +204,7 @@ onMounted(() => {
       selectedKeys.value
     );
   Object.freeze(viewGraph); //not reactive;
-  computeGraphWorker = new Worker(
-    new URL("./../../workers/compute-graphv9.worker", import.meta.url)
-  );
+
   networkId = store.networkId;
-
-  computeGraphWorker.onmessage = (event: {
-    data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };
-  }) => {
-    if (event.data.type === "end") {
-      {
-        mapViewGraph(event.data.vertices, event.data.edges);
-        isLoading.value = false;
-      }
-    }
-  };
-
-  computeGraphWorker.postMessage({
-    vertices: Array.from(viewGraph.value.viewVertices.values()),
-    edges: Array.from(viewGraph.value.viewEdges.values()),
-  });
-});
-
-onBeforeUnmount(() => {
-  computeGraphWorker.terminate();
 });
 </script>

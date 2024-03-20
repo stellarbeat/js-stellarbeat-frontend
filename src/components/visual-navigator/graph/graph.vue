@@ -143,7 +143,15 @@ import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";
 import { isObject } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
-import { computed, onMounted, PropType, ref, toRefs, watch } from "vue";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  PropType,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import { useTruncate } from "@/composables/useTruncate";
 
 const props = defineProps({
@@ -179,10 +187,6 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  isLoading: {
-    type: Boolean,
-    required: true,
-  },
   viewGraph: {
     type: Object as PropType<ViewGraph>,
     required: true,
@@ -192,13 +196,14 @@ const props = defineProps({
 const {
   centerVertex,
   fullScreen,
-  isLoading,
   selectedVertices,
   viewGraph,
   optionHighlightTrustingNodes,
   optionHighlightTrustedNodes,
   optionShowFailingEdges,
 } = toRefs(props);
+let computeGraphWorker: Worker;
+const isLoading = ref(true);
 const emit = defineEmits(["vertex-selected"]);
 const truncate = useTruncate();
 
@@ -213,6 +218,14 @@ watch(
     centerCorrectVertex();
   }
 );
+
+watch(viewGraph, () => {
+  isLoading.value = true;
+  computeGraphWorker.postMessage({
+    vertices: Array.from(viewGraph.value.viewVertices.values()),
+    edges: Array.from(viewGraph.value.viewEdges.values()),
+  });
+});
 
 watch(fullScreen, () => {
   centerCorrectVertex();
@@ -320,7 +333,7 @@ const dimmerClass = computed(() => {
 });
 
 function centerCorrectVertex() {
-  if (centerVertex?.value !== undefined) {
+  if (centerVertex?.value instanceof ViewVertex) {
     const realVertexX = -centerVertex.value.x + width() / 2;
     const realVertexY = -centerVertex.value.y + height() / 2;
 
@@ -330,9 +343,38 @@ function centerCorrectVertex() {
     d3svg.call(graphZoom.transform, transform);
   }
 }
+function mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
+  vertices.forEach((updatedVertex: ViewVertex) => {
+    let vertex = viewGraph.value.viewVertices.get(updatedVertex.key);
+    if (!vertex) return;
+    vertex.x = updatedVertex.x;
+    vertex.y = updatedVertex.y;
+  });
+
+  edges.forEach((updatedEdge: ViewEdge) => {
+    let edge = viewGraph.value.viewEdges.get(updatedEdge.key);
+    if (!edge) return;
+    edge.source = updatedEdge.source;
+    edge.target = updatedEdge.target;
+  });
+}
 
 const grid = ref<Element | null>(null);
 onMounted(() => {
+  computeGraphWorker = new Worker(
+    new URL("./../../../workers/compute-graphv9.worker", import.meta.url)
+  );
+  computeGraphWorker.onmessage = (event: {
+    data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };
+  }) => {
+    if (event.data.type === "end") {
+      {
+        mapViewGraph(event.data.vertices, event.data.edges);
+        isLoading.value = false;
+      }
+    }
+  };
+
   d3Grid = select(grid.value as Element);
   d3svg = select(graphSvg.value as Element);
   graphZoom = zoom
@@ -378,6 +420,9 @@ function getEdgePath(edge: ViewEdge) {
     edge.target.y
   );
 }
+onBeforeUnmount(() => {
+  computeGraphWorker.terminate();
+});
 </script>
 
 <style lang="scss" scoped>

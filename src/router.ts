@@ -79,12 +79,25 @@ export function createRouter() {
             /* webpackChunkName: "organizations" */ "@/views/Organizations.vue"
           ),
       },
-
       {
         name: "faq",
         path: "/faq",
         component: () =>
           import(/* webpackChunkName: "faq" */ "@/views/FAQ.vue"),
+      },
+      {
+        name: "docs",
+        path: "/docs",
+        component: () =>
+          import(/* webpackChunkName: "faq" */ "@/views/Docs.vue"),
+      },
+      {
+        name: "federated-voting",
+        path: "/federated-voting",
+        component: () =>
+          import(
+            /* webpackChunkName: "federated-voting" */ "@/views/FederatedVoting.vue"
+          ),
       },
       {
         path: "/notify",
