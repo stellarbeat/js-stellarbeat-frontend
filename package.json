@@ -86,7 +86,7 @@
     "jest-localstorage-mock": "^2.4.26",
     "moment-locales-webpack-plugin": "^1.2.0",
     "prettier": "^2.4.1",
-    "sass": "^1.56.2",
+    "sass": "1.64.2",
     "sass-loader": "^11.1.1",
     "sass-migrator": "^1.7.2",
     "ts-jest": "^29.1.0",
