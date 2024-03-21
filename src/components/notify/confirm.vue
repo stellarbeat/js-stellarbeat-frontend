@@ -37,7 +37,7 @@ async function confirm() {
   const pendingSubscriptionId = route.params.pendingSubscriptionId;
   try {
     await axios.post(
-      process.env.VUE_APP_PUBLIC_API_URL +
+      import.meta.env.VITE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         pendingSubscriptionId +
         "/confirm"

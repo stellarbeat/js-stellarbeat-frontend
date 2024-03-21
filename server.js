@@ -34,6 +34,6 @@ app.get(["/schemas/*.json"], function (req, res, next) {
   next();
 });
 
-app.use(express.static("dist-client"));
+app.use(express.static("dist"));
 
 app.listen(port, () => console.log("app listening on port: " + port));

@@ -71,7 +71,6 @@ import {
   BButtonGroup,
 } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
-import { Dictionary } from "vue-router/types/router";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 
@@ -174,7 +173,7 @@ function timeTravel() {
   router.push({
     name: route.name ? route.name : undefined,
     params: route.params,
-    query: query as Dictionary<string>,
+    query: query as Record<string, string | Array<string>>,
   });
 }
 </script>

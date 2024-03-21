@@ -65,7 +65,8 @@ let Vue2LeafletMarkerCluster: any;
 let Vue2Leaflet: any;
 const isBrowser = typeof window !== "undefined";
 if (isBrowser) {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+
+    //@ts-ignore
   const leaflet = require("leaflet");
   icon = leaflet.Icon;
   point = leaflet.point;
@@ -74,19 +75,26 @@ if (isBrowser) {
   lBrowser = leaflet.Browser;
   delete icon.Default.prototype._getIconUrl;
   icon.Default.mergeOptions({
+      // @ts-ignore
     iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+      // @ts-ignore
     iconUrl: require("leaflet/dist/images/marker-icon.png"),
+      // @ts-ignore
     shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
   });
   // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // @ts-ignore
   latLng = require("leaflet").latLng;
+    // @ts-ignore
   require("leaflet-sleep");
+    // @ts-ignore
   Vue2Leaflet = require("vue2-leaflet");
   LCircleMarker = Vue2Leaflet.LCircleMarker;
   LMap = Vue2Leaflet.LMap;
   LMarker = Vue2Leaflet.LMarker;
   LTileLayer = Vue2Leaflet.LTileLayer;
   LTooltip = Vue2Leaflet.LTooltip;
+    // @ts-ignore
   Vue2LeafletMarkerCluster = require("vue2-leaflet-markercluster");
 }
 type Marker = {

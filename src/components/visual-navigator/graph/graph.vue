@@ -420,8 +420,13 @@ function mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
 
 const grid = ref<Element | null>(null);
 onMounted(() => {
+  const workerType = import.meta.env.DEV ? "module" : "classic";
   computeGraphWorker = new Worker(
-    new URL("./../../../workers/compute-graphv9.worker", import.meta.url)
+    new URL("./../../../workers/compute-graphv9.worker.ts", import.meta.url),
+    {
+      type: workerType,
+      /* @vite-ignore */
+    }
   );
   computeGraphWorker.onmessage = (event: {
     data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };

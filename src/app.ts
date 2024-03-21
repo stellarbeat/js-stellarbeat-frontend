@@ -1,24 +1,25 @@
+//@ts-ignore
+window.global ||= window;
 import Vue from "vue";
 import App from "./App.vue";
 import { createRouter } from "./router";
 import "./assets/custom.scss";
 import Meta from "vue-meta";
 import * as Sentry from "@sentry/browser";
-import "@/assets/global.css";
+import "./assets/global.css";
 import VueScrollTo from "vue-scrollto";
-import "core-js/stable";
 import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
 
-const isProd = process.env.NODE_ENV === "production";
+const isProd = import.meta.env.PROD;
 
 Vue.config.productionTip = false;
 
 if (isProd) {
   Sentry.init({
-    dsn: process.env.VUE_APP_SENTRY_DSN,
+    dsn: import.meta.env.VITE_APP_SENTRY_DSN,
     integrations: [new VueIntegration({ Vue, attachProps: true })],
   });
 }
@@ -34,16 +35,7 @@ Vue.component("multi-select", Multiselect);
 
 const router = createRouter();
 
-const createApp = () => {
-  const app = new Vue({
-    router,
-    render: (h) => h(App),
-    mounted() {
-      document.dispatchEvent(new Event("x-app-rendered"));
-    },
-  });
-
-  return { app, router };
-};
-
-export default createApp;
+new Vue({
+  router,
+  render: (h) => h(App),
+}).$mount("#app");

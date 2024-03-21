@@ -117,8 +117,7 @@ import useStore from "@/store/useStore";
 import { Ref, ref } from "vue";
 import useClipboard from "vue-clipboard3";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const validateSchema = require("@stellarbeat/js-stellarbeat-shared/lib/network-schema");
+import validateSchema from "@stellarbeat/js-stellarbeat-shared/lib/network-schema";
 
 type BasicQuorumSet = {
   validators: string[];

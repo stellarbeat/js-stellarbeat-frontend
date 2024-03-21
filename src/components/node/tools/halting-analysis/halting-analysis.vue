@@ -1,7 +1,7 @@
 <template>
   <b-card>
     <template v-slot:header>
-      <h3 class="card-title">Halting analysis for {{ vertex.label }}</h3>
+      <h3 class="card-title">Halting analysis for {{ vertex?.label }}</h3>
       <div class="card-options">
         <a
           href="#"
@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col-12">
         <b-alert :show="network.isNodeFailing(node)" variant="warning"
-          >{{ vertex.label }} is failing.</b-alert
+          >{{ vertex?.label }} is failing.</b-alert
         >
         <div v-if="!network.isNodeFailing(node)">
           <b-form inline>
@@ -65,13 +65,13 @@
               <h3 v-if="nodeFailures.length === 0" class="mt-3">
                 Great! No combination of
                 {{ numberOfNodeFailures }} validators can bring down
-                {{ vertex.label }}
+                {{ vertex?.label }}
               </h3>
               <div v-else class="mt-3">
                 <h3>
                   Found {{ nodeFailures.length }} combinations of validators
                   that can halt
-                  {{ vertex.label }}
+                  {{ vertex?.label }}
                 </h3>
                 <b-form>
                   <b-form-select
@@ -148,7 +148,14 @@ const isLoading = ref(false);
 const simulated = ref(false);
 
 const haltingAnalysisWorker = new Worker(
-  new URL("./../../../../workers/halting-analysisv1.worker.ts", import.meta.url)
+  new URL(
+    "./../../../../workers/halting-analysisv1.worker.ts",
+    import.meta.url
+  ),
+  {
+    type: import.meta.env.DEV ? "module" : "classic",
+    /* @vite-ignore */
+  }
 );
 
 const dimmerClass = computed(() => {

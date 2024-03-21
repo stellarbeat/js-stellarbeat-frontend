@@ -188,8 +188,8 @@
 </template>
 
 <script setup lang="ts">
-console.log(process.env.VUE_APP_OWNER);
-const owner = process.env.VUE_APP_OWNER;
+console.log(import.meta.env.VITE_APP_OWNER);
+const owner = import.meta.env.VITE_APP_OWNER;
 </script>
 
 <script lang="ts">

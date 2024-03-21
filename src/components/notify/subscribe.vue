@@ -308,10 +308,13 @@ async function onSubscribe(event: Event) {
   if (!emailAddressState.value || consented.value !== "accepted") return;
   try {
     requesting.value = true;
-    await axios.post(process.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription", {
-      emailAddress: emailAddress.value,
-      eventSourceIds: getSelectedEventSourceIds(),
-    });
+    await axios.post(
+      import.meta.env.VITE_APP_PUBLIC_API_URL + "/v1/subscription",
+      {
+        emailAddress: emailAddress.value,
+        eventSourceIds: getSelectedEventSourceIds(),
+      }
+    );
     requested.value = true;
     requesting.value = false;
     resetForm();
@@ -329,7 +332,7 @@ async function onUnsubscribe(event: Event) {
   try {
     requesting.value = true;
     await axios.post(
-      process.env.VUE_APP_PUBLIC_API_URL +
+      import.meta.env.VITE_APP_PUBLIC_API_URL +
         "/v1/subscription/request-unsubscribe",
       {
         emailAddress: emailAddress.value,

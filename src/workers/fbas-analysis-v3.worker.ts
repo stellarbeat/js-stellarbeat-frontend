@@ -12,7 +12,8 @@ import {
   Organization,
   PublicKey,
 } from "@stellarbeat/js-stellarbeat-shared";
-
+//@ts-ignore
+import wasmUrl from "@stellarbeat/stellar_analysis_web/stellar_analysis_bg.wasm?url";
 //@ts-ignore
 const ctx: Worker = self;
 let initialized = false;
@@ -47,7 +48,7 @@ ctx.addEventListener("message", (event) => {
   const analyzeSymmetricTopTier = event.data.analyzeSymmetricTopTier;
 
   if (!initialized) {
-    init("stellar_analysis_bg.wasm")
+    init(wasmUrl)
       .then(() => {
         init_panic_hook();
         initialized = true;
@@ -64,8 +65,8 @@ ctx.addEventListener("message", (event) => {
           jobId
         );
       })
-      .catch(() => {
-        //TODO: handle error
+      .catch((e) => {
+        console.log("Failed to initialize wasm module", e);
       });
   } else {
     performAnalysis(
@@ -157,5 +158,3 @@ function performAnalysis(
     result: { analysis: analysis, mergeBy: mergeBy, jobId: jobId },
   });
 }
-
-export default ctx;

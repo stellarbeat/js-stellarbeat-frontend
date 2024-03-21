@@ -10,7 +10,7 @@
                 :to="{ name: 'network-dashboard' }"
               >
                 <img
-                  :src="brandLogoSource"
+                  src="@/assets/logo.svg"
                   class="header-brand-img mr-0"
                   :alt="brandLogo ? brandLogo.alt : undefined"
                 />
@@ -302,9 +302,6 @@ const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
-const brandLogoSource = ref(
-  props.brandLogo?.src ? require(`@/assets/logo.svg`) : ""
-); //require needs to happen before mount
 const navigateToNetwork = (networkId: string) => {
   if (networkId === store.networkContext.networkId) return;
   router

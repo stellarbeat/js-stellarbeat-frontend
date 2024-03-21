@@ -15,7 +15,11 @@ export enum AutomaticNetworkAnalysis {
 
 export default class NetworkAnalyzer {
   protected fbasAnalysisWorker = new Worker(
-    new URL("./../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+    new URL("./../workers/fbas-analysis-v3.worker.ts", import.meta.url),
+    {
+      type: import.meta.env.DEV ? "module" : "classic",
+      /* @vite-ignore */
+    }
   );
   protected network: Network;
   protected networkAnalysisId = 0;

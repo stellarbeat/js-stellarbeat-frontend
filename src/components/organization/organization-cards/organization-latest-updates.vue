@@ -114,8 +114,11 @@ import {
   OrganizationSnapShot,
   PublicKey,
 } from "@stellarbeat/js-stellarbeat-shared";
-import { Delta, formatters, create } from "jsondiffpatch";
-import "jsondiffpatch/dist/formatters-styles/html.css";
+import * as jsondiffpatch from "jsondiffpatch";
+import * as htmlFormatter from "jsondiffpatch/formatters/html";
+
+import "jsondiffpatch/formatters/styles/html.css";
+import "jsondiffpatch/formatters/styles/annotated.css";
 
 import {
   VBTooltip,
@@ -164,9 +167,9 @@ const organizationSnapshotRepository = useOrganizationSnapshotRepository();
 const router = useRouter();
 const route = useRoute();
 
-const differ = create({});
+const differ = jsondiffpatch.create({});
 const diffModalHtml = ref("<p>No update selected</p>");
-const deltas: Map<string, Delta | undefined> = new Map();
+const deltas: Map<string, jsondiffpatch.Delta | undefined> = new Map();
 
 const updatesPerDate: Ref<
   {
@@ -196,9 +199,9 @@ watch(
 
 function showDiff(snapShot: SnapshotForDelta) {
   if (!modalDiff.value) return;
-  formatters.html.showUnchanged(true);
-  diffModalHtml.value = formatters.html.format(
-    deltas.get(snapShot.startDate.toISOString()) as Delta,
+  htmlFormatter.showUnchanged(true);
+  diffModalHtml.value = htmlFormatter.format(
+    deltas.get(snapShot.startDate.toISOString()) as jsondiffpatch.Delta,
     snapShot
   );
   modalDiff.value.show();

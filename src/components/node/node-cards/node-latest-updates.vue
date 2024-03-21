@@ -144,8 +144,11 @@
 <script setup lang="ts">
 import Vue, { Ref, ref, toRefs, watch } from "vue";
 import { Node, PublicKey, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
-import { Delta, formatters, create } from "jsondiffpatch";
-import "jsondiffpatch/dist/formatters-styles/html.css";
+import * as jsondiffpatch from "jsondiffpatch";
+import * as htmlFormatter from "jsondiffpatch/formatters/html";
+
+import "jsondiffpatch/formatters/styles/html.css";
+import "jsondiffpatch/formatters/styles/annotated.css";
 
 import {
   VBTooltip,
@@ -204,7 +207,7 @@ const props = defineProps<{
 
 const node = toRefs(props).node;
 
-const differ = create({
+const differ = jsondiffpatch.create({
   objectHash(obj: Record<string, unknown>) {
     if (isArray(obj.validators)) {
       return obj.validators.join("");
@@ -213,7 +216,7 @@ const differ = create({
 });
 
 const diffModalHtml = ref("<p>No update selected</p>");
-const deltas: Map<string, Delta | undefined> = new Map();
+const deltas: Map<string, jsondiffpatch.Delta | undefined> = new Map();
 
 const updatesPerDate: Ref<
   {
@@ -235,9 +238,9 @@ const modalDiff: Ref<BModal | null> = ref(null);
 
 function showDiff(snapShot: SnapshotForDelta) {
   if (!modalDiff.value) return;
-  formatters.html.showUnchanged(true);
-  diffModalHtml.value = formatters.html.format(
-    deltas.get(snapShot.startDate.toISOString()) as Delta,
+  htmlFormatter.showUnchanged(true);
+  diffModalHtml.value = htmlFormatter.format(
+    deltas.get(snapShot.startDate.toISOString()) as jsondiffpatch.Delta,
     snapShot
   );
   modalDiff.value.show();

@@ -339,7 +339,11 @@ const MyMergeBy: {
 } = MergeBy; //for use in template as enums not supported
 
 const fbasAnalysisWorker = new Worker(
-  new URL("./../../../../workers/fbas-analysis-v3.worker.ts", import.meta.url)
+  new URL("./../../../../workers/fbas-analysis-v3.worker.ts", import.meta.url),
+  {
+    type: import.meta.env.DEV ? "module" : "classic",
+    /* @vite-ignore */
+  }
 );
 const hasResult = ref(false);
 const resultMergedBy = ref(MyMergeBy.DoNotMerge);
