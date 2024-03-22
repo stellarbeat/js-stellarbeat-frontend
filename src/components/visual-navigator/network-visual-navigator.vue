@@ -197,12 +197,16 @@
           src="@/assets/graph-preview.png"
           alt="graph-preview"
           class="preview-image"
+          width="60"
+          height="60"
         />
         <img
           v-else
           src="@/assets/map-preview.png"
           alt="map-preview"
           class="preview-image"
+          width="60"
+          height="60"
         />
       </div>
     </div>

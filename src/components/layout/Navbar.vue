@@ -10,8 +10,11 @@
                 :to="{ name: 'network-dashboard' }"
               >
                 <img
+                  rel="preload"
                   src="@/assets/logo.svg"
                   class="header-brand-img mr-0"
+                  width="400"
+                  height="460"
                   :alt="brandLogo ? brandLogo.alt : undefined"
                 />
               </router-link>
