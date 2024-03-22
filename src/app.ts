@@ -8,7 +8,6 @@ import Meta from "vue-meta";
 import * as Sentry from "@sentry/browser";
 import "./assets/global.css";
 import VueScrollTo from "vue-scrollto";
-import "regenerator-runtime/runtime";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
