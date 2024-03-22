@@ -19,7 +19,7 @@
     "@stellarbeat/js-stellarbeat-shared": "^6.5.0",
     "@stellarbeat/stellar_analysis_web": "^0.6.2",
     "ajv-formats": "^2.1.1",
-    "axios": "1.6.0",
+    "axios": "1.6.8",
     "bootstrap-vue": "2.23.1",
     "chart.js": "^3.9.1",
     "chartjs-adapter-moment": "^1.0.0",
