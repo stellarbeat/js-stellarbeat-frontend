@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <footer class="footer">
+    <footer v-if="!store.isLoading" class="footer">
       <div class="container-fluid" style="max-width: 1360px">
         <div class="d-flex justify-content-between mx-4">
           <div class="">
