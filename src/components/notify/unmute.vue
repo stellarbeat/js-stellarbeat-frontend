@@ -53,7 +53,7 @@ async function unmute() {
   }
   try {
     await axios.post(
-      import.meta.env.VITE_APP_PUBLIC_API_URL +
+      import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         subscriberRef +
         "/unmute",

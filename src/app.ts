@@ -19,7 +19,7 @@ Vue.config.productionTip = false;
 
 if (isProd) {
   Sentry.init({
-    dsn: import.meta.env.VITE_APP_SENTRY_DSN,
+    dsn: import.meta.env.VUE_APP_SENTRY_DSN,
     integrations: [new VueIntegration({ Vue, attachProps: true })],
   });
 }

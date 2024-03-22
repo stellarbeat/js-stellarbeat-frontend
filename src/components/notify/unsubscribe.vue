@@ -33,7 +33,7 @@ async function confirm() {
   const subscriberRef = route.params.subscriberRef;
   try {
     await axios.delete(
-      import.meta.env.VITE_APP_PUBLIC_API_URL +
+      import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         subscriberRef
     );

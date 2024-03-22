@@ -4,6 +4,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 
 export default defineConfig({
     plugins: [vue(), topLevelAwait()],
+    envPrefix: 'VUE_',
     worker: {
         plugins: () => [
             topLevelAwait()],
