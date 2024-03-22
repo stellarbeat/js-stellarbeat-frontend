@@ -204,10 +204,7 @@ async function updateChartData() {
 }
 
 const chartContainer = ref<HTMLDivElement | null>(null);
-const chartWidth = computed(() => {
-  if (!chartContainer.value) return 0;
-  return chartContainer.value.clientWidth;
-});
+const chartWidth = ref();
 
 async function updateDayHistoryChart() {
   isLoading.value = true;
@@ -344,6 +341,9 @@ const computeOneHourLineChartData = (): void => {
 };
 
 onMounted(async () => {
+  chartWidth.value = chartContainer.value
+    ? chartContainer.value.clientWidth
+    : 0;
   selectedDate.value = statisticsDateTimeNavigator.getInitialSelectedDate(
     chartView.value,
     store.network.time
