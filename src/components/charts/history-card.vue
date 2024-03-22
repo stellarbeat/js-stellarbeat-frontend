@@ -76,7 +76,6 @@
 </template>
 
 <script setup lang="ts">
-import moment from "moment";
 import DateNavigator from "@/components/date-navigator.vue";
 import LineChartHour from "@/components/charts/line-chart-hour.vue";
 import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
@@ -139,7 +138,9 @@ const chartView = ref("30D");
 const animated = ref(false);
 
 async function select30DayViewDefault() {
-  const time = moment(store.network.time).subtract(30, "d").toDate();
+  const time = new Date(store.network.time);
+  //subtract 30 days
+  time.setDate(time.getDate() - 30);
   await select30DayView(time);
 }
 
@@ -150,7 +151,8 @@ async function select30DayView(time?: Date) {
 }
 
 async function select24HViewDefault() {
-  const time = moment(store.network.time).subtract(1, "d").toDate();
+  const time = new Date(store.network.time);
+  time.setDate(time.getDate() - 1);
   await select24HView(time);
 }
 
@@ -162,7 +164,7 @@ async function select24HView(time?: Date) {
 }
 
 async function select1HViewDefault() {
-  selectedDate.value = moment(store.network.time).subtract(1, "hour").toDate();
+  selectedDate.value = new Date(store.network.time.getTime() - 60 * 60 * 1000);
   await select1HView(selectedDate.value);
 }
 
@@ -184,6 +186,7 @@ async function updateSelectedDate(newDate: string) {
 
 async function updateSelectedDateAndHighlight(newDate: string) {
   selectedDate.value = new Date(newDate);
+  console.log(selectedDate);
   animated.value = true;
 }
 
@@ -208,13 +211,14 @@ const chartWidth = computed(() => {
 
 async function updateDayHistoryChart() {
   isLoading.value = true;
-  let to = moment(selectedDate.value).add(30, "d");
+  let to = new Date(selectedDate.value.getTime());
+  to.setDate(to.getDate() + 30); // add 30 days
   try {
     failed.value = false;
     thirtyDayMeasurements.value = await fetchDayMeasurements.value(
       entityId.value,
-      moment(selectedDate.value).toDate(),
-      to.toDate()
+      new Date(selectedDate.value),
+      to
     );
   } catch (e) {
     failed.value = true;
@@ -224,13 +228,18 @@ async function updateDayHistoryChart() {
 
 async function update24HourHistoryChart(unit: "h" | "d" = "d") {
   isLoading.value = true;
-  let to = moment(selectedDate.value).add(1, unit);
+  let to = new Date(selectedDate.value.getTime());
+  if (unit === "d") {
+    to.setDate(to.getDate() + 1); // add 1 day
+  } else if (unit === "h") {
+    to.setTime(to.getTime() + 60 * 60 * 1000); // add 1 hour
+  }
   try {
     failed.value = false;
     twentyFourHourMeasurements.value = await fetchMeasurements.value(
       entityId.value,
-      moment(selectedDate.value).toDate(),
-      to.toDate()
+      new Date(selectedDate.value),
+      to
     );
   } catch (e) {
     failed.value = true;
@@ -272,9 +281,9 @@ const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
   let twentyFourHourMap = new Map<string, number[]>();
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   twentyFourHourMeasurements.value.forEach((measurement: any) => {
-    let hourBucketString = moment(measurement.time)
-      .startOf("hour")
-      .toISOString();
+    let date = new Date(measurement.time);
+    date.setMinutes(0, 0, 0); // set minutes, seconds, and milliseconds to 0 to start of the hour
+    let hourBucketString = date.toISOString();
     let twentyFourHourValue = twentyFourHourMap.get(hourBucketString);
     if (!twentyFourHourValue) twentyFourHourValue = [];
     twentyFourHourValue.push(measurement[measurementProperty.value]);
@@ -312,14 +321,13 @@ const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
 
 const computeOneHourLineChartData = (): void => {
   oneHourLineChartData.value = twentyFourHourMeasurements.value
-    .filter((measurement) =>
-      moment(measurement.time).isBetween(
-        moment(selectedDate.value),
-        moment(selectedDate.value).add(1, "hour"),
-        undefined,
-        "(]"
-      )
-    )
+    .filter((measurement) => {
+      const measurementTime = new Date(measurement.time).getTime();
+      const selectedTime = selectedDate.value.getTime();
+      const oneHourLater = selectedTime + 60 * 60 * 1000; // add 1 hour in milliseconds
+
+      return measurementTime > selectedTime && measurementTime <= oneHourLater;
+    })
     .map((measurement: any) => {
       if (!inverted.value) {
         return {

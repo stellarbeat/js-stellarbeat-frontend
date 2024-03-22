@@ -73,8 +73,8 @@
             :chartDataSets="aggregatedDataSets"
             :chartLabels="getAggregatedLabels"
             :unit="'month'"
-            :tooltip-time-format="'MMM YYYY'"
-            :time-display-formats="{ month: 'MMM YYYY' }"
+            :tooltip-time-format="'MMM yyyy'"
+            :time-display-formats="{ month: 'MMM yyyy' }"
             :step-size="1"
             :chartLabelFilter="aggregatedChartLabelFilter"
             :key="'1'"
@@ -86,8 +86,8 @@
             :chartDataSets="aggregatedDataSets"
             :chartLabels="getAggregatedLabels"
             :unit="'day'"
-            :tooltip-time-format="'D-M-YYYY'"
-            :time-display-formats="{ day: 'D-M-YYYY' }"
+            :tooltip-time-format="'d-M-yyyy'"
+            :time-display-formats="{ day: 'd-M-yyyy' }"
             :step-size="2"
             :chartLabelFilter="aggregatedChartLabelFilter"
             :key="'2'"
@@ -97,7 +97,7 @@
             ref="dayChart"
             v-if="bucketSize === '24H'"
             :unit="'minute'"
-            :tooltip-time-format="'D-M-YYYY HH:mm'"
+            :tooltip-time-format="'d-M-yyyy HH:mm'"
             :time-display-formats="{ minute: 'HH:mm' }"
             :step-size="4"
             point-radius="0"
@@ -147,7 +147,6 @@ import {
   VBTooltip,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
-import moment from "moment";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import AggregationLineChart from "@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
@@ -232,7 +231,8 @@ async function updateHiddenStatus(toBucketSize: string) {
 }
 
 async function select1YViewDefault() {
-  const time = moment(network.time).subtract(1, "y").toDate();
+  let time = new Date(network.time.getTime());
+  time.setFullYear(time.getFullYear() - 1);
   await select1YView(time);
 }
 
@@ -680,7 +680,8 @@ function getLabels(tooltipItem: TooltipItem<"line">): string {
 }
 
 async function select30DayViewDefault() {
-  const time = moment(network.time).subtract(30, "d").toDate();
+  let time = new Date(network.time.getTime());
+  time.setDate(time.getDate() - 30);
   await select30DayView(time);
 }
 
@@ -692,7 +693,8 @@ async function select30DayView(time?: Date) {
 }
 
 async function select24HViewDefault() {
-  const time = moment(network.time).subtract(1, "d").toDate();
+  let time = new Date(network.time.getTime());
+  time.setDate(time.getDate() - 1);
   await select24HView(time);
 }
 
@@ -714,7 +716,8 @@ async function updateSelectedDateAndHighlight(newDate: Date) {
 async function updateYearChart() {
   isLoading.value = true;
   const from = selectedDate.value;
-  const to = moment(selectedDate.value).add(1, "y").toDate();
+  let to = new Date(selectedDate.value.getTime());
+  to.setFullYear(to.getFullYear() + 1);
 
   try {
     failed.value = false;
@@ -741,7 +744,8 @@ async function updateYearChart() {
 async function updateDays30Chart() {
   isLoading.value = true;
   let from = selectedDate.value;
-  let to = moment(selectedDate.value).add(30, "d").toDate();
+  let to = new Date(selectedDate.value.getTime());
+  to.setDate(to.getDate() + 30);
   try {
     failed.value = false;
     days30Statistics.value = await networkMeasurementStore.getDayStatistics(
@@ -767,7 +771,9 @@ async function updateDays30Chart() {
 async function updateHours24Chart() {
   isLoading.value = true;
   let from = selectedDate.value;
-  let to = moment(from).add(1, "d").toDate();
+  let to = new Date(from.getTime());
+  to.setDate(to.getDate() + 1); //add one day
+
   try {
     failed.value = false;
     hour24Statistics.value = await networkMeasurementStore.getStatistics(

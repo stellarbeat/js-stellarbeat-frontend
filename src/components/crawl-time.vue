@@ -40,7 +40,6 @@
 
 <script setup lang="ts">
 import Vue, { ref, Ref } from "vue";
-import moment from "moment";
 import {
   BIconClock,
   BIconCalendar,
@@ -58,10 +57,22 @@ const store = useStore();
 const router = useRouter();
 const route = useRoute();
 
-const time: Ref<Date> = ref(new Date(store.network.time.getTime()));
-const crawlTime: Ref<string> = ref(moment(time.value).format("HH:mm:ss"));
+const time: Ref<Date | number | string> = ref(
+  new Date(store.network.time.getTime())
+);
+const crawlTime: Ref<string> = ref(formatCrawlTime());
 const minSelectedDate: Date = store.measurementsStartDate;
 
+function formatCrawlTime() {
+  let date = timeToDateObject();
+  return (
+    date.getHours().toString().padStart(2, "0") +
+    ":" +
+    date.getMinutes().toString().padStart(2, "0") +
+    ":" +
+    date.getSeconds().toString().padStart(2, "0")
+  );
+}
 function timeTravel() {
   router.push({
     name: route.name ? route.name : undefined,
@@ -70,12 +81,37 @@ function timeTravel() {
       view: route.query.view,
       "no-scroll": "1",
       network: route.query.network,
-      at: moment(time.value)
-        .hours(Number(crawlTime.value.substring(0, 2)))
-        .minutes(Number(crawlTime.value.substring(3, 5)))
-        .toISOString(),
+      at: getTimeTravelAt(),
     },
   });
+}
+
+function getTimeTravelAt() {
+  let date = timeToDateObject();
+  // Set the hours of the date object to the hours part of the crawlTime value
+  date.setHours(Number(crawlTime.value.substring(0, 2)));
+  // Set the minutes of the date object to the minutes part of the crawlTime value
+  date.setMinutes(Number(crawlTime.value.substring(3, 5)));
+  return date.toISOString();
+}
+
+function timeToDateObject() {
+  let date = time.value;
+  if (date instanceof Date) {
+    return date;
+  }
+  if (typeof date === "number") {
+    // If networkTime is a timestamp
+    date = new Date(date);
+  } else if (typeof date === "string") {
+    // If networkTime is a string
+    date = new Date(Date.parse(date));
+  } else {
+    console.error("Invalid time travel time:", date);
+    date = new Date();
+  }
+
+  return date;
 }
 </script>
 
@@ -107,7 +143,7 @@ function timeTravel() {
 </style>
 
 <style>
-.crawl-time-component .form-control {
+.crawl-time-component {
   color: #868e96ff;
 }
 </style>

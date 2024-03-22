@@ -295,7 +295,6 @@
 </template>
 
 <script setup lang="ts">
-import moment from "moment";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import NetworkStatisticsCard from "@/components/network/cards/network-statistics/network-statistics-card.vue";
 import useStore from "@/store/useStore";
@@ -313,7 +312,8 @@ const yearStatistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
 
 onMounted(async () => {
   if (!store.isSimulation && store.networkContext.enableHistory) {
-    let oneYearAgo = moment(store.network.time).subtract(1, "y").toDate();
+    let oneYearAgo = new Date(store.network.time.getTime());
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     yearStatistics.value = await networkMeasurementStore.getMonthStatistics(
       "stellar-public",
       oneYearAgo,

@@ -57,8 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { nextTick, ref, toRefs, watch } from "vue";
-import moment from "moment";
+import Vue, { nextTick, Ref, ref, toRefs, watch } from "vue";
 import {
   BButton,
   BIconChevronRight,
@@ -99,14 +98,23 @@ const statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
   store.measurementsStartDate
 );
 
-const datePickerDate = ref(selectedDate.value);
-const time = ref(moment(selectedDate.value).format("HH:mm"));
+const datePickerDate: Ref<Date | string> = ref(selectedDate.value);
+
+// Extract the hours and minutes from the selectedDate value
+const hours = selectedDate.value.getHours().toString().padStart(2, "0");
+const minutes = selectedDate.value.getMinutes().toString().padStart(2, "0");
+
+// Combine the hours and minutes into a time string
+const timeString = `${hours}:${minutes}`;
+
+// Create a ref with the time string
+const time = ref(timeString);
 const timeKey = ref(time.value);
 
 function canGoBack() {
   return statisticsDateTimeNavigator.canGoBack(
     bucketSize.value,
-    datePickerDate.value
+    new Date(datePickerDate.value)
   );
 }
 
@@ -114,9 +122,9 @@ function goBack() {
   nextTick(() => {
     datePickerDate.value = statisticsDateTimeNavigator.goBack(
       bucketSize?.value,
-      datePickerDate.value
+      new Date(datePickerDate.value)
     );
-    time.value = moment(datePickerDate.value).format("HH:mm");
+    time.value = datePickerDate.value.toISOString().substring(11, 16);
     timeKey.value = time.value;
     emit("dateChanged", datePickerDate.value);
   });
@@ -126,9 +134,9 @@ function goForward() {
   nextTick(() => {
     datePickerDate.value = statisticsDateTimeNavigator.goForward(
       bucketSize?.value,
-      datePickerDate.value
+      new Date(datePickerDate.value)
     );
-    time.value = moment(datePickerDate.value).format("HH:mm");
+    time.value = datePickerDate.value.toISOString().substring(11, 16);
     timeKey.value = time.value;
     emit("dateChanged", datePickerDate.value);
   });
@@ -136,28 +144,47 @@ function goForward() {
 
 watch(selectedDate, async () => {
   datePickerDate.value = selectedDate.value;
-  time.value = moment(selectedDate.value).format("HH:mm");
+  const selectedHours = selectedDate.value
+    .getHours()
+    .toString()
+    .padStart(2, "0");
+  const selectedMinutes = selectedDate.value
+    .getMinutes()
+    .toString()
+    .padStart(2, "0");
+  time.value = `${selectedHours}:${selectedMinutes}`;
   timeKey.value = time.value;
 });
 
 watch(datePickerDate, async () => {
   if (datePickerDate.value && selectedDate.value !== datePickerDate.value) {
-    time.value = moment(datePickerDate.value).format("HH:mm");
+    const selectedHours = new Date(datePickerDate.value)
+      .getHours()
+      .toString()
+      .padStart(2, "0");
+    const selectedMinutes = new Date(datePickerDate.value)
+      .getMinutes()
+      .toString()
+      .padStart(2, "0");
+    time.value = `${selectedHours}:${selectedMinutes}`;
     timeKey.value = time.value;
     emit("dateChanged", new Date(datePickerDate.value));
   }
 });
 
 function timeInputHandler() {
+  const selectedHours = Number(time.value.substring(0, 2));
+  const selectedMinutes = Number(time.value.substring(3, 5));
   if (
-    time.value !==
-    moment(datePickerDate.value).startOf("minutes").format("HH:mm:ss")
+    new Date(datePickerDate.value).getHours() !== selectedHours ||
+    new Date(datePickerDate.value).getMinutes() !== selectedMinutes
   ) {
-    datePickerDate.value = moment(datePickerDate.value)
-      .hours(Number(time.value.substring(0, 2)))
-      .minutes(Number(time.value.substring(3, 2)))
-      .toDate();
-    time.value = moment(datePickerDate.value).format("HH:mm");
+    new Date(datePickerDate.value).setHours(selectedHours, selectedMinutes);
+    const date = new Date(datePickerDate.value);
+    time.value = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     timeKey.value = time.value;
     emit("dateChanged", datePickerDate.value);
   }
@@ -168,7 +195,7 @@ const router = useRouter();
 
 function timeTravel() {
   let query = store.copyAndModifyObject(route.query, [
-    { key: "at", value: datePickerDate.value.toISOString() },
+    { key: "at", value: new Date(datePickerDate.value).toISOString() },
   ]);
   router.push({
     name: route.name ? route.name : undefined,

@@ -19,7 +19,7 @@
                 }}
               </div>
               <div class="active-element-time align-self-start text-muted">
-                {{ formatTime(activeElement.time) }}
+                {{ formatTime(activeElement?.time) }}
               </div>
             </div>
             <div v-else>
@@ -77,7 +77,6 @@
 </template>
 
 <script setup lang="ts">
-import moment from "moment";
 import {
   BIconInfoCircle,
   VBTooltip,
@@ -132,7 +131,8 @@ function onHover(stat: NetworkStatisticsAggregation) {
 }
 
 function formatTime(date: Date) {
-  return moment(date).format("MMM YYYY");
+  const options = { year: "numeric" as const, month: "short" as const };
+  return date.toLocaleDateString(undefined, options);
 }
 
 const dimmerClass = computed(() => {

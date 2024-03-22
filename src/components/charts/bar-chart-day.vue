@@ -26,7 +26,7 @@ import {
   TooltipItem,
   LinearScale,
 } from "chart.js";
-import "chartjs-adapter-moment";
+import "chartjs-adapter-date-fns";
 
 export type timeUnit = "day" | "hour";
 
@@ -43,7 +43,7 @@ let barChart: Chart | null = null;
 const chartElement: Ref<HTMLCanvasElement | null> = ref(null);
 
 const timeFormat = computed(() => {
-  if (props.unit === "day") return "D-M-YYYY";
+  if (props.unit === "day") return "d-M-yyyy";
   else return "HH:mm";
 });
 
@@ -121,7 +121,7 @@ onMounted(() => {
       },
       onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
         if (activeElements[0] && activeElements[0].index >= 0) {
-          emit("click-date", data.value[activeElements[0].index].x);
+          emit("click-date", new Date(data.value[activeElements[0].index].x));
         }
       },
       plugins: {

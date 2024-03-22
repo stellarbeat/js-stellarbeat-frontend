@@ -22,7 +22,7 @@ import {
   Tooltip,
   TooltipItem,
 } from "chart.js";
-import "chartjs-adapter-moment";
+import "chartjs-adapter-date-fns";
 
 import { onBeforeUnmount, onMounted, ref, withDefaults } from "vue";
 

@@ -1,5 +1,3 @@
-import moment from "moment";
-
 export default class StatisticsDateTimeNavigator {
   protected statisticsTrackingStartDate: Date;
 
@@ -8,17 +6,21 @@ export default class StatisticsDateTimeNavigator {
   }
 
   protected subtractBucket(bucketSize: string, fromDate: Date) {
-    if (bucketSize === "30D")
-      return moment(fromDate).subtract(30, "d").toDate();
-    else if (bucketSize === "12H")
-      return moment(fromDate).subtract(12, "h").toDate();
-    else if (bucketSize === "24H")
-      return moment(fromDate).subtract(1, "d").toDate();
-    else if (bucketSize === "1H")
-      return moment(fromDate).subtract(1, "h").toDate();
-    else if (bucketSize === "1Y")
-      return moment(fromDate).subtract(1, "y").toDate();
-    else throw new Error("unknown bucket size");
+    const date = new Date(fromDate.getTime()); // Create a new Date object from the fromDate value
+    if (bucketSize === "30D") {
+      date.setDate(date.getDate() - 30); // Subtract 30 days
+    } else if (bucketSize === "12H") {
+      date.setTime(date.getTime() - 12 * 60 * 60 * 1000); // Subtract 12 hours
+    } else if (bucketSize === "24H") {
+      date.setDate(date.getDate() - 1); // Subtract 1 day
+    } else if (bucketSize === "1H") {
+      date.setTime(date.getTime() - 60 * 60 * 1000); // Subtract 1 hour
+    } else if (bucketSize === "1Y") {
+      date.setFullYear(date.getFullYear() - 1); // Subtract 1 year
+    } else {
+      throw new Error("unknown bucket size");
+    }
+    return date;
   }
 
   goBack(bucketSize: string, fromDate: Date) {
@@ -38,75 +40,125 @@ export default class StatisticsDateTimeNavigator {
   }
 
   goForward(bucketSize: string, fromDate: Date) {
-    let selectedDate: Date;
-    if (bucketSize === "30D")
-      selectedDate = moment(fromDate).add(30, "d").toDate();
-    else if (bucketSize === "12H")
-      selectedDate = moment(fromDate).add(12, "h").toDate();
-    else if (bucketSize === "24H")
-      selectedDate = moment(fromDate).add(1, "d").toDate();
-    else if (bucketSize === "1H")
-      selectedDate = moment(fromDate).add(1, "h").toDate();
-    else if (bucketSize === "1Y")
-      selectedDate = moment(fromDate).add(1, "y").toDate();
-    else throw new Error("unknown bucket size");
-
+    const selectedDate = new Date(fromDate.getTime()); // Create a new Date object from the fromDate value
+    if (bucketSize === "30D") {
+      selectedDate.setDate(selectedDate.getDate() + 30); // Add 30 days
+    } else if (bucketSize === "12H") {
+      selectedDate.setTime(selectedDate.getTime() + 12 * 60 * 60 * 1000); // Add 12 hours
+    } else if (bucketSize === "24H") {
+      selectedDate.setDate(selectedDate.getDate() + 1); // Add 1 day
+    } else if (bucketSize === "1H") {
+      selectedDate.setTime(selectedDate.getTime() + 60 * 60 * 1000); // Add 1 hour
+    } else if (bucketSize === "1Y") {
+      selectedDate.setFullYear(selectedDate.getFullYear() + 1); // Add 1 year
+    } else {
+      throw new Error("unknown bucket size");
+    }
     return selectedDate;
   }
 
   //because statistics are shown from time point: selectedDate - bucketSize, we add the bucket size to the first available statistic
   getMinSelectedDate(bucketSize: string) {
-    if (bucketSize === "30D")
-      return moment(this.statisticsTrackingStartDate).add(30, "d").toDate();
-    else if (bucketSize === "12H")
-      return moment(this.statisticsTrackingStartDate).add(12, "h").toDate();
-    else if (bucketSize === "24H")
-      return moment(this.statisticsTrackingStartDate).add(24, "h").toDate();
-    else if (bucketSize === "1H")
-      return moment(this.statisticsTrackingStartDate).add(1, "h").toDate();
-    else if (bucketSize === "1Y")
-      return moment(this.statisticsTrackingStartDate).add(1, "y").toDate();
-    else throw new Error("unknown bucket size");
+    const selectedDate = new Date(this.statisticsTrackingStartDate.getTime()); // Create a new Date object from the statisticsTrackingStartDate value
+    if (bucketSize === "30D") {
+      selectedDate.setDate(selectedDate.getDate() + 30); // Add 30 days
+    } else if (bucketSize === "12H") {
+      selectedDate.setTime(selectedDate.getTime() + 12 * 60 * 60 * 1000); // Add 12 hours
+    } else if (bucketSize === "24H") {
+      selectedDate.setDate(selectedDate.getDate() + 24); // Add 24 hours
+    } else if (bucketSize === "1H") {
+      selectedDate.setTime(selectedDate.getTime() + 60 * 60 * 1000); // Add 1 hour
+    } else if (bucketSize === "1Y") {
+      selectedDate.setFullYear(selectedDate.getFullYear() + 1); // Add 1 year
+    } else {
+      throw new Error("unknown bucket size");
+    }
+    return selectedDate;
   }
 
-  //todo: could be cleaner
   getInitialSelectedDate(bucketSize: string, time: Date) {
     if (bucketSize === "30D") {
-      if (
-        moment(time).subtract(30, "d") <
-        moment(this.statisticsTrackingStartDate)
-      ) {
-        return moment(this.statisticsTrackingStartDate)
-          .add(30, "d")
-          .startOf("day")
-          .toDate();
-      } else return moment(time).startOf("day").toDate();
+      return this.getInitialSelectedDateFor30D(time);
     } else if (bucketSize === "12H") {
-      if (
-        moment(time).subtract(24, "h") <
-        moment(this.statisticsTrackingStartDate)
-      ) {
-        return moment(this.statisticsTrackingStartDate).add(12, "h").toDate();
-      } else return time;
+      return this.getInitialSelectedDateFor12H(time);
     } else if (bucketSize === "24H") {
-      if (
-        moment(time).subtract(24, "h") <
-        moment(this.statisticsTrackingStartDate)
-      ) {
-        return moment(this.statisticsTrackingStartDate).add(24, "h").toDate();
-      } else return time;
+      return this.getInitialSelectedDateFor24H(time);
     } else if (bucketSize === "1H") {
-      if (
-        moment(time).subtract(1, "h") < moment(this.statisticsTrackingStartDate)
-      ) {
-        return moment(this.statisticsTrackingStartDate).add(1, "h").toDate();
-      } else return time;
+      return this.getInitialSelectedDateFor1H(time);
     } else if (bucketSize === "1Y") {
-      if (
-        moment(time).subtract(1, "y") < moment(this.statisticsTrackingStartDate)
-      ) {
-        return moment(this.statisticsTrackingStartDate).add(1, "y").toDate();
-      } else return time;
-    } else throw new Error("unknown bucket size");
+      return this.getInitialSelectedDateFor1Y(time);
+    } else {
+      throw new Error("unknown bucket size");
+    }
+  }
+
+  getInitialSelectedDateFor30D(time: Date) {
+    const selectedDate = new Date(time.getTime());
+    if (
+      selectedDate.getTime() - 30 * 24 * 60 * 60 * 1000 <
+      this.statisticsTrackingStartDate.getTime()
+    ) {
+      const startDate = new Date(this.statisticsTrackingStartDate.getTime());
+      startDate.setDate(startDate.getDate() + 30);
+      return new Date(startDate.setHours(0, 0, 0, 0));
+    } else {
+      return new Date(selectedDate.setHours(0, 0, 0, 0));
+    }
+  }
+
+  getInitialSelectedDateFor12H(time: Date) {
+    const selectedDate = new Date(time.getTime());
+    if (
+      selectedDate.getTime() - 24 * 60 * 60 * 1000 <
+      this.statisticsTrackingStartDate.getTime()
+    ) {
+      const startDate = new Date(this.statisticsTrackingStartDate.getTime());
+      startDate.setTime(startDate.getTime() + 12 * 60 * 60 * 1000);
+      return startDate;
+    } else {
+      return time;
+    }
+  }
+
+  getInitialSelectedDateFor24H(time: Date) {
+    const selectedDate = new Date(time.getTime());
+    if (
+      selectedDate.getTime() - 24 * 60 * 60 * 1000 <
+      this.statisticsTrackingStartDate.getTime()
+    ) {
+      const startDate = new Date(this.statisticsTrackingStartDate.getTime());
+      startDate.setDate(startDate.getDate() + 1);
+      return startDate;
+    } else {
+      return time;
+    }
+  }
+
+  getInitialSelectedDateFor1H(time: Date) {
+    const selectedDate = new Date(time.getTime());
+    if (
+      selectedDate.getTime() - 60 * 60 * 1000 <
+      this.statisticsTrackingStartDate.getTime()
+    ) {
+      const startDate = new Date(this.statisticsTrackingStartDate.getTime());
+      startDate.setTime(startDate.getTime() + 60 * 60 * 1000);
+      return startDate;
+    } else {
+      return time;
+    }
+  }
+
+  getInitialSelectedDateFor1Y(time: Date) {
+    const selectedDate = new Date(time.getTime());
+    if (
+      selectedDate.getTime() - 365 * 24 * 60 * 60 * 1000 <
+      this.statisticsTrackingStartDate.getTime()
+    ) {
+      const startDate = new Date(this.statisticsTrackingStartDate.getTime());
+      startDate.setFullYear(startDate.getFullYear() + 1);
+      return startDate;
+    } else {
+      return time;
+    }
   }
 }

@@ -17,7 +17,7 @@ import {
   TimeScale,
   TooltipItem,
 } from "chart.js";
-import "chartjs-adapter-moment";
+import "chartjs-adapter-date-fns";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
@@ -145,7 +145,7 @@ function initializeBarChart() {
           time: {
             unit: "year",
             stepSize: 1,
-            tooltipFormat: "MMM YYYY",
+            tooltipFormat: "MMM yyyy",
           },
         },
         y: {
