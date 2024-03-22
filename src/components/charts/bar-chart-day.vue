@@ -145,17 +145,11 @@ onMounted(() => {
       },
       responsiveAnimationDuration: 0, // animation duration after a resize
       scales: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          display: false,
-        },
         x: {
+          border: { display: true },
           grid: {
             display: true,
             drawTicks: false,
-            drawBorder: true,
             drawOnChartArea: false,
           },
           distribution: "linear",
@@ -166,9 +160,9 @@ onMounted(() => {
           time: {
             unit: unit.value,
             displayFormats: displayFormat.value,
-            stepSize: 2,
           },
           ticks: {
+            stepSize: 2,
             font: {
               size: 10,
             },
@@ -179,10 +173,12 @@ onMounted(() => {
         },
 
         y: {
+          border: {
+            display: true,
+          },
           grid: {
             display: true,
             drawTicks: false,
-            drawBorder: true,
             drawOnChartArea: false,
           },
           min: 0,

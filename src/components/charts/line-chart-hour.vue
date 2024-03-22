@@ -120,17 +120,13 @@ onMounted(() => {
       },
       responsiveAnimationDuration: 0, // animation duration after a resize
       scales: {
-        grid: {
-          display: false,
-        },
-        ticks: {
-          display: false,
-        },
         x: {
+          border: {
+            display: true,
+          },
           grid: {
             display: true,
             drawTicks: false,
-            drawBorder: true,
             drawOnChartArea: false,
           },
           stacked: true,
@@ -153,10 +149,12 @@ onMounted(() => {
           beginAtZero: true,
         },
         y: {
+          border: {
+            display: true,
+          },
           grid: {
             display: true,
             drawTicks: false,
-            drawBorder: true,
             drawOnChartArea: false,
           },
           stacked: true,

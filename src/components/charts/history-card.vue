@@ -186,7 +186,6 @@ async function updateSelectedDate(newDate: string) {
 
 async function updateSelectedDateAndHighlight(newDate: string) {
   selectedDate.value = new Date(newDate);
-  console.log(selectedDate);
   animated.value = true;
 }
 

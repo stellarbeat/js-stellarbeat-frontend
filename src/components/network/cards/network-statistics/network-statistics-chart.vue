@@ -144,8 +144,10 @@ function initializeBarChart() {
           distribution: "series",
           time: {
             unit: "year",
-            stepSize: 1,
             tooltipFormat: "MMM yyyy",
+          },
+          ticks: {
+            stepSize: 1,
           },
         },
         y: {
