@@ -45,167 +45,124 @@
       archive has limited throughput.
     </b-alert>
     <div class="row row-cards row-deck" v-if="!store.isSimulation">
-      <LazyHydrate when-visible>
-        <div class="col-sm-12 col-md-6 col-xl-3">
-          <node-index :node="selectedNode" />
-        </div>
-      </LazyHydrate>
+      <div class="col-sm-12 col-md-6 col-xl-3">
+        <node-index :node="selectedNode" />
+      </div>
 
-      <LazyHydrate when-visible>
-        <div
-          class="col-sm-12 col-md-6 col-xl-3"
-          v-if="selectedNode.isValidator"
+      <div class="col-sm-12 col-md-6 col-xl-3" v-if="selectedNode.isValidator">
+        <NodeStatistics24HValidating :node="selectedNode" />
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-xl-3" v-else>
+        <NodeStatistics24HActive :node="selectedNode" />
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-xl-3" v-if="selectedNode.isValidator">
+        <NodeStatistics30DValidating :node="selectedNode" />
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-xl-3" v-else>
+        <NodeStatistics30DActive :node="selectedNode" />
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-xl-3">
+        <NodeStatistics30DOverloaded :node="selectedNode" />
+      </div>
+
+      <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
+        <history-card
+          :subject="'Validating'"
+          :entityId="selectedNode.publicKey"
+          :fetchDayMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+          "
+          :fetchMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getStatistics(publicKey, from, to)
+          "
+          :dayMeasurementProperty="'isValidatingCount'"
+          :measurementProperty="'isValidating'"
+          :chartType="'bar'"
         >
-          <NodeStatistics24HValidating :node="selectedNode" />
-        </div>
-
-        <div class="col-sm-12 col-md-6 col-xl-3" v-else>
-          <NodeStatistics24HActive :node="selectedNode" />
-        </div>
-      </LazyHydrate>
-
-      <LazyHydrate when-visible>
-        <div
-          class="col-sm-12 col-md-6 col-xl-3"
-          v-if="selectedNode.isValidator"
+        </history-card>
+      </div>
+      <div v-else class="col-md-12 col-lg-6 col-xl-4">
+        <history-card
+          :subject="'Active'"
+          :entityId="selectedNode.publicKey"
+          :fetchDayMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+          "
+          :fetchMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getStatistics(publicKey, from, to)
+          "
+          :dayMeasurementProperty="'isActiveCount'"
+          :measurementProperty="'isActive'"
+          :chartType="'bar'"
         >
-          <NodeStatistics30DValidating :node="selectedNode" />
-        </div>
+        </history-card>
+      </div>
 
-        <div class="col-sm-12 col-md-6 col-xl-3" v-else>
-          <NodeStatistics30DActive :node="selectedNode" />
-        </div>
-      </LazyHydrate>
-
-      <LazyHydrate when-visible>
-        <div class="col-sm-12 col-md-6 col-xl-3">
-          <NodeStatistics30DOverloaded :node="selectedNode" />
-        </div>
-      </LazyHydrate>
-
-      <LazyHydrate when-visible>
-        <div
-          class="col-md-12 col-lg-6 col-xl-4"
-          v-if="selectedNode.isValidator"
+      <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
+        <history-card
+          :subject="'History Archive up-to-date'"
+          :entityId="selectedNode.publicKey"
+          :fetchDayMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+          "
+          :fetchMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getStatistics(publicKey, from, to)
+          "
+          :dayMeasurementProperty="'isFullValidatorCount'"
+          :measurementProperty="'isFullValidator'"
         >
-          <history-card
-            :subject="'Validating'"
-            :entityId="selectedNode.publicKey"
-            :fetchDayMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
-            "
-            :fetchMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getStatistics(publicKey, from, to)
-            "
-            :dayMeasurementProperty="'isValidatingCount'"
-            :measurementProperty="'isValidating'"
-            :chartType="'bar'"
-          >
-          </history-card>
-        </div>
-        <div v-else class="col-md-12 col-lg-6 col-xl-4">
-          <history-card
-            :subject="'Active'"
-            :entityId="selectedNode.publicKey"
-            :fetchDayMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
-            "
-            :fetchMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getStatistics(publicKey, from, to)
-            "
-            :dayMeasurementProperty="'isActiveCount'"
-            :measurementProperty="'isActive'"
-            :chartType="'bar'"
-          >
-          </history-card>
-        </div>
-      </LazyHydrate>
-
-      <LazyHydrate when-visible>
-        <div
-          class="col-md-12 col-lg-6 col-xl-4"
-          v-if="selectedNode.isValidator"
+        </history-card>
+      </div>
+      <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
+        <history-card
+          :subject="'Overloaded'"
+          :entityId="selectedNode.publicKey"
+          :fetchDayMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getDayStatistics(publicKey, from, to)
+          "
+          :fetchMeasurements="
+            (publicKey, from, to) =>
+              nodeMeasurementStore.getStatistics(publicKey, from, to)
+          "
+          :dayMeasurementProperty="'isOverloadedCount'"
+          :measurementProperty="'isOverLoaded'"
+          :inverted="true"
         >
-          <history-card
-            :subject="'History Archive up-to-date'"
-            :entityId="selectedNode.publicKey"
-            :fetchDayMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
-            "
-            :fetchMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getStatistics(publicKey, from, to)
-            "
-            :dayMeasurementProperty="'isFullValidatorCount'"
-            :measurementProperty="'isFullValidator'"
-          >
-          </history-card>
-        </div>
-      </LazyHydrate>
+        </history-card>
+      </div>
 
-      <LazyHydrate when-visible>
-        <div
-          class="col-md-12 col-lg-6 col-xl-4"
-          v-if="selectedNode.isValidator"
-        >
-          <history-card
-            :subject="'Overloaded'"
-            :entityId="selectedNode.publicKey"
-            :fetchDayMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getDayStatistics(publicKey, from, to)
-            "
-            :fetchMeasurements="
-              (publicKey, from, to) =>
-                nodeMeasurementStore.getStatistics(publicKey, from, to)
-            "
-            :dayMeasurementProperty="'isOverloadedCount'"
-            :measurementProperty="'isOverLoaded'"
-            :inverted="true"
-          >
-          </history-card>
-        </div>
-      </LazyHydrate>
+      <div class="col-md-12 col-lg-6 col-xl-4">
+        <node-info :node="selectedNode" />
+      </div>
+      <div class="col-md-12 col-lg-6 col-xl-4">
+        <node-extra-info :node="selectedNode" />
+      </div>
 
-      <LazyHydrate when-visible>
-        <div class="col-md-12 col-lg-6 col-xl-4">
-          <node-info :node="selectedNode" />
-        </div>
-      </LazyHydrate>
-      <LazyHydrate when-visible>
-        <div class="col-md-12 col-lg-6 col-xl-4">
-          <node-extra-info :node="selectedNode" />
-        </div>
-      </LazyHydrate>
-
-      <LazyHydrate when-visible>
-        <div
-          v-if="selectedNode.isValidator"
-          class="col-md-12 col-lg-6 col-xl-4"
-        >
-          <node-trusted-by :node="selectedNode" />
-        </div>
-      </LazyHydrate>
+      <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
+        <node-trusted-by :node="selectedNode" />
+      </div>
     </div>
     <div class="row row-cards">
-      <LazyHydrate when-visible>
-        <div class="col-lg-12 col-xl-12" v-if="selectedNode.isValidator">
-          <node-quorum-set-validators :node="selectedNode" />
-        </div>
-      </LazyHydrate>
-      <LazyHydrate when-visible>
-        <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
-          <node-latest-updates :node="selectedNode" />
-        </div>
-        <div v-else class="col-lg-12 col-xl-12">
-          <node-trusted-by :node="selectedNode" />
-        </div>
-      </LazyHydrate>
+      <div class="col-lg-12 col-xl-12" v-if="selectedNode.isValidator">
+        <node-quorum-set-validators :node="selectedNode" />
+      </div>
+      <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
+        <node-latest-updates :node="selectedNode" />
+      </div>
+      <div v-else class="col-lg-12 col-xl-12">
+        <node-trusted-by :node="selectedNode" />
+      </div>
     </div>
   </div>
 </template>
@@ -219,7 +176,6 @@ import NodeIndex from "@/components/node/node-cards/statistics/node-index.vue";
 import NodeStatistics24HActive from "@/components/node/node-cards/statistics/node-statistics-24H-active.vue";
 import NodeTrustedBy from "@/components/node/node-cards/node-trusted-by.vue";
 import NodeLatestUpdates from "@/components/node/node-cards/node-latest-updates.vue";
-import LazyHydrate from "vue-lazy-hydration";
 import { BAlert } from "bootstrap-vue";
 import { HistoryArchiveScan } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";

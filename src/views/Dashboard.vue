@@ -57,9 +57,7 @@
       <div class="col-sm-7 col-lg-9 col-xl" id="content">
         <div class="row">
           <div class="col">
-            <LazyHydrate when-visible>
-              <network-visual-navigator :view="view" />
-            </LazyHydrate>
+            <network-visual-navigator :view="view" />
           </div>
         </div>
         <div
@@ -90,7 +88,6 @@ import Consent from "@/components/consent.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BAlert } from "bootstrap-vue";
-import LazyHydrate from "vue-lazy-hydration";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 import VueScrollTo from "vue-scrollto";

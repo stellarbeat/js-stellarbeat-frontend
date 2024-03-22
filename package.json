@@ -42,7 +42,6 @@
     "stickybits": "^3.7.9",
     "vue": "^2.7.16",
     "vue-clipboard3": "^2.0.0",
-    "vue-lazy-hydration": "^2.0.0-beta.4",
     "vue-meta": "2.4.0",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.6.5",

@@ -12,35 +12,30 @@
     />
 
     <div v-show="showing" class="sb-nav-dropdown">
-      <LazyHydrate when-visible>
-        <div>
-          <nav-link
-            v-for="node in paginatedNodes"
-            :key="node.publicKey"
-            v-on:click="selectNode(node)"
-            :title="getDisplayName(node)"
-            :isLinkInDropdown="true"
-            :has-warnings="NodeWarningDetector.nodeHasWarning(node, network)"
-            :warnings="
-              NodeWarningDetector.getNodeWarningReasonsConcatenated(
-                node,
-                network
-              )
-            "
-            :has-danger="network.isNodeFailing(node)"
-            :dangers="network.getNodeFailingReason(node).label"
-          >
-            <template v-slot:action-dropdown>
-              <node-actions :node="node" />
-            </template>
-          </nav-link>
-          <nav-pagination
-            v-model="currentPage"
-            v-on:input="currentPage = $event"
-            :total-rows="nodes.length"
-          />
-        </div>
-      </LazyHydrate>
+      <div>
+        <nav-link
+          v-for="node in paginatedNodes"
+          :key="node.publicKey"
+          v-on:click="selectNode(node)"
+          :title="getDisplayName(node)"
+          :isLinkInDropdown="true"
+          :has-warnings="NodeWarningDetector.nodeHasWarning(node, network)"
+          :warnings="
+            NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
+          "
+          :has-danger="network.isNodeFailing(node)"
+          :dangers="network.getNodeFailingReason(node).label"
+        >
+          <template v-slot:action-dropdown>
+            <node-actions :node="node" />
+          </template>
+        </nav-link>
+        <nav-pagination
+          v-model="currentPage"
+          v-on:input="currentPage = $event"
+          :total-rows="nodes.length"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -50,7 +45,6 @@ import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import NavLink from "@/components/side-bar/nav-link.vue";
 import NavPagination from "@/components/side-bar/nav-pagination.vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
-import LazyHydrate from "vue-lazy-hydration";
 import { computed } from "vue";
 import useStore from "@/store/useStore";
 import { useDropdown } from "@/composables/useDropdown";
