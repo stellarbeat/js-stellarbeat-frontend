@@ -325,7 +325,6 @@ const homeActiveClass = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/custom";
 .brand-title {
   color: #4a4a4a; // $primary;
   font-weight: normal;

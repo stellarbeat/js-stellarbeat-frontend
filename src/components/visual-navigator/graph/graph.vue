@@ -517,7 +517,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/custom";
+@import "src/assets/variables";
 
 svg.graph {
   width: 100%;

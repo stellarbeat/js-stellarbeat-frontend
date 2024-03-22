@@ -50,7 +50,7 @@ const classObject = computed(() => {
 </script>
 
 <style scoped lang="scss">
-@import "src/assets/custom";
+@import "src/assets/variables";
 .scc {
   opacity: 0.1;
   fill: transparent;

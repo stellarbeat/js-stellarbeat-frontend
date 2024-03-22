@@ -116,7 +116,6 @@ function timeToDateObject() {
 </script>
 
 <style lang="scss" scoped>
-@import "src/assets/custom";
 .date-picker {
   width: auto;
   border-bottom-right-radius: 0;
