@@ -80,9 +80,6 @@ dependencies:
   prerender-node:
     specifier: ^3.7.0
     version: 3.8.0
-  stickybits:
-    specifier: ^3.7.9
-    version: 3.7.11
   vue:
     specifier: ^2.7.16
     version: 2.7.16
@@ -4540,10 +4537,6 @@ packages:
   /statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
-    dev: false
-
-  /stickybits@3.7.11:
-    resolution: {integrity: sha512-WO+ns7BYZqGS4jWVTg5JNhIvNV4LGbUtNTSck4zAkWRQzA1IfxwIkMGc0BbdGy4PGIjK7kKo5CZcN6Sd5dHVlw==}
     dev: false
 
   /string-length@4.0.2:

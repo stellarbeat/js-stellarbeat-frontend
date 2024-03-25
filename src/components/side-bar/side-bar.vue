@@ -161,9 +161,8 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { onMounted } from "vue";
+import Vue from "vue";
 import UndoRedo from "@/components/node/tools/simulation/UndoRedo.vue";
-import stickybits from "stickybits";
 import {
   BFormCheckbox,
   BIcon,
@@ -225,10 +224,6 @@ function prettifyBaseQuorumSet(
     ),
   };
 }
-
-onMounted(() => {
-  stickybits("#sticky");
-});
 </script>
 <style scoped>
 .overflow {
@@ -271,5 +266,10 @@ onMounted(() => {
 
 .info-title {
   font-weight: 600;
+}
+
+#sticky {
+  position: sticky;
+  top: 0;
 }
 </style>
