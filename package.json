@@ -18,7 +18,7 @@
     "bootstrap-vue": "2.23.1",
     "chart.js": "^4.4.2",
     "chartjs-adapter-date-fns": "^3.0.0",
-    "connect-history-api-fallback": "^1.6.0",
+    "connect-history-api-fallback": "^2.0.0",
     "d3-force": "^3.0.0",
     "d3-hierarchy": "^3.1.2",
     "d3-polygon": "^3.0.1",
