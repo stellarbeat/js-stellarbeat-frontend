@@ -49,14 +49,15 @@
 
 <script setup lang="ts">
 import {
-  TooltipItem,
+  ActiveElement,
   Chart,
+  ChartEvent,
+  Filler,
+  LineElement,
   PointElement,
   RadarController,
   RadialLinearScale,
-  ActiveElement,
-  ChartEvent,
-  LineElement,
+  TooltipItem,
 } from "chart.js";
 
 import {
@@ -119,6 +120,7 @@ function initializeChart() {
     RadarController,
     RadialLinearScale,
     PointElement,
+    Filler,
   );
   //@ts-ignore
   chart.value = new Chart(chartElement.value as HTMLCanvasElement, {

@@ -11,6 +11,7 @@ import {
   ChartData,
   ChartDataset,
   ChartEvent,
+  Filler,
   Legend,
   LegendItem,
   LinearScale,
@@ -18,7 +19,7 @@ import {
   LineElement,
   Point,
   PointElement,
-  TimeScale,
+  TimeSeriesScale,
   Tooltip,
   TooltipItem,
 } from "chart.js";
@@ -71,13 +72,14 @@ defineExpose({ updateData });
 function initializeBarChart() {
   if (!chartElement.value) return;
   Chart.register(
-    TimeScale,
+    TimeSeriesScale,
     LineElement,
     LineController,
     Legend,
     Tooltip,
     LinearScale,
     PointElement,
+    Filler,
   );
   chart.value = new Chart(chartElement.value as HTMLCanvasElement, {
     type: "line",
@@ -111,6 +113,13 @@ function initializeBarChart() {
         intersect: true,
       },
       plugins: {
+        title: {
+          display: false,
+          text: "Quorum availability - liveness analysis",
+          font: {
+            size: 16,
+          },
+        },
         filler: {
           propagate: true,
         },
@@ -141,27 +150,24 @@ function initializeBarChart() {
           right: 20,
         },
       },
-      title: {
-        display: false,
-        text: "Quorum availability - liveness analysis",
-        fontSize: 16,
-      },
+
       responsive: true,
       maintainAspectRatio: false,
       scales: {
         x: {
           offset: false,
-          //@ts-ignore
-          type: "time",
+          type: "timeseries",
           time: {
             unit: props.unit,
-            stepSize: props.stepSize,
             displayFormats: props.timeDisplayFormats,
             tooltipFormat: props.tooltipTimeFormat,
           },
-          gridLines: {
-            offsetGridLines: false,
+          grid: {
+            offset: false,
             display: false,
+          },
+          ticks: {
+            stepSize: props.stepSize,
           },
         },
 

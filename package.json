@@ -70,7 +70,7 @@
     "sass": "1.64.2",
     "ts-jest": "^29.1.0",
     "typescript": "~4.7.4",
-    "vite": "^5.2.2",
+    "vite": "^5.2.6",
     "vite-bundle-visualizer": "^1.1.0",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-top-level-await": "^1.4.1"
