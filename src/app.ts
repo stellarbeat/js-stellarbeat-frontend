@@ -8,7 +8,6 @@ import Meta from "vue-meta";
 import "./assets/global.css";
 import VueScrollTo from "vue-scrollto";
 import Multiselect from "vue-multiselect";
-import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
 import * as Sentry from "@sentry/vue";
 
 const isProd = import.meta.env.PROD;
@@ -19,11 +18,6 @@ if (isProd) {
   Sentry.init({
     dsn: import.meta.env.VUE_APP_SENTRY_DSN,
   });
-}
-
-if (typeof window !== "undefined") {
-  //needed for chartjs3.x compatibility with older browsers
-  window.ResizeObserver = window.ResizeObserver || ResizeObserverPolyfill;
 }
 
 Vue.use(Meta);

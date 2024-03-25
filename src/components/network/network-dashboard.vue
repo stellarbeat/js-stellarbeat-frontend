@@ -97,11 +97,9 @@
 
       <div
         v-if="!store.isSimulation && store.networkContext.enableHorizon"
-        when-visible
+        class="col-lg-6 col-12"
       >
-        <div class="col-lg-6 col-12">
-          <network-horizon />
-        </div>
+        <network-horizon />
       </div>
       <div class="col-lg-6 col-12">
         <network-isps />
