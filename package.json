@@ -67,7 +67,8 @@
     "vite": "^5.2.6",
     "vite-bundle-visualizer": "^1.1.0",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-top-level-await": "^1.4.1"
+    "vite-plugin-top-level-await": "^1.4.1",
+    "ajv-formats": "^2.1.1"
   },
   "engines": {
     "node": "20.x"
