@@ -12,6 +12,12 @@
         >
       </h3>
       <table class="table card-table">
+        <thead>
+          <tr>
+            <th class="px-0"></th>
+            <th class="px-0 text-right"></th>
+          </tr>
+        </thead>
         <tbody>
           <tr class="text-gray">
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
@@ -89,7 +95,6 @@ import Vue from "vue";
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import { BBadge, BButton, BIconClipboard, VBTooltip } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
-import useClipboard from "vue-clipboard3";
 import useStore from "@/store/useStore";
 import { useTruncate } from "@/composables/useTruncate";
 
@@ -101,10 +106,9 @@ const props = defineProps<{
   node: Node;
 }>();
 
-const { toClipboard } = useClipboard();
 const truncate = useTruncate();
 
 function copyPublicKey() {
-  toClipboard(props.node.publicKey);
+  navigator.clipboard.writeText(props.node.publicKey);
 }
 </script>

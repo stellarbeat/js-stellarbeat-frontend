@@ -47,13 +47,7 @@
             v-for="(error, index) in validationErrors"
             :key="index"
             variant="danger"
-            >{{
-              error.message +
-              (error.dataPath ? " at " + error.dataPath : "") +
-              (error.params
-                ? " ( " + Object.values(error.params)[0] + " ) "
-                : "")
-            }}
+            >{{ formatErrorMessage(error) }}
           </b-list-group-item>
         </b-list-group>
       </div>
@@ -115,7 +109,6 @@ import {
 import { ModifyNetwork as ModifyNetworkChange } from "@/services/change-queue/changes/modify-network";
 import useStore from "@/store/useStore";
 import { Ref, ref } from "vue";
-import useClipboard from "vue-clipboard3";
 
 import validateSchema from "@stellarbeat/js-stellarbeat-shared/lib/network-schema";
 
@@ -145,11 +138,27 @@ type BasicNode = {
   active?: boolean;
 };
 
+type ValidationError = {
+  dataPath?: string;
+  message: string;
+  params: unknown;
+};
+
 const store = useStore();
-const { toClipboard } = useClipboard();
 
 const modalVisible = ref(false);
 const modifiedNetworkString = ref("");
+
+const formatErrorMessage = (error: ValidationError) => {
+  let message = error.message;
+  if (error.dataPath) {
+    message += " at " + error.dataPath;
+  }
+  if (error.params && typeof error.params === "object") {
+    message += " ( " + Object.values(error.params as string[])[0] + " ) ";
+  }
+  return message;
+};
 
 let modifiedNetwork: {
   nodes: BasicNode[];
@@ -157,13 +166,7 @@ let modifiedNetwork: {
 } = { nodes: [], organizations: [] };
 const isValid = ref(false);
 const modified = ref(false);
-const validationErrors: Ref<
-  {
-    dataPath?: string;
-    message: string;
-    params: unknown;
-  }[]
-> = ref([]);
+const validationErrors: Ref<ValidationError[]> = ref([]);
 
 const showModal = () => {
   initModifiedNetworkString();
@@ -282,7 +285,7 @@ const initModifiedNetworkString = () => {
 };
 
 function copyJson() {
-  toClipboard(modifiedNetworkString.value);
+  navigator.clipboard.writeText(modifiedNetworkString.value);
 }
 
 defineExpose({

@@ -61,7 +61,6 @@ import {
 
 import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";
-import useClipboard from "vue-clipboard3";
 import { toRefs } from "vue";
 
 export interface Props {
@@ -81,7 +80,6 @@ const { node, supportsDelete, quorumSet, supportsHaltingAnalysis } =
 
 const store = useStore();
 const network = store.network;
-const { toClipboard } = useClipboard();
 
 const deleteValidatorFromQuorumSet = (
   node: Node,
@@ -92,7 +90,7 @@ const deleteValidatorFromQuorumSet = (
 };
 
 function copyPublicKey() {
-  toClipboard(node.value.publicKey);
+  navigator.clipboard.writeText(node.value.publicKey);
 }
 </script>
 
