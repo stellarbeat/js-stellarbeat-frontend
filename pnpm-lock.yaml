@@ -17,9 +17,6 @@ dependencies:
   '@stellarbeat/stellar_analysis_web':
     specifier: ^0.6.2
     version: 0.6.2
-  ajv-formats:
-    specifier: ^2.1.1
-    version: 2.1.1
   bootstrap:
     specifier: 4.6.1
     version: 4.6.1(jquery@3.7.1)(popper.js@1.16.1)
@@ -1817,15 +1814,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
-
-  /ajv-formats@2.1.1:
-    resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
-    peerDependencies:
-      ajv: ^8.0.0
-    peerDependenciesMeta:
-      ajv:
-        optional: true
-    dev: false
 
   /ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
