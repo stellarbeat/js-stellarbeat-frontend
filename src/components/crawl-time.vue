@@ -41,12 +41,12 @@
 <script setup lang="ts">
 import Vue, { ref, Ref } from "vue";
 import {
-  BIconClock,
-  BIconCalendar,
-  BFormTimepicker,
-  BFormDatepicker,
-  VBTooltip,
   BButton,
+  BFormDatepicker,
+  BFormTimepicker,
+  BIconCalendar,
+  BIconClock,
+  VBTooltip,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
@@ -107,7 +107,6 @@ function timeToDateObject() {
     // If networkTime is a string
     date = new Date(Date.parse(date));
   } else {
-    console.error("Invalid time travel time:", date);
     date = new Date();
   }
 

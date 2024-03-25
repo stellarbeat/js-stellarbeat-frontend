@@ -301,7 +301,6 @@ export default class Store {
       this.isLoading = false;
       return;
     }
-    console.log(networkResult.error);
     this.fetchingDataFailed = true;
     this.isLoading = false;
   }

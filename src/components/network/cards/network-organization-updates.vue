@@ -83,7 +83,6 @@ async function getSnapshots() {
     network.time,
   );
   if (snapshotsOrError.isErr()) {
-    console.log(snapshotsOrError.error);
     failed.value = true;
   } else {
     snapshots = snapshotsOrError.value;

@@ -22,31 +22,25 @@
 <script setup lang="ts">
 import {
   BButton,
-  BIconPlayFill,
-  BIconPauseFill,
-  BIconArrowCounterclockwise,
   BIconArrowClockwise,
+  BIconArrowCounterclockwise,
+  BIconPauseFill,
+  BIconPlayFill,
 } from "bootstrap-vue";
 import { ref } from "vue";
 import ScenarioSelector from "@/components/federated-voting/scenario-selector.vue";
 
 const isPlaying = ref(false);
 
-const backward = () => {
-  console.log("Backward button clicked");
-};
+const backward = () => {};
 
-const forward = () => {
-  console.log("Forward button clicked");
-};
+const forward = () => {};
 
 const play = () => {
-  console.log("Play button clicked");
   isPlaying.value = true;
 };
 
 const pause = () => {
-  console.log("Pause button clicked");
   isPlaying.value = false;
 };
 </script>

@@ -23,7 +23,6 @@ export class OrganizationSnapshotRepository {
         ),
       );
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching OrganizationSnapShots"));
     }
@@ -50,7 +49,6 @@ export class OrganizationSnapshotRepository {
         ),
       );
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching OrganizationSnapShots"));
     }

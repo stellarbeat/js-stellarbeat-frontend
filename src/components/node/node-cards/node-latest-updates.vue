@@ -151,17 +151,17 @@ import "jsondiffpatch/formatters/styles/html.css";
 import "jsondiffpatch/formatters/styles/annotated.css";
 
 import {
-  VBTooltip,
-  BModal,
-  VBModal,
   BButton,
+  BButtonGroup,
+  BButtonToolbar,
+  BIconClock,
+  BIconExclamationTriangle,
+  BIconFileDiff,
   BListGroup,
   BListGroupItem,
-  BIconFileDiff,
-  BButtonGroup,
-  BIconClock,
-  BButtonToolbar,
-  BIconExclamationTriangle,
+  BModal,
+  VBModal,
+  VBTooltip,
 } from "bootstrap-vue";
 import { isArray } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
@@ -279,7 +279,6 @@ async function getSnapshots() {
       network.time,
     );
     if (fetchedSnapshotsOrError.isErr()) {
-      console.log(fetchedSnapshotsOrError.error);
       failed.value = true;
       return [];
     }

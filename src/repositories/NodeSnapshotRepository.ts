@@ -20,7 +20,6 @@ export class NodeSnapshotRepository {
         result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)),
       );
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching NodeSnapShots"));
     }
@@ -45,7 +44,6 @@ export class NodeSnapshotRepository {
         result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)),
       );
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching NodeSnapshots"));
     }

@@ -20,7 +20,6 @@ export class StellarBeatNetworkV1Repository implements NetworkRepository {
 
       return ok(Network.fromJSON(result.data));
     } catch (error) {
-      console.log(error);
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching Network"));
     }
