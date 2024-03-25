@@ -5,12 +5,11 @@ import Vue from "vue";
 import { createRouter } from "./router";
 import "./assets/custom.scss";
 import Meta from "vue-meta";
-import * as Sentry from "@sentry/browser";
 import "./assets/global.css";
 import VueScrollTo from "vue-scrollto";
-import { Vue as VueIntegration } from "@sentry/integrations";
 import Multiselect from "vue-multiselect";
 import { ResizeObserver as ResizeObserverPolyfill } from "@juggle/resize-observer";
+import * as Sentry from "@sentry/vue";
 
 const isProd = import.meta.env.PROD;
 
@@ -19,7 +18,6 @@ Vue.config.productionTip = false;
 if (isProd) {
   Sentry.init({
     dsn: import.meta.env.VUE_APP_SENTRY_DSN,
-    integrations: [new VueIntegration({ Vue, attachProps: true })],
   });
 }
 
