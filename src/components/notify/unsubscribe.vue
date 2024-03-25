@@ -17,7 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import axios, { AxiosError } from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router/composables";
@@ -32,16 +31,25 @@ async function confirm() {
   unsubscribing.value = true;
   const subscriberRef = route.params.subscriberRef;
   try {
-    await axios.delete(
+    const response = await fetch(
       import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         subscriberRef,
+      {
+        method: "DELETE",
+      },
     );
+    if (!response.ok) {
+      error.value = true;
+      errorMessage.value = "Something went wrong";
+    }
   } catch (e) {
     error.value = true;
-    if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)
+    if (e instanceof Error && e.message === "404") {
       errorMessage.value = "No subscription found";
-    else errorMessage.value = "Something went wrong";
+    } else {
+      errorMessage.value = "Something went wrong";
+    }
   }
 
   unsubscribing.value = false;

@@ -1,6 +1,5 @@
 import { err, ok, Result } from "neverthrow";
 import { OrganizationSnapShot } from "@stellarbeat/js-stellarbeat-shared";
-import axios from "axios";
 
 export class OrganizationSnapshotRepository {
   constructor(public readonly apiBaseUrl: string) {}
@@ -9,16 +8,18 @@ export class OrganizationSnapshotRepository {
     try {
       const params: Record<string, unknown> = {};
       params["at"] = at;
-      const result = await axios.get(
-        this.apiBaseUrl + "/v1/organization-snapshots",
-        { params },
+      const url = new URL(this.apiBaseUrl + "/v1/organization-snapshots");
+      Object.keys(params).forEach((key) =>
+        url.searchParams.append(key, params[key] as string),
       );
-      if (!result.data) return err(new Error("No data property in result"));
-      if (!Array.isArray(result.data))
-        return err(new Error("Data is not an array"));
+      const response = await fetch(url.toString());
+      if (!response.ok) return err(new Error("Network request failed"));
+      const data = await response.json();
+      if (!data) return err(new Error("No data property in result"));
+      if (!Array.isArray(data)) return err(new Error("Data is not an array"));
 
       return ok(
-        result.data.map((item) =>
+        data.map((item) =>
           OrganizationSnapShot.fromOrganizationSnapShotV1DTO(item),
         ),
       );
@@ -35,16 +36,20 @@ export class OrganizationSnapshotRepository {
     try {
       const params: Record<string, unknown> = {};
       params["at"] = at;
-      const result = await axios.get(
+      const url = new URL(
         this.apiBaseUrl + "/v1/organization/" + organizationId + "/snapshots",
-        { params },
       );
-      if (!result.data) return err(new Error("No data property in result"));
-      if (!Array.isArray(result.data))
-        return err(new Error("Data is not an array"));
+      Object.keys(params).forEach((key) =>
+        url.searchParams.append(key, params[key] as string),
+      );
+      const response = await fetch(url.toString());
+      if (!response.ok) return err(new Error("Network request failed"));
+      const data = await response.json();
+      if (!data) return err(new Error("No data property in result"));
+      if (!Array.isArray(data)) return err(new Error("Data is not an array"));
 
       return ok(
-        result.data.map((item) =>
+        data.map((item) =>
           OrganizationSnapShot.fromOrganizationSnapShotV1DTO(item),
         ),
       );

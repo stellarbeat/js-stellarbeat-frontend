@@ -1,6 +1,5 @@
 // noinspection ES6MissingAwait
 
-import axios, { AxiosResponse } from "axios";
 import Store from "@/store/Store";
 import {
   isArray,
@@ -18,10 +17,8 @@ export interface Statistics {
 type route = string;
 type parametersKey = string;
 export default class StatisticsStore {
-  protected statisticsCache: Map<
-    route,
-    Map<parametersKey, Promise<AxiosResponse<unknown>>>
-  > = new Map();
+  protected statisticsCache: Map<route, Map<parametersKey, Promise<Response>>> =
+    new Map();
   protected store: Store;
 
   public constructor(store: Store) {
@@ -51,22 +48,25 @@ export default class StatisticsStore {
     let result;
     if (statisticsCache.get(id + params.from + params.to))
       result = await statisticsCache.get(id + params.from + params.to);
-    //multiple charts can request the same endpoint at the same time.
     else {
-      const promise = axios.get(this.store.networkContext.apiBaseUrl + route, {
-        params,
+      const url = new URL(this.store.networkContext.apiBaseUrl + route);
+      Object.keys(params).forEach((key) =>
+        url.searchParams.append(key, params[key] as string),
+      );
+      const promise = fetch(url.toString()).then((response) => {
+        if (!response.ok) throw new Error("Network request failed");
+        return response.json();
       });
       statisticsCache.set(id + params.from + params.to, promise);
       result = await promise;
     }
 
-    if (!isObject(result) || !result.data)
-      throw new Error("Response missing data property");
+    if (!isObject(result)) throw new Error("Response missing data property");
 
-    if (!isArray(result.data))
+    if (!isArray(result))
       throw new Error("Invalid statistics data returned from API");
 
-    return result.data;
+    return result;
   }
 
   async fetchStatistics<a extends Statistics>(

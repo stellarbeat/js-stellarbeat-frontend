@@ -1,6 +1,5 @@
 import { HistoryArchiveScanRepository } from "@/repositories/HistoryArchiveScanRepository";
 import { HistoryArchiveScan } from "@stellarbeat/js-stellarbeat-shared";
-import axios from "axios";
 
 export class RESTHistoryArchiveScanRepository
   implements HistoryArchiveScanRepository
@@ -13,17 +12,21 @@ export class RESTHistoryArchiveScanRepository
 
   async findLatest(url: string): Promise<HistoryArchiveScan | null> {
     try {
-      const result = await axios.get(
+      const response = await fetch(
         this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url),
       );
 
-      if (result.status === 200 && result.data) {
-        return HistoryArchiveScan.fromHistoryArchiveScanV1(result.data);
+      if (response.ok) {
+        const text = await response.text();
+        if (text) {
+          const data = JSON.parse(text);
+          return HistoryArchiveScan.fromHistoryArchiveScanV1(data);
+        }
       }
 
       return null;
     } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
+      if (error instanceof Error && error.message === "404") {
         return null;
       }
       throw error;

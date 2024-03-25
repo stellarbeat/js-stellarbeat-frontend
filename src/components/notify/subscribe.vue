@@ -185,14 +185,13 @@
 
 <script setup lang="ts">
 import { Multiselect } from "vue-multiselect";
-import axios from "axios";
 import {
-  BButton,
-  BFormInput,
-  BFormCheckbox,
-  BForm,
-  BFormGroup,
   BAlert,
+  BButton,
+  BForm,
+  BFormCheckbox,
+  BFormGroup,
+  BFormInput,
 } from "bootstrap-vue";
 import { computed, ComputedRef, onMounted, Ref, ref } from "vue";
 import useStore from "@/store/useStore";
@@ -307,13 +306,23 @@ async function onSubscribe(event: Event) {
   if (!emailAddressState.value || consented.value !== "accepted") return;
   try {
     requesting.value = true;
-    await axios.post(
+    const response = await fetch(
       import.meta.env.VUE_APP_PUBLIC_API_URL + "/v1/subscription",
       {
-        emailAddress: emailAddress.value,
-        eventSourceIds: getSelectedEventSourceIds(),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailAddress: emailAddress.value,
+          eventSourceIds: getSelectedEventSourceIds(),
+        }),
       },
     );
+    if (!response.ok) {
+      requesting.value = false;
+      submitError.value = true;
+    }
     requested.value = true;
     requesting.value = false;
     resetForm();
@@ -330,13 +339,23 @@ async function onUnsubscribe(event: Event) {
   if (!emailAddressState.value || consented.value !== "accepted") return;
   try {
     requesting.value = true;
-    await axios.post(
+    const response = await fetch(
       import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/request-unsubscribe",
       {
-        emailAddress: emailAddress.value,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailAddress: emailAddress.value,
+        }),
       },
     );
+    if (!response.ok) {
+      requesting.value = false;
+      submitError.value = true;
+    }
     requested.value = true;
     requesting.value = false;
     resetForm();
@@ -345,7 +364,6 @@ async function onUnsubscribe(event: Event) {
     submitError.value = true;
   }
 }
-
 onMounted(() => {
   nodes.value = network.nodes.map((node) => {
     return {

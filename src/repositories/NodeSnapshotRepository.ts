@@ -1,5 +1,4 @@
 import { err, ok, Result } from "neverthrow";
-import axios from "axios";
 import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-shot";
 
 export class NodeSnapshotRepository {
@@ -9,16 +8,17 @@ export class NodeSnapshotRepository {
     try {
       const params: Record<string, unknown> = {};
       params["at"] = at;
-      const result = await axios.get(this.apiBaseUrl + "/v1/node-snapshots", {
-        params,
-      });
-      if (!result.data) return err(new Error("No data property in result"));
-      if (!Array.isArray(result.data))
-        return err(new Error("Data is not an array"));
-
-      return ok(
-        result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)),
+      const url = new URL(this.apiBaseUrl + "/v1/node-snapshots");
+      Object.keys(params).forEach((key) =>
+        url.searchParams.append(key, params[key] as string),
       );
+      const response = await fetch(url.toString());
+      if (!response.ok) return err(new Error("Network request failed"));
+      const data = await response.json();
+      if (!data) return err(new Error("No data property in result"));
+      if (!Array.isArray(data)) return err(new Error("Data is not an array"));
+
+      return ok(data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)));
     } catch (error) {
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching NodeSnapShots"));
@@ -32,17 +32,19 @@ export class NodeSnapshotRepository {
     try {
       const params: Record<string, unknown> = {};
       params["at"] = at;
-      const result = await axios.get(
+      const url = new URL(
         this.apiBaseUrl + "/v1/node/" + publicKey + "/snapshots",
-        { params },
       );
-      if (!result.data) return err(new Error("No data property in result"));
-      if (!Array.isArray(result.data))
-        return err(new Error("Data is not an array"));
+      Object.keys(params).forEach((key) =>
+        url.searchParams.append(key, params[key] as string),
+      );
+      const response = await fetch(url.toString());
+      if (!response.ok) return err(new Error("Network request failed"));
+      const data = await response.json();
+      if (!data) return err(new Error("No data property in result"));
+      if (!Array.isArray(data)) return err(new Error("Data is not an array"));
 
-      return ok(
-        result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)),
-      );
+      return ok(data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)));
     } catch (error) {
       if (error instanceof Error) return err(error);
       return err(new Error("Error fetching NodeSnapshots"));

@@ -19,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import axios from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router/composables";
@@ -52,17 +51,27 @@ async function unmute() {
     return;
   }
   try {
-    await axios.post(
+    const response = await fetch(
       import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         subscriberRef +
         "/unmute",
       {
-        eventSourceId: eventSourceId,
-        eventType: eventType,
-        eventSourceType: eventSourceType,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventSourceId: eventSourceId,
+          eventType: eventType,
+          eventSourceType: eventSourceType,
+        }),
       },
     );
+    if (!response.ok) {
+      error.value = true;
+      errorMessage.value = "Failed to unmute event";
+    }
   } catch (e) {
     error.value = true;
     errorMessage.value = "Something went wrong";
@@ -70,6 +79,7 @@ async function unmute() {
 
   unmuting.value = false;
 }
+
 onMounted(() => {
   unmute();
 });

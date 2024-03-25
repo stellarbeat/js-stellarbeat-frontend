@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import axios, { AxiosError } from "axios";
 import { BAlert, BButton } from "bootstrap-vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router/composables";
@@ -36,16 +35,24 @@ async function confirm() {
   confirming.value = true;
   const pendingSubscriptionId = route.params.pendingSubscriptionId;
   try {
-    await axios.post(
+    const response = await fetch(
       import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         pendingSubscriptionId +
         "/confirm",
+      {
+        method: "POST",
+      },
     );
+    if (!response.ok) {
+      error.value = true;
+    }
   } catch (e) {
-    if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)
+    if (e instanceof Error && e.message === "404") {
       alreadyConfirmed.value = true;
-    else error.value = true;
+    } else {
+      error.value = true;
+    }
   }
 
   confirming.value = false;
