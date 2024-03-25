@@ -44,14 +44,3 @@
 <script setup lang="ts">
 import WarningsAndNotifications from "@/components/docs/warnings-and-notifications.vue";
 </script>
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
-
-export default {
-  metaInfo: {
-    title: `FAQ | ${myStore.appConfig.brandName}`,
-    meta: [{ name: "docs", content: "Help faq" }],
-  },
-};
-</script>

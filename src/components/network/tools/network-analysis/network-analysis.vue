@@ -315,10 +315,11 @@ import LivenessInfo from "@/components/network/tools/network-analysis/info/liven
 import TopTierInfo from "@/components/network/tools/network-analysis/info/top-tier-info.vue";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
-import Vue, { nextTick, onMounted, Ref, ref } from "vue";
+import Vue, { onMounted, Ref, ref } from "vue";
 import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
-import VueScrollTo from "vue-scrollto";
+import useScrollTo from "@/composables/useScrollTo";
+
 Vue.directive("b-modal", VBModal);
 Vue.directive("b-toggle", VBToggle);
 Vue.directive("b-tooltip", VBTooltip);
@@ -342,6 +343,7 @@ const fbasAnalysisWorker = new Worker(
     /* @vite-ignore */
   },
 );
+const scrollTo = useScrollTo();
 const hasResult = ref(false);
 const resultMergedBy = ref(MyMergeBy.DoNotMerge);
 const hasQuorumIntersection = ref(false);
@@ -453,9 +455,8 @@ function mapPublicKeysToNames(items: Array<Array<PublicKey>>) {
 
 onMounted(() => {
   isLoading.value = false;
-  nextTick(() => {
-    VueScrollTo.scrollTo("#network-analysis-card");
-  });
+  scrollTo("network-analysis-card");
+
   fbasAnalysisWorker.onmessage = (event: {
     data: {
       type: string;

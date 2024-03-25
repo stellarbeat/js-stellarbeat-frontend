@@ -67,7 +67,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
+import { computed, ref } from "vue";
 import {
   BDropdown,
   BDropdownHeader,
@@ -80,9 +80,11 @@ import {
 import useStore from "@/store/useStore";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
+import useScrollTo from "@/composables/useScrollTo";
 
 const store = useStore();
 const network = store.network;
+const scrollTo = useScrollTo();
 
 const perPage = ref(5);
 const sortBy = ref("count");
@@ -165,15 +167,7 @@ const simulateFailure = function (ispKey: string) {
 
   store.processChange(aggregateChange);
 
-  nextTick(() => {
-    const contentElement = document.getElementById("content");
-    if (contentElement) {
-      window.scrollTo({
-        top: contentElement.offsetTop,
-        behavior: "smooth",
-      });
-    }
-  });
+  scrollTo("content");
 };
 
 const totalRows = computed(() => ispList.value.length);

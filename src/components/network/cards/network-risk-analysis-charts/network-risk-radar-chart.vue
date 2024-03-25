@@ -60,25 +60,20 @@ import {
   TooltipItem,
 } from "chart.js";
 
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 import { BButton, BIconInfoCircle, BModal } from "bootstrap-vue";
 import { AutomaticNetworkAnalysis } from "@/services/NetworkAnalyzer";
 import useStore from "@/store/useStore";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
+import useScrollTo from "@/composables/useScrollTo";
 
 const chart = ref<Chart>();
 const showModal = ref(false);
 const store = useStore();
 const network = store.network;
 const chartElement = ref<HTMLCanvasElement>();
+const scrollTo = useScrollTo();
 
 watch(
   () => store.networkAnalyzer.automaticState,
@@ -181,18 +176,7 @@ function initializeChart() {
           }
           if (!store.isNetworkAnalysisVisible)
             store.isNetworkAnalysisVisible = true;
-          else
-            nextTick(() => {
-              const contentElement = document.getElementById(
-                "network-analysis-card",
-              );
-              if (contentElement) {
-                window.scrollTo({
-                  top: contentElement.offsetTop,
-                  behavior: "smooth",
-                });
-              }
-            });
+          else scrollTo("network-analysis-card");
         }
       },
       layout: {

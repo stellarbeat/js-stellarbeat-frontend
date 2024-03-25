@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, watch } from "vue";
+import { computed, defineAsyncComponent, watch } from "vue";
 import HaltingAnalysis from "@/components/node/tools/halting-analysis/halting-analysis.vue";
 import NetworkVisualNavigator from "@/components/visual-navigator/network-visual-navigator.vue";
 import CrawlTime from "@/components/crawl-time.vue";
@@ -88,6 +88,7 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
+import useScrollTo from "@/composables/useScrollTo";
 
 const NetworkAnalysis = defineAsyncComponent(
   () =>
@@ -107,6 +108,8 @@ const network = store.network;
 
 const route = useRoute();
 const router = useRouter();
+
+const scrollTo = useScrollTo();
 
 watch(
   route,
@@ -155,16 +158,7 @@ const haltingAnalysisPublicKey = computed(() => {
 });
 
 watch(haltingAnalysisPublicKey, (publicKey) => {
-  if (publicKey)
-    nextTick(() => {
-      const contentElement = document.getElementById("halting-analysis-card");
-      if (contentElement) {
-        window.scrollTo({
-          top: contentElement.offsetTop,
-          behavior: "smooth",
-        });
-      }
-    });
+  if (publicKey) scrollTo("halting-analysis-card");
 });
 </script>
 

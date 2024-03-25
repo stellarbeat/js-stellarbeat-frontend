@@ -47,6 +47,7 @@ import OrganizationsTable, {
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
+import useMetaTags from "@/composables/useMetaTags";
 
 defineProps({
   isLoading: {
@@ -120,23 +121,10 @@ const getValidators = (organization: Organization) => {
     })
     .sort((a: Node, b: Node) => a.displayName.localeCompare(b.displayName));
 };
-</script>
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
 
-export default {
-  metaInfo: {
-    title: `Organizations | ${myStore.appConfig.brandName}`,
-    meta: [
-      {
-        name: "description",
-        content: "Search through all detected organizations",
-      },
-    ],
-  },
-};
+useMetaTags("Organizations", "Search through all detected organizations");
 </script>
+
 <style scoped>
 .header-row {
   width: 100%;

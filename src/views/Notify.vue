@@ -32,21 +32,10 @@
   </div>
 </template>
 
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
+<script setup lang="ts">
+import useMetaTags from "@/composables/useMetaTags";
 
-export default {
-  metaInfo: {
-    title: `Notify | ${myStore.appConfig.brandName}`,
-    meta: [
-      {
-        name: "description",
-        content: "Get notified on network, node or organization events",
-      },
-    ],
-  },
-};
+useMetaTags("Notify", "Get notified on network, node or organization events");
 </script>
 <style scoped>
 .privacy-link {

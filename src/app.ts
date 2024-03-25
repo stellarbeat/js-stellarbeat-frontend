@@ -4,7 +4,6 @@ import App from "./App.vue";
 import Vue from "vue";
 import { createRouter } from "./router";
 import "./assets/custom.scss";
-import Meta from "vue-meta";
 import "./assets/global.css";
 import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
@@ -19,7 +18,6 @@ if (isProd) {
   });
 }
 
-Vue.use(Meta);
 Vue.component("MultiSelect", Multiselect);
 
 const router = createRouter();

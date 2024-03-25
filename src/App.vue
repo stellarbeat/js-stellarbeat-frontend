@@ -109,12 +109,18 @@ import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
 import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router/composables";
+import useMetaTags from "@/composables/useMetaTags";
 
 const errorMessage = ref("Could not connect to api, please refresh the page");
 
 const store = useStore();
 const showError = store.fetchingDataFailed;
 const route = useRoute();
+
+useMetaTags(
+  `${store.appConfig.brandTagline}`,
+  store.appConfig.brandDescription,
+);
 
 const getNetworkIdFromQueryParam = (
   networkQueryParameter: string | (string | null)[],
@@ -149,23 +155,6 @@ watch(
   },
   { immediate: false, deep: true },
 );
-</script>
-
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
-
-export default {
-  metaInfo: {
-    title: `${myStore.appConfig.brandTagline} | ${myStore.appConfig.brandName}`,
-    meta: [
-      {
-        name: "description",
-        content: myStore.appConfig.brandDescription,
-      },
-    ],
-  },
-};
 </script>
 
 <style scoped>

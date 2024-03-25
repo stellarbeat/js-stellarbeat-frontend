@@ -90,6 +90,7 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
+import useMetaTags from "@/composables/useMetaTags";
 
 defineProps({
   isLoading: {
@@ -211,24 +212,10 @@ const getOrganization = (node: Node) => {
     return "-";
   }
 };
+
+useMetaTags("Nodes", "Search through all available nodes");
 </script>
 
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
-
-export default {
-  metaInfo: {
-    title: `Nodes | ${myStore.appConfig.brandName}`,
-    meta: [
-      {
-        name: "description",
-        content: "Search through all available nodes",
-      },
-    ],
-  },
-};
-</script>
 <style scoped>
 .header-row {
   width: 100%;

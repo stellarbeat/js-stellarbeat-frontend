@@ -89,9 +89,6 @@ dependencies:
   vue:
     specifier: ^2.7.16
     version: 2.7.16
-  vue-meta:
-    specifier: 2.4.0
-    version: 2.4.0
   vue-multiselect:
     specifier: ^2.1.6
     version: 2.1.9
@@ -2518,6 +2515,7 @@ packages:
   /deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /define-data-property@1.1.4:
     resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
@@ -5005,12 +5003,6 @@ packages:
 
   /vue-functional-data-merge@3.1.0:
     resolution: {integrity: sha512-leT4kdJVQyeZNY1kmnS1xiUlQ9z1B/kdBFCILIjYYQDqZgLqCLa0UhjSSeRX6c3mUe6U5qYeM8LrEqkHJ1B4LA==}
-    dev: false
-
-  /vue-meta@2.4.0:
-    resolution: {integrity: sha512-XEeZUmlVeODclAjCNpWDnjgw+t3WA6gdzs6ENoIAgwO1J1d5p1tezDhtteLUFwcaQaTtayRrsx7GL6oXp/m2Jw==}
-    dependencies:
-      deepmerge: 4.3.1
     dev: false
 
   /vue-multiselect@2.1.9:

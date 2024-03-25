@@ -143,16 +143,9 @@ Age = Time since discovery
 <script setup lang="ts">
 import Github from "@/components/organization/logo/github.vue";
 import useStore from "@/store/useStore";
-const store = useStore();
-</script>
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
+import useMetaTags from "@/composables/useMetaTags";
 
-export default {
-  metaInfo: {
-    title: `FAQ | ${myStore.appConfig.brandName}`,
-    meta: [{ name: "Frequently asked questions", content: "Help faq" }],
-  },
-};
+const store = useStore();
+
+useMetaTags("FAQ", "Frequency asked questions");
 </script>

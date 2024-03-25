@@ -188,18 +188,8 @@
 </template>
 
 <script setup lang="ts">
+import useMetaTags from "@/composables/useMetaTags";
+
 const owner = import.meta.env.VUE_APP_OWNER;
-</script>
-
-<script lang="ts">
-import * as myUseStore from "@/store/useStore";
-const myStore = myUseStore.default();
-
-export default {
-  name: "TermsAndConditions",
-  metaInfo: {
-    title: `Terms and conditions | ${myStore.appConfig.brandName}`,
-    meta: [{ name: "description", content: "Terms and conditions." }],
-  },
-};
+useMetaTags(`Terms and conditions `, "Terms and conditions.");
 </script>
