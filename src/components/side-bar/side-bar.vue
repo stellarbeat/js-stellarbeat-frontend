@@ -196,7 +196,7 @@ const store = useStore();
 
 function prettifyBaseQuorumSet(
   qSet: BaseQuorumSet,
-  network: Network
+  network: Network,
 ): Record<string, unknown> {
   return {
     threshold: qSet.threshold,
@@ -210,13 +210,13 @@ function prettifyBaseQuorumSet(
             .getNodeByPublicKey(validator)
             .publicKey.substring(
               50,
-              network.getNodeByPublicKey(validator).publicKey.length
+              network.getNodeByPublicKey(validator).publicKey.length,
             ) +
           ")"
-        : network.getNodeByPublicKey(validator).displayName
+        : network.getNodeByPublicKey(validator).displayName,
     ),
     innerQuorumSets: qSet.innerQuorumSets.map((innerQSet) =>
-      prettifyBaseQuorumSet(innerQSet, network)
+      prettifyBaseQuorumSet(innerQSet, network),
     ),
   };
 }

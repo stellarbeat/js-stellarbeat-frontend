@@ -95,7 +95,7 @@ const ispToKeyMap = computed(() => {
   network.nodes
     .filter(
       (node) =>
-        (node.isValidator && node.isValidating) || store.includeWatcherNodes
+        (node.isValidator && node.isValidating) || store.includeWatcherNodes,
     )
     .forEach((node) => {
       if (node.isp) {
@@ -112,7 +112,7 @@ const keyToIspMap = computed(() => {
   network.nodes
     .filter(
       (node) =>
-        (node.isValidator && node.isValidating) || store.includeWatcherNodes
+        (node.isValidator && node.isValidating) || store.includeWatcherNodes,
     )
     .forEach((node) => {
       if (node.isp) {
@@ -136,10 +136,10 @@ const ispList = computed(() => {
           (node) =>
             node.isp &&
             ((node.isValidator && node.isValidating) ||
-              store.includeWatcherNodes)
+              store.includeWatcherNodes),
         )
         .map((node) => node.isp) as string[]
-    ).map((isp) => removeSpecialCharacters(isp.toLowerCase()))
+    ).map((isp) => removeSpecialCharacters(isp.toLowerCase())),
   );
 
   return getIspKeyCountsArray.map((ispKeyCount) => {
@@ -152,7 +152,7 @@ const ispList = computed(() => {
 });
 
 const simulateFailure = function (ispKey: string) {
-  let aggregateChange = new AggregateChange(
+  const aggregateChange = new AggregateChange(
     network.nodes
       .filter((node) => node.isp && ispToKeyMap.value.get(node.isp) === ispKey)
       .map((node) => {
@@ -161,7 +161,7 @@ const simulateFailure = function (ispKey: string) {
           new EntityPropertyUpdate(node, "activeInScp", false),
         ];
       })
-      .flat()
+      .flat(),
   );
 
   store.processChange(aggregateChange);
@@ -198,7 +198,7 @@ function removeSpecialCharacters(str: string): string {
 }
 
 function getCountsArray(
-  stringsArray: string[]
+  stringsArray: string[],
 ): { isp: string; count: number }[] {
   const counts: { [key: string]: number } = stringsArray.reduce(
     (acc: { [key: string]: number }, str) => {
@@ -209,7 +209,7 @@ function getCountsArray(
       }
       return acc;
     },
-    {}
+    {},
   );
 
   const uniqueStrings: string[] = Object.keys(counts);

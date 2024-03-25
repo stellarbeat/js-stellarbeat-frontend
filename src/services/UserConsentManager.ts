@@ -9,7 +9,7 @@ class UserConsentManager {
   giveConsent(latestTermsChangeTimestamp: number): void {
     localStorage.setItem(
       this.consentTimestampKey,
-      latestTermsChangeTimestamp.toString()
+      latestTermsChangeTimestamp.toString(),
     );
   }
 

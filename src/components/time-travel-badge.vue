@@ -16,7 +16,7 @@ const route = useRoute();
 const router = useRouter();
 
 function resetTimeTravel() {
-  let query = store.copyAndModifyObject(route.query, [], ["at"]);
+  const query = store.copyAndModifyObject(route.query, [], ["at"]);
   router.push({
     name: route.name ? route.name : undefined,
     params: route.params,

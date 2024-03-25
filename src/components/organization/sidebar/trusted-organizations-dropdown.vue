@@ -9,7 +9,7 @@
       :has-warnings="
         OrganizationWarningDetector.someOrganizationsHaveWarnings(
           trustedOrganizations,
-          store.network
+          store.network,
         )
       "
       :warnings="'Some organizations have warnings'"
@@ -35,13 +35,13 @@
         :has-warnings="
           OrganizationWarningDetector.organizationHasWarnings(
             organization,
-            store.network
+            store.network,
           )
         "
         :warnings="
           OrganizationWarningDetector.getOrganizationWarningReasons(
             organization,
-            store.network
+            store.network,
           ).join(' | ')
         "
       >
@@ -79,9 +79,9 @@ const emit = defineEmits(["toggleExpand"]);
 const { showing, toggleShow } = useDropdown(true, emit);
 
 const trustedOrganizations = computed(() => {
-  let trustedOrganizations = new Set<Organization>();
+  const trustedOrganizations = new Set<Organization>();
   props.organization.validators.forEach((publicKey) => {
-    let validator = network.getNodeByPublicKey(publicKey);
+    const validator = network.getNodeByPublicKey(publicKey);
     network.getTrustedOrganizations(validator.quorumSet).forEach((org) => {
       if (org.id !== props.organization.id) trustedOrganizations.add(org);
     });

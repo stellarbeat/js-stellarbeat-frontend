@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import * as myUseStore from "@/store/useStore";
-import Consent from "@/components/consent.vue";
 const myStore = myUseStore.default();
 
 export default {

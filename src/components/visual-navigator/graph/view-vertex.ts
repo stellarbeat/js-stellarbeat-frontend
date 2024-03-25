@@ -18,7 +18,7 @@ export default class ViewVertex {
   constructor(
     key: string,
     label: string,
-    isPartOfTransitiveQuorumSet: boolean
+    isPartOfTransitiveQuorumSet: boolean,
   ) {
     this.key = key;
     this.label = label;
@@ -29,7 +29,7 @@ export default class ViewVertex {
     const viewVertex = new ViewVertex(
       vertex.key,
       vertex.label,
-      trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key)
+      trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key),
     );
     const node = network.getNodeByPublicKey(vertex.key);
     viewVertex.isFailing = network.isNodeFailing(node);
@@ -40,12 +40,12 @@ export default class ViewVertex {
   static fromOrganization(
     vertex: Vertex,
     trustGraph: TrustGraph,
-    network: Network
+    network: Network,
   ) {
     const viewVertex = new ViewVertex(
       vertex.key,
       vertex.label,
-      trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key)
+      trustGraph.isVertexPartOfNetworkTransitiveQuorumSet(vertex.key),
     );
     const organization = network.getOrganizationById(vertex.key);
     viewVertex.isFailing = !organization.subQuorumAvailable;

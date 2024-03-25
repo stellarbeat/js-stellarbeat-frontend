@@ -21,13 +21,9 @@ export function createRouter() {
             alias: ["/network/stellar-public", "quorum-monitor"],
             components: {
               dashboard: () =>
-                import(
-                  /* webpackChunkName: "network-dashboard" */ "@/components/network/network-dashboard.vue"
-                ),
+                import("@/components/network/network-dashboard.vue"),
               sideBar: () =>
-                import(
-                  /* webpackChunkName: "network-dashboard" */ "@/components/network/sidebar/network-side-bar.vue"
-                ),
+                import("@/components/network/sidebar/network-side-bar.vue"),
             },
             props: (route) => ({ view: route.query.view }),
             children: [],

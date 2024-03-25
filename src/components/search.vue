@@ -68,10 +68,10 @@ const showSuggestions = computed(() => {
 });
 
 const filteredList: ComputedRef<Match[]> = computed(() => {
-  let match = (text: string) =>
+  const match = (text: string) =>
     text.toLowerCase().includes(searchString.value.toLowerCase().trim());
 
-  let matchedOrganizations = network.organizations
+  const matchedOrganizations = network.organizations
     .filter((organization) => {
       return match(organization.name);
     })
@@ -92,7 +92,7 @@ const filteredList: ComputedRef<Match[]> = computed(() => {
       };
     });
 
-  let matchedNodes = network.nodes
+  const matchedNodes = network.nodes
     .filter((node) => {
       return (
         match(node.displayName) || match(node.publicKey) || match(node.key)

@@ -240,7 +240,7 @@ function searchNodes(query: string) {
     .filter(
       (node) =>
         node.publicKey.toLowerCase().search(query.toLowerCase()) !== -1 ||
-        node.displayName.toLowerCase().search(query.toLowerCase()) !== -1
+        node.displayName.toLowerCase().search(query.toLowerCase()) !== -1,
     )
     .map((node) => {
       return { name: node.displayName, publicKey: node.publicKey };
@@ -312,7 +312,7 @@ async function onSubscribe(event: Event) {
       {
         emailAddress: emailAddress.value,
         eventSourceIds: getSelectedEventSourceIds(),
-      }
+      },
     );
     requested.value = true;
     requesting.value = false;
@@ -335,7 +335,7 @@ async function onUnsubscribe(event: Event) {
         "/v1/subscription/request-unsubscribe",
       {
         emailAddress: emailAddress.value,
-      }
+      },
     );
     requested.value = true;
     requesting.value = false;

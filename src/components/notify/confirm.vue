@@ -40,7 +40,7 @@ async function confirm() {
       import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
         pendingSubscriptionId +
-        "/confirm"
+        "/confirm",
     );
   } catch (e) {
     if (axios.isAxiosError(e) && (e as AxiosError).response?.status === 404)

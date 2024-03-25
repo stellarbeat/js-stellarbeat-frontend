@@ -45,7 +45,7 @@ export default class ViewEdge {
   static fromOrganizationEdge(
     edge: Edge,
     trustGraph: TrustGraph,
-    network: Network
+    network: Network,
   ) {
     const viewEdge = ViewEdge.fromEdge(edge, trustGraph);
 

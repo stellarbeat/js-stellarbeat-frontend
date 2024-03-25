@@ -241,7 +241,7 @@ function showDiff(snapShot: SnapshotForDelta) {
   htmlFormatter.showUnchanged(true);
   diffModalHtml.value = htmlFormatter.format(
     deltas.get(snapShot.startDate.toISOString()) as jsondiffpatch.Delta,
-    snapShot
+    snapShot,
   );
   modalDiff.value.show();
 }
@@ -251,11 +251,11 @@ function mapValidatorsToNames(quorumSet: QuorumSet) {
     network.getNodeByPublicKey(validator) &&
     network.getNodeByPublicKey(validator).name
       ? network.getNodeByPublicKey(validator).name
-      : validator
+      : validator,
   ) as [];
 
   quorumSet.innerQuorumSets = quorumSet.innerQuorumSets.map((quorumSet) =>
-    mapValidatorsToNames(quorumSet)
+    mapValidatorsToNames(quorumSet),
   );
 
   return quorumSet;
@@ -266,7 +266,7 @@ watch(
   async () => {
     await getSnapshots();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 async function getSnapshots() {
@@ -276,7 +276,7 @@ async function getSnapshots() {
     updatesPerDate.value = [];
     const fetchedSnapshotsOrError = await nodeSnapshotRepository.findForNode(
       node.value.publicKey,
-      network.time
+      network.time,
     );
     if (fetchedSnapshotsOrError.isErr()) {
       console.log(fetchedSnapshotsOrError.error);
@@ -316,7 +316,7 @@ async function getSnapshots() {
     });
 
     for (let i = snapshots.length - 2; i >= 0; i--) {
-      let updates: Update[] = [];
+      const updates: Update[] = [];
       [
         "latitude",
         "longitude",
@@ -342,14 +342,14 @@ async function getSnapshots() {
             ? //@ts-ignore
               snapshots[i][key] !== snapshots[i + 1][key]
             : snapshots[i].quorumSetHashKey !==
-              snapshots[i + 1].quorumSetHashKey
+              snapshots[i + 1].quorumSetHashKey,
         )
         .forEach((changedKey) =>
           updates.push({
             key: changedKey,
             //@ts-ignore
             value: snapshots[i][changedKey],
-          })
+          }),
         );
 
       if (
@@ -366,7 +366,7 @@ async function getSnapshots() {
       });
       deltas.set(
         snapshots[i].startDate.toISOString(),
-        differ.diff(snapshots[i + 1], snapshots[i])
+        differ.diff(snapshots[i + 1], snapshots[i]),
       );
     }
     updatesPerDate.value.reverse();

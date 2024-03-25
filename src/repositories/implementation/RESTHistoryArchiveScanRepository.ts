@@ -14,7 +14,7 @@ export class RESTHistoryArchiveScanRepository
   async findLatest(url: string): Promise<HistoryArchiveScan | null> {
     try {
       const result = await axios.get(
-        this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url)
+        this.baseApiUrl + "/v1/history-scan/" + encodeURIComponent(url),
       );
 
       if (result.status === 200 && result.data) {

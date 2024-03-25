@@ -58,7 +58,7 @@ export default class Config {
       networkId: "public",
       name: "Public network",
       repository: new StellarBeatNetworkV1Repository(
-        import.meta.env["VUE_APP_PUBLIC_API_URL"]
+        import.meta.env["VUE_APP_PUBLIC_API_URL"],
       ),
       enableNotify: import.meta.env["VUE_APP_PUBLIC_ENABLE_NOTIFY"] === "1",
       enableHistory: import.meta.env["VUE_APP_PUBLIC_ENABLE_HISTORY"]
@@ -88,7 +88,7 @@ export default class Config {
         networkId: "test",
         name: "Testnet",
         repository: new StellarBeatNetworkV1Repository(
-          import.meta.env["VUE_APP_TEST_API_URL"]
+          import.meta.env["VUE_APP_TEST_API_URL"],
         ),
         enableNotify: import.meta.env["VUE_APP_TEST_ENABLE_NOTIFY"] === "1",
         enableHistory: import.meta.env["VUE_APP_TEST_ENABLE_HISTORY"]

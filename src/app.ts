@@ -1,7 +1,7 @@
 //@ts-ignore
 window.global ||= window;
-import Vue from "vue";
 import App from "./App.vue";
+import Vue from "vue";
 import { createRouter } from "./router";
 import "./assets/custom.scss";
 import Meta from "vue-meta";

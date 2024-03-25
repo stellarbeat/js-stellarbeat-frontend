@@ -53,18 +53,18 @@ watch(data, () => {
 const pointColors = computed(() => {
   if (!props.inverted) {
     return data.value.map((point) =>
-      point.y ? "rgba(94,186,0,1)" : "#cd201f"
+      point.y ? "rgba(94,186,0,1)" : "#cd201f",
     );
   } else {
     return data.value.map((point) =>
-      point.y ? "#cd201f" : "rgba(94,186,0,1)"
+      point.y ? "#cd201f" : "rgba(94,186,0,1)",
     );
   }
 });
 
 onMounted(() => {
   if (!chartElement.value) return;
-  let context = chartElement.value.getContext("2d");
+  const context = chartElement.value.getContext("2d");
   Chart.register(LineController, LineElement, PointElement, Filler);
   lineChart = new Chart(context as CanvasRenderingContext2D, {
     type: "line",

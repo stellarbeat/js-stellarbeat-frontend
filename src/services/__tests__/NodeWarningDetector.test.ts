@@ -66,7 +66,7 @@ describe("NodeWarningDetector", () => {
       node.historyArchiveHasError = false;
       const network = new Network([node]);
       expect(NodeWarningDetector.getNodeWarningReasons(node, network)).toEqual(
-        []
+        [],
       );
     });
     it('returns "Stellar-core version behind" if node version is behind the latest stellar core version', () => {
@@ -97,7 +97,7 @@ describe("NodeWarningDetector", () => {
       node.historyArchiveHasError = false;
       const network = new Network([node]);
       expect(
-        NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
+        NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network),
       ).toEqual("");
     });
 
@@ -110,9 +110,9 @@ describe("NodeWarningDetector", () => {
       const network = new Network([node]);
       network.stellarCoreVersion = "11.0.0";
       expect(
-        NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
+        NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network),
       ).toEqual(
-        "History archive issue detected | History archive behind | Stellar-core version behind"
+        "History archive issue detected | History archive behind | Stellar-core version behind",
       );
     });
   });

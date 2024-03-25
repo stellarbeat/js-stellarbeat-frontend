@@ -14,7 +14,7 @@ describe("QuorumSetWarningDetector", () => {
       const { node, quorumSet, network } = setupSUT();
       node.isValidating = false;
       expect(
-        QuorumSetWarningDetector.getQuorumSetWarnings(quorumSet, network)
+        QuorumSetWarningDetector.getQuorumSetWarnings(quorumSet, network),
       ).toEqual("Some validators are failing");
     });
 
@@ -27,7 +27,7 @@ describe("QuorumSetWarningDetector", () => {
       node.historyUrl = "http://localhost:11626";
 
       expect(
-        QuorumSetWarningDetector.getQuorumSetWarnings(quorumSet, network)
+        QuorumSetWarningDetector.getQuorumSetWarnings(quorumSet, network),
       ).toEqual("Some validators have warnings");
     });
 
@@ -38,7 +38,7 @@ describe("QuorumSetWarningDetector", () => {
       node.isValidating = true;
 
       expect(
-        QuorumSetWarningDetector.getQuorumSetWarnings(quorumSet, network)
+        QuorumSetWarningDetector.getQuorumSetWarnings(quorumSet, network),
       ).toEqual("None");
     });
   });
@@ -48,7 +48,7 @@ describe("QuorumSetWarningDetector", () => {
       const { node, quorumSet, network } = setupSUT();
       node.isValidating = false;
       expect(
-        QuorumSetWarningDetector.quorumSetHasWarnings(quorumSet, network)
+        QuorumSetWarningDetector.quorumSetHasWarnings(quorumSet, network),
       ).toEqual(true);
     });
 
@@ -61,7 +61,7 @@ describe("QuorumSetWarningDetector", () => {
       node.historyUrl = "http://localhost:11626";
 
       expect(
-        QuorumSetWarningDetector.quorumSetHasWarnings(quorumSet, network)
+        QuorumSetWarningDetector.quorumSetHasWarnings(quorumSet, network),
       ).toEqual(true);
     });
 
@@ -72,7 +72,7 @@ describe("QuorumSetWarningDetector", () => {
       node.isValidating = true;
 
       expect(
-        QuorumSetWarningDetector.quorumSetHasWarnings(quorumSet, network)
+        QuorumSetWarningDetector.quorumSetHasWarnings(quorumSet, network),
       ).toEqual(false);
     });
   });

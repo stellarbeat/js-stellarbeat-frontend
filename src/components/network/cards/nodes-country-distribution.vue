@@ -42,14 +42,14 @@ function onWatcherNodesOptionChanged() {
 }
 
 const sortedCountries = computed(() => {
-  let countries = network.nodes
+  const countries = network.nodes
     .filter(useStore().watcherNodeFilter)
     .filter((node) => node.geoData.countryName)
     .map((node) => node.geoData.countryName)
     .reduce(
       (
         accumulator: Record<string, number | undefined>,
-        currentValue: string | null
+        currentValue: string | null,
       ) => {
         if (currentValue === null) {
           return accumulator;
@@ -58,11 +58,11 @@ const sortedCountries = computed(() => {
         else (accumulator[currentValue] as number)++;
         return accumulator;
       },
-      {}
+      {},
     );
 
-  let sortedCountries: [string, number][] = [];
-  for (let countryName in countries) {
+  const sortedCountries: [string, number][] = [];
+  for (const countryName in countries) {
     if (countries[countryName])
       sortedCountries.push([countryName, countries[countryName] as number]);
   }
@@ -73,7 +73,7 @@ const sortedCountries = computed(() => {
 });
 
 const chartData = computed(() => {
-  let countries = [];
+  const countries = [];
   if (sortedCountries.value[0]) countries.push(sortedCountries.value[0][1]);
   if (sortedCountries.value[1]) countries.push(sortedCountries.value[1][1]);
   if (sortedCountries.value[2]) countries.push(sortedCountries.value[2][1]);
@@ -81,14 +81,14 @@ const chartData = computed(() => {
     countries.push(
       sortedCountries.value.slice(3).reduce((accumulator, currentValue) => {
         return accumulator + currentValue[1];
-      }, 0)
+      }, 0),
     );
 
   return countries;
 });
 
 const labels = computed(() => {
-  let labels = [];
+  const labels = [];
   if (sortedCountries.value[0]) labels.push(sortedCountries.value[0][0]);
   if (sortedCountries.value[1]) labels.push(sortedCountries.value[1][0]);
   if (sortedCountries.value[2]) labels.push(sortedCountries.value[2][0]);
@@ -105,7 +105,7 @@ function initializeDoughnut() {
   if (sortedCountries.value.length === 0) {
     return;
   }
-  let context = countryDistributionGraph.value.getContext("2d");
+  const context = countryDistributionGraph.value.getContext("2d");
   if (!context) return;
 
   Chart.register(Tooltip, Legend, ArcElement, DoughnutController);

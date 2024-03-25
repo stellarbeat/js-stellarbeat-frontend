@@ -12,18 +12,18 @@ export default class NetworkStatisticsStore {
   async getMonthStatistics(
     networkId: string,
     from: Date,
-    to: Date
+    to: Date,
   ): Promise<NetworkStatisticsAggregation[]> {
     const stats =
       await this.statisticsStore.fetchStatistics<NetworkStatisticsAggregation>(
         networkId,
         from,
         to,
-        "/v1/month-statistics"
+        "/v1/month-statistics",
       );
     return stats.map((stat) => {
       const statObject = NetworkStatisticsAggregation.fromJSON(
-        JSON.stringify(stat)
+        JSON.stringify(stat),
       );
       statObject.time = new Date(statObject.time);
       return statObject;
@@ -33,18 +33,18 @@ export default class NetworkStatisticsStore {
   async getDayStatistics(
     networkId: string,
     from: Date,
-    to: Date
+    to: Date,
   ): Promise<NetworkStatisticsAggregation[]> {
     const stats =
       await this.statisticsStore.fetchStatistics<NetworkStatisticsAggregation>(
         networkId,
         from,
         to,
-        "/v1/day-statistics"
+        "/v1/day-statistics",
       );
     return stats.map((stat) => {
       const statObject = NetworkStatisticsAggregation.fromJSON(
-        JSON.stringify(stat)
+        JSON.stringify(stat),
       );
       statObject.time = new Date(statObject.time);
       return statObject;
@@ -54,13 +54,13 @@ export default class NetworkStatisticsStore {
   async getStatistics(
     networkId: string,
     from: Date,
-    to: Date
+    to: Date,
   ): Promise<NetworkStatistics[]> {
     return await this.statisticsStore.fetchStatistics<NetworkStatistics>(
       networkId,
       from,
       to,
-      "/v1/statistics"
+      "/v1/statistics",
     );
   }
 }

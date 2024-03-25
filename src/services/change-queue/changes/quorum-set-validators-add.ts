@@ -20,7 +20,7 @@ export class QuorumSetValidatorsAdd implements NetworkChange {
     this._validators.forEach((validator: PublicKey) => {
       this._quorumSet.validators.splice(
         this._quorumSet.validators.indexOf(validator),
-        1
+        1,
       );
     });
   }

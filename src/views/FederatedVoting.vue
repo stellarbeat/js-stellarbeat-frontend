@@ -35,9 +35,7 @@ import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import { Network, Node } from "@stellarbeat/js-stellarbeat-shared";
 import { FBASQIRepository } from "@/repositories/implementation/FBASQIRepository";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
-import useStore from "@/store/useStore";
 
-const store = useStore();
 const viewGraph = ref<ViewGraph>(new ViewGraph());
 const selectedVertices = ref<ViewVertex[]>([]);
 

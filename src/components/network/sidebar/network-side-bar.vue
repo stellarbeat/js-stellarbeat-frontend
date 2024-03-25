@@ -124,7 +124,7 @@ const network = store.network;
 
 const networkTransitiveQuorumSetNodes = computed(() => {
   return Array.from(network.nodesTrustGraph.networkTransitiveQuorumSet).map(
-    (publicKey) => network.getNodeByPublicKey(publicKey)
+    (publicKey) => network.getNodeByPublicKey(publicKey),
   );
 });
 
@@ -134,20 +134,19 @@ const networkTransitiveQuorumSetOrganizations = computed(() => {
       networkTransitiveQuorumSetNodes.value
         .filter((node) => node && node.organizationId)
         .map((node) =>
-          network.getOrganizationById(node.organizationId as string)
-        )
+          network.getOrganizationById(node.organizationId as string),
+        ),
     ),
   ];
 });
 const validatorsExpanded = ref(
-  networkTransitiveQuorumSetOrganizations.value.length === 0
+  networkTransitiveQuorumSetOrganizations.value.length === 0,
 );
 const tomlNodesExport = computed(() => {
-  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
-    network
-  );
+  const stellarCoreConfigurationGenerator =
+    new StellarCoreConfigurationGenerator(network);
   return stellarCoreConfigurationGenerator.nodesToToml(
-    networkTransitiveQuorumSetNodes.value
+    networkTransitiveQuorumSetNodes.value,
   );
 });
 

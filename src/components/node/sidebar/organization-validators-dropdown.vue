@@ -26,7 +26,7 @@
         :warnings="
           NodeWarningDetector.getNodeWarningReasonsConcatenated(
             validator,
-            network
+            network,
           )
         "
       >
@@ -61,8 +61,8 @@ const emit = defineEmits(["toggleExpand"]);
 const { showing, toggleShow } = useDropdown(true, emit);
 const validators = computed(() =>
   props.organization.validators.map((validator) =>
-    network.getNodeByPublicKey(validator)
-  )
+    network.getNodeByPublicKey(validator),
+  ),
 );
 
 function getDisplayName(validator: Node) {

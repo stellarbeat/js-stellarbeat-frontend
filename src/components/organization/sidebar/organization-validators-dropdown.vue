@@ -20,7 +20,7 @@
         :warnings="
           NodeWarningDetector.getNodeWarningReasonsConcatenated(
             validator,
-            network
+            network,
           )
         "
       >
@@ -56,7 +56,7 @@ const network = store.network;
 
 const validators = computed(() => {
   return props.organization.validators.map((validator) =>
-    network.getNodeByPublicKey(validator)
+    network.getNodeByPublicKey(validator),
   );
 });
 

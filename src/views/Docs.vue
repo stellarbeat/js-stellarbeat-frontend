@@ -42,10 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import useStore from "@/store/useStore";
 import WarningsAndNotifications from "@/components/docs/warnings-and-notifications.vue";
-
-const store = useStore();
 </script>
 <script lang="ts">
 import * as myUseStore from "@/store/useStore";

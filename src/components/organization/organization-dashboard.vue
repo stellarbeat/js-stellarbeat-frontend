@@ -11,7 +11,7 @@
         :show="
           OrganizationWarningDetector.organizationHasWarnings(
             organization,
-            store.network
+            store.network,
           )
         "
         variant="warning"
@@ -22,7 +22,7 @@
             v-bind:key="reason"
             v-for="reason in OrganizationWarningDetector.getOrganizationWarningReasons(
               organization,
-              network
+              network,
             )"
           >
             {{ reason }}.
@@ -50,7 +50,7 @@
                 organizationMeasurementStore.getDayStatistics(
                   organizationId,
                   from,
-                  to
+                  to,
                 )
             "
             :fetchMeasurements="
@@ -58,7 +58,7 @@
                 organizationMeasurementStore.getStatistics(
                   organizationId,
                   from,
-                  to
+                  to,
                 )
             "
             :dayMeasurementProperty="'isSubQuorumAvailableCount'"

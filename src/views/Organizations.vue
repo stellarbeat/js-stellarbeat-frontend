@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--consent></consent!-->
     <div>
       <div class="page-header d-flex justify-content-between py-3">
         <div class="d-flex align-items-center">
@@ -48,7 +47,6 @@ import OrganizationsTable, {
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
-import Consent from "@/components/consent.vue";
 
 defineProps({
   isLoading: {
@@ -101,11 +99,11 @@ const organizations: ComputedRef<TableOrganization[]> = computed(() => {
       dangers: store.getOrganizationFailingReason(organization),
       hasWarning: OrganizationWarningDetector.organizationHasWarnings(
         organization,
-        store.network
+        store.network,
       ),
       warning: OrganizationWarningDetector.getOrganizationWarningReasons(
         organization,
-        store.network
+        store.network,
       ).join(" | "),
       blocked: store.network.isOrganizationBlocked(organization),
       subQuorum24HAvailability: organization.subQuorum24HoursAvailability + "%",

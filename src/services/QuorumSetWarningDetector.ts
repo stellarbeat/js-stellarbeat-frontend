@@ -24,13 +24,13 @@ export class QuorumSetWarningDetector {
         .some(
           (validator) =>
             NodeWarningDetector.nodeHasWarning(validator, network) ||
-            network.isNodeFailing(validator)
+            network.isNodeFailing(validator),
         );
     };
     return (
       hasWarning(quorumSet.validators) ||
       quorumSet.innerQuorumSets.some((quorumSet) =>
-        hasWarning(quorumSet.validators)
+        hasWarning(quorumSet.validators),
       )
     );
   }

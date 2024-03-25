@@ -45,7 +45,7 @@ const network = store.network;
 const filter = ref("");
 
 const fields = computed(() => {
-  let fields = [{ key: "name", label: "Node", sortable: true }];
+  const fields = [{ key: "name", label: "Node", sortable: true }];
 
   if (store.networkContext.enableIndex && !store.isSimulation) {
     fields.push({ key: "index", label: "Index", sortable: true });
@@ -67,7 +67,7 @@ const numberOfActiveNodes = computed(() => {
     return network.nodes.filter((node) => !network.isNodeFailing(node)).length;
   else
     return network.nodes.filter(
-      (node) => node.isValidator && !network.isNodeFailing(node)
+      (node) => node.isValidator && !network.isNodeFailing(node),
     ).length;
 });
 

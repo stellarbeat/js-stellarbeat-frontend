@@ -94,12 +94,12 @@ interface Props {
   fetchDayMeasurements: <T extends StatisticsAggregation>(
     id: string,
     from: Date,
-    to: Date
+    to: Date,
   ) => Promise<T[]>;
   fetchMeasurements: (
     id: string,
     from: Date,
-    to: Date
+    to: Date,
   ) => Promise<Statistics[]>;
   dayMeasurementProperty: string;
   measurementProperty: string;
@@ -128,7 +128,7 @@ const twentyFourHourMeasurements = ref<Statistics[]>([]);
 const oneHourLineChartData = ref<ScatterDataPoint[]>([]);
 
 const statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
-  store.measurementsStartDate
+  store.measurementsStartDate,
 );
 
 const rendered = ref(false);
@@ -207,14 +207,14 @@ const chartWidth = ref();
 
 async function updateDayHistoryChart() {
   isLoading.value = true;
-  let to = new Date(selectedDate.value.getTime());
+  const to = new Date(selectedDate.value.getTime());
   to.setDate(to.getDate() + 30); // add 30 days
   try {
     failed.value = false;
     thirtyDayMeasurements.value = await fetchDayMeasurements.value(
       entityId.value,
       new Date(selectedDate.value),
-      to
+      to,
     );
   } catch (e) {
     failed.value = true;
@@ -224,7 +224,7 @@ async function updateDayHistoryChart() {
 
 async function update24HourHistoryChart(unit: "h" | "d" = "d") {
   isLoading.value = true;
-  let to = new Date(selectedDate.value.getTime());
+  const to = new Date(selectedDate.value.getTime());
   if (unit === "d") {
     to.setDate(to.getDate() + 1); // add 1 day
   } else if (unit === "h") {
@@ -235,7 +235,7 @@ async function update24HourHistoryChart(unit: "h" | "d" = "d") {
     twentyFourHourMeasurements.value = await fetchMeasurements.value(
       entityId.value,
       new Date(selectedDate.value),
-      to
+      to,
     );
   } catch (e) {
     failed.value = true;
@@ -266,7 +266,7 @@ const thirtyDaysBarChartData: ComputedRef<ScatterDataPoint[]> = computed(() => {
               measurement[dayMeasurementProperty.value]) /
               measurement.crawlCount) *
             100
-          ).toFixed(2)
+          ).toFixed(2),
         ),
       };
     }
@@ -274,19 +274,19 @@ const thirtyDaysBarChartData: ComputedRef<ScatterDataPoint[]> = computed(() => {
 });
 
 const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
-  let twentyFourHourMap = new Map<string, number[]>();
+  const twentyFourHourMap = new Map<string, number[]>();
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   twentyFourHourMeasurements.value.forEach((measurement: any) => {
-    let date = new Date(measurement.time);
+    const date = new Date(measurement.time);
     date.setMinutes(0, 0, 0); // set minutes, seconds, and milliseconds to 0 to start of the hour
-    let hourBucketString = date.toISOString();
+    const hourBucketString = date.toISOString();
     let twentyFourHourValue = twentyFourHourMap.get(hourBucketString);
     if (!twentyFourHourValue) twentyFourHourValue = [];
     twentyFourHourValue.push(measurement[measurementProperty.value]);
     twentyFourHourMap.set(hourBucketString, twentyFourHourValue);
   });
 
-  let twentyFourHourAverages: { x: number; y: number }[] = [];
+  const twentyFourHourAverages: { x: number; y: number }[] = [];
   twentyFourHourMap.forEach((measurements, hourString) => {
     if (inverted.value) {
       twentyFourHourAverages.push({
@@ -296,7 +296,7 @@ const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
             100 -
             (measurements.reduce((a, b) => a + b, 0) / measurements.length) *
               100
-          ).toFixed(2)
+          ).toFixed(2),
         ),
       });
     } else {
@@ -306,7 +306,7 @@ const twentyFourHourBarChartData = computed((): { x: number; y: number }[] => {
           (
             (measurements.reduce((a, b) => a + b, 0) / measurements.length) *
             100
-          ).toFixed(2)
+          ).toFixed(2),
         ),
       });
     }
@@ -345,7 +345,7 @@ onMounted(async () => {
     : 0;
   selectedDate.value = statisticsDateTimeNavigator.getInitialSelectedDate(
     chartView.value,
-    store.network.time
+    store.network.time,
   );
   await select30DayViewDefault();
   rendered.value = true;

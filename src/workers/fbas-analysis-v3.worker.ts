@@ -62,7 +62,7 @@ ctx.addEventListener("message", (event) => {
           analyzeSafety,
           analyzeTopTier,
           analyzeSymmetricTopTier,
-          jobId
+          jobId,
         );
       })
       .catch((e) => {
@@ -79,7 +79,7 @@ ctx.addEventListener("message", (event) => {
       analyzeSafety,
       analyzeTopTier,
       analyzeSymmetricTopTier,
-      jobId
+      jobId,
     );
   }
 });
@@ -94,7 +94,7 @@ function performAnalysis(
   analyzeSafety: boolean,
   analyzeTopTier: boolean,
   analyzeSymmetricTopTier: boolean,
-  jobId: number
+  jobId: number,
 ) {
   //@ts-ignore
   const analysis: FbasAnalysisWorkerResult = {};
@@ -102,7 +102,7 @@ function performAnalysis(
     const symmetricTopTierAnalysis = analyze_symmetric_top_tier(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
-      mergeBy
+      mergeBy,
     );
     analysis.hasSymmetricTopTier =
       symmetricTopTierAnalysis.symmetric_top_tier !== null;
@@ -112,7 +112,7 @@ function performAnalysis(
     const minimalQuorumsAnalysis = analyze_minimal_quorums(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
-      mergeBy
+      mergeBy,
     );
     analysis.hasQuorumIntersection = minimalQuorumsAnalysis.quorum_intersection;
     analysis.minimalQuorums = minimalQuorumsAnalysis.result;
@@ -123,7 +123,7 @@ function performAnalysis(
     const topTierAnalysis = analyze_top_tier(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
-      mergeBy
+      mergeBy,
     );
     analysis.topTier = topTierAnalysis.top_tier;
     analysis.topTierSize = topTierAnalysis.top_tier_size;
@@ -135,7 +135,7 @@ function performAnalysis(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
       JSON.stringify(failingNodePublicKeys),
-      mergeBy
+      mergeBy,
     );
     analysis.livenessAnalyzed = true;
     analysis.minimalBlockingSets = minimalBlockingSetsAnalysis.result;
@@ -146,7 +146,7 @@ function performAnalysis(
     const minimalSplittingSetsAnalysis = analyze_minimal_splitting_sets(
       JSON.stringify(nodes),
       JSON.stringify(organizations),
-      mergeBy
+      mergeBy,
     );
     analysis.safetyAnalyzed = true;
     analysis.minimalSplittingSets = minimalSplittingSetsAnalysis.result;

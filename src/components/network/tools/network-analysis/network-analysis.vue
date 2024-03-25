@@ -343,7 +343,7 @@ const fbasAnalysisWorker = new Worker(
   {
     type: import.meta.env.DEV ? "module" : "classic",
     /* @vite-ignore */
-  }
+  },
 );
 const hasResult = ref(false);
 const resultMergedBy = ref(MyMergeBy.DoNotMerge);
@@ -366,7 +366,7 @@ const analyzeTopTier = ref(true);
 const topTierAnalyzed = ref(false);
 
 const nodesPartition: Ref<Map<string, string[]>> = ref(
-  new Map<string, string[]>()
+  new Map<string, string[]>(),
 );
 
 function getMergeByFriendlyName(mergeBy = MyMergeBy.DoNotMerge) {
@@ -407,10 +407,10 @@ function performAnalysis() {
 
 function updatePartitions() {
   //todo should come from fbas analysis
-  let removeSpecialCharsFromGroupingName = (name: string) => {
+  const removeSpecialCharsFromGroupingName = (name: string) => {
     //copied from fbas analysis, to handle isp naming differences
     name = name.replace(",", "");
-    let start = name.substring(0, name.length - 1);
+    const start = name.substring(0, name.length - 1);
     let end = name.substring(name.length - 1);
     end = end.replace(".", "");
     name = start + end;
@@ -421,8 +421,8 @@ function updatePartitions() {
   store.network.nodes
     .filter((node) =>
       store.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(
-        node.publicKey
-      )
+        node.publicKey,
+      ),
     )
     .forEach((node) => {
       let value = "N/A";
@@ -438,7 +438,7 @@ function updatePartitions() {
           : "N/A";
       }
 
-      let nodes = nodesPartition.value.has(value)
+      const nodes = nodesPartition.value.has(value)
         ? (nodesPartition.value.get(value) as string[])
         : [];
       nodes.push(node.displayName);
@@ -449,8 +449,8 @@ function updatePartitions() {
 function mapPublicKeysToNames(items: Array<Array<PublicKey>>) {
   return items.map((row) =>
     row.map(
-      (publicKey) => store.network.getNodeByPublicKey(publicKey).displayName
-    )
+      (publicKey) => store.network.getNodeByPublicKey(publicKey).displayName,
+    ),
   );
 }
 
@@ -476,7 +476,7 @@ onMounted(() => {
             hasResult.value = true;
             resultMergedBy.value = event.data.result.mergeBy;
             updatePartitions();
-            let analysisResult: FbasAnalysisWorkerResult =
+            const analysisResult: FbasAnalysisWorkerResult =
               event.data.result.analysis;
             topTierIsSymmetric.value = analysisResult.hasSymmetricTopTier;
             quorumIntersectionAnalyzed.value =
@@ -489,13 +489,13 @@ onMounted(() => {
                 analysisResult.minimalQuorums as string[][];
               if (resultMergedBy.value === MyMergeBy.DoNotMerge)
                 minimalQuorums.value = mapPublicKeysToNames(
-                  minimalQuorums.value
+                  minimalQuorums.value,
                 );
             }
 
             livenessAnalyzed.value = analysisResult.livenessAnalyzed;
             if (analysisResult.livenessAnalyzed) {
-              let blockingSetsTemp =
+              const blockingSetsTemp =
                 analysisResult.minimalBlockingSets as string[][];
               if (blockingSetsTemp.length > 0) {
                 blockingSetsMinSize.value =
@@ -510,7 +510,7 @@ onMounted(() => {
 
             safetyAnalyzed.value = analysisResult.safetyAnalyzed;
             if (analysisResult.safetyAnalyzed) {
-              let splittingSetsTemp =
+              const splittingSetsTemp =
                 analysisResult.minimalSplittingSets as string[][];
               if (splittingSetsTemp.length > 0) {
                 splittingSetsMinSize.value =
@@ -519,7 +519,7 @@ onMounted(() => {
                   analysisResult.minimalSplittingSets as string[][];
                 if (resultMergedBy.value === MyMergeBy.DoNotMerge)
                   splittingSets.value = mapPublicKeysToNames(
-                    splittingSets.value
+                    splittingSets.value,
                   );
               }
             }

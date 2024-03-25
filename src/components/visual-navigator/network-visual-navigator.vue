@@ -231,7 +231,7 @@ import { useRoute, useRouter } from "vue-router/composables";
 import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 Vue.directive("b-tooltip", VBTooltip);
 const WorldMap = defineAsyncComponent(
-  () => import("@/components/visual-navigator/world-map.vue")
+  () => import("@/components/visual-navigator/world-map.vue"),
 );
 
 const props = defineProps({
@@ -265,7 +265,7 @@ const menuVisible = ref(false);
 const fullScreen = ref(false);
 
 const breadCrumbs = computed(() => {
-  let crumbs = [];
+  const crumbs = [];
   crumbs.push({
     text: store.getNetworkContextName(),
     to: {
@@ -312,7 +312,7 @@ const breadCrumbs = computed(() => {
 });
 
 function navigateToView() {
-  let toView = view.value === "map" ? "graph" : "map";
+  const toView = view.value === "map" ? "graph" : "map";
   router.push({
     name: route.name ? route.name : undefined,
     params: route.params,

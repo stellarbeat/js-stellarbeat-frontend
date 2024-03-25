@@ -35,7 +35,7 @@ onMounted(() => {
 });
 
 function getAggregatedDataSets(
-  statisticsAggregation: NetworkStatisticsAggregation[]
+  statisticsAggregation: NetworkStatisticsAggregation[],
 ) {
   return [
     {
@@ -68,7 +68,7 @@ function initializeBarChart() {
     LineController,
     LineElement,
     LinearScale,
-    TimeScale
+    TimeScale,
   );
 
   //@ts-ignore

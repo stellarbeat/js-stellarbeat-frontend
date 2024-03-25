@@ -17,7 +17,7 @@
                 (mEdge) =>
                   (!mEdge.isFailing || optionShowFailingEdges) &&
                   (mEdge.isPartOfTransitiveQuorumSet ||
-                    !optionTransitiveQuorumSetOnly)
+                    !optionTransitiveQuorumSetOnly),
               )"
               :key="edge.key"
               v-bind:d="getEdgePath(edge)"
@@ -35,7 +35,7 @@
                   (mEdge) =>
                     (!mEdge.isFailing || optionShowFailingEdges) &&
                     (mEdge.isPartOfTransitiveQuorumSet ||
-                      !optionTransitiveQuorumSetOnly)
+                      !optionTransitiveQuorumSetOnly),
                 )"
                 :key="'propagation:' + edge.key"
                 :id="'propagation:' + edge.key"
@@ -67,7 +67,7 @@
                 (mEdge) =>
                   (!mEdge.isFailing || optionShowFailingEdges) &&
                   (mEdge.isPartOfTransitiveQuorumSet ||
-                    !optionTransitiveQuorumSetOnly)
+                    !optionTransitiveQuorumSetOnly),
               )"
               :key="edge.key"
               v-bind:d="getEdgePath(edge)"
@@ -86,7 +86,7 @@
                   (mEdge) =>
                     (!mEdge.isFailing || optionShowFailingEdges) &&
                     (mEdge.isPartOfTransitiveQuorumSet ||
-                      !optionTransitiveQuorumSetOnly)
+                      !optionTransitiveQuorumSetOnly),
                 )"
                 :key="edge.key + edge.key"
                 v-bind:d="getEdgePath(edge)"
@@ -105,7 +105,7 @@
                   (mEdge) =>
                     (!mEdge.isFailing || optionShowFailingEdges) &&
                     (mEdge.isPartOfTransitiveQuorumSet ||
-                      !optionTransitiveQuorumSetOnly)
+                      !optionTransitiveQuorumSetOnly),
                 )"
                 :key="edge.key + edge.key"
                 v-bind:d="getEdgePath(edge)"
@@ -129,11 +129,11 @@
               class="vertex"
               style="cursor: pointer"
               v-for="vertex in Array.from(
-                viewGraph.viewVertices.values()
+                viewGraph.viewVertices.values(),
               ).filter(
                 (mVertex) =>
                   mVertex.isPartOfTransitiveQuorumSet ||
-                  !optionTransitiveQuorumSetOnly
+                  !optionTransitiveQuorumSetOnly,
               )"
               :key="vertex.key"
               v-on:click="
@@ -267,15 +267,15 @@ watch(
   () => props.centerVertex,
   () => {
     centerCorrectVertex();
-  }
+  },
 );
 
 watch(selectedVertices, () => {
   viewGraph?.value?.reClassifyEdges(
-    selectedVertices.value.map((vertex) => vertex.key)
+    selectedVertices.value.map((vertex) => vertex.key),
   );
   viewGraph?.value?.reClassifyVertices(
-    selectedVertices.value.map((vertex) => vertex.key)
+    selectedVertices.value.map((vertex) => vertex.key),
   );
 });
 watch(viewGraph, () => {
@@ -339,12 +339,14 @@ function getVertexClassObject(vertex: ViewVertex) {
 
 function highlightVertexAsOutgoing(vertex: ViewVertex) {
   if (selectedVertices?.value.length <= 0) return false;
-  let edges = selectedVertices?.value
+  const edges = selectedVertices?.value
     .map((selectedVertex) =>
-      viewGraph?.value.viewEdges.get(vertex.key + ":" + selectedVertex.key)
+      viewGraph?.value.viewEdges.get(vertex.key + ":" + selectedVertex.key),
     )
     .filter((edge) => edge !== undefined);
-  let allEdgesAreFailing = edges.every((edge) => (edge as ViewEdge).isFailing);
+  const allEdgesAreFailing = edges.every(
+    (edge) => (edge as ViewEdge).isFailing,
+  );
 
   if (edges.length <= 0) return false;
 
@@ -358,12 +360,14 @@ function highlightVertexAsOutgoing(vertex: ViewVertex) {
 function highlightVertexAsIncoming(vertex: ViewVertex) {
   if (selectedVertices?.value.length <= 0) return false;
 
-  let edges = selectedVertices?.value
+  const edges = selectedVertices?.value
     .map((selectedVertex) =>
-      viewGraph?.value.viewEdges.get(selectedVertex.key + ":" + vertex.key)
+      viewGraph?.value.viewEdges.get(selectedVertex.key + ":" + vertex.key),
     )
     .filter((edge) => edge !== undefined);
-  let allEdgesAreFailing = edges.every((edge) => (edge as ViewEdge).isFailing);
+  const allEdgesAreFailing = edges.every(
+    (edge) => (edge as ViewEdge).isFailing,
+  );
 
   if (edges.length <= 0) return false;
 
@@ -396,7 +400,7 @@ function centerCorrectVertex() {
     const realVertexX = -centerVertex.value.x + width() / 2;
     const realVertexY = -centerVertex.value.y + height() / 2;
 
-    let transform = zoom.zoomIdentity
+    const transform = zoom.zoomIdentity
       .translate(realVertexX, realVertexY)
       .scale(1);
     d3svg.call(graphZoom.transform, transform);
@@ -404,14 +408,14 @@ function centerCorrectVertex() {
 }
 function mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
   vertices.forEach((updatedVertex: ViewVertex) => {
-    let vertex = viewGraph.value.viewVertices.get(updatedVertex.key);
+    const vertex = viewGraph.value.viewVertices.get(updatedVertex.key);
     if (!vertex) return;
     vertex.x = updatedVertex.x;
     vertex.y = updatedVertex.y;
   });
 
   edges.forEach((updatedEdge: ViewEdge) => {
-    let edge = viewGraph.value.viewEdges.get(updatedEdge.key);
+    const edge = viewGraph.value.viewEdges.get(updatedEdge.key);
     if (!edge) return;
     edge.source = updatedEdge.source;
     edge.target = updatedEdge.target;
@@ -426,7 +430,7 @@ onMounted(() => {
     {
       type: workerType,
       /* @vite-ignore */
-    }
+    },
   );
   computeGraphWorker.onmessage = (event: {
     data: { type: string; vertices: ViewVertex[]; edges: ViewEdge[] };
@@ -455,7 +459,7 @@ onMounted(() => {
 });
 
 function transformAndZoom() {
-  let transform = zoom.zoomIdentity
+  const transform = zoom.zoomIdentity
     .translate(width() / 2, height() / 2)
     .scale(props.initialZoom);
   d3svg.call(graphZoom).call(graphZoom.transform, transform);

@@ -41,7 +41,7 @@ const network = store.network;
 const filter = ref("");
 
 const fields = computed(() => {
-  let fields = [{ key: "name", label: "Organization", sortable: true }];
+  const fields = [{ key: "name", label: "Organization", sortable: true }];
 
   if (!store.isSimulation && store.networkContext.enableHistory) {
     fields.push({
@@ -63,7 +63,7 @@ const fields = computed(() => {
 });
 
 function getFailAt(organization: Organization): number {
-  let nrOfValidatingNodes = organization.validators
+  const nrOfValidatingNodes = organization.validators
     .map((validator) => network.getNodeByPublicKey(validator))
     .filter((node) => !network.isNodeFailing(node)).length;
 
@@ -72,7 +72,7 @@ function getFailAt(organization: Organization): number {
 
 const numberOfActiveOrganizations = computed(() => {
   return network.organizations.filter(
-    (organization) => organization.subQuorumAvailable
+    (organization) => organization.subQuorumAvailable,
   ).length;
 });
 

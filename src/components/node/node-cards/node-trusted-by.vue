@@ -24,7 +24,7 @@ const store = useStore();
 const network = store.network;
 
 const fields = computed(() => {
-  let fields = [{ key: "name", label: "Node", sortable: true }];
+  const fields = [{ key: "name", label: "Node", sortable: true }];
 
   if (!store.isSimulation)
     fields.push({ key: "index", label: "index", sortable: true });

@@ -191,12 +191,12 @@ function deleteQuorumSet() {
 }
 
 const possibleOrganizationsToAdd = computed(() => {
-  let trustedOrganizations = network
+  const trustedOrganizations = network
     .getTrustedOrganizations(quorumSet.value)
     .map((org) => org.id);
 
   return store.network.organizations.filter(
-    (organization) => trustedOrganizations.indexOf(organization.id) < 0
+    (organization) => trustedOrganizations.indexOf(organization.id) < 0,
   );
 });
 
@@ -204,20 +204,20 @@ const possibleValidatorsToAdd = computed(() => {
   return network.nodes.filter(
     (node: Node) =>
       node.isValidator &&
-      QuorumSet.getAllValidators(quorumSet.value).indexOf(node.publicKey) < 0
+      QuorumSet.getAllValidators(quorumSet.value).indexOf(node.publicKey) < 0,
   );
 });
 
 function addValidatorsToQuorumSet(
   toQuorumSet: QuorumSet,
-  validators: string[]
+  validators: string[],
 ) {
   store.addValidators(toQuorumSet, validators);
 }
 
 function addOrganizationsToQuorumSet(
   toQuorumSet: QuorumSet,
-  organizations: Organization[]
+  organizations: Organization[],
 ) {
   store.addOrganizations(toQuorumSet, organizations);
 }
@@ -241,7 +241,7 @@ function saveThresholdFromInput() {
 
 function onValidatorsSelected(validators: Node[]) {
   validatorsToAdd.value = validators.map(
-    (validator: Node) => validator.publicKey
+    (validator: Node) => validator.publicKey,
   );
 }
 
@@ -263,11 +263,10 @@ function organizationsToAddModalOk() {
 }
 
 function loadTomlExport() {
-  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
-    network
-  );
+  const stellarCoreConfigurationGenerator =
+    new StellarCoreConfigurationGenerator(network);
   tomlNodesExport.value = stellarCoreConfigurationGenerator.quorumSetToToml(
-    quorumSet.value
+    quorumSet.value,
   );
 }
 </script>

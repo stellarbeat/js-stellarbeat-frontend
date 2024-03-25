@@ -90,7 +90,6 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BFormInput } from "bootstrap-vue";
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
-import Consent from "@/components/consent.vue";
 
 defineProps({
   isLoading: {
@@ -205,7 +204,7 @@ const getOrganization = (node: Node) => {
   if (!node.organizationId) {
     return "-";
   }
-  let organization = store.network.getOrganizationById(node.organizationId);
+  const organization = store.network.getOrganizationById(node.organizationId);
   if (organization) {
     return organization.name;
   } else {

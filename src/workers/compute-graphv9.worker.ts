@@ -33,7 +33,7 @@ ctx.addEventListener("message", (event) => {
   const edges = event.data.edges;
   //@ts-ignore
   const nrOfTransitiveVertices = event.data.vertices.filter(
-    (vertex: ViewVertex) => vertex.isPartOfTransitiveQuorumSet
+    (vertex: ViewVertex) => vertex.isPartOfTransitiveQuorumSet,
   ).length;
 
   const simulation = forceSimulation(vertices)
@@ -41,7 +41,7 @@ ctx.addEventListener("message", (event) => {
       "charge",
       forceManyBody().strength(() => {
         return -250;
-      })
+      }),
     )
     .force(
       "link",
@@ -59,7 +59,7 @@ ctx.addEventListener("message", (event) => {
         .id((d) => {
           if (!isViewVertex(d)) throw new Error("Not a ViewVertex");
           return d.key;
-        })
+        }),
     )
     .force("x", forceX(0))
     .force("y", forceY(0))
@@ -71,7 +71,7 @@ ctx.addEventListener("message", (event) => {
   for (
     let i = 0,
       n = Math.ceil(
-        Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())
+        Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay()),
       );
     i < n;
     ++i

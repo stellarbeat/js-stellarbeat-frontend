@@ -28,7 +28,7 @@ export class NodeWarningDetector {
 
   static getNodeWarningReasonsConcatenated(
     node: Node,
-    network: Network
+    network: Network,
   ): string {
     return NodeWarningDetector.getNodeWarningReasons(node, network).join(" | ");
   }

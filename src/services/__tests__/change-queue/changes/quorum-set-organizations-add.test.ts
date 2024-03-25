@@ -11,7 +11,7 @@ describe("quorum set add organization", () => {
     expect(quorumSet.innerQuorumSets).toHaveLength(1);
     expect(quorumSet.innerQuorumSets[0].validators).toEqual(["a", "b"]);
     expect(quorumSet.innerQuorumSets[0].threshold).toEqual(
-      organization.subQuorumThreshold
+      organization.subQuorumThreshold,
     );
     command.revert();
     expect(quorumSet.innerQuorumSets).toHaveLength(0);

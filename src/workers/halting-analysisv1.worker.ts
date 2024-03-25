@@ -8,7 +8,7 @@ ctx.addEventListener("message", (event) => {
   const numberOfNodeFailures = event.data.numberOfNodeFailures;
 
   const failures = haltingAnalysis(networkGraphNodes, numberOfNodeFailures).map(
-    (failure) => failure.vulnerableNodes.map((node) => node.node)
+    (failure) => failure.vulnerableNodes.map((node) => node.node),
   );
 
   ctx.postMessage({ type: "end", failures: failures });

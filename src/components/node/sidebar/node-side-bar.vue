@@ -23,7 +23,7 @@
         v-b-tooltip="
           NodeWarningDetector.getNodeWarningReasonsConcatenated(
             selectedNode,
-            network
+            network,
           )
         "
       >
@@ -152,7 +152,7 @@ const hasOrganization = computed(() => {
 const organization = computed(() => {
   if (hasOrganization.value && selectedNode.value)
     return store.network.getOrganizationById(
-      selectedNode.value.organizationId as string
+      selectedNode.value.organizationId as string,
     );
   else return null;
 });
@@ -166,9 +166,8 @@ const nodeType = computed(() => {
 });
 
 function loadTomlExport() {
-  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
-    network
-  );
+  const stellarCoreConfigurationGenerator =
+    new StellarCoreConfigurationGenerator(network);
   tomlNodesExport.value = stellarCoreConfigurationGenerator.nodesToToml([
     selectedNode.value,
   ]);

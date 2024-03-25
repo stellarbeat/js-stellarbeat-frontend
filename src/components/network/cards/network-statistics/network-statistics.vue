@@ -312,12 +312,12 @@ const yearStatistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
 
 onMounted(async () => {
   if (!store.isSimulation && store.networkContext.enableHistory) {
-    let oneYearAgo = new Date(store.network.time.getTime());
+    const oneYearAgo = new Date(store.network.time.getTime());
     oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
     yearStatistics.value = await networkMeasurementStore.getMonthStatistics(
       "stellar-public",
       oneYearAgo,
-      store.network.time
+      store.network.time,
     );
   }
   isLoading.value = false;

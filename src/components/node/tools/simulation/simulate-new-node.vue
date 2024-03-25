@@ -29,7 +29,7 @@ const router = useRouter();
 const route = useRoute();
 
 function simulateNewNode() {
-  let node = new Node(makePublicKey());
+  const node = new Node(makePublicKey());
   node.name = newNodeName.value === "" ? "MyNewNode" : newNodeName.value;
   node.quorumSet.threshold = 1;
   node.active = true;
@@ -50,8 +50,8 @@ function simulateNewNode() {
 
 function makePublicKey() {
   let result = "G";
-  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let charactersLength = characters.length;
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const charactersLength = characters.length;
   for (let i = 0; i < 56; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }

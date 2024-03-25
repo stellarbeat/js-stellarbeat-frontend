@@ -20,7 +20,7 @@ export class InnerQuorumSetDelete implements NetworkChange {
     this._quorumSet.innerQuorumSets.splice(
       this._index,
       0,
-      this._innerQuorumSet
+      this._innerQuorumSet,
     );
   }
 }

@@ -150,12 +150,12 @@ const simulated = ref(false);
 const haltingAnalysisWorker = new Worker(
   new URL(
     "./../../../../workers/halting-analysisv1.worker.ts",
-    import.meta.url
+    import.meta.url,
   ),
   {
     type: import.meta.env.DEV ? "module" : "classic",
     /* @vite-ignore */
-  }
+  },
 );
 
 const dimmerClass = computed(() => {
@@ -183,7 +183,7 @@ const node = computed(() => {
 function getNetworkGraphNodes() {
   return Array.from(network.nodesTrustGraph.vertices.values()) //todo only nodes in transitive quorum set
     .map((myVertex) =>
-      mapVertexToNetworkGraphNode(myVertex, myVertex === vertex.value)
+      mapVertexToNetworkGraphNode(myVertex, myVertex === vertex.value),
     );
 }
 
@@ -192,15 +192,15 @@ function simulateFailure() {
     return;
   }
   simulated.value = true;
-  let aggregateChange = new AggregateChange(
+  const aggregateChange = new AggregateChange(
     selectedFailure.value.map(
       (failurePublicKey) =>
         new EntityPropertyUpdate(
           network.getNodeByPublicKey(failurePublicKey),
           "isValidating",
-          false
-        )
-    )
+          false,
+        ),
+    ),
   );
 
   store.processChange(aggregateChange);
@@ -210,15 +210,15 @@ function resetFailureSimulation() {
   if (selectedFailure.value === null) {
     return;
   }
-  let aggregateChange = new AggregateChange(
+  const aggregateChange = new AggregateChange(
     selectedFailure.value.map(
       (failurePublicKey) =>
         new EntityPropertyUpdate(
           network.getNodeByPublicKey(failurePublicKey),
           "isValidating",
-          true
-        )
-    )
+          true,
+        ),
+    ),
   );
 
   store.processChange(aggregateChange);
@@ -243,19 +243,19 @@ function mapVertexToNetworkGraphNode(vertex: Vertex, isRoot: boolean) {
       : "missing",
     qset: !network.isNodeFailing(network.getNodeByPublicKey(vertex.key))
       ? mapQuorumSetToNetworkQuorumSet(
-          network.getNodeByPublicKey(vertex.key).quorumSet
+          network.getNodeByPublicKey(vertex.key).quorumSet,
         )
       : undefined,
   } as NetworkGraphNode;
 }
 
 function mapQuorumSetToNetworkQuorumSet(
-  quorumSet: QuorumSet
+  quorumSet: QuorumSet,
 ): NetworkQuorumSet {
-  let innerQSets = quorumSet.innerQuorumSets.map((innerQSet) =>
-    mapQuorumSetToNetworkQuorumSet(innerQSet)
+  const innerQSets = quorumSet.innerQuorumSets.map((innerQSet) =>
+    mapQuorumSetToNetworkQuorumSet(innerQSet),
   );
-  let v = [];
+  const v = [];
   v.push(...quorumSet.validators);
   innerQSets.forEach((innerQSet) => v.push(innerQSet));
   return {
@@ -279,11 +279,11 @@ onMounted(() => {
                   .map((publicKey) =>
                     network.getNodeByPublicKey(publicKey).name
                       ? network.getNodeByPublicKey(publicKey).displayName
-                      : publicKey.substring(0, 5)
+                      : publicKey.substring(0, 5),
                   )
                   .join(", "),
               };
-            }
+            },
           );
           if (nodeFailures.value.length > 0) {
             selectedFailure.value = nodeFailures.value[0].value;

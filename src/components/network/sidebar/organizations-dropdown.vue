@@ -23,7 +23,7 @@
         :warnings="
           OrganizationWarningDetector.getOrganizationWarningReasons(
             organization,
-            store.network
+            store.network,
           ).join(' | ')
         "
         :has-danger="!organization.subQuorumAvailable"
@@ -64,7 +64,7 @@ const route = useRoute();
 const emit = defineEmits(["toggleExpand"]);
 const { showing, toggleShow, currentPage, paginate } = useDropdown(
   props.expand,
-  emit
+  emit,
 );
 
 const paginatedOrganizations = computed(() => {
@@ -72,7 +72,7 @@ const paginatedOrganizations = computed(() => {
     (orgA: Organization, orgB: Organization) => {
       if (orgA.name > orgB.name) return 1;
       else return -1;
-    }
+    },
   );
 });
 
@@ -92,7 +92,7 @@ function selectOrganization(organization: Organization) {
 function hasWarnings(organization: Organization) {
   return OrganizationWarningDetector.organizationHasWarnings(
     organization,
-    store.network
+    store.network,
   );
 }
 </script>

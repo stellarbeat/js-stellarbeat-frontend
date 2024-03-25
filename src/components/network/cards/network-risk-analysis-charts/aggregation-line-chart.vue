@@ -77,7 +77,7 @@ function initializeBarChart() {
     Legend,
     Tooltip,
     LinearScale,
-    PointElement
+    PointElement,
   );
   chart.value = new Chart(chartElement.value as HTMLCanvasElement, {
     type: "line",
@@ -97,9 +97,9 @@ function initializeBarChart() {
       },
       onClick: (event: ChartEvent, activeElements: ActiveElement[]): void => {
         if (!activeElements[0]) return;
-        let index = activeElements[0].index;
-        let dataSetIndex = activeElements[0].datasetIndex;
-        let dataSet = props.chartDataSets[dataSetIndex];
+        const index = activeElements[0].index;
+        const dataSetIndex = activeElements[0].datasetIndex;
+        const dataSet = props.chartDataSets[dataSetIndex];
         if (!dataSet || !dataSet.data) return;
         const dataAtIndex = dataSet.data[index] as Point;
         const x = dataAtIndex.x;
@@ -122,9 +122,9 @@ function initializeBarChart() {
         legend: {
           onClick: (e: ChartEvent, legendItem: LegendItem) => {
             if (legendItem.datasetIndex === undefined) return;
-            let ci = chart.value;
+            const ci = chart.value;
             if (!ci) return;
-            let meta = ci.getDatasetMeta(legendItem.datasetIndex);
+            const meta = ci.getDatasetMeta(legendItem.datasetIndex);
             meta.hidden = !meta.hidden;
             ci.update();
           },

@@ -194,7 +194,7 @@ watch(
   async () => {
     await getSnapshots();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 function showDiff(snapShot: SnapshotForDelta) {
@@ -202,7 +202,7 @@ function showDiff(snapShot: SnapshotForDelta) {
   htmlFormatter.showUnchanged(true);
   diffModalHtml.value = htmlFormatter.format(
     deltas.get(snapShot.startDate.toISOString()) as jsondiffpatch.Delta,
-    snapShot
+    snapShot,
   );
   modalDiff.value.show();
 }
@@ -215,7 +215,7 @@ async function getSnapshots() {
     const fetchedSnapshotsOrError =
       await organizationSnapshotRepository.findForOrganization(
         organization.value.id,
-        store.network.time
+        store.network.time,
       );
     if (fetchedSnapshotsOrError.isErr()) {
       failed.value = true;
@@ -232,7 +232,7 @@ async function getSnapshots() {
                   " (" +
                   validator +
                   ")"
-                : validator
+                : validator,
           ),
           startDate: snapshot.startDate,
           endDate: snapshot.endDate,
@@ -249,11 +249,11 @@ async function getSnapshots() {
           keybase: snapshot.organization.keybase,
           horizon: snapshot.organization.horizonUrl,
         };
-      }
+      },
     );
-    let validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
+    const validatorSort = (a: PublicKey, b: PublicKey) => a.localeCompare(b);
     for (let i = snapshots.length - 2; i >= 0; i--) {
-      let updates: Update[] = [];
+      const updates: Update[] = [];
       [
         "validators",
         "name",
@@ -273,14 +273,14 @@ async function getSnapshots() {
             ? JSON.stringify(snapshots[i][key].sort(validatorSort)) !==
               JSON.stringify(snapshots[i + 1][key].sort(validatorSort))
             : //@ts-ignore
-              snapshots[i][key] !== snapshots[i + 1][key]
+              snapshots[i][key] !== snapshots[i + 1][key],
         )
         .forEach((changedKey) =>
           updates.push({
             key: changedKey,
             //@ts-ignore
             value: snapshots[i][changedKey],
-          })
+          }),
         );
 
       if (
@@ -298,7 +298,7 @@ async function getSnapshots() {
 
       deltas.set(
         snapshots[i].startDate.toISOString(),
-        differ.diff(snapshots[i + 1], snapshots[i])
+        differ.diff(snapshots[i + 1], snapshots[i]),
       );
     }
     updatesPerDate.value.reverse();

@@ -15,7 +15,7 @@ export class QuorumSetValidatorDelete implements NetworkChange {
   execute(): void {
     this._quorumSet.validators.splice(
       this._quorumSet.validators.indexOf(this._validator),
-      1
+      1,
     );
   }
 

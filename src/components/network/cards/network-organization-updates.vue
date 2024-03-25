@@ -80,7 +80,7 @@ const snapshots: Ref<OrganizationSnapShot[]> = ref([]);
 async function getSnapshots() {
   let snapshots: OrganizationSnapShot[] = [];
   const snapshotsOrError = await organizationSnapshotRepository.find(
-    network.time
+    network.time,
   );
   if (snapshotsOrError.isErr()) {
     console.log(snapshotsOrError.error);

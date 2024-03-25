@@ -21,10 +21,10 @@ const props = defineProps({
 const { greatest, vertexCoordinates } = toRefs(props);
 
 const hullLine = computed(() => {
-  let hull = polygonHull(vertexCoordinates.value as [number, number][]);
+  const hull = polygonHull(vertexCoordinates.value as [number, number][]);
   if (!hull) return null;
 
-  let valueLine = line()
+  const valueLine = line()
     .x(function (d) {
       return d[0];
     })
@@ -33,7 +33,7 @@ const hullLine = computed(() => {
     })
     .curve(curveCatmullRomClosed); //we want a smooth line
 
-  let hullLine = valueLine(hull);
+  const hullLine = valueLine(hull);
   if (hullLine) {
     return hullLine;
   }

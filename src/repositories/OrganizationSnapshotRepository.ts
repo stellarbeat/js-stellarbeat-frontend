@@ -11,7 +11,7 @@ export class OrganizationSnapshotRepository {
       params["at"] = at;
       const result = await axios.get(
         this.apiBaseUrl + "/v1/organization-snapshots",
-        { params }
+        { params },
       );
       if (!result.data) return err(new Error("No data property in result"));
       if (!Array.isArray(result.data))
@@ -19,8 +19,8 @@ export class OrganizationSnapshotRepository {
 
       return ok(
         result.data.map((item) =>
-          OrganizationSnapShot.fromOrganizationSnapShotV1DTO(item)
-        )
+          OrganizationSnapShot.fromOrganizationSnapShotV1DTO(item),
+        ),
       );
     } catch (error) {
       console.log(error);
@@ -31,14 +31,14 @@ export class OrganizationSnapshotRepository {
 
   async findForOrganization(
     organizationId: string,
-    at: Date
+    at: Date,
   ): Promise<Result<OrganizationSnapShot[], Error>> {
     try {
       const params: Record<string, unknown> = {};
       params["at"] = at;
       const result = await axios.get(
         this.apiBaseUrl + "/v1/organization/" + organizationId + "/snapshots",
-        { params }
+        { params },
       );
       if (!result.data) return err(new Error("No data property in result"));
       if (!Array.isArray(result.data))
@@ -46,8 +46,8 @@ export class OrganizationSnapshotRepository {
 
       return ok(
         result.data.map((item) =>
-          OrganizationSnapShot.fromOrganizationSnapShotV1DTO(item)
-        )
+          OrganizationSnapShot.fromOrganizationSnapShotV1DTO(item),
+        ),
       );
     } catch (error) {
       console.log(error);

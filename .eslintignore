@@ -6,4 +6,4 @@ dist-server
 # don't lint nyc coverage output
 coverage
 examples
-lib
+dist

@@ -37,7 +37,7 @@
         v-on:click="
           store.removeOrganizationFromOrganization(
             organization,
-            store.selectedOrganization
+            store.selectedOrganization,
           )
         "
         @click.prevent.stop
@@ -116,9 +116,9 @@ const organizationsToAdd: Ref<Organization[]> = ref([]);
 const id: Ref<number> = ref(store.getUniqueId());
 
 const trustedOrganizationIds = computed(() => {
-  let trustedOrganizationIds = new Set<string>();
+  const trustedOrganizationIds = new Set<string>();
   organization.value.validators.forEach((publicKey) => {
-    let validator = store.network.getNodeByPublicKey(publicKey);
+    const validator = store.network.getNodeByPublicKey(publicKey);
     store.network
       .getTrustedOrganizations(validator.quorumSet)
       .forEach((org) => {
@@ -131,7 +131,7 @@ const trustedOrganizationIds = computed(() => {
 
 const possibleOrganizationsToAdd = computed(() => {
   return store.network.organizations.filter(
-    (organization) => trustedOrganizationIds.value.indexOf(organization.id) < 0
+    (organization) => trustedOrganizationIds.value.indexOf(organization.id) < 0,
   );
 });
 
@@ -139,7 +139,7 @@ function organizationsToAddModalOk() {
   if (organizationsToAdd.value.length > 0) {
     store.addOrganizationsToOrganization(
       organizationsToAdd.value,
-      organization.value
+      organization.value,
     );
   }
 }

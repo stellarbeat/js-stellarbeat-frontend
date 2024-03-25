@@ -25,7 +25,8 @@
           {{
             data.item.slice
               .map(
-                (publicKey) => network.getNodeByPublicKey(publicKey).displayName
+                (publicKey) =>
+                  network.getNodeByPublicKey(publicKey).displayName,
               )
               .join(", ")
           }}
@@ -70,11 +71,11 @@ const fields = ref<{ key: string; label: string }[]>([
 const rows = computed(() => items.value.length);
 
 function loadSlices() {
-  let generator = new QuorumSlicesGenerator();
-  let quorumSetWithSelf = new QuorumSet(
+  const generator = new QuorumSlicesGenerator();
+  const quorumSetWithSelf = new QuorumSet(
     2,
     [props.selectedNode.publicKey],
-    [props.selectedNode.quorumSet]
+    [props.selectedNode.quorumSet],
   );
   items.value = generator.getSlices(quorumSetWithSelf).map((slice) => {
     return { slice: Array.from(new Set(slice)) };

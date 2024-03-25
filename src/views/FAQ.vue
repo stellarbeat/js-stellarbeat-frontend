@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--consent> </consent!-->
     <div class="page-header mt-2 py-3">
       <h1 class="page-title">FAQ</h1>
     </div>
@@ -144,7 +143,6 @@ Age = Time since discovery
 <script setup lang="ts">
 import Github from "@/components/organization/logo/github.vue";
 import useStore from "@/store/useStore";
-import Consent from "@/components/consent.vue";
 const store = useStore();
 </script>
 <script lang="ts">

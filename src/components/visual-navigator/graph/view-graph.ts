@@ -29,7 +29,7 @@ export default class ViewGraph {
     network: Network,
     trustGraph: TrustGraph,
     mergeWithGraph?: ViewGraph,
-    selectedKeys: string[] = []
+    selectedKeys: string[] = [],
   ) {
     const viewGraph = new ViewGraph();
 
@@ -62,7 +62,7 @@ export default class ViewGraph {
     network: Network,
     trustGraph: TrustGraph,
     mergeWithGraph?: ViewGraph,
-    selectedKeys: string[] = []
+    selectedKeys: string[] = [],
   ) {
     const viewGraph = new ViewGraph();
 
@@ -76,7 +76,7 @@ export default class ViewGraph {
       const viewVertex = ViewVertex.fromOrganization(
         vertex,
         trustGraph,
-        network
+        network,
       );
       if (mergeWithGraph && mergeWithGraph.viewVertices.has(viewVertex.key)) {
         const mergeVertex = mergeWithGraph.viewVertices.get(viewVertex.key);
@@ -95,24 +95,25 @@ export default class ViewGraph {
 
   private static mapStronglyConnectedComponents(
     trustGraph: TrustGraph,
-    viewGraph: ViewGraph
+    viewGraph: ViewGraph,
   ) {
     trustGraph.stronglyConnectedComponents
       .filter((scc) => scc.size > 1)
       .forEach((scc, i) => {
         viewGraph.stronglyConnectedComponents[i] = Array.from(scc)
           .filter(
-            (vertexKey) => !trustGraph.networkTransitiveQuorumSet.has(vertexKey)
+            (vertexKey) =>
+              !trustGraph.networkTransitiveQuorumSet.has(vertexKey),
           )
           .map(
-            (vertexKey) => viewGraph.viewVertices.get(vertexKey) as ViewVertex
+            (vertexKey) => viewGraph.viewVertices.get(vertexKey) as ViewVertex,
           );
       });
   }
 
   get transitiveQuorumSetCoordinates() {
     const transitiveQuorumSetPoints: [number, number][] = Array.from(
-      this.viewVertices.values()
+      this.viewVertices.values(),
     )
       .filter((vertex) => vertex.isPartOfTransitiveQuorumSet)
       .map((vertex) => [vertex.x, vertex.y]);
@@ -130,7 +131,7 @@ export default class ViewGraph {
     sccPointsArray
       .filter((sccPoints) => sccPoints.length === 2)
       .forEach((sccPoints) =>
-        sccPoints.push([sccPoints[0][0], sccPoints[0][1] + 0.0001])
+        sccPoints.push([sccPoints[0][0], sccPoints[0][1] + 0.0001]),
       );
 
     return sccPointsArray;
@@ -173,15 +174,15 @@ export default class ViewGraph {
 
   reClassifyVertices(selectedVertexKeys: string[]) {
     this.trustedVertices.forEach(
-      (vertex) => (vertex.isTrustedBySelectedVertex = false)
+      (vertex) => (vertex.isTrustedBySelectedVertex = false),
     );
     this.trustingVertices.forEach(
-      (vertex) => (vertex.isTrustingSelectedVertex = false)
+      (vertex) => (vertex.isTrustingSelectedVertex = false),
     );
     this.trustedVertices = [];
     this.trustingVertices = [];
     this.viewVertices.forEach((viewVertex) =>
-      this.classifyVertex(viewVertex, selectedVertexKeys)
+      this.classifyVertex(viewVertex, selectedVertexKeys),
     );
   }
 
@@ -191,7 +192,7 @@ export default class ViewGraph {
     this.regularEdges = [];
     this.stronglyConnectedEdges = [];
     this.viewEdges.forEach((viewEdge) =>
-      this.classifyEdge(viewEdge, selectedVertexKeys)
+      this.classifyEdge(viewEdge, selectedVertexKeys),
     );
   }
 }

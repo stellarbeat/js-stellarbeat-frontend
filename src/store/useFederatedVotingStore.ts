@@ -6,5 +6,5 @@ class UseFederatedVotingStore {
 }
 
 export const federatedVotingStore = reactive<UseFederatedVotingStore>(
-  new UseFederatedVotingStore()
+  new UseFederatedVotingStore(),
 );

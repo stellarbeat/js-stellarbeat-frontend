@@ -50,7 +50,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -70,7 +70,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -90,7 +90,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -110,7 +110,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -130,7 +130,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -150,7 +150,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -170,7 +170,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -190,7 +190,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,
@@ -210,7 +210,7 @@ export class FBASQIRepository implements NetworkRepository {
             new QuorumSet(2, ["lb1", "lb2", "lb3"], []),
             new QuorumSet(2, ["sp1", "sp2", "sp3"], []),
             new QuorumSet(2, ["sdf1", "sdf2", "sdf3"], []),
-          ]
+          ],
         ),
         isValidator: true,
         isValidating: true,

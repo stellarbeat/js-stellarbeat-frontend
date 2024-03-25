@@ -16,13 +16,13 @@ const props = defineProps<{
 const store = useStore();
 
 const fields = computed(() => {
-  let fields = [{ key: "name", label: "Validator" }, "country", "isp"];
+  const fields = [{ key: "name", label: "Validator" }, "country", "isp"];
   if (!store.isSimulation) {
     fields.push(
       "index",
       { key: "validating24Hour", label: "24H validating" },
       { key: "validating30Days", label: "30D validating" },
-      "version"
+      "version",
     );
   }
   return fields;

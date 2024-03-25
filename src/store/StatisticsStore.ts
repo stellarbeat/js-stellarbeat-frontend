@@ -32,16 +32,16 @@ export default class StatisticsStore {
     id: string,
     from: Date,
     to: Date,
-    route: string
+    route: string,
   ): Promise<unknown[]> {
     let statisticsCache = this.statisticsCache.get(
-      this.store.networkContext.apiBaseUrl + route
+      this.store.networkContext.apiBaseUrl + route,
     );
     if (!statisticsCache) {
       statisticsCache = new Map();
       this.statisticsCache.set(
         this.store.networkContext.apiBaseUrl + route,
-        statisticsCache
+        statisticsCache,
       );
     }
 
@@ -73,7 +73,7 @@ export default class StatisticsStore {
     id: string,
     from: Date,
     to: Date,
-    route: string
+    route: string,
   ): Promise<a[]> {
     const stats = await this.fetchStatisticsCached(id, from, to, route);
     stats.forEach((stat: unknown) => {

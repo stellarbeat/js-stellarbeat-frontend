@@ -18,7 +18,7 @@ export class InnerQuorumSetAdd implements NetworkChange {
   revert(): void {
     this._quorumSet.innerQuorumSets.splice(
       this._quorumSet.innerQuorumSets.indexOf(this._innerQuorumSet),
-      1
+      1,
     );
   }
 }

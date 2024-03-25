@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import topLevelAwait from "vite-plugin-top-level-await";
+import eslint from 'vite-plugin-eslint';
 
 export default defineConfig({
-    plugins: [vue(), topLevelAwait()],
+    plugins: [vue(), eslint(), topLevelAwait()],
     envPrefix: 'VUE_',
     worker: {
         plugins: () => [

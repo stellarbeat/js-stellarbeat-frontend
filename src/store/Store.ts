@@ -201,7 +201,7 @@ export default class Store {
   }
 
   getNetworkContextFromNetworkId(
-    networkId: string | null
+    networkId: string | null,
   ): NetworkContext | null {
     const targetNetworkId =
       networkId === null ? this.defaultNetworkId : networkId;
@@ -210,7 +210,7 @@ export default class Store {
 
   networkNeedsToBeUpdated(
     networkId: string | null,
-    at: Date | undefined
+    at: Date | undefined,
   ): boolean {
     const targetNetworkContext = this.getNetworkContextFromNetworkId(networkId);
     if (targetNetworkContext === null) return false; //unknown network
@@ -234,7 +234,7 @@ export default class Store {
     this.data.networkAnalyzer = new NetworkAnalyzer(this.network);
     this.data.networkChangeQueue = new NetworkChangeQueue(
       this.network,
-      this.networkAnalyzer
+      this.networkAnalyzer,
     );
     this.data.networkReCalculated++;
   }
@@ -312,14 +312,14 @@ export default class Store {
       new EntityPropertyUpdate(
         organization,
         "subQuorumAvailable",
-        targetAvailability
+        targetAvailability,
       ),
       ...organization.validators.map((validator) => {
         const node = this.network.getNodeByPublicKey(validator);
         return new EntityPropertyUpdate(
           node,
           "isValidating",
-          targetAvailability
+          targetAvailability,
         );
       }),
       ...organization.validators.map((validator) => {
@@ -327,7 +327,7 @@ export default class Store {
         return new EntityPropertyUpdate(
           node,
           "activeInScp",
-          targetAvailability
+          targetAvailability,
         );
       }),
     ]);
@@ -340,11 +340,11 @@ export default class Store {
       changes.push(new EntityPropertyUpdate(node, "active", !node.active));
 
     changes.push(
-      new EntityPropertyUpdate(node, "isValidating", !node.isValidating)
+      new EntityPropertyUpdate(node, "isValidating", !node.isValidating),
     );
 
     changes.push(
-      new EntityPropertyUpdate(node, "activeInScp", !node.isValidating)
+      new EntityPropertyUpdate(node, "activeInScp", !node.isValidating),
     );
 
     this.processChange(new AggregateChange(changes));
@@ -356,13 +356,13 @@ export default class Store {
     }
 
     this.processChange(
-      new EntityPropertyUpdate(quorumSet, "threshold", newThreshold)
+      new EntityPropertyUpdate(quorumSet, "threshold", newThreshold),
     );
   }
 
   public deleteValidatorFromQuorumSet(quorumSet: QuorumSet, validator: Node) {
     this.processChange(
-      new QuorumSetValidatorDelete(quorumSet, validator.publicKey)
+      new QuorumSetValidatorDelete(quorumSet, validator.publicKey),
     );
   }
 
@@ -380,19 +380,19 @@ export default class Store {
 
   public addOrganizations(
     toQuorumSet: QuorumSet,
-    organizations: Organization[]
+    organizations: Organization[],
   ) {
     this.processChange(
-      new QuorumSetOrganizationsAdd(toQuorumSet, organizations)
+      new QuorumSetOrganizationsAdd(toQuorumSet, organizations),
     );
   }
 
   public removeOrganizationFromOrganization(
     organization: Organization,
-    fromOrganization: Organization
+    fromOrganization: Organization,
   ) {
     const fromNodes = fromOrganization.validators.map((publicKey) =>
-      this.network.getNodeByPublicKey(publicKey)
+      this.network.getNodeByPublicKey(publicKey),
     );
 
     const changes: NetworkChange[] = [];
@@ -408,8 +408,8 @@ export default class Store {
             new EntityPropertyUpdate(
               node.quorumSet,
               "threshold",
-              node.quorumSet.threshold - 1
-            )
+              node.quorumSet.threshold - 1,
+            ),
           );
         }
       });
@@ -420,23 +420,23 @@ export default class Store {
 
   public addOrganizationsToOrganization(
     organizations: Organization[],
-    toOrganization: Organization
+    toOrganization: Organization,
   ) {
     const toNodes = toOrganization.validators.map((publicKey) =>
-      this.network.getNodeByPublicKey(publicKey)
+      this.network.getNodeByPublicKey(publicKey),
     );
 
     const changes: NetworkChange[] = [];
     toNodes.forEach((node) => {
       changes.push(
-        new QuorumSetOrganizationsAdd(node.quorumSet, organizations)
+        new QuorumSetOrganizationsAdd(node.quorumSet, organizations),
       );
       changes.push(
         new EntityPropertyUpdate(
           node.quorumSet,
           "threshold",
-          node.quorumSet.threshold + 1
-        )
+          node.quorumSet.threshold + 1,
+        ),
       );
     });
 
@@ -584,7 +584,7 @@ export default class Store {
   copyAndModifyObject(
     myObject: Record<string, unknown>,
     propsToModifyOrAdd: { key: string; value: unknown }[] = [],
-    propsToDelete: string[] = []
+    propsToDelete: string[] = [],
   ) {
     const copy: Record<string, unknown> = Object.assign({}, myObject);
     propsToModifyOrAdd.forEach((prop) => {

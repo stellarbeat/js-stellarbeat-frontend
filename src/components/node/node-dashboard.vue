@@ -14,7 +14,7 @@
           v-bind:key="reason"
           v-for="reason in NodeWarningDetector.getNodeWarningReasons(
             selectedNode,
-            network
+            network,
           )"
         >
           {{ reason }}.
@@ -203,7 +203,7 @@ async function fetchHistoryArchiveScan() {
 
   fetchingLatestHistoryArchiveScan.value = true;
   historyArchiveScan.value = await historyArchiveScanRepository.findLatest(
-    selectedNode.value.historyUrl
+    selectedNode.value.historyUrl,
   );
 
   fetchingLatestHistoryArchiveScan.value = false;
@@ -227,6 +227,6 @@ watch(
     if (selectedNode.value && selectedNode.value.historyUrl)
       fetchHistoryArchiveScan();
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>

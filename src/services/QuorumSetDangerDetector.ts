@@ -4,7 +4,7 @@ export class QuorumSetDangerDetector {
   public static quorumSetHasDangers(
     node: Node,
     quorumSet: QuorumSet,
-    network: Network
+    network: Network,
   ) {
     if (!quorumSet.hasValidators()) return true;
 
@@ -14,7 +14,7 @@ export class QuorumSetDangerDetector {
   public static getQuorumSetDangers(
     node: Node,
     quorumSet: QuorumSet,
-    network: Network
+    network: Network,
   ) {
     if (!quorumSet.hasValidators()) return "Quorum set not yet detected";
 

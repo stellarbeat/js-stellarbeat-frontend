@@ -61,7 +61,7 @@ async function unmute() {
         eventSourceId: eventSourceId,
         eventType: eventType,
         eventSourceType: eventSourceType,
-      }
+      },
     );
   } catch (e) {
     error.value = true;

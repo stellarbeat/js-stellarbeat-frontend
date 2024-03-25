@@ -62,27 +62,27 @@ const network = store.network;
 const emit = defineEmits(["toggleExpand"]);
 const { showing, toggleShow, currentPage, paginate } = useDropdown(
   props.expand,
-  emit
+  emit,
 );
 
 const sortedNodes = computed(() => {
-  let sort = (nodeA: Node, nodeB: Node) => {
+  const sort = (nodeA: Node, nodeB: Node) => {
     return nodeA.displayName.localeCompare(nodeB.displayName);
   };
 
-  let nodesWithWarningsOrDangers = props.nodes
+  const nodesWithWarningsOrDangers = props.nodes
     .filter(
       (node) =>
         network.isNodeFailing(node) ||
-        NodeWarningDetector.nodeHasWarning(node, network)
+        NodeWarningDetector.nodeHasWarning(node, network),
     )
     .sort(sort);
 
-  let remainingNodes = props.nodes
+  const remainingNodes = props.nodes
     .filter(
       (node) =>
         !network.isNodeFailing(node) &&
-        !NodeWarningDetector.nodeHasWarning(node, network)
+        !NodeWarningDetector.nodeHasWarning(node, network),
     )
     .sort(sort);
 
@@ -96,7 +96,7 @@ const paginatedNodes = computed(() => {
 const hasGeneralValidatorsWarning = computed(() => {
   return (
     props.nodes.some((node) =>
-      NodeWarningDetector.nodeHasWarning(node, network)
+      NodeWarningDetector.nodeHasWarning(node, network),
     ) || props.nodes.some((node) => network.isNodeFailing(node))
   );
 });
@@ -107,7 +107,7 @@ const generalValidatorsWarning = computed(() => {
 
   if (
     props.nodes.some((node) =>
-      NodeWarningDetector.nodeHasWarning(node, network)
+      NodeWarningDetector.nodeHasWarning(node, network),
     )
   )
     return "Some nodes have warnings";

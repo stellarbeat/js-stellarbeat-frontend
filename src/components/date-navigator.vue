@@ -95,7 +95,7 @@ const store = useStore();
 const emit = defineEmits(["dateChanged"]);
 
 const statisticsDateTimeNavigator = new StatisticsDateTimeNavigator(
-  store.measurementsStartDate
+  store.measurementsStartDate,
 );
 
 const datePickerDate: Ref<Date | string> = ref(selectedDate.value);
@@ -114,7 +114,7 @@ const timeKey = ref(time.value);
 function canGoBack() {
   return statisticsDateTimeNavigator.canGoBack(
     bucketSize.value,
-    new Date(datePickerDate.value)
+    new Date(datePickerDate.value),
   );
 }
 
@@ -122,7 +122,7 @@ function goBack() {
   nextTick(() => {
     datePickerDate.value = statisticsDateTimeNavigator.goBack(
       bucketSize?.value,
-      new Date(datePickerDate.value)
+      new Date(datePickerDate.value),
     );
     time.value = datePickerDate.value.toISOString().substring(11, 16);
     timeKey.value = time.value;
@@ -134,7 +134,7 @@ function goForward() {
   nextTick(() => {
     datePickerDate.value = statisticsDateTimeNavigator.goForward(
       bucketSize?.value,
-      new Date(datePickerDate.value)
+      new Date(datePickerDate.value),
     );
     time.value = datePickerDate.value.toISOString().substring(11, 16);
     timeKey.value = time.value;
@@ -194,7 +194,7 @@ const route = useRoute();
 const router = useRouter();
 
 function timeTravel() {
-  let query = store.copyAndModifyObject(route.query, [
+  const query = store.copyAndModifyObject(route.query, [
     { key: "at", value: new Date(datePickerDate.value).toISOString() },
   ]);
   router.push({

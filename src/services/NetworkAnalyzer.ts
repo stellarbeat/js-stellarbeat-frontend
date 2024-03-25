@@ -19,7 +19,7 @@ export default class NetworkAnalyzer {
     {
       type: import.meta.env.DEV ? "module" : "classic",
       /* @vite-ignore */
-    }
+    },
   );
   protected network: Network;
   protected networkAnalysisId = 0;
@@ -66,7 +66,7 @@ export default class NetworkAnalyzer {
                   analysisResult.hasQuorumIntersection;
                 if (!isNumber(analysisResult.minimalBlockingSetsMinSize))
                   throw new Error(
-                    "minimalBlockingSetsMinSize cannot be empty in automatic analysis"
+                    "minimalBlockingSetsMinSize cannot be empty in automatic analysis",
                   );
                 this.network.networkStatistics.minBlockingSetFilteredSize =
                   analysisResult.minimalBlockingSetsMinSize;
@@ -221,7 +221,7 @@ export default class NetworkAnalyzer {
 
     const nodeIsPartOfNetworkTransitiveQuorumSet = (node: Node) => {
       return this.network.nodesTrustGraph.isVertexPartOfNetworkTransitiveQuorumSet(
-        node.publicKey
+        node.publicKey,
       );
     };
 
@@ -229,7 +229,7 @@ export default class NetworkAnalyzer {
       (node) =>
         isNodeCorrectlyConfigured(node) &&
         (nodeIsPartOfNetworkTransitiveQuorumSet(node) ||
-          !this.network.nodesTrustGraph.hasNetworkTransitiveQuorumSet())
+          !this.network.nodesTrustGraph.hasNetworkTransitiveQuorumSet()),
     );
   }
 }

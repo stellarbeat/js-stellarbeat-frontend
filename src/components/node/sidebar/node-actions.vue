@@ -84,7 +84,7 @@ const { toClipboard } = useClipboard();
 
 const deleteValidatorFromQuorumSet = (
   node: Node,
-  quorumSet: QuorumSet | undefined
+  quorumSet: QuorumSet | undefined,
 ) => {
   if (!quorumSet) return;
   store.deleteValidatorFromQuorumSet(quorumSet, node);

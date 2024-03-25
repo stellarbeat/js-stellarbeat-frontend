@@ -117,7 +117,7 @@ const showError = store.fetchingDataFailed;
 const route = useRoute();
 
 const getNetworkIdFromQueryParam = (
-  networkQueryParameter: string | (string | null)[]
+  networkQueryParameter: string | (string | null)[],
 ): string | null => {
   if (isString(networkQueryParameter)) return networkQueryParameter;
   return null;
@@ -147,7 +147,7 @@ watch(
       await store.updateNetwork(networkId.value, timeTravelDate.value);
     });
   },
-  { immediate: false, deep: true }
+  { immediate: false, deep: true },
 );
 </script>
 

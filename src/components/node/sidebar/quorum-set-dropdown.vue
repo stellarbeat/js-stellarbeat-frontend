@@ -47,7 +47,7 @@
         :warnings="
           NodeWarningDetector.getNodeWarningReasonsConcatenated(
             validator,
-            store.network
+            store.network,
           )
         "
       >
@@ -113,14 +113,14 @@ const quorumSetDangers = computed(() => {
   return QuorumSetDangerDetector.getQuorumSetDangers(
     store.selectedNode,
     props.quorumSet,
-    store.network
+    store.network,
   );
 });
 
 const quorumSetWarnings = computed(() => {
   return QuorumSetWarningDetector.getQuorumSetWarnings(
     props.quorumSet,
-    store.network
+    store.network,
   );
 });
 
@@ -129,14 +129,14 @@ const hasDangers = computed(() => {
   return QuorumSetDangerDetector.quorumSetHasDangers(
     store.selectedNode,
     props.quorumSet,
-    store.network
+    store.network,
   );
 });
 
 const hasWarnings = computed(() => {
   return QuorumSetWarningDetector.quorumSetHasWarnings(
     props.quorumSet,
-    store.network
+    store.network,
   );
 });
 
@@ -159,7 +159,7 @@ const isRoot = computed(() => {
 
 const validators = computed(() => {
   return props.quorumSet.validators.map((validator) =>
-    store.network.getNodeByPublicKey(validator)
+    store.network.getNodeByPublicKey(validator),
   );
 });
 
@@ -202,8 +202,9 @@ function subQuorumOrganizationName(quorumSet: QuorumSet): string {
   if (!isOrganizationSubQuorum) {
     return "";
   }
-  let organizationId = store.network.getNodeByPublicKey(quorumSet.validators[0])
-    .organizationId as string;
+  const organizationId = store.network.getNodeByPublicKey(
+    quorumSet.validators[0],
+  ).organizationId as string;
 
   return store.network.getOrganizationById(organizationId).name;
 }

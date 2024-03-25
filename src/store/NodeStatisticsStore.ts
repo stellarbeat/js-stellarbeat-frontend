@@ -32,26 +32,26 @@ export default class NodeStatisticsStore {
   async getDayStatistics(
     id: string,
     from: Date,
-    to: Date
+    to: Date,
   ): Promise<NodeDayStatistics[]> {
     return await this.statisticsStore.fetchStatistics<NodeDayStatistics>(
       id,
       from,
       to,
-      "/v1/node/" + id + "/day-statistics"
+      "/v1/node/" + id + "/day-statistics",
     );
   }
 
   async getStatistics(
     id: string,
     from: Date,
-    to: Date
+    to: Date,
   ): Promise<NodeStatistics[]> {
     return await this.statisticsStore.fetchStatistics<NodeStatistics>(
       id,
       from,
       to,
-      "/v1/node/" + id + "/statistics"
+      "/v1/node/" + id + "/statistics",
     );
   }
 }

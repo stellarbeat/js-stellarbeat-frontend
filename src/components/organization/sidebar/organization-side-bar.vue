@@ -26,14 +26,14 @@
         v-else-if="
           OrganizationWarningDetector.organizationHasWarnings(
             selectedOrganization,
-            store.network
+            store.network,
           )
         "
         variant="warning"
         v-b-tooltip:hover="
           OrganizationWarningDetector.getOrganizationWarningReasons(
             selectedOrganization,
-            store.network
+            store.network,
           ).join(' | ')
         "
       >
@@ -132,7 +132,7 @@ const selectedOrganization = computed(() => {
 
 const validators = computed(() => {
   return selectedOrganization.value.validators.map((validator) =>
-    network.getNodeByPublicKey(validator)
+    network.getNodeByPublicKey(validator),
   );
 });
 
@@ -143,9 +143,8 @@ const organizationType = computed(() => {
 });
 
 const tomlNodesExport = computed(() => {
-  let stellarCoreConfigurationGenerator = new StellarCoreConfigurationGenerator(
-    network
-  );
+  const stellarCoreConfigurationGenerator =
+    new StellarCoreConfigurationGenerator(network);
   return stellarCoreConfigurationGenerator.nodesToToml(validators.value);
 });
 </script>

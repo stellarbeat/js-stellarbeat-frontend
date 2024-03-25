@@ -30,7 +30,7 @@ import {
 import { ref } from "vue";
 import ScenarioSelector from "@/components/federated-voting/scenario-selector.vue";
 
-let isPlaying = ref(false);
+const isPlaying = ref(false);
 
 const backward = () => {
   console.log("Backward button clicked");

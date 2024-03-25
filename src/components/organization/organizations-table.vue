@@ -59,7 +59,7 @@
                 v-b-tooltip:hover="
                   NodeWarningDetector.getNodeWarningReasonsConcatenated(
                     validator,
-                    network
+                    network,
                   )
                 "
               >

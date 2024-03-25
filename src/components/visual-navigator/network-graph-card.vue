@@ -114,7 +114,7 @@ function vertexSelected(vertex: ViewVertex) {
 }
 
 const selectedKeys = computed(() => {
-  let selectedKeys: string[] = [];
+  const selectedKeys: string[] = [];
   if (type.value === "node") {
     if (store.selectedNode) selectedKeys.push(store.selectedNode.publicKey);
     else if (store.selectedOrganization)
@@ -131,9 +131,9 @@ const selectedKeys = computed(() => {
 });
 
 function getOrganizationTrustGraph() {
-  let trustGraphBuilder = new TrustGraphBuilder(store.network);
+  const trustGraphBuilder = new TrustGraphBuilder(store.network);
   return trustGraphBuilder.buildGraphFromOrganizations(
-    store.network.nodesTrustGraph
+    store.network.nodesTrustGraph,
   );
 }
 
@@ -145,14 +145,14 @@ function updateGraph(merge = false) {
       store.network,
       store.network.nodesTrustGraph,
       merge ? viewGraph.value : undefined,
-      selectedKeys.value
+      selectedKeys.value,
     );
   else
     viewGraph.value = ViewGraph.fromOrganizations(
       store.network,
       getOrganizationTrustGraph(),
       merge ? viewGraph.value : undefined,
-      selectedKeys.value
+      selectedKeys.value,
     );
 }
 
@@ -178,14 +178,14 @@ onMounted(() => {
       store.network,
       store.network.nodesTrustGraph,
       undefined,
-      selectedKeys.value
+      selectedKeys.value,
     );
   else
     viewGraph.value = ViewGraph.fromOrganizations(
       store.network,
       getOrganizationTrustGraph(),
       undefined,
-      selectedKeys.value
+      selectedKeys.value,
     );
   Object.freeze(viewGraph); //not reactive;
 

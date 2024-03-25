@@ -35,7 +35,7 @@ async function confirm() {
     await axios.delete(
       import.meta.env.VUE_APP_PUBLIC_API_URL +
         "/v1/subscription/" +
-        subscriberRef
+        subscriberRef,
     );
   } catch (e) {
     error.value = true;

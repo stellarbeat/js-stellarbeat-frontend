@@ -17,7 +17,7 @@ export class NodeSnapshotRepository {
         return err(new Error("Data is not an array"));
 
       return ok(
-        result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item))
+        result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)),
       );
     } catch (error) {
       console.log(error);
@@ -28,21 +28,21 @@ export class NodeSnapshotRepository {
 
   async findForNode(
     publicKey: string,
-    at: Date
+    at: Date,
   ): Promise<Result<NodeSnapShot[], Error>> {
     try {
       const params: Record<string, unknown> = {};
       params["at"] = at;
       const result = await axios.get(
         this.apiBaseUrl + "/v1/node/" + publicKey + "/snapshots",
-        { params }
+        { params },
       );
       if (!result.data) return err(new Error("No data property in result"));
       if (!Array.isArray(result.data))
         return err(new Error("Data is not an array"));
 
       return ok(
-        result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item))
+        result.data.map((item) => NodeSnapShot.fromNodeSnapshotV1(item)),
       );
     } catch (error) {
       console.log(error);

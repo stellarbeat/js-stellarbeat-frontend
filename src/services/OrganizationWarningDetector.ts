@@ -1,22 +1,21 @@
 import { Network, Organization } from "@stellarbeat/js-stellarbeat-shared";
-import { NodeWarningDetector } from "@/services/NodeWarningDetector";
 
 export class OrganizationWarningDetector {
   public static organizationHasWarnings(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     return (
       OrganizationWarningDetector.getOrganizationWarningReasons(
         organization,
-        network
+        network,
       ).length > 0
     );
   }
 
   public static organizationHasValidatorsWithStellarCoreRunningBehind(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     return organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))
@@ -25,7 +24,7 @@ export class OrganizationWarningDetector {
 
   public static organizationHasValidatorsThatWeCouldNotConnectTo(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     return organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))
@@ -34,18 +33,18 @@ export class OrganizationWarningDetector {
 
   public static organizationHasOutOfDateHistoryArchives(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     return organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))
       .some((validator) =>
-        network.isFullValidatorWithOutOfDateArchive(validator)
+        network.isFullValidatorWithOutOfDateArchive(validator),
       );
   }
 
   public static organizationHasHistoryArchivesWithError(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     return organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))
@@ -54,13 +53,13 @@ export class OrganizationWarningDetector {
 
   public static getOrganizationWarningReasons(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     const reasons: string[] = [];
     if (
       OrganizationWarningDetector.getOrganizationFailAt(
         organization,
-        network
+        network,
       ) === 1
     )
       reasons.push("If one more validator fails, this organization will fail");
@@ -68,7 +67,7 @@ export class OrganizationWarningDetector {
     if (
       OrganizationWarningDetector.organizationHasHistoryArchivesWithError(
         organization,
-        network
+        network,
       )
     ) {
       reasons.push("History archive verification issue");
@@ -77,7 +76,7 @@ export class OrganizationWarningDetector {
     if (
       OrganizationWarningDetector.organizationHasOutOfDateHistoryArchives(
         organization,
-        network
+        network,
       )
     )
       reasons.push("History archive behind");
@@ -85,7 +84,7 @@ export class OrganizationWarningDetector {
     if (
       OrganizationWarningDetector.organizationHasValidatorsWithStellarCoreRunningBehind(
         organization,
-        network
+        network,
       )
     )
       reasons.push("Stellar-core version behind");
@@ -93,7 +92,7 @@ export class OrganizationWarningDetector {
     if (
       OrganizationWarningDetector.organizationHasValidatorsThatWeCouldNotConnectTo(
         organization,
-        network
+        network,
       )
     )
       reasons.push("Could not connect to all validators");
@@ -104,7 +103,7 @@ export class OrganizationWarningDetector {
           organization.tomlState
             .split(/(?=[A-Z])/)
             .join(" ")
-            .toLowerCase()
+            .toLowerCase(),
       );
 
     return reasons;
@@ -112,18 +111,18 @@ export class OrganizationWarningDetector {
 
   public static someOrganizationsHaveWarnings(
     organizations: Organization[],
-    network: Network
+    network: Network,
   ) {
     return organizations.some(
       (organization) =>
         this.organizationHasWarnings(organization, network) ||
-        network.isOrganizationFailing(organization) //todo: actually a danger?
+        network.isOrganizationFailing(organization), //todo: actually a danger?
     );
   }
 
   public static getOrganizationFailAt(
     organization: Organization,
-    network: Network
+    network: Network,
   ) {
     const nrOfValidatingNodes = organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))

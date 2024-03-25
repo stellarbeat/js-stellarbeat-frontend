@@ -7,7 +7,7 @@ let organizationMeasurementsStore: OrganizationStatisticsStore | null = null;
 export default function (): OrganizationStatisticsStore {
   if (organizationMeasurementsStore === null)
     organizationMeasurementsStore = new OrganizationStatisticsStore(
-      measurementsStore
+      measurementsStore,
     );
 
   return organizationMeasurementsStore;

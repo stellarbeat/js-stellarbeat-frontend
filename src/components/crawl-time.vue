@@ -58,13 +58,13 @@ const router = useRouter();
 const route = useRoute();
 
 const time: Ref<Date | number | string> = ref(
-  new Date(store.network.time.getTime())
+  new Date(store.network.time.getTime()),
 );
 const crawlTime: Ref<string> = ref(formatCrawlTime());
 const minSelectedDate: Date = store.measurementsStartDate;
 
 function formatCrawlTime() {
-  let date = timeToDateObject();
+  const date = timeToDateObject();
   return (
     date.getHours().toString().padStart(2, "0") +
     ":" +
@@ -87,7 +87,7 @@ function timeTravel() {
 }
 
 function getTimeTravelAt() {
-  let date = timeToDateObject();
+  const date = timeToDateObject();
   // Set the hours of the date object to the hours part of the crawlTime value
   date.setHours(Number(crawlTime.value.substring(0, 2)));
   // Set the minutes of the date object to the minutes part of the crawlTime value

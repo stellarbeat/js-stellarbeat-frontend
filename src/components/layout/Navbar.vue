@@ -34,7 +34,7 @@
                     </template>
                     <b-dropdown-item
                       v-for="network in Array.from(
-                        store.networkContexts.keys()
+                        store.networkContexts.keys(),
                       )"
                       :key="network"
                       @click="navigateToNetwork(network)"
@@ -87,7 +87,7 @@
             </template>
             <b-dropdown-item
               v-for="networkContext in Array.from(
-                store.networkContexts.values()
+                store.networkContexts.values(),
               )"
               :key="networkContext.networkId"
               @click="navigateToNetwork(networkContext.networkId)"
@@ -233,7 +233,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType } from "vue";
+import { computed, PropType } from "vue";
 import {
   BCollapse,
   BDropdownItem,
@@ -259,7 +259,7 @@ export interface BrandLogo {
   alt: string;
 }
 
-const props = defineProps({
+defineProps({
   faqRoute: {
     type: String,
     required: false,

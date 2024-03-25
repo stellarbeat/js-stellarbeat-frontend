@@ -15,7 +15,7 @@ export class ModifyNetwork implements NetworkChange {
   constructor(
     network: Network,
     newNodes: Node[],
-    newOrganizations: Organization[]
+    newOrganizations: Organization[],
   ) {
     this._network = network;
     this._originalNodes = this._network.nodes;

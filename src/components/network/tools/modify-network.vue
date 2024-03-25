@@ -190,9 +190,9 @@ const validate = () => {
 };
 
 const load = () => {
-  let nodesMap = new Map<string, Node>();
-  let nodes = modifiedNetwork.nodes.map((basicNode) => {
-    let node = new Node(basicNode.publicKey);
+  const nodesMap = new Map<string, Node>();
+  const nodes = modifiedNetwork.nodes.map((basicNode) => {
+    const node = new Node(basicNode.publicKey);
     node.geoData.countryCode = basicNode.geoData.countryCode;
     node.geoData.countryName = basicNode.geoData.countryName;
     node.isp = basicNode.isp;
@@ -208,13 +208,13 @@ const load = () => {
   let organizations: Organization[] = [];
   if (modifiedNetwork.organizations) {
     organizations = modifiedNetwork.organizations.map((basicOrganization) => {
-      let organization = new Organization(
+      const organization = new Organization(
         basicOrganization.id,
-        basicOrganization.name
+        basicOrganization.name,
       );
       organization.validators = basicOrganization.validators;
       organization.validators.forEach((validatorPublicKey) => {
-        let validator = nodesMap.get(validatorPublicKey);
+        const validator = nodesMap.get(validatorPublicKey);
         if (!validator) return;
 
         validator.organizationId = organization.id;
@@ -228,7 +228,7 @@ const load = () => {
   }
 
   store.processChange(
-    new ModifyNetworkChange(store.network, nodes, organizations)
+    new ModifyNetworkChange(store.network, nodes, organizations),
   );
 };
 
@@ -237,7 +237,7 @@ const mapToBasicQuorumSet = (quorumSet: QuorumSet): BasicQuorumSet => {
     threshold: quorumSet.threshold,
     validators: quorumSet.validators,
     innerQuorumSets: quorumSet.innerQuorumSets.map((innerQSet) =>
-      mapToBasicQuorumSet(innerQSet)
+      mapToBasicQuorumSet(innerQSet),
     ),
   };
 };
@@ -258,7 +258,7 @@ const mapToBasicNode = (node: Node): BasicNode => {
 };
 
 const mapToBasicOrganization = (
-  organization: Organization
+  organization: Organization,
 ): BasicOrganization => {
   return {
     id: organization.id,
@@ -274,7 +274,7 @@ const initModifiedNetworkString = () => {
       .filter((node) => node.isValidator)
       .map((node) => mapToBasicNode(node)),
     organizations: store.network.organizations.map((organization) =>
-      mapToBasicOrganization(organization)
+      mapToBasicOrganization(organization),
     ),
   };
   modifiedNetworkString.value = JSON.stringify(modifiedNetwork, null, 2);

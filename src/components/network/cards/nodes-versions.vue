@@ -36,11 +36,11 @@ watch(
     if (!chart.value || !chart.value.data.datasets) return;
     chart.value.data.datasets[0].data = chartData.value;
     chart.value.update();
-  }
+  },
 );
 
 const sortedVersions = computed(() => {
-  let versions: Record<string, number | undefined> = network.nodes
+  const versions: Record<string, number | undefined> = network.nodes
     .filter(useStore().watcherNodeFilter)
     .filter((node) => node.versionStr)
     .map((node) =>
@@ -48,36 +48,36 @@ const sortedVersions = computed(() => {
         .replace("stellar-core ", "")
         .replace("v", "")
         .replace(/ \(.*$/, "")
-        .replace(/-.*$/, "")
+        .replace(/-.*$/, ""),
     )
     .reduce(
       (
         accumulator: Record<string, number | undefined>,
-        currentValue: string
+        currentValue: string,
       ) => {
         if (accumulator[currentValue] === undefined)
           accumulator[currentValue] = 1;
         else (accumulator[currentValue] as number)++;
         return accumulator;
       },
-      {}
+      {},
     );
-  let sortedVersions: [string, number][] = [];
-  for (let versionStr in versions) {
+  const sortedVersions: [string, number][] = [];
+  for (const versionStr in versions) {
     if (versions[versionStr] !== undefined)
       sortedVersions.push([versionStr, versions[versionStr] as number]);
   }
 
   return sortedVersions.sort(function (
     a: [string, number],
-    b: [string, number]
+    b: [string, number],
   ) {
     return b[1] - a[1];
   });
 });
 
 const chartData = computed(() => {
-  let countries: number[] = [];
+  const countries: number[] = [];
   if (sortedVersions.value[0]) countries.push(sortedVersions.value[0][1]);
   if (sortedVersions.value[1]) countries.push(sortedVersions.value[1][1]);
   if (sortedVersions.value[2]) countries.push(sortedVersions.value[2][1]);
@@ -85,14 +85,14 @@ const chartData = computed(() => {
     countries.push(
       sortedVersions.value.slice(3).reduce((accumulator, currentValue) => {
         return accumulator + currentValue[1];
-      }, 0)
+      }, 0),
     );
 
   return countries;
 });
 
 const labels = computed(() => {
-  let labels: string[] = [];
+  const labels: string[] = [];
   if (sortedVersions.value[0]) labels.push(sortedVersions.value[0][0]);
   if (sortedVersions.value[1]) labels.push(sortedVersions.value[1][0]);
   if (sortedVersions.value[2]) labels.push(sortedVersions.value[2][0]);
@@ -104,7 +104,7 @@ const labels = computed(() => {
 const versionGraph: Ref<HTMLCanvasElement | null> = ref(null);
 function initializeDoughnut() {
   if (versionGraph.value === null) return;
-  let context = versionGraph.value.getContext("2d");
+  const context = versionGraph.value.getContext("2d");
 
   Chart.register(Tooltip, ArcElement, DoughnutController, Legend);
   chart.value = new Chart(context as CanvasRenderingContext2D, {

@@ -102,7 +102,7 @@ watch(
       ];
       chart.value.update();
     }
-  }
+  },
 );
 
 const dimmerClass = computed(() => {
@@ -118,7 +118,7 @@ function initializeChart() {
     LineElement,
     RadarController,
     RadialLinearScale,
-    PointElement
+    PointElement,
   );
   //@ts-ignore
   chart.value = new Chart(chartElement.value as HTMLCanvasElement, {
@@ -211,13 +211,14 @@ function initializeChart() {
           yAlign: "bottom",
           callbacks: {
             title: function (
-              tooltipItems: TooltipItem<"radar">[]
+              tooltipItems: TooltipItem<"radar">[],
             ): string | string[] {
               return tooltipItems[0].label;
             },
             label: (tooltipItem: TooltipItem<"radar">) => {
-              let size = tooltipItem.dataset.data[tooltipItem.dataIndex];
-              let type = tooltipItem.datasetIndex === 0 ? "liveness" : "safety";
+              const size = tooltipItem.dataset.data[tooltipItem.dataIndex];
+              const type =
+                tooltipItem.datasetIndex === 0 ? "liveness" : "safety";
               return `Set of size ${size} found that could impact ${type}`;
             },
           },

@@ -60,7 +60,7 @@ function initializeBarChart() {
     Legend,
     ArcElement,
     DoughnutController,
-    Tooltip
+    Tooltip,
   );
   chart.value = new Chart(overLoadedBarChart.value as HTMLCanvasElement, {
     type: "doughnut",

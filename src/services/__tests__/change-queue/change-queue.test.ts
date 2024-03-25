@@ -16,7 +16,7 @@ describe("update manager", () => {
     const networkAnalyzerMock = { analyzeNetwork: () => {} };
     myNodeUpdateManager = new NetworkChangeQueue(
       new Network([]),
-      networkAnalyzerMock as NetworkAnalyzer
+      networkAnalyzerMock as NetworkAnalyzer,
     );
 
     update1 = new EntityPropertyUpdate(new Node("a"), "a", "true");

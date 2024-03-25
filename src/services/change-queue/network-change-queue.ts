@@ -28,7 +28,7 @@ export class NetworkChangeQueue {
     if (this._changesQueueIndex !== this._changesQueue.length) {
       this._changesQueue = this._changesQueue.splice(
         0,
-        this._changesQueueIndex
+        this._changesQueueIndex,
       );
     }
     this._changesQueue.push(change);

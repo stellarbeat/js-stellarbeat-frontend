@@ -57,7 +57,7 @@ watch(data, () => {
   if (!barChart.data.datasets) return;
   barChart.data.datasets[0].data = data.value;
   barChart.data.datasets[0].backgroundColor = data.value.map((data) =>
-    data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)"
+    data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)",
   );
   barChart.data.datasets[1].data = data.value.map((data) => {
     return {
@@ -79,7 +79,7 @@ onMounted(() => {
     TimeScale,
     Tooltip,
     Legend,
-    LinearScale
+    LinearScale,
   );
 
   barChart = new Chart(context, {
@@ -89,7 +89,7 @@ onMounted(() => {
         {
           label: "Validating",
           backgroundColor: data.value.map((data) =>
-            data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)"
+            data.y === 100 ? "#5eba00" : "rgba(94, 186, 0, 0.5)",
           ),
           borderWidth: 0,
           data: data.value,

@@ -46,20 +46,20 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasValidatorsWithStellarCoreRunningBehind(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual(["Stellar-core version behind"]);
     });
 
@@ -68,21 +68,21 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasValidatorsWithStellarCoreRunningBehind(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
 
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual([]);
     });
   });
@@ -94,21 +94,21 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasOutOfDateHistoryArchives(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
 
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual(["History archive behind"]);
     });
     test("returns false if no validator has out of date archive", () => {
@@ -116,21 +116,21 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasOutOfDateHistoryArchives(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
 
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual([]);
     });
   });
@@ -142,22 +142,22 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasHistoryArchivesWithError(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
 
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
 
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual(["History archive verification issue"]);
     });
     test("returns false if no validator has history archive error", () => {
@@ -165,22 +165,22 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasHistoryArchivesWithError(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
 
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
 
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual([]);
     });
   });
@@ -191,15 +191,15 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
 
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual(["Stellar.toml issue: unsupported version"]);
     });
     test("returns false if no Stellar.toml issue", () => {
@@ -208,15 +208,15 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
 
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual([]);
     });
   });
@@ -235,14 +235,14 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.organizationHasWarnings(
           organization,
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
       expect(
         OrganizationWarningDetector.getOrganizationWarningReasons(
           organization,
-          network
-        )
+          network,
+        ),
       ).toEqual(["If one more validator fails, this organization will fail"]);
     });
   });
@@ -272,7 +272,7 @@ describe("OrganizationWarningDetector", () => {
 
       const network = new Network(
         [validator1, validator2, validator3],
-        [organization1, organization2]
+        [organization1, organization2],
       );
       network.stellarCoreVersion = "1.0.0";
       return { validator1, validator2, organization1, organization2, network };
@@ -286,8 +286,8 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.someOrganizationsHaveWarnings(
           [organization1, organization2],
-          network
-        )
+          network,
+        ),
       ).toBeTruthy();
     });
 
@@ -297,8 +297,8 @@ describe("OrganizationWarningDetector", () => {
       expect(
         OrganizationWarningDetector.someOrganizationsHaveWarnings(
           [organization1, organization2],
-          network
-        )
+          network,
+        ),
       ).toBeFalsy();
     });
   });
