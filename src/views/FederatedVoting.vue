@@ -9,19 +9,19 @@
     <div class="card graph">
       <Graph
         ref="graph"
-        v-on:vertex-selected="handleVertexSelected"
-        :selectedVertices="selectedVertices"
+        :selected-vertices="selectedVertices"
         style="height: 100%"
-        :fullScreen="false"
+        :full-screen="false"
         :view-graph="viewGraph"
         :is-loading="false"
-        :optionShowFailingEdges="true"
-        :optionHighlightTrustingNodes="true"
-        :optionHighlightTrustedNodes="true"
-        :optionShowRegularEdges="true"
-        :optionTransitiveQuorumSetOnly="false"
+        :option-show-failing-edges="true"
+        :option-highlight-trusting-nodes="true"
+        :option-highlight-trusted-nodes="true"
+        :option-show-regular-edges="true"
+        :option-transitive-quorum-set-only="false"
         :initial-zoom="2"
         :propagation-enabled="true"
+        @vertex-selected="handleVertexSelected"
       />
     </div>
   </div>

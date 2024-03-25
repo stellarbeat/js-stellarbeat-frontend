@@ -17,10 +17,10 @@
         <div class="text-muted">
           30D Availability
           <b-icon-info-circle
-            class="text-gray"
             v-b-tooltip:hover="
               'Availability: more than or equal to 50% of the organization validators are validating.'
             "
+            class="text-gray"
           />
         </div>
       </div>

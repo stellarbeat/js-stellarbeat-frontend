@@ -16,7 +16,7 @@
       <div v-if="supportsHalt">
         <b-dropdown-item
           v-if="!store.network.isOrganizationBlocked(organization)"
-          v-on:click.prevent.stop="
+          @click.prevent.stop="
             store.toggleOrganizationAvailability(organization)
           "
         >
@@ -34,7 +34,7 @@
       </div>
       <b-dropdown-item
         v-if="supportsDelete && store.selectedOrganization"
-        v-on:click="
+        @click="
           store.removeOrganizationFromOrganization(
             organization,
             store.selectedOrganization,
@@ -55,18 +55,18 @@
       </b-dropdown-item>
     </b-dropdown>
     <b-modal
+      :id="'add-organizations-modal-' + id"
       lazy
       size="lg"
-      :id="'add-organizations-modal-' + id"
       title="Select organization to add"
       ok-title="Add"
-      v-on:ok="organizationsToAddModalOk"
+      @ok="organizationsToAddModalOk"
     >
       <template slot="default" slot-scope="{ visible }">
         <AddOrganizationsTable
           v-if="visible"
           :organizations="possibleOrganizationsToAdd"
-          v-on:organizations-selected="onOrganizationsSelected"
+          @organizations-selected="onOrganizationsSelected"
         />
       </template>
     </b-modal>

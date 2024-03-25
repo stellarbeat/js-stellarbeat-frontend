@@ -1,8 +1,8 @@
 <template>
   <b-modal
-    lazy
     id="network-analysis-qi-info"
     ref="quorumIntersectionInfoModal"
+    lazy
     hide-header
   >
     <h3>What is quorum intersection?</h3>
@@ -27,7 +27,7 @@
         >white paper</a
       >.
     </p>
-    <template v-slot:modal-footer>
+    <template #modal-footer>
       <div class="w-100">
         <p class="float-left">
           Powered by

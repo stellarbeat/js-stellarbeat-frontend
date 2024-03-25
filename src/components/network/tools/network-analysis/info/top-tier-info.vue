@@ -1,8 +1,8 @@
 <template>
   <b-modal
-    lazy
     id="network-analysis-top-tier-info"
     ref="topTierInfoModal"
+    lazy
     hide-header
   >
     <h3>Top tier</h3>
@@ -29,7 +29,7 @@
         >white paper</a
       >
     </p>
-    <template v-slot:modal-footer>
+    <template #modal-footer>
       <div class="w-100">
         <p class="float-left">
           Powered by

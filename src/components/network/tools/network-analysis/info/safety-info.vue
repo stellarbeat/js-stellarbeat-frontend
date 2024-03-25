@@ -1,8 +1,8 @@
 <template>
   <b-modal
-    lazy
     id="network-analysis-safety-info"
     ref="safetyInfoModal"
+    lazy
     hide-header
   >
     <h3>What does this analysis show?</h3>
@@ -45,7 +45,7 @@
         >white paper</a
       >, more specific the section regarding minimal splitting sets.
     </p>
-    <template v-slot:modal-footer>
+    <template #modal-footer>
       <div class="w-100">
         <p class="float-left">
           Powered by

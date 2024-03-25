@@ -4,9 +4,7 @@
       Network not fully analyzed because top tier is not symmetric or too large
       to analyze in a reasonable timeframe. <br />
       You can run the
-      <a
-        href="#"
-        v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true"
+      <a href="#" @click.prevent.stop="store.isNetworkAnalysisVisible = true"
         >network analysis</a
       >
       manually.
@@ -15,9 +13,7 @@
       {{ store.getNetworkDangers().description }}
       <br />
       See
-      <a
-        href="#"
-        v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true"
+      <a href="#" @click.prevent.stop="store.isNetworkAnalysisVisible = true"
         >network analysis</a
       >
       for details.
@@ -26,9 +22,7 @@
       {{ store.getNetworkWarnings().description }}
       <br />
       See
-      <a
-        href="#"
-        v-on:click.prevent.stop="store.isNetworkAnalysisVisible = true"
+      <a href="#" @click.prevent.stop="store.isNetworkAnalysisVisible = true"
         >network analysis</a
       >
       for details.
@@ -39,37 +33,37 @@
       </div>
     </div>
     <div class="row row-cards row-deck gauges">
-      <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
+      <div v-if="!store.isSimulation" class="col-lg-4 col-xl-4">
         <NodesCountryDistribution />
       </div>
 
-      <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
+      <div v-if="!store.isSimulation" class="col-lg-4 col-xl-4">
         <NodesVersions />
       </div>
-      <div class="col-lg-4 col-xl-4" v-if="!store.isSimulation">
+      <div v-if="!store.isSimulation" class="col-lg-4 col-xl-4">
         <ValidatorLoad />
       </div>
     </div>
     <div class="row row-cards row-deck">
-      <div class="col-lg-6" v-if="!store.networkAnalyzer.manualMode">
+      <div v-if="!store.networkAnalyzer.manualMode" class="col-lg-6">
         <NetworkRiskRadarChart />
       </div>
       <div
-        class="col-lg-6"
         v-if="!store.isSimulation && store.networkContext.enableHistory"
+        class="col-lg-6"
       >
         <NetworkAnalysis analysis-type="safety">
-          <template v-slot:info>
+          <template #info>
             <safety-info />
           </template>
         </NetworkAnalysis>
       </div>
       <div
-        class="col-lg-12"
         v-if="!store.isSimulation && store.networkContext.enableHistory"
+        class="col-lg-12"
       >
         <NetworkAnalysis analysis-type="liveness" default-bucket-size="30D">
-          <template v-slot:info>
+          <template #info>
             <liveness-info />
           </template>
         </NetworkAnalysis>
@@ -95,15 +89,15 @@
       </div>
 
       <div
-        class="col-lg-6 col-xl-6"
         v-if="!store.isSimulation && store.networkContext.enableHistory"
+        class="col-lg-6 col-xl-6"
       >
         <network-validator-updates />
       </div>
 
       <div
-        when-visible
         v-if="!store.isSimulation && store.networkContext.enableHorizon"
+        when-visible
       >
         <div class="col-lg-6 col-12">
           <network-horizon />

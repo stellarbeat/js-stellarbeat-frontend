@@ -1,18 +1,18 @@
 <template>
   <Graph
     ref="graph"
-    v-on:vertex-selected="vertexSelected"
-    :centerVertex="centerVertex"
-    :selectedVertices="selectedVertices"
+    :center-vertex="centerVertex"
+    :selected-vertices="selectedVertices"
     style="height: 100%"
-    :fullScreen="fullScreen"
+    :full-screen="fullScreen"
     :view-graph="viewGraph"
     :is-loading="isLoading"
-    :optionShowFailingEdges="optionShowFailingEdges"
-    :optionHighlightTrustingNodes="optionHighlightTrustingNodes"
-    :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
-    :optionShowRegularEdges="optionShowRegularEdges"
-    :optionTransitiveQuorumSetOnly="optionTransitiveQuorumSetOnly"
+    :option-show-failing-edges="optionShowFailingEdges"
+    :option-highlight-trusting-nodes="optionHighlightTrustingNodes"
+    :option-highlight-trusted-nodes="optionHighlightTrustedNodes"
+    :option-show-regular-edges="optionShowRegularEdges"
+    :option-transitive-quorum-set-only="optionTransitiveQuorumSetOnly"
+    @vertex-selected="vertexSelected"
   />
 </template>
 

@@ -5,15 +5,15 @@
   >
     {{ title }}
     <b-icon-exclamation-triangle
-      :title="danger"
       v-if="hasDanger"
       v-b-tooltip.topleft:hover="danger"
+      :title="danger"
       class="sb-danger mr-1"
     />
     <b-icon-exclamation-triangle
-      :title="warnings"
       v-else-if="hasWarnings"
       v-b-tooltip.topleft:hover="warnings"
+      :title="warnings"
       class="sb-alert mr-1"
     />
   </div>

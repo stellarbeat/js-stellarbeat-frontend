@@ -79,13 +79,13 @@
                 <b-button-group size="sm">
                   <b-button
                     v-b-tooltip="'View diff'"
-                    v-on:click="showDiff(updatesOnDate.snapshot)"
+                    @click="showDiff(updatesOnDate.snapshot)"
                   >
                     <b-icon-file-diff />
                   </b-button>
                   <b-button
-                    v-on:click="timeTravel(updatesOnDate.snapshot)"
                     v-b-tooltip="'Travel to this point in time'"
+                    @click="timeTravel(updatesOnDate.snapshot)"
                   >
                     <b-icon-clock />
                   </b-button>
@@ -121,17 +121,17 @@ import "jsondiffpatch/formatters/styles/html.css";
 import "jsondiffpatch/formatters/styles/annotated.css";
 
 import {
-  VBTooltip,
-  BModal,
-  VBModal,
   BButton,
+  BButtonGroup,
+  BButtonToolbar,
+  BIconClock,
+  BIconExclamationTriangle,
+  BIconFileDiff,
   BListGroup,
   BListGroupItem,
-  BIconFileDiff,
-  BButtonGroup,
-  BIconClock,
-  BButtonToolbar,
-  BIconExclamationTriangle,
+  BModal,
+  VBModal,
+  VBTooltip,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";

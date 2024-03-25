@@ -1,10 +1,10 @@
 <template>
   <b-modal
     id="modal-1"
+    ref="consentModal"
     title="Welcome to Stellarbeat!"
     no-close-on-backdrop
     no-close-on-esc
-    ref="consentModal"
     hide-header-close
     ok-title="I Agree"
     cancel-title="Decline"

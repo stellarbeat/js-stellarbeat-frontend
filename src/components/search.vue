@@ -1,11 +1,11 @@
 <template>
   <div class="dropdown search">
     <b-form-input
+      id="searchInput"
+      ref="searchInput"
+      v-model.lazy="searchString"
       class="form-control search-input"
       type="text"
-      v-model.lazy="searchString"
-      ref="searchInput"
-      id="searchInput"
       placeholder="Search"
       autocomplete="off"
       @keydown.tab.native.prevent.stop="onArrowDown"
@@ -17,18 +17,18 @@
     </b-form-input>
     <div
       class="dropdown-menu sb-dropdown-menu"
-      v-bind:class="{ show: showSuggestions }"
+      :class="{ show: showSuggestions }"
       aria-labelledby="searchInput"
       role="button"
       tabindex="0"
     >
       <a
-        class="dropdown-item"
-        href="#"
         v-for="(match, i) in filteredList"
         :key="i"
-        @click.prevent.stop="navigate(match)"
+        class="dropdown-item"
+        href="#"
         :class="{ active: i === arrowCounter }"
+        @click.prevent.stop="navigate(match)"
       >
         <div class="w-100">
           <h5 class="mb-1 mr-2 name">{{ match.name }}</h5>

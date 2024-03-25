@@ -4,30 +4,30 @@
     icon="house"
     :has-info-section="true"
   >
-    <template v-slot:title>
+    <template #title>
       {{ store.getNetworkContextName() }}
     </template>
-    <template v-slot:sub-title>
+    <template #sub-title>
       Overview
       <b-badge v-if="store.networkAnalyzer.manualMode" variant="default"
         >Risks not analyzed</b-badge
       >
       <b-badge
         v-else-if="store.networkHasDangers()"
+        v-b-tooltip.hover.right="store.getNetworkDangers().description"
         variant="danger"
         style="vertical-align: bottom"
-        v-b-tooltip.hover.right="store.getNetworkDangers().description"
         >{{ store.getNetworkDangers().label }}
       </b-badge>
       <b-badge
         v-else-if="store.networkHasWarnings()"
+        v-b-tooltip.hover.right="store.getNetworkWarnings().description"
         variant="warning"
         style="vertical-align: bottom"
-        v-b-tooltip.hover.right="store.getNetworkWarnings().description"
         >{{ store.getNetworkWarnings().label }}
       </b-badge>
     </template>
-    <template v-slot:explore-list-items>
+    <template #explore-list-items>
       <li
         v-if="networkTransitiveQuorumSetOrganizations.length > 0"
         class="sb-nav-item"
@@ -44,19 +44,19 @@
         />
       </li>
     </template>
-    <template v-slot:tool-list-items>
-      <li class="sb-nav-item" v-if="store.networkContext.enableConfigExport">
+    <template #tool-list-items>
+      <li v-if="store.networkContext.enableConfigExport" class="sb-nav-item">
         <nav-link
-          :title="'Stellar core quorum set'"
           v-b-modal.tomlExportModal
+          :title="'Stellar core quorum set'"
           :show-icon="true"
           icon="download"
         />
       </li>
       <b-modal
+        id="tomlExportModal"
         lazy
         size="lg"
-        id="tomlExportModal"
         title="Stellar Core quorum set"
         ok-only
         ok-title="Close"
@@ -68,7 +68,7 @@
           title="Horizon APIs"
           :show-icon="true"
           icon="broadcast"
-          v-on:click="scrollToHorizonCard()"
+          @click="scrollToHorizonCard()"
         ></nav-link>
       </li>
       <li class="sb-nav-item">
@@ -85,7 +85,7 @@
           title="Network analysis"
           :show-icon="true"
           icon="gear"
-          v-on:click="store.isNetworkAnalysisVisible = true"
+          @click="store.isNetworkAnalysisVisible = true"
         />
       </li>
       <li class="sb-nav-item">
@@ -93,7 +93,7 @@
           title="Modify Network"
           :show-icon="true"
           icon="pencil"
-          v-on:click="$refs['modifyNetwork'].showModal()"
+          @click="$refs['modifyNetwork'].showModal()"
         />
         <modify-network ref="modifyNetwork" />
       </li>

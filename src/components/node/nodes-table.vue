@@ -13,12 +13,12 @@
       :filter="filter"
       class="mb-0"
     >
-      <template v-slot:cell(name)="data">
+      <template #cell(name)="data">
         <div class="d-flex flex-row justify-content-start align-items-center">
           <span
             v-if="data.item.isFullValidator"
-            class="badge sb-badge badge-success mr-1"
             v-b-tooltip.hover
+            class="badge sb-badge badge-success mr-1"
             title="Full validator"
           >
             <b-icon-shield />
@@ -45,12 +45,12 @@
                 network.getNodeByPublicKey(data.item.publicKey),
               )
             "
-            variant="danger"
             v-b-tooltip="
               network.getNodeFailingReason(
                 network.getNodeByPublicKey(data.item.publicKey),
               ).description
             "
+            variant="danger"
           >
             {{
               network.getNodeFailingReason(
@@ -77,7 +77,7 @@
           </b-badge>
         </div>
       </template>
-      <template v-slot:cell(organization)="data">
+      <template #cell(organization)="data">
         <router-link
           v-if="data.item.organizationId"
           :to="{
@@ -96,29 +96,29 @@
           {{ data.item.organization }}
         </router-link>
       </template>
-      <template v-slot:cell(type)="row">
+      <template #cell(type)="row">
         {{ row.item.type }}
       </template>
-      <template v-slot:cell(version)="data">
+      <template #cell(version)="data">
         {{ truncate(data.value, 28) || " " }}
       </template>
-      <template v-slot:cell(action)="data">
+      <template #cell(action)="data">
         <node-actions
           :node="network.getNodeByPublicKey(data.item.publicKey)"
         ></node-actions>
       </template>
     </b-table>
     <div
-      class="d-flex justify-content-end m-1"
       v-show="nodes.length >= perPage"
+      class="d-flex justify-content-end m-1"
     >
       <b-pagination
+        v-model="currentPage"
         size="sm"
         limit="3"
         class="mb-0"
-        :totalRows="totalRows"
+        :total-rows="totalRows"
         :per-page="perPage"
-        v-model="currentPage"
       />
     </div>
   </div>

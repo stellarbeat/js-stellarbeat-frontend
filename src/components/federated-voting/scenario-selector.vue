@@ -1,8 +1,8 @@
 <template>
   <div>
     <select
-      class="fv-dropdown"
       id="scenario"
+      class="fv-dropdown"
       :value="federatedVotingStore.selectedScenario"
     >
       <option

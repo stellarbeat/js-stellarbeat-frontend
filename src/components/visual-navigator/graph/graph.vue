@@ -1,44 +1,44 @@
 <template>
-  <div v-bind:class="dimmerClass" style="height: 100%">
+  <div :class="dimmerClass" style="height: 100%">
     <div class="loader"></div>
     <div class="dimmer-content svg-wrapper h-100">
       <svg
+        ref="graphSvg"
         class="graph"
         xmlns="http://www.w3.org/2000/svg"
-        ref="graphSvg"
         width="100%"
         height="100%"
       >
         <g ref="grid">
           <g v-if="!isLoading && viewGraph">
             <path
-              class="edge"
               v-for="edge in viewGraph.regularEdges.filter(
                 (mEdge) =>
                   (!mEdge.isFailing || optionShowFailingEdges) &&
                   (mEdge.isPartOfTransitiveQuorumSet ||
                     !optionTransitiveQuorumSetOnly),
               )"
-              :key="edge.key"
-              v-bind:d="getEdgePath(edge)"
-              :class="getEdgeClassObject(edge)"
               :id="edge.key"
+              :key="edge.key"
+              class="edge"
+              :d="getEdgePath(edge)"
+              :class="getEdgeClassObject(edge)"
             >
               <!-- Define the dot -->
             </path>
             <g v-if="propagationEnabled">
               <circle
-                visibility="hidden"
-                r="5"
-                class="propagation-circle"
                 v-for="edge in viewGraph.regularEdges.filter(
                   (mEdge) =>
                     (!mEdge.isFailing || optionShowFailingEdges) &&
                     (mEdge.isPartOfTransitiveQuorumSet ||
                       !optionTransitiveQuorumSetOnly),
                 )"
-                :key="'propagation:' + edge.key"
                 :id="'propagation:' + edge.key"
+                :key="'propagation:' + edge.key"
+                visibility="hidden"
+                r="5"
+                class="propagation-circle"
               >
                 <!-- Animate the dot along the path -->
                 <animateMotion
@@ -62,7 +62,6 @@
             <!-- Define the dot -->
 
             <path
-              class="edge"
               v-for="edge in viewGraph.stronglyConnectedEdges.filter(
                 (mEdge) =>
                   (!mEdge.isFailing || optionShowFailingEdges) &&
@@ -70,7 +69,8 @@
                     !optionTransitiveQuorumSetOnly),
               )"
               :key="edge.key"
-              v-bind:d="getEdgePath(edge)"
+              class="edge"
+              :d="getEdgePath(edge)"
               :class="getEdgeClassObject(edge)"
             />
             <g
@@ -81,7 +81,6 @@
               "
             >
               <path
-                class="edge incoming"
                 v-for="edge in viewGraph.trustingEdges.filter(
                   (mEdge) =>
                     (!mEdge.isFailing || optionShowFailingEdges) &&
@@ -89,7 +88,8 @@
                       !optionTransitiveQuorumSetOnly),
                 )"
                 :key="edge.key + edge.key"
-                v-bind:d="getEdgePath(edge)"
+                class="edge incoming"
+                :d="getEdgePath(edge)"
               />
             </g>
             <g
@@ -100,7 +100,6 @@
               "
             >
               <path
-                class="edge outgoing"
                 v-for="edge in viewGraph.trustedEdges.filter(
                   (mEdge) =>
                     (!mEdge.isFailing || optionShowFailingEdges) &&
@@ -108,7 +107,8 @@
                       !optionTransitiveQuorumSetOnly),
                 )"
                 :key="edge.key + edge.key"
-                v-bind:d="getEdgePath(edge)"
+                class="edge outgoing"
+                :d="getEdgePath(edge)"
               />
             </g>
             <graph-strongly-connected-component
@@ -117,17 +117,14 @@
             />
             <g v-if="!optionTransitiveQuorumSetOnly">
               <graph-strongly-connected-component
-                :key="index"
                 v-for="(
                   sccCoordinates, index
                 ) in viewGraph.stronglyConnectedComponentCoordinates"
+                :key="index"
                 :vertex-coordinates="sccCoordinates"
               />
             </g>
             <g
-              :transform="getVertexTransform(vertex)"
-              class="vertex"
-              style="cursor: pointer"
               v-for="vertex in Array.from(
                 viewGraph.viewVertices.values(),
               ).filter(
@@ -136,12 +133,15 @@
                   !optionTransitiveQuorumSetOnly,
               )"
               :key="vertex.key"
-              v-on:click="
+              :transform="getVertexTransform(vertex)"
+              class="vertex"
+              style="cursor: pointer"
+              @click="
                 vertexSelected(vertex);
                 startPropagationAnimation(vertex.key);
               "
             >
-              <circle :r="5" v-bind:class="getVertexClassObject(vertex)">
+              <circle :r="5" :class="getVertexClassObject(vertex)">
                 <title>{{ vertex.label }}</title>
               </circle>
               <g>
@@ -199,6 +199,7 @@ const props = defineProps({
   centerVertex: {
     type: Object as PropType<ViewVertex>,
     required: false,
+    default: null,
   },
   selectedVertices: {
     type: Array as PropType<ViewVertex[]>,

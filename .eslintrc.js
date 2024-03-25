@@ -5,8 +5,8 @@ module.exports = {
     "vue/setup-compiler-macros": true,
   },
   extends: [
-    "plugin:vue/essential",
     "eslint:recommended",
+    "plugin:vue/recommended",
     "@vue/eslint-config-typescript/recommended",
     "@vue/eslint-config-prettier",
   ],
@@ -15,12 +15,14 @@ module.exports = {
     parser: "@typescript-eslint/parser",
     sourceType: "module",
   },
+  plugins: ["@typescript-eslint"],
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "vue/multi-word-component-names": "off",
+    "vue/no-v-html": "off",
   },
   overrides: [
     {

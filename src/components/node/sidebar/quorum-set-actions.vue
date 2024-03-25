@@ -3,49 +3,46 @@
     <b-dropdown
       ref="dropdown"
       boundary="viewport"
-      v-on:click.prevent.stop=""
       right
       text="More"
       class="p-0 m-0"
       toggle-class="more-button btn-thin"
       no-caret
+      @click.prevent.stop=""
     >
       <template slot="button-content">
         <b-icon-three-dots-vertical scale="0.9" />
       </template>
-      <b-dropdown-header id="dropdown-header-label" v-on:click.prevent.stop="">
+      <b-dropdown-header id="dropdown-header-label" @click.prevent.stop="">
         Simulation options
       </b-dropdown-header>
       <b-dropdown-item
         v-if="level === 0"
         v-b-modal="'add-organization-modal-' + id"
-        v-on:click.prevent.stop
+        @click.prevent.stop
       >
         <b-icon-plus-circle class="dropdown-icon" scale="0.9" />
         Add organization
       </b-dropdown-item>
       <b-dropdown-item
         v-b-modal="'add-validators-modal-' + id"
-        v-on:click.prevent.stop
+        @click.prevent.stop
       >
         <b-icon-plus-circle class="dropdown-icon" scale="0.9" />
         Add Validators
       </b-dropdown-item>
-      <b-dropdown-item
-        v-if="!(level === 2)"
-        v-on:click.prevent.stop="addQuorumSet"
-      >
+      <b-dropdown-item v-if="!(level === 2)" @click.prevent.stop="addQuorumSet">
         <b-icon-plus-circle class="dropdown-icon" scale="0.9" />
         Add QuorumSet
       </b-dropdown-item>
       <b-dropdown-item
         v-if="!(level === 0)"
-        v-on:click.prevent.stop="deleteQuorumSet"
+        @click.prevent.stop="deleteQuorumSet"
       >
         <b-icon-x-circle class="dropdown-icon" scale="0.9" />
         Delete QuorumSet
       </b-dropdown-item>
-      <b-dropdown-form inline v-on:click.prevent.stop="">
+      <b-dropdown-form inline @click.prevent.stop="">
         <div class="d-flex align-items-center">
           <b-icon-pencil class="dropdown-icon" scale="0.9" />
           <b-form-group
@@ -53,13 +50,13 @@
             label="Threshold"
             label-for="dropdown-edit-threshold"
             @submit.stop.prevent
-            v-on:click.prevent.stop
+            @click.prevent.stop
           >
             <b-form-input
+              v-model="newThreshold"
               :state="inputState"
               class="thresholdEdit"
               size="sm"
-              v-model="newThreshold"
               type="number"
             >
             </b-form-input>
@@ -68,60 +65,60 @@
         <b-button
           variant="primary"
           size="sm"
-          @click="saveThresholdFromInput"
           class="mt-2"
+          @click="saveThresholdFromInput"
           >Save Threshold
         </b-button>
       </b-dropdown-form>
       <b-dropdown-divider />
       <b-dropdown-item
         v-b-modal="'quorumSetTomlExportModal' + id"
-        v-on:click.prevent.stop
+        @click.prevent.stop
       >
         <b-icon-download class="dropdown-icon" scale="0.9" />
         Stellar core config
       </b-dropdown-item>
     </b-dropdown>
     <b-modal
+      :id="'add-validators-modal-' + id"
       lazy
       size="lg"
-      :id="'add-validators-modal-' + id"
       title="Select validators to add"
       ok-title="Add"
-      v-on:ok="validatorsToAddModalOk"
+      @ok="validatorsToAddModalOk"
     >
       <template slot="default" slot-scope="{ visible }">
         <AddValidatorsTable
           v-if="visible"
           :validators="possibleValidatorsToAdd"
-          v-on:validators-selected="onValidatorsSelected"
+          @validators-selected="onValidatorsSelected"
         />
       </template>
     </b-modal>
     <b-modal
+      :id="'add-organization-modal-' + id"
       lazy
       size="lg"
-      :id="'add-organization-modal-' + id"
       title="Select organization to add"
       ok-title="Add"
-      v-on:ok="organizationsToAddModalOk"
+      @ok="organizationsToAddModalOk"
     >
       <template slot="default" slot-scope="{ visible }">
         <AddOrganizationsTable
           v-if="visible"
           :organizations="possibleOrganizationsToAdd"
-          v-on:organizations-selected="onOrganizationsSelected"
+          @organizations-selected="onOrganizationsSelected"
         />
       </template>
     </b-modal>
     <b-modal
+      :id="'quorumSetTomlExportModal' + id"
       lazy
       size="lg"
-      :id="'quorumSetTomlExportModal' + id"
       title="Stellar Core Config"
       ok-only
       ok-title="Close"
-      v-on:show="loadTomlExport()"
+      @show="loadTomlExport()"
     >
       <pre><code>{{tomlNodesExport}}</code></pre>
     </b-modal>

@@ -2,9 +2,8 @@
   <div class="sb-nav-item" :class="classObject">
     <nav-link
       :title="title"
-      v-on:click="toggleShow"
-      :showDropdownToggle="true"
-      :showIcon="isRoot"
+      :show-dropdown-toggle="true"
+      :show-icon="isRoot"
       :show-sub-title="true"
       :sub-title="
         quorumSet.hasValidators()
@@ -17,13 +16,14 @@
       :warnings="quorumSetWarnings"
       :has-danger="hasDangers"
       :dangers="quorumSetDangers"
+      @click="toggleShow"
     >
-      <template v-slot:action-dropdown>
+      <template #action-dropdown>
         <quorum-set-actions
           :level="level"
           :quorum-set="quorumSet"
-          :parentQuorumSet="parentQuorumSet"
-          v-on:expand="showing = true"
+          :parent-quorum-set="parentQuorumSet"
+          @expand="showing = true"
         />
       </template>
     </nav-link>
@@ -31,9 +31,8 @@
       <nav-link
         v-for="validator in validators"
         :key="validator.publicKey"
-        v-on:click="selectNode(validator)"
         :title="getDisplayName(validator)"
-        :isLinkInDropdown="true"
+        :is-link-in-dropdown="true"
         :has-danger="store.network.isNodeFailing(validator)"
         :dangers="
           'Node not validating ' +
@@ -50,21 +49,22 @@
             store.network,
           )
         "
+        @click="selectNode(validator)"
       >
-        <template v-slot:action-dropdown>
+        <template #action-dropdown>
           <node-actions
             :node="validator"
             :supports-delete="true"
-            :quorumSet="quorumSet"
+            :quorum-set="quorumSet"
           />
         </template>
       </nav-link>
       <quorum-set-dropdown
-        :parentQuorumSet="quorumSet"
         v-for="(innerQuorumSet, index) in innerQuorumSets"
-        :quorumSet="innerQuorumSet"
-        :level="level + 1"
         :key="index"
+        :parent-quorum-set="quorumSet"
+        :quorum-set="innerQuorumSet"
+        :level="level + 1"
         :expand="false"
       />
     </div>
@@ -98,6 +98,7 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   level: 0,
   expand: false,
+  parentQuorumSet: undefined,
 });
 
 const { quorumSet, parentQuorumSet, level, expand } = toRefs(props);

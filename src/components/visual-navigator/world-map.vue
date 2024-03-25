@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%" ref="mapRef">
+  <div ref="mapRef" style="height: 100%">
     <!-- The map will be created programmatically in the script section -->
   </div>
 </template>
@@ -208,10 +208,8 @@ watch(
 );
 
 function updateMarkers() {
-  console.log("updateMarkers");
   const myClusterGroup = clusterGroup.value;
   if (myClusterGroup !== null) {
-    console.log("clearing layers");
     myClusterGroup.clearLayers(); // Clear existing markers
 
     markersData.value.forEach((node) => {

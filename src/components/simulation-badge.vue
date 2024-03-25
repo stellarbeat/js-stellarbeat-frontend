@@ -2,10 +2,10 @@
   <span v-if="store.isSimulation" class="tag mx-2"
     >Simulation mode
     <a
-      href="#"
       v-if="!store.isLocalNetwork"
-      v-on:click.stop.prevent="store.resetUpdates()"
+      href="#"
       class="tag-addon"
+      @click.stop.prevent="store.resetUpdates()"
       ><b-icon-x />
     </a>
   </span>

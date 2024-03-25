@@ -1,8 +1,8 @@
 <template>
   <b-modal
-    lazy
     id="network-analysis-liveness-info"
     ref="livenessInfoModal"
+    lazy
     hide-header
   >
     <h3>What does this analysis show?</h3>
@@ -41,7 +41,7 @@
         >white paper</a
       >, more specific the section regarding minimal blocking sets.
     </p>
-    <template v-slot:modal-footer>
+    <template #modal-footer>
       <div class="w-100">
         <p class="float-left">
           Powered by

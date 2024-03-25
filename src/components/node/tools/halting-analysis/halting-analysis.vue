@@ -1,13 +1,13 @@
 <template>
   <b-card>
-    <template v-slot:header>
+    <template #header>
       <h3 class="card-title">Halting analysis for {{ vertex?.label }}</h3>
       <div class="card-options">
         <a
           href="#"
-          v-on:click.prevent.stop="store.isHaltingAnalysisVisible = false"
           class="card-options-remove"
           data-toggle="card-remove"
+          @click.prevent.stop="store.isHaltingAnalysisVisible = false"
         >
           <b-icon-x />
         </a>
@@ -29,10 +29,10 @@
             >
               <b-form-input
                 id="nr-node-failures"
+                v-model="numberOfNodeFailures"
                 :state="numberOfNodeFailuresInputState"
                 class="nr-node-failures-input ml-0"
                 size="sm"
-                v-model="numberOfNodeFailures"
                 type="number"
                 min="2"
                 max="9"
@@ -44,8 +44,8 @@
           <b-button
             size="sm"
             variant="primary"
-            @click="restartHaltingAnalysis"
             class="mt-1"
+            @click="restartHaltingAnalysis"
             >Detect failures
           </b-button>
           <b-alert
@@ -58,7 +58,7 @@
           </b-alert>
         </div>
 
-        <div v-bind:class="dimmerClass">
+        <div :class="dimmerClass">
           <div class="loader"></div>
           <div class="dimmer-content">
             <div v-if="showAnalysisResult">
@@ -75,25 +75,25 @@
                 </h3>
                 <b-form>
                   <b-form-select
+                    v-model="selectedFailure"
                     :disabled="simulated"
                     :select-size="4"
-                    v-model="selectedFailure"
                     :options="nodeFailures"
                   ></b-form-select>
                   <b-button
                     v-if="!simulated"
                     size="sm"
                     variant="primary"
-                    @click="simulateFailure"
                     class="mt-2"
+                    @click="simulateFailure"
                     >Simulate failure
                   </b-button>
                   <b-button
                     v-else
                     size="sm"
                     variant="secondary"
-                    @click="resetFailureSimulation"
                     class="mt-2"
+                    @click="resetFailureSimulation"
                     >Reactivate nodes
                   </b-button>
                 </b-form>

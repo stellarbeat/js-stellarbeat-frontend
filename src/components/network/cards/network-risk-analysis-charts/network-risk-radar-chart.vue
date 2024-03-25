@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <b-modal lazy title="Info" ok-only hide-header v-model="showModal">
+    <b-modal v-model="showModal" lazy title="Info" ok-only hide-header>
       <h3>What does this chart show?</h3>
       <p class="my-4">
         This chart shows liveness and safety buffers for the whole network. For
@@ -22,7 +22,7 @@
         fail. If you want to find out what these nodes are, click on a datapoint
         and run the network analysis.
       </p>
-      <template v-slot:modal-footer>
+      <template #modal-footer>
         <div class="w-100">
           <p class="float-left">
             Powered by

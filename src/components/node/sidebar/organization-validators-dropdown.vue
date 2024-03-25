@@ -3,13 +3,13 @@
     <nav-link
       class="sb-nav-dropdown-title"
       :title="organization.name"
-      v-on:click="toggleShow"
-      :showDropdownToggle="true"
+      :show-dropdown-toggle="true"
       :drop-down-showing="showing"
       :sub-title="'organization'"
       :show-sub-title="true"
+      @click="toggleShow"
     >
-      <template v-slot:action-dropdown>
+      <template #action-dropdown>
         <organization-actions :organization="organization" />
       </template>
     </nav-link>
@@ -17,7 +17,6 @@
       <nav-link
         v-for="validator in validators"
         :key="validator.publicKey"
-        v-on:click="selectValidator(validator)"
         :title="getDisplayName(validator)"
         :is-link-in-dropdown="true"
         :has-danger="network.isNodeFailing(validator)"
@@ -29,8 +28,9 @@
             network,
           )
         "
+        @click="selectValidator(validator)"
       >
-        <template v-slot:action-dropdown>
+        <template #action-dropdown>
           <node-actions :node="validator" />
         </template>
       </nav-link>

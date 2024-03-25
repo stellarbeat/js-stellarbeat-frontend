@@ -31,7 +31,7 @@
         <div v-else>
           <router-view
             v-if="!store.isLoading && !store.fetchingDataFailed"
-            :isLoading="store.isLoading"
+            :is-loading="store.isLoading"
           />
           <custom-network></custom-network>
         </div>

@@ -113,13 +113,13 @@
                 <b-button-group size="sm">
                   <b-button
                     v-b-tooltip="'View diff'"
-                    v-on:click="showDiff(updatesOnDate.snapshot)"
+                    @click="showDiff(updatesOnDate.snapshot)"
                   >
                     <b-icon-file-diff />
                   </b-button>
                   <b-button
-                    v-on:click="timeTravel(updatesOnDate.snapshot)"
                     v-b-tooltip="'Travel to this point in time'"
+                    @click="timeTravel(updatesOnDate.snapshot)"
                   >
                     <b-icon-clock />
                   </b-button>

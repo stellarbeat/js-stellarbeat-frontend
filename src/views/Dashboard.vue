@@ -30,17 +30,17 @@
     </b-alert>
 
     <div
-      class="row row-cards row-deck"
       v-if="
         store.isHaltingAnalysisVisible &&
         store.haltingAnalysisPublicKey &&
         !network.getNodeByPublicKey(store.haltingAnalysisPublicKey).unknown
       "
       id="halting-analysis-card"
+      class="row row-cards row-deck"
     >
       <div class="col-12">
         <HaltingAnalysis
-          :publicKey="store.haltingAnalysisPublicKey ?? 'unknown'"
+          :public-key="store.haltingAnalysisPublicKey ?? 'unknown'"
         >
         </HaltingAnalysis>
       </div>
@@ -53,16 +53,16 @@
           </transition>
         </div>
       </aside>
-      <div class="col-sm-7 col-lg-9 col-xl" id="content">
+      <div id="content" class="col-sm-7 col-lg-9 col-xl">
         <div class="row">
           <div class="col">
             <network-visual-navigator :view="view" />
           </div>
         </div>
         <div
-          class="row"
           v-if="store.isNetworkAnalysisVisible"
           id="network-analysis-card"
+          class="row"
         >
           <div class="col-12">
             <network-analysis></network-analysis>

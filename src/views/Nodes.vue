@@ -18,10 +18,10 @@
                 <div class="col-sm-6">
                   <label class="custom-switch mt-2">
                     <input
+                      v-model="optionShowInactive"
                       name="custom-switch-checkbox"
                       class="custom-switch-input"
                       type="checkbox"
-                      v-model="optionShowInactive"
                     />
                     <span class="custom-switch-indicator"></span>
                     <span class="custom-switch-description"
@@ -32,10 +32,10 @@
                 <div class="col-sm-6">
                   <label class="custom-switch mt-2">
                     <input
+                      v-model="optionShowWatchers"
                       name="custom-switch-checkbox"
                       class="custom-switch-input"
                       type="checkbox"
-                      v-model="optionShowWatchers"
                     />
                     <span class="custom-switch-indicator"></span>
                     <span class="custom-switch-description"
@@ -47,10 +47,10 @@
             </div>
             <div class="col-12 col-sm-6">
               <b-form-input
+                id="searchInput"
+                v-model="filter"
                 class="form-control search mr-0"
                 type="text"
-                v-model="filter"
-                id="searchInput"
                 placeholder="Type public key, name, ... to search"
               />
             </div>
@@ -60,7 +60,7 @@
           <nodes-table :fields="fields" :nodes="nodes" :filter="filter" />
         </div>
       </div>
-      <div class="card mb-2" v-if="store.networkContext.enableIndex">
+      <div v-if="store.networkContext.enableIndex" class="card mb-2">
         <div class="card-body">
           <div class="text-wrap">
             <h2 class="mt-0 mb-4">Index formula</h2>

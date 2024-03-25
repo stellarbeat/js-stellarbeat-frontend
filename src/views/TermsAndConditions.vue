@@ -197,7 +197,7 @@ import * as myUseStore from "@/store/useStore";
 const myStore = myUseStore.default();
 
 export default {
-  name: "terms-and-conditions",
+  name: "TermsAndConditions",
   metaInfo: {
     title: `Terms and conditions | ${myStore.appConfig.brandName}`,
     meta: [{ name: "description", content: "Terms and conditions." }],

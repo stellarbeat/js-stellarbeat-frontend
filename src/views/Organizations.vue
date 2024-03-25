@@ -14,10 +14,10 @@
           <div class="row header-row">
             <div class="col-12 col-sm-6">
               <b-form-input
+                id="searchInput"
+                v-model="filter"
                 class="form-control search mr-0"
                 type="text"
-                v-model="filter"
-                id="searchInput"
                 placeholder="Search"
               />
             </div>

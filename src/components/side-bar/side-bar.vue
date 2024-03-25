@@ -48,14 +48,14 @@
                   <ul class="sb-nav-list">
                     <li class="sb-nav-item">
                       <nav-link
+                        v-b-modal.networkProps
                         :title="'Stellarbeat configuration'"
                         :show-icon="true"
-                        v-b-modal.networkProps
                         icon="info-circle"
                       ></nav-link>
                       <b-modal
-                        lazy
                         id="networkProps"
+                        lazy
                         size="lg"
                         title="Stellarbeat configuration"
                         ok-only
@@ -161,31 +161,36 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
+import Vue, { onMounted } from "vue";
 import UndoRedo from "@/components/node/tools/simulation/UndoRedo.vue";
 import stickybits from "stickybits";
 import {
-  BIcon,
   BFormCheckbox,
-  BIconBullseye,
+  BIcon,
   BIconBuilding,
-  BModal,
+  BIconBullseye,
   BIconInfoCircle,
+  BModal,
 } from "bootstrap-vue";
-
-import Vue from "vue";
+import useStore from "@/store/useStore";
+import NavLink from "@/components/side-bar/nav-link.vue";
+import { BaseQuorumSet, Network } from "@stellarbeat/js-stellarbeat-shared";
 
 Vue.component("BIconBullseye", BIconBullseye);
 Vue.component("BIconBuilding", BIconBuilding);
 Vue.component("BIconInfoCircle", BIconInfoCircle);
 
-import useStore from "@/store/useStore";
-import NavLink from "@/components/side-bar/nav-link.vue";
-import { BaseQuorumSet, Network } from "@stellarbeat/js-stellarbeat-shared";
-
 defineProps({
-  stickyKey: String,
-  icon: String,
+  stickyKey: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
+  icon: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
   hasExploreSection: {
     type: Boolean,
     default: true,

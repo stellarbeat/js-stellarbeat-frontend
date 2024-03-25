@@ -9,11 +9,11 @@
         <form>
           <div class="input-group">
             <input
+              v-model="filter"
               type="text"
               class="form-control form-control-sm"
               placeholder="Search"
               name="s"
-              v-model="filter"
             />
             <div class="input-icon-addon">
               <b-icon-search />

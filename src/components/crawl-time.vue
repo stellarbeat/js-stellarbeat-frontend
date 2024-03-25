@@ -1,8 +1,8 @@
 <template>
   <div class="crawl-time-component">
     <b-form-datepicker
-      size="sm"
       v-model="time"
+      size="sm"
       class="date-picker p-0"
       :date-format-options="{
         year: 'numeric',
@@ -13,25 +13,25 @@
       :max="new Date()"
       no-highlight-today
     >
-      <template v-slot:button-content>
+      <template #button-content>
         <b-icon-calendar class="text-gray" />
       </template>
     </b-form-datepicker>
     <b-form-timepicker
-      size="sm"
       v-model="crawlTime"
+      size="sm"
       class="time-picker p-0"
       dropleft
     >
-      <template v-slot:button-content></template>
+      <template #button-content></template>
     </b-form-timepicker>
     <b-button
+      v-b-tooltip.hover
       size="sm"
-      @click="timeTravel"
       variant="secondary"
       class="time-travel-btn"
-      v-b-tooltip.hover
       title="Travel to selected time"
+      @click="timeTravel"
     >
       <b-icon-clock />
     </b-button>

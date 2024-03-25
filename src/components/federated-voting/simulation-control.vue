@@ -1,16 +1,16 @@
 <template>
   <nav class="card navbar">
     <div class="button-group">
-      <b-button @click="backward" class="navbar-item">
+      <b-button class="navbar-item" @click="backward">
         <b-icon-arrow-counterclockwise class="icon-color" />
       </b-button>
-      <b-button v-if="!isPlaying" @click="play" class="navbar-item">
+      <b-button v-if="!isPlaying" class="navbar-item" @click="play">
         <b-icon-play-fill class="icon-color" />
       </b-button>
-      <b-button v-else @click="pause" class="navbar-item">
+      <b-button v-else class="navbar-item" @click="pause">
         <b-icon-pause-fill clas="icon-color" />
       </b-button>
-      <b-button @click="forward" class="navbar-item">
+      <b-button class="navbar-item" @click="forward">
         <b-icon-arrow-clockwise class="icon-color" />
       </b-button>
     </div>

@@ -1,11 +1,5 @@
 <template>
-  <b-modal
-    id="quorumSlicesModal"
-    lazy
-    v-on:show="loadSlices"
-    size="xl"
-    hide-header
-  >
+  <b-modal id="quorumSlicesModal" lazy size="xl" hide-header @show="loadSlices">
     <div>
       <b-alert variant="info" show
         >The node itself is added to every slice</b-alert

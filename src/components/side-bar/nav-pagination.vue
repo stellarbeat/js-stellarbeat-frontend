@@ -1,14 +1,14 @@
 <template>
-  <div class="sb-nav-pagination" v-if="totalRows > 10">
+  <div v-if="totalRows > 10" class="sb-nav-pagination">
     <b-pagination
       size="sm"
-      v-bind:value="value"
+      :value="value"
       :total-rows="totalRows"
       :per-page="10"
       first-number
       last-number
       align="left"
-      v-on:input="$emit('input', $event)"
+      @input="$emit('input', $event)"
     />
   </div>
 </template>
@@ -16,7 +16,9 @@
 import { BPagination } from "bootstrap-vue";
 
 defineProps({
+  // eslint-disable-next-line vue/require-default-prop,vue/require-prop-types
   value: {},
+  // eslint-disable-next-line vue/require-default-prop,vue/require-prop-types
   totalRows: {},
 });
 </script>

@@ -7,12 +7,12 @@
     }"
     style="height: 600px"
   >
-    <div class="menu border-right p-3" v-show="menuVisible">
+    <div v-show="menuVisible" class="menu border-right p-3">
       <div
         class="text-gray collapse-icon"
-        v-on:click="menuVisible = false"
         role="button"
         tabindex="0"
+        @click="menuVisible = false"
       >
         <b-icon-chevron-double-left font-scale="1" />
       </div>
@@ -38,9 +38,9 @@
                   'router-link-exact-active'
                 "
                 class="pl-3 mb-1 view-link"
-                v-on:click.native="menuVisible = false"
                 role="button"
                 tabindex="0"
+                @click.native="menuVisible = false"
               >
                 Node trust graph
               </router-link>
@@ -61,9 +61,9 @@
                   'router-link-exact-active'
                 "
                 class="pl-3 mb-1 view-link"
-                v-on:click.native="menuVisible = false"
                 role="button"
                 tabindex="0"
+                @click.native="menuVisible = false"
               >
                 Organization trust graph
               </router-link>
@@ -78,35 +78,35 @@
                     at: $route.query.at,
                   },
                 }"
-                v-on:click.native="menuVisible = false"
                 class="pl-3 mb-1 view-link"
                 role="button"
                 tabindex="0"
                 :class="
                   $route.query.view === 'map' && 'router-link-exact-active'
                 "
+                @click.native="menuVisible = false"
                 >Map
               </router-link>
             </ul>
           </div>
           <h6
-            class="sb-navbar-heading mt-3 ml-0 pl-0"
             v-if="view === 'graph' || view === 'graph-org'"
+            class="sb-navbar-heading mt-3 ml-0 pl-0"
           >
             Options
           </h6>
           <div v-if="view === 'graph' || view === 'graph-org'">
             <b-form-checkbox
-              v-model="optionHighlightTrustedNodes"
               v-show="selectedNode || selectedOrganization"
+              v-model="optionHighlightTrustedNodes"
               class="sb-nav-item sb-nav-toggle mt-1"
               switch
             >
               Highlight trusted nodes
             </b-form-checkbox>
             <b-form-checkbox
-              v-model="optionHighlightTrustingNodes"
               v-show="selectedNode || selectedOrganization"
+              v-model="optionHighlightTrustingNodes"
               class="sb-nav-item sb-nav-toggle mt-1"
               switch
             >
@@ -136,9 +136,9 @@
     <div class="card-header m-0 p-0 d-flex border-0">
       <div
         class="menu-button ml-3 text-gray"
-        v-on:click="menuVisible = true"
         role="button"
         tabindex="0"
+        @click="menuVisible = true"
       >
         <b-icon-list font-scale="2" />
       </div>
@@ -148,19 +148,19 @@
       </div>
       <a
         v-if="!fullScreen"
+        v-b-tooltip="'Fullscreen'"
         href="#"
         class="card-options-fullscreen mx-4"
         @click.prevent.stop="fullScreen = true"
-        v-b-tooltip="'Fullscreen'"
       >
         <b-icon-fullscreen />
       </a>
       <a
         v-else
+        v-b-tooltip="'Exit fullscreen'"
         href="#"
         class="card-options-fullscreen mx-4"
         @click.prevent.stop="fullScreen = false"
-        v-b-tooltip="'Exit fullscreen'"
       >
         <b-icon-fullscreen-exit />
       </a>
@@ -177,21 +177,21 @@
         <div class="world-loader">
           <div class="loader"></div>
         </div>
-        <world-map :fullScreen="fullScreen" />
+        <world-map :full-screen="fullScreen" />
       </div>
       <network-graph-card
         v-else
         :full-screen="fullScreen"
-        :optionShowFailingEdges="optionShowFailingEdges"
-        :optionHighlightTrustingNodes="optionHighlightTrustingNodes"
-        :optionHighlightTrustedNodes="optionHighlightTrustedNodes"
-        :optionShowRegularEdges="optionShowRegularEdges"
-        :optionTransitiveQuorumSetOnly="optionTransitiveQuorumSetOnly"
+        :option-show-failing-edges="optionShowFailingEdges"
+        :option-highlight-trusting-nodes="optionHighlightTrustingNodes"
+        :option-highlight-trusted-nodes="optionHighlightTrustedNodes"
+        :option-show-regular-edges="optionShowRegularEdges"
+        :option-transitive-quorum-set-only="optionTransitiveQuorumSetOnly"
         :type="view === 'graph' ? 'node' : 'organization'"
       >
       </network-graph-card>
 
-      <div v-show="!menuVisible" class="preview" v-on:click="navigateToView">
+      <div v-show="!menuVisible" class="preview" @click="navigateToView">
         <img
           v-if="view === 'map'"
           src="@/assets/graph-preview.png"

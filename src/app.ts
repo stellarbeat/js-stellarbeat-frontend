@@ -30,7 +30,7 @@ if (typeof window !== "undefined") {
 
 Vue.use(Meta);
 Vue.use(VueScrollTo);
-Vue.component("multi-select", Multiselect);
+Vue.component("MultiSelect", Multiselect);
 
 const router = createRouter();
 

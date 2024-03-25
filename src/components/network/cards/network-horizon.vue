@@ -1,14 +1,14 @@
 <template>
-  <div class="card" id="public-horizon-apis-card">
+  <div id="public-horizon-apis-card" class="card">
     <div class="card-header pl-3">
       <h1 class="card-title">Public Horizon API's</h1>
     </div>
     <div class="card-body p-0">
       <b-list-group flush class="w-100 mb-4 card-columns">
         <b-list-group-item
-          class="px-3 py-3"
           v-for="horizon in horizons"
           :key="horizon.name"
+          class="px-3 py-3"
         >
           <a :href="horizon.url" target="_blank" rel="noopener">{{
             horizon.name

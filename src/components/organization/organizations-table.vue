@@ -13,7 +13,7 @@
       :filter="filter"
       class="mb-0"
     >
-      <template v-slot:cell(validators)="row">
+      <template #cell(validators)="row">
         <ul class="validator-list">
           <li
             v-for="validator in row.item.validators"
@@ -22,8 +22,8 @@
             <div class="">
               <span
                 v-if="validator.isFullValidator"
-                class="badge sb-badge badge-success pt-1 mr-1"
                 v-b-tooltip.hover
+                class="badge sb-badge badge-success pt-1 mr-1"
                 title="Full validator"
               >
                 <b-icon-shield />
@@ -45,23 +45,23 @@
               </router-link>
               <span
                 v-if="network.isNodeFailing(validator)"
-                class="badge sb-badge badge-danger ml-1"
                 v-b-tooltip:hover="
                   network.getNodeFailingReason(validator).description
                 "
+                class="badge sb-badge badge-danger ml-1"
                 >{{ network.getNodeFailingReason(validator).label }}</span
               >
               <span
                 v-else-if="
                   NodeWarningDetector.nodeHasWarning(validator, network)
                 "
-                class="badge sb-badge badge-warning ml-1"
                 v-b-tooltip:hover="
                   NodeWarningDetector.getNodeWarningReasonsConcatenated(
                     validator,
                     network,
                   )
                 "
+                class="badge sb-badge badge-warning ml-1"
               >
                 Warning
               </span>
@@ -69,34 +69,34 @@
           </li>
         </ul>
       </template>
-      <template v-slot:head(subQuorum24HAvailability)="data">
+      <template #head(subQuorum24HAvailability)="data">
         <span class=""
           >{{ data.label }}
           <b-icon-info-circle
-            class="text-gray"
             v-b-tooltip:hover="
               'Availability: more than or equal to 50% of the organization validators are validating.'
             "
+            class="text-gray"
           />
         </span>
       </template>
-      <template v-slot:head(subQuorum30DAvailability)="data">
+      <template #head(subQuorum30DAvailability)="data">
         <span class=""
           >{{ data.label }}
           <b-icon-info-circle
-            class="text-gray"
             v-b-tooltip:hover="
               'Availability: more than or equal to 50% of the organization validators are validating.'
             "
+            class="text-gray"
           />
         </span>
       </template>
-      <template v-slot:cell(name)="row">
+      <template #cell(name)="row">
         <div class="d-flex flex-row justify-content-start align-items-center">
           <span
+            v-if="row.item.isTierOneOrganization"
             v-b-tooltip.hover
             title="Tier one organization"
-            v-if="row.item.isTierOneOrganization"
             class="badge sb-badge badge-primary mr-1"
           >
             <b-icon-shield />
@@ -118,34 +118,34 @@
           </div>
           <span
             v-if="row.item.failAt === 1"
-            class="badge sb-badge badge-warning ml-1"
             v-b-tooltip.hover
+            class="badge sb-badge badge-warning ml-1"
             title="If one more validator fails, this organization will fail"
             >Warning
           </span>
           <span
             v-else-if="row.item.failAt < 1"
-            class="badge sb-badge badge-danger ml-1"
             v-b-tooltip.hover
+            class="badge sb-badge badge-danger ml-1"
             :title="row.item.dangers"
             >{{ row.item.blocked ? "Blocked" : "Failing" }}
           </span>
           <span
             v-else-if="row.item.hasWarning"
-            class="badge sb-badge badge-warning ml-1"
             v-b-tooltip.hover
+            class="badge sb-badge badge-warning ml-1"
             :title="row.item.warning"
             >Warning
           </span>
         </div>
       </template>
-      <template v-slot:cell(url)="row">
+      <template #cell(url)="row">
         <a :href="row.item.url" target="_blank" rel="noopener">{{
           row.item.url
         }}</a>
       </template>
       https://keybase.io/
-      <template v-slot:cell(keybase)="row">
+      <template #cell(keybase)="row">
         <a
           :href="'https://keybase.io/' + row.item.keybase"
           target="_blank"
@@ -153,7 +153,7 @@
           >{{ row.item.keybase }}</a
         >
       </template>
-      <template v-slot:cell(email)="row">
+      <template #cell(email)="row">
         <a
           v-if="row.item.email"
           :href="'mailto:' + row.item.email"
@@ -163,23 +163,23 @@
           >{{ row.item.email }}</a
         >
       </template>
-      <template v-slot:cell(action)="data">
+      <template #cell(action)="data">
         <organization-actions
           :organization="network.getOrganizationById(data.item.id)"
         ></organization-actions>
       </template>
     </b-table>
     <div
-      class="d-flex justify-content-end m-1"
       v-show="organizations.length >= perPage"
+      class="d-flex justify-content-end m-1"
     >
       <b-pagination
+        v-model="currentPage"
         size="sm"
         limit="3"
         class="mb-0"
-        :totalRows="totalRows"
+        :total-rows="totalRows"
         :per-page="perPage"
-        v-model="currentPage"
       />
     </div>
   </div>

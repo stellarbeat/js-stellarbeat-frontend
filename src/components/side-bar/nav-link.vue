@@ -1,14 +1,14 @@
 <template>
   <div
-    v-on:click="$emit('click')"
-    v-on:keyup.enter="$emit('click')"
-    v-on:keyup.space="$emit('click')"
     :class="classObject"
-    v-on:mouseenter="hover = true"
-    v-on:mouseleave="hover = false"
     role="button"
     tabindex="0"
     class="d-flex justify-content-between"
+    @click="$emit('click')"
+    @keyup.enter="$emit('click')"
+    @keyup.space="$emit('click')"
+    @mouseenter="hover = true"
+    @mouseleave="hover = false"
   >
     <div
       class="w-100 d-flex flex-row justify-content-between align-items-center"
@@ -17,9 +17,9 @@
         <div class="w-100 d-flex align-items-center align-content-center">
           <div class="sb-nav-link-icon align-content-center">
             <b-icon
+              v-if="showDropdownToggle"
               :icon="chevronDirection"
               scale="0.8"
-              v-if="showDropdownToggle"
             />
             <b-icon v-else-if="showIcon" :icon="icon" scale="0.8" />
           </div>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="action mr-1">
-        <div :class="dropdownClass" v-show="hover">
+        <div v-show="hover" :class="dropdownClass">
           <slot name="action-dropdown" />
         </div>
       </div>

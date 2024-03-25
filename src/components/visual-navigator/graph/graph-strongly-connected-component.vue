@@ -1,5 +1,5 @@
 <template>
-  <path :class="classObject" v-bind:d="hullLine" />
+  <path :class="classObject" :d="hullLine" />
 </template>
 
 <script setup lang="ts">

@@ -19,21 +19,21 @@
         <strong>Detected warning(s)</strong>
         <ul class="pl-3 ml-0">
           <li
-            v-bind:key="reason"
             v-for="reason in OrganizationWarningDetector.getOrganizationWarningReasons(
               organization,
               network,
             )"
+            :key="reason"
           >
             {{ reason }}.
           </li>
         </ul>
       </b-alert>
-      <div class="row row-cards row-deck" v-if="!store.isSimulation">
+      <div v-if="!store.isSimulation" class="row row-cards row-deck">
         <div class="col-12">
           <organization-profile :organization="organization" />
         </div>
-        <div class="col-md-12 col-lg-6" v-if="!store.isSimulation">
+        <div v-if="!store.isSimulation" class="col-md-12 col-lg-6">
           <OrganizationStatisticsSubQuorum24hAvailability
             :organization="organization"
           />
@@ -41,11 +41,11 @@
             :organization="organization"
           />
         </div>
-        <div class="col-md-12 col-lg-6" v-if="!store.isSimulation">
+        <div v-if="!store.isSimulation" class="col-md-12 col-lg-6">
           <history-card
             :subject="'Availability history'"
-            :entityId="organization.id"
-            :fetchDayMeasurements="
+            :entity-id="organization.id"
+            :fetch-day-measurements="
               (organizationId, from, to) =>
                 organizationMeasurementStore.getDayStatistics(
                   organizationId,
@@ -53,7 +53,7 @@
                   to,
                 )
             "
-            :fetchMeasurements="
+            :fetch-measurements="
               (organizationId, from, to) =>
                 organizationMeasurementStore.getStatistics(
                   organizationId,
@@ -61,8 +61,8 @@
                   to,
                 )
             "
-            :dayMeasurementProperty="'isSubQuorumAvailableCount'"
-            :measurementProperty="'isSubQuorumAvailable'"
+            :day-measurement-property="'isSubQuorumAvailableCount'"
+            :measurement-property="'isSubQuorumAvailable'"
           >
           </history-card>
         </div>
@@ -73,8 +73,8 @@
           <organization-validators :organization="organization" />
         </div>
       </div>
-      <div class="row row-cards" v-if="!store.isSimulation">
-        <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
+      <div v-if="!store.isSimulation" class="row row-cards">
+        <div v-if="!store.isSimulation" class="col-lg-12 col-xl-12">
           <organization-latest-updates :organization="organization" />
         </div>
       </div>

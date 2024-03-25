@@ -14,9 +14,9 @@
         <template #cell()="data">
           <ul class="horizontal-list">
             <li
-              class="horizontal-list-item"
               v-for="(item, index) in data.item.key"
               :key="index"
+              class="horizontal-list-item"
             >
               <span
                 v-if="showNodesPartition"

@@ -73,14 +73,14 @@
         </div>
       </div>
     </b-navbar>
-    <b-collapse class="header collapse d-lg-flex p-0" is-nav id="nav_collapse">
+    <b-collapse id="nav_collapse" class="header collapse d-lg-flex p-0" is-nav>
       <div class="container-fluid collapser" style="max-width: 1360px">
         <div class="row align-items-center">
           <b-nav-item-dropdown
+            v-if="!store.isLoading"
             variant="primary"
             toggle-class="gray"
             class="ml-0 pl-0 mt-3 d-lg-none"
-            v-if="!store.isLoading"
           >
             <template #button-content>
               {{ store.getNetworkContextName() }}
@@ -136,7 +136,7 @@
                   Nodes
                 </router-link>
               </li>
-              <li class="nav-item" v-if="includeOrganizations">
+              <li v-if="includeOrganizations" class="nav-item">
                 <router-link
                   active-class="active"
                   class="nav-link"
@@ -155,7 +155,6 @@
                 </router-link>
               </li>
               <li
-                class="nav-item"
                 v-if="
                   includeNotify &&
                   !store.isLoading &&
@@ -163,6 +162,7 @@
                   store.networkId === 'public' &&
                   !store.isSimulation
                 "
+                class="nav-item"
               >
                 <router-link
                   active-class="active"
@@ -180,7 +180,7 @@
                   Notify
                 </router-link>
               </li>
-              <li class="nav-item" v-if="blogUrl">
+              <li v-if="blogUrl" class="nav-item">
                 <a
                   class="nav-link"
                   target="_blank"
@@ -191,7 +191,7 @@
                   Blog
                 </a>
               </li>
-              <li class="nav-item" v-if="apiDocUrl">
+              <li v-if="apiDocUrl" class="nav-item">
                 <a
                   class="nav-link"
                   target="_blank"
@@ -263,6 +263,7 @@ defineProps({
   faqRoute: {
     type: String,
     required: false,
+    default: undefined,
   },
   brandName: {
     type: String,
@@ -286,18 +287,24 @@ defineProps({
   },
   apiDocUrl: {
     type: String,
+    default: undefined,
   },
   blogUrl: {
     type: String,
+    default: undefined,
   },
   githubUrl: {
     type: String,
+    default: undefined,
   },
   mailTo: {
     type: String,
+    default: undefined,
   },
   brandLogo: {
     type: Object as PropType<BrandLogo>,
+    required: false,
+    default: undefined,
   },
 });
 

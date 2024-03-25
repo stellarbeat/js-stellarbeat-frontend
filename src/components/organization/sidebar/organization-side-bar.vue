@@ -4,17 +4,17 @@
     :sticky-key="selectedOrganization.id"
     icon="building"
   >
-    <template v-slot:title>
+    <template #title>
       {{ selectedOrganization.name }}
     </template>
-    <template v-slot:sub-title>
+    <template #sub-title>
       {{ organizationType }}
       <b-badge
         v-if="network.isOrganizationFailing(selectedOrganization)"
-        variant="danger"
         v-b-tooltip:hover="
           store.getOrganizationFailingReason(selectedOrganization)
         "
+        variant="danger"
       >
         {{
           network.isOrganizationBlocked(selectedOrganization)
@@ -29,18 +29,18 @@
             store.network,
           )
         "
-        variant="warning"
         v-b-tooltip:hover="
           OrganizationWarningDetector.getOrganizationWarningReasons(
             selectedOrganization,
             store.network,
           ).join(' | ')
         "
+        variant="warning"
       >
         Warning
       </b-badge>
     </template>
-    <template v-slot:explore-list-items>
+    <template #explore-list-items>
       <li class="sb-nav-item">
         <organization-validators-dropdown
           :organization="selectedOrganization"
@@ -54,10 +54,10 @@
         />
       </li>
     </template>
-    <template v-slot:tool-list-items>
+    <template #tool-list-items>
       <li
-        class="sb-nav-item"
         v-if="!network.isOrganizationBlocked(selectedOrganization)"
+        class="sb-nav-item"
       >
         <nav-link
           :title="
@@ -71,15 +71,13 @@
               ? 'lightning-fill'
               : 'lightning'
           "
-          v-on:click="
-            store.toggleOrganizationAvailability(selectedOrganization)
-          "
+          @click="store.toggleOrganizationAvailability(selectedOrganization)"
         />
       </li>
-      <li class="sb-nav-item" v-if="store.networkContext.enableConfigExport">
+      <li v-if="store.networkContext.enableConfigExport" class="sb-nav-item">
         <nav-link
-          :title="'Stellar core config'"
           v-b-modal.tomlExportModal
+          :title="'Stellar core config'"
           :show-icon="true"
           icon="download"
         />
@@ -94,9 +92,9 @@
         <simulate-new-node />
       </li>
       <b-modal
+        id="tomlExportModal"
         lazy
         size="lg"
-        id="tomlExportModal"
         title="Stellar Core Config"
         ok-only
         ok-title="Close"

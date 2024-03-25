@@ -7,7 +7,7 @@
       <b-icon-exclamation-triangle />
       Error fetching data
     </div>
-    <div v-bind:class="dimmerClass">
+    <div :class="dimmerClass">
       <div class="loader mt-2"></div>
       <div class="dimmer-content">
         <b-list-group v-if="!isLoading" flush class="w-100 mb-4 card-columns">

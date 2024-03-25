@@ -4,8 +4,8 @@
       <button
         type="button"
         class="btn btn-secondary btn-icon"
-        v-on:click="onUndoUpdate"
         :disabled="!store.hasUndo"
+        @click="onUndoUpdate"
       >
         <b-icon-arrow-counterclockwise />
       </button>
@@ -13,8 +13,8 @@
     <button
       type="button"
       class="btn btn-secondary"
-      v-on:click="onReset"
       :disabled="!store.hasUndo"
+      @click="onReset"
     >
       Reset simulation
     </button>
@@ -22,8 +22,8 @@
       <button
         type="button"
         class="btn btn-secondary btn-icon"
-        v-on:click="onRedoUpdate"
         :disabled="!store.hasRedo"
+        @click="onRedoUpdate"
       >
         <b-icon-arrow-clockwise />
       </button>

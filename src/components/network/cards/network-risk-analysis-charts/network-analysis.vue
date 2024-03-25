@@ -28,9 +28,9 @@
           class="text-muted"
         />
       </b-button>
-      <b-modal title="Info" ok-only hide-header v-model="showModal">
+      <b-modal v-model="showModal" title="Info" ok-only hide-header>
         <slot name="info"></slot>
-        <template v-slot:modal-footer>
+        <template #modal-footer>
           <div class="w-100">
             <p class="float-left">
               Powered by
@@ -68,42 +68,42 @@
           class="dimmer-content"
         >
           <aggregation-line-chart
-            ref="yearChart"
             v-if="bucketSize === '1Y'"
-            :chartDataSets="aggregatedDataSets"
-            :chartLabels="getAggregatedLabels"
+            ref="yearChart"
+            :key="'1'"
+            :chart-data-sets="aggregatedDataSets"
+            :chart-labels="getAggregatedLabels"
             :unit="'month'"
             :tooltip-time-format="'MMM yyyy'"
             :time-display-formats="{ month: 'MMM yyyy' }"
             :step-size="1"
-            :chartLabelFilter="aggregatedChartLabelFilter"
-            :key="'1'"
+            :chart-label-filter="aggregatedChartLabelFilter"
             @click-date="select30DayView"
           />
           <aggregation-line-chart
-            ref="monthChart"
             v-if="bucketSize === '30D'"
-            :chartDataSets="aggregatedDataSets"
-            :chartLabels="getAggregatedLabels"
+            ref="monthChart"
+            :key="'2'"
+            :chart-data-sets="aggregatedDataSets"
+            :chart-labels="getAggregatedLabels"
             :unit="'day'"
             :tooltip-time-format="'d-M-yyyy'"
             :time-display-formats="{ day: 'd-M-yyyy' }"
             :step-size="2"
-            :chartLabelFilter="aggregatedChartLabelFilter"
-            :key="'2'"
+            :chart-label-filter="aggregatedChartLabelFilter"
             @click-date="select24HView"
           />
           <aggregation-line-chart
-            ref="dayChart"
             v-if="bucketSize === '24H'"
+            ref="dayChart"
+            :key="'3'"
             :unit="'minute'"
             :tooltip-time-format="'d-M-yyyy HH:mm'"
             :time-display-formats="{ minute: 'HH:mm' }"
             :step-size="4"
             point-radius="0"
             :chart-data-sets="hour24ChartDataSets"
-            :chartLabels="getLabels"
-            :key="'3'"
+            :chart-labels="getLabels"
             @click-date="updateSelectedDateAndHighlight"
           />
         </div>
@@ -115,14 +115,14 @@
       >
         <date-navigator
           v-if="initialDataLoaded"
-          :minSelectedDate="
+          :min-selected-date="
             statisticsDateTimeNavigator.getMinSelectedDate(bucketSize)
           "
-          :selectedDate="selectedDate"
-          v-on:dateChanged="updateSelectedDate"
+          :selected-date="selectedDate"
           :bucket-size="bucketSize"
-          :showTime="bucketSize === '24H'"
+          :show-time="bucketSize === '24H'"
           class="mr-1 mb-0 mt-1"
+          @dateChanged="updateSelectedDate"
         />
       </div>
     </div>

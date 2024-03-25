@@ -5,16 +5,16 @@
       <div class="card-options">
         <a
           href="#"
-          v-on:click.prevent.stop="store.isNetworkAnalysisVisible = false"
           class="card-options-remove"
           data-toggle="card-remove"
+          @click.prevent.stop="store.isNetworkAnalysisVisible = false"
         >
           <b-icon-x class="mr-2" />
         </a>
       </div>
     </b-card-header>
     <b-card-body class="px-3 pt-4 pb-2">
-      <div v-bind:class="dimmerClass">
+      <div :class="dimmerClass">
         <div class="loader mt-2"></div>
         <div class="dimmer-content">
           <div v-if="hasResult">
@@ -26,8 +26,8 @@
               >
                 <b-card-header header-tag="header" class="p-0" role="tab">
                   <b-button
-                    block
                     v-b-toggle.accordion-quorum
+                    block
                     variant="outline-primary"
                     >Quorum intersection
                   </b-button>
@@ -42,12 +42,12 @@
                     <analysis
                       title="Minimal quorums"
                       :items="minimalQuorums"
-                      :nodesPartition="nodesPartition"
-                      :showNodesPartition="
+                      :nodes-partition="nodesPartition"
+                      :show-nodes-partition="
                         resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
-                      <template v-slot:title>
+                      <template #title>
                         <div
                           class="d-flex justify-content-between align-items-baseline"
                         >
@@ -81,8 +81,8 @@
               <b-card v-if="livenessAnalyzed" no-body class="mb-1 border-0">
                 <b-card-header header-tag="header" class="p-0" role="tab">
                   <b-button
-                    block
                     v-b-toggle.accordion-liveness
+                    block
                     variant="outline-primary"
                     >Liveness risk
                   </b-button>
@@ -97,12 +97,12 @@
                     <analysis
                       title="Blocking sets"
                       :items="blockingSets"
-                      :nodesPartition="nodesPartition"
-                      :showNodesPartition="
+                      :nodes-partition="nodesPartition"
+                      :show-nodes-partition="
                         resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
-                      <template v-slot:title>
+                      <template #title>
                         <div
                           class="d-flex justify-content-between align-items-baseline"
                         >
@@ -131,8 +131,8 @@
               <b-card v-if="safetyAnalyzed" no-body class="mb-1 border-0">
                 <b-card-header header-tag="header" class="p-0" role="tab">
                   <b-button
-                    block
                     v-b-toggle.accordion-safety
+                    block
                     variant="outline-primary"
                     >Safety risk
                   </b-button>
@@ -147,12 +147,12 @@
                     <analysis
                       title="Splitting sets"
                       :items="splittingSets"
-                      :nodesPartition="nodesPartition"
-                      :showNodesPartition="
+                      :nodes-partition="nodesPartition"
+                      :show-nodes-partition="
                         resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
-                      <template v-slot:title>
+                      <template #title>
                         <div
                           class="d-flex justify-content-between align-items-baseline"
                         >
@@ -181,8 +181,8 @@
               <b-card v-if="topTierAnalyzed" no-body class="mb-1 border-0">
                 <b-card-header header-tag="header" class="p-0" role="tab">
                   <b-button
-                    block
                     v-b-toggle.accordion-top-tier
+                    block
                     variant="outline-primary"
                     >Top tier
                   </b-button>
@@ -197,12 +197,12 @@
                     <analysis
                       title="Top tier"
                       :items="topTier"
-                      :nodesPartition="nodesPartition"
-                      :showNodesPartition="
+                      :nodes-partition="nodesPartition"
+                      :show-nodes-partition="
                         resultMergedBy !== MyMergeBy.DoNotMerge
                       "
                     >
-                      <template v-slot:title>
+                      <template #title>
                         <div
                           class="d-flex justify-content-between align-items-baseline"
                         >
@@ -276,13 +276,10 @@
             <b-form-checkbox v-model="analyzeTopTier">Top Tier</b-form-checkbox>
           </b-form-group>
 
-          <b-button
-            v-if="!isLoading"
-            variant="primary"
-            v-on:click="performAnalysis"
+          <b-button v-if="!isLoading" variant="primary" @click="performAnalysis"
             >Perform analysis
           </b-button>
-          <b-button v-else variant="danger" v-on:click="stopAnalysis"
+          <b-button v-else variant="danger" @click="stopAnalysis"
             >Stop analysis</b-button
           >
         </div>

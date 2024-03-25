@@ -46,7 +46,7 @@
               {{ node.historyUrl ? node.historyUrl : "N/A" }}
             </td>
           </tr>
-          <tr class="text-gray" v-if="node.overlayVersion">
+          <tr v-if="node.overlayVersion" class="text-gray">
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
               Overlay version
             </td>
@@ -54,7 +54,7 @@
               {{ node.overlayVersion }}
             </td>
           </tr>
-          <tr class="text-gray" v-if="node.overlayMinVersion">
+          <tr v-if="node.overlayMinVersion" class="text-gray">
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
               Overlay min version
             </td>
@@ -62,7 +62,7 @@
               {{ node.overlayMinVersion }}
             </td>
           </tr>
-          <tr class="text-gray" v-if="node.ledgerVersion">
+          <tr v-if="node.ledgerVersion" class="text-gray">
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
               Ledger version
             </td>

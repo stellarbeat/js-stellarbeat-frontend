@@ -21,36 +21,36 @@
       Error fetching data
     </div>
     <div class="card-body p-2">
-      <div v-bind:class="dimmerClass" class="h-100">
+      <div :class="dimmerClass" class="h-100">
         <div class="loader"></div>
         <div
-          class="dimmer-content h-100 d-flex flex-column align-items-center justify-content-center"
           ref="chartContainer"
+          class="dimmer-content h-100 d-flex flex-column align-items-center justify-content-center"
         >
           <div v-if="rendered">
             <BarChartDay
               v-if="chartView === '30D'"
-              v-on:click-date="select24HView"
+              :key="'1'"
               :width="chartWidth"
               :data="thirtyDaysBarChartData"
               :unit="'day'"
-              :key="'1'"
+              @click-date="select24HView"
             />
             <BarChartDay
-              v-on:click-date="select1HView"
               v-if="chartView === '24H'"
+              :key="'2'"
               :width="chartWidth"
               :data="twentyFourHourBarChartData"
               :unit="'hour'"
-              :key="'2'"
+              @click-date="select1HView"
             />
             <line-chart-hour
-              v-on:click-date="updateSelectedDateAndHighlight"
               v-if="chartView === '1H'"
-              v-on:update-view="updateView"
               :width="chartWidth"
               :data="oneHourLineChartData"
               :inverted="inverted"
+              @click-date="updateSelectedDateAndHighlight"
+              @update-view="updateView"
             />
           </div>
 
@@ -61,11 +61,11 @@
           >
             <date-navigator
               v-if="rendered"
-              :selectedDate="selectedDate"
-              v-on:dateChanged="updateSelectedDate"
-              :showTime="chartView === '1H'"
+              :selected-date="selectedDate"
+              :show-time="chartView === '1H'"
               class="mr-1 mb-1"
               :bucket-size="chartView"
+              @dateChanged="updateSelectedDate"
             >
             </date-navigator>
           </div>

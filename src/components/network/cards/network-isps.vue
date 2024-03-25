@@ -1,5 +1,5 @@
 <template>
-  <div class="card" id="isp-list-card">
+  <div id="isp-list-card" class="card">
     <div class="card-header pl-3">
       <h1 class="card-title">
         {{ store.includeWatcherNodes ? "Node " : "Validator " }} ISPs
@@ -19,13 +19,13 @@
         :current-page="currentPage"
         class="mb-0"
       >
-        <template v-slot:cell(isp)="data">
+        <template #cell(isp)="data">
           {{ data.value }}
         </template>
-        <template v-slot:cell(count)="data">
+        <template #cell(count)="data">
           {{ data.value }}
         </template>
-        <template v-slot:cell(action)="row">
+        <template #cell(action)="row">
           <b-dropdown
             right
             size="sm"
@@ -41,7 +41,7 @@
             <b-dropdown-header> Simulation options </b-dropdown-header>
             <div>
               <b-dropdown-item
-                v-on:click.prevent.stop="simulateFailure(row.item.ispKey)"
+                @click.prevent.stop="simulateFailure(row.item.ispKey)"
               >
                 <b-icon-lightning scale="0.9" />
                 Halt nodes with ISP
@@ -51,16 +51,16 @@
         </template>
       </b-table>
       <div
-        class="d-flex justify-content-end m-1"
         v-show="ispList.length >= perPage"
+        class="d-flex justify-content-end m-1"
       >
         <b-pagination
+          v-model="currentPage"
           size="sm"
           limit="3"
           class="mb-0"
-          :totalRows="totalRows"
+          :total-rows="totalRows"
           :per-page="perPage"
-          v-model="currentPage"
         />
       </div>
     </div>

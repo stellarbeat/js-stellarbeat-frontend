@@ -1,10 +1,10 @@
 <template>
   <div>
     <b-form-input
+      id="searchInput"
+      v-model="filter"
       class="form-control search mr-0"
       type="text"
-      v-model="filter"
-      id="searchInput"
       placeholder="Type name, ... to search"
     />
     <b-table
@@ -17,18 +17,18 @@
       :sort-desc.sync="sortDesc"
       :per-page="perPage"
       :filter="filter"
-      @filtered="onFiltered"
       selectable
-      @row-selected="rowSelected"
       :select-mode="mode"
       :current-page="currentPage"
-      selectedVariant="success"
+      selected-variant="success"
+      @filtered="onFiltered"
+      @row-selected="rowSelected"
     >
-      <template v-slot:cell(name)="row">
+      <template #cell(name)="row">
         <span
           v-if="row.item.isTierOneOrganization"
-          class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
           v-b-tooltip.hover
+          class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
           title="Tier 1 organization"
         >
           <b-icon-shield />
@@ -38,10 +38,10 @@
     </b-table>
 
     <b-pagination
-      :totalRows="totalRows"
-      :per-page="perPage"
-      v-model="currentPage"
       ref="paginator"
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
       class="my-1"
     />
   </div>

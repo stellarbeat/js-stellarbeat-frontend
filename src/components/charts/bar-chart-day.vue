@@ -1,5 +1,5 @@
 <template>
-  <canvas height="140px" :width="width" :ref="(el) => (chartElement = el)" />
+  <canvas :ref="(el) => (chartElement = el)" height="140px" :width="width" />
 </template>
 
 <script setup lang="ts">

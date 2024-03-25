@@ -5,8 +5,8 @@
     >
       <h3 class="my-1">
         <span
-          v-b-tooltip.hover
           v-if="organization.isTierOneOrganization"
+          v-b-tooltip.hover
           title="Tier one organization"
           class="badge sb-badge badge-primary"
         >
@@ -15,15 +15,15 @@
         {{ organization.name }}
         <b-badge
           v-if="store.getOrganizationFailAt(organization) <= 0"
-          variant="danger"
           v-b-tooltip:hover="'More then 50% of its validators are failing'"
+          variant="danger"
           >Failing
         </b-badge>
       </h3>
-      <p class="m-2" v-if="organization.description">
+      <p v-if="organization.description" class="m-2">
         {{ organization.description }}
       </p>
-      <b-alert class="mt-2" v-else show variant="info"
+      <b-alert v-else class="mt-2" show variant="info"
         >No description found in
         <a
           target="_blank"
@@ -36,8 +36,8 @@
       <ul class="social-links list-inline mb-2 mt-2">
         <li v-if="organization.url" class="list-inline-item">
           <a
-            :href="organization.url"
             v-b-tooltip.hover
+            :href="organization.url"
             :title="organization.url"
             class="social-link"
             target="_blank"
@@ -48,6 +48,7 @@
         </li>
         <li v-if="organization.physicalAddress" class="list-inline-item">
           <a
+            v-b-tooltip.hover
             :href="
               'https://www.google.com/maps/search/?api=1&query=' +
               organization.physicalAddress
@@ -55,7 +56,6 @@
             target="_blank"
             rel="noopener"
             class="social-link"
-            v-b-tooltip.hover
             :title="organization.physicalAddress"
           >
             <b-icon-map scale="1.2" />
@@ -63,8 +63,8 @@
         </li>
         <li v-if="organization.officialEmail" class="list-inline-item">
           <a
-            class="social-link"
             v-b-tooltip.hover
+            class="social-link"
             :title="organization.officialEmail"
             :href="'mailto:' + organization.officialEmail"
             target="_blank"
@@ -75,8 +75,8 @@
         </li>
         <li v-if="organization.phoneNumber" class="list-inline-item">
           <a
-            class="social-link"
             v-b-tooltip.hover
+            class="social-link"
             :title="organization.phoneNumber"
             :href="'tel:' + organization.phoneNumber"
             target="_blank"
@@ -87,9 +87,9 @@
         </li>
         <li v-if="organization.twitter" class="list-inline-item">
           <a
+            v-b-tooltip.hover
             :href="'https://twitter.com/' + organization.twitter"
             class="social-link"
-            v-b-tooltip.hover
             title="Twitter"
             target="_blank"
             rel="noopener"
@@ -99,10 +99,10 @@
         </li>
         <li v-if="organization.github" class="list-inline-item">
           <a
+            v-b-tooltip.hover
             :href="'https://github.com/' + organization.github"
             target="_blank"
             rel="noopener"
-            v-b-tooltip.hover
             title="Github"
             class="social-link"
           >
@@ -111,9 +111,9 @@
         </li>
         <li v-if="organization.keybase" class="list-inline-item">
           <a
+            v-b-tooltip.hover
             :href="'https://keybase.io/' + organization.keybase"
             rel="noopener"
-            v-b-tooltip.hover
             title="Keybase"
             target="_blank"
             class="social-link"
@@ -128,8 +128,8 @@
         </li>
         <li v-if="organization.horizonUrl" class="list-inline-item">
           <a
-            :href="organization.horizonUrl"
             v-b-tooltip.hover
+            :href="organization.horizonUrl"
             title="Horizon"
             target="_blank"
             class="social-link"

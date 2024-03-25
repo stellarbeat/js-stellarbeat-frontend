@@ -6,11 +6,11 @@
         :is-loading="isLoading"
         title="Watcher nodes"
         tooltip="Number of active watcher nodes"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="nrOfActiveWatchersAverage"
         :year-statistics="yearStatistics"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Watcher nodes</h3>
           <p class="my-4">
             Watcher nodes are configured to watch the activity from the network.
@@ -38,11 +38,11 @@
         :is-loading="isLoading"
         title="Validator nodes"
         tooltip="Number of active validators"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="nrOfActiveValidatorsAverage"
         :year-statistics="yearStatistics"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Validator nodes</h3>
           <p class="my-4">
             Nodes that are actively voting on the network in the current crawl.
@@ -104,11 +104,11 @@
         :is-loading="isLoading"
         title="Full validators"
         tooltip="Number of active full validators"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="nrOfActiveFullValidatorsAverage"
         :year-statistics="yearStatistics"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Full validators</h3>
           <p class="my-4">
             In addition to voting on the network, a full validator manages an
@@ -142,11 +142,11 @@
         :is-loading="isLoading"
         title="Organizations"
         tooltip="Number of active organizations"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="nrOfActiveOrganizationsAverage"
         :year-statistics="yearStatistics"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Active Organizations</h3>
           <p class="my-4">
             Nodes are grouped into organizations. Organizations are active when
@@ -180,12 +180,12 @@
         title="Top tier validators"
         tooltip="Number of validators in the top tier"
         :unknown="store.networkAnalyzer.manualMode"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="topTierAverage"
         :year-statistics="yearStatistics"
         :is-simulation-sensitive="true"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Top tier validators</h3>
           <p class="my-4">
             The top tier is the set of nodes in the network that is exclusively
@@ -213,12 +213,12 @@
         title="Top tier organizations"
         :unknown="store.networkAnalyzer.manualMode"
         tooltip="Number of organizations in the top tier"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="topTierOrgsAverage"
         :year-statistics="yearStatistics"
         :is-simulation-sensitive="true"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Top tier organizations</h3>
           <p class="my-4">The top tier grouped by organization.</p>
 
@@ -242,11 +242,11 @@
         :is-bool="true"
         title="Transitive quorum set"
         tooltip="Does the network have a transitive quorum set"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="hasTransitiveQuorumSetAverage"
         :year-statistics="yearStatistics"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Network transitive quorum set</h3>
           <p class="my-4">
             The network transitive quorum set is a heuristic for a correctly
@@ -266,12 +266,12 @@
         :is-loading="isLoading || store.networkAnalyzer.analyzing"
         title="Quorum intersection"
         tooltip="Does the network have quorum intersection"
-        :initialDataLoaded="initialDataLoaded"
+        :initial-data-loaded="initialDataLoaded"
         stats-property="hasQuorumIntersectionAverage"
         :year-statistics="yearStatistics"
         :is-simulation-sensitive="true"
       >
-        <template v-slot:info>
+        <template #info>
           <h3>Quorum intersection</h3>
           <p class="my-4">
             A prerequisite for network safety. Indicates that all quorums are

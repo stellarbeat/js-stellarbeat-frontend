@@ -2,13 +2,13 @@
   <div class="sb-nav-item">
     <nav-link
       title="Validators"
-      v-on:click="toggleShow"
-      :showDropdownToggle="true"
-      :dropDownShowing="showing"
+      :show-dropdown-toggle="true"
+      :drop-down-showing="showing"
       :show-sub-title="true"
       :sub-title="'Transitive quorum set'"
       :has-warnings="hasGeneralValidatorsWarning"
       :warnings="generalValidatorsWarning"
+      @click="toggleShow"
     />
 
     <div v-show="showing" class="sb-nav-dropdown">
@@ -16,24 +16,24 @@
         <nav-link
           v-for="node in paginatedNodes"
           :key="node.publicKey"
-          v-on:click="selectNode(node)"
           :title="getDisplayName(node)"
-          :isLinkInDropdown="true"
+          :is-link-in-dropdown="true"
           :has-warnings="NodeWarningDetector.nodeHasWarning(node, network)"
           :warnings="
             NodeWarningDetector.getNodeWarningReasonsConcatenated(node, network)
           "
           :has-danger="network.isNodeFailing(node)"
           :dangers="network.getNodeFailingReason(node).label"
+          @click="selectNode(node)"
         >
-          <template v-slot:action-dropdown>
+          <template #action-dropdown>
             <node-actions :node="node" />
           </template>
         </nav-link>
         <nav-pagination
           v-model="currentPage"
-          v-on:input="currentPage = $event"
           :total-rows="nodes.length"
+          @input="currentPage = $event"
         />
       </div>
     </div>

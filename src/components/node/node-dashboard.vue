@@ -11,11 +11,11 @@
       <strong>Detected warning(s)</strong>
       <ul class="pl-3 ml-0">
         <li
-          v-bind:key="reason"
           v-for="reason in NodeWarningDetector.getNodeWarningReasons(
             selectedNode,
             network,
           )"
+          :key="reason"
         >
           {{ reason }}.
         </li>
@@ -44,24 +44,24 @@
       Only latest ledgers in history archive are scanned for errors because
       archive has limited throughput.
     </b-alert>
-    <div class="row row-cards row-deck" v-if="!store.isSimulation">
+    <div v-if="!store.isSimulation" class="row row-cards row-deck">
       <div class="col-sm-12 col-md-6 col-xl-3">
         <node-index :node="selectedNode" />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-xl-3" v-if="selectedNode.isValidator">
+      <div v-if="selectedNode.isValidator" class="col-sm-12 col-md-6 col-xl-3">
         <NodeStatistics24HValidating :node="selectedNode" />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-xl-3" v-else>
+      <div v-else class="col-sm-12 col-md-6 col-xl-3">
         <NodeStatistics24HActive :node="selectedNode" />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-xl-3" v-if="selectedNode.isValidator">
+      <div v-if="selectedNode.isValidator" class="col-sm-12 col-md-6 col-xl-3">
         <NodeStatistics30DValidating :node="selectedNode" />
       </div>
 
-      <div class="col-sm-12 col-md-6 col-xl-3" v-else>
+      <div v-else class="col-sm-12 col-md-6 col-xl-3">
         <NodeStatistics30DActive :node="selectedNode" />
       </div>
 
@@ -69,74 +69,74 @@
         <NodeStatistics30DOverloaded :node="selectedNode" />
       </div>
 
-      <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
+      <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
         <history-card
           :subject="'Validating'"
-          :entityId="selectedNode.publicKey"
-          :fetchDayMeasurements="
+          :entity-id="selectedNode.publicKey"
+          :fetch-day-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getDayStatistics(publicKey, from, to)
           "
-          :fetchMeasurements="
+          :fetch-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getStatistics(publicKey, from, to)
           "
-          :dayMeasurementProperty="'isValidatingCount'"
-          :measurementProperty="'isValidating'"
-          :chartType="'bar'"
+          :day-measurement-property="'isValidatingCount'"
+          :measurement-property="'isValidating'"
+          :chart-type="'bar'"
         >
         </history-card>
       </div>
       <div v-else class="col-md-12 col-lg-6 col-xl-4">
         <history-card
           :subject="'Active'"
-          :entityId="selectedNode.publicKey"
-          :fetchDayMeasurements="
+          :entity-id="selectedNode.publicKey"
+          :fetch-day-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getDayStatistics(publicKey, from, to)
           "
-          :fetchMeasurements="
+          :fetch-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getStatistics(publicKey, from, to)
           "
-          :dayMeasurementProperty="'isActiveCount'"
-          :measurementProperty="'isActive'"
-          :chartType="'bar'"
+          :day-measurement-property="'isActiveCount'"
+          :measurement-property="'isActive'"
+          :chart-type="'bar'"
         >
         </history-card>
       </div>
 
-      <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
+      <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
         <history-card
           :subject="'History Archive up-to-date'"
-          :entityId="selectedNode.publicKey"
-          :fetchDayMeasurements="
+          :entity-id="selectedNode.publicKey"
+          :fetch-day-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getDayStatistics(publicKey, from, to)
           "
-          :fetchMeasurements="
+          :fetch-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getStatistics(publicKey, from, to)
           "
-          :dayMeasurementProperty="'isFullValidatorCount'"
-          :measurementProperty="'isFullValidator'"
+          :day-measurement-property="'isFullValidatorCount'"
+          :measurement-property="'isFullValidator'"
         >
         </history-card>
       </div>
-      <div class="col-md-12 col-lg-6 col-xl-4" v-if="selectedNode.isValidator">
+      <div v-if="selectedNode.isValidator" class="col-md-12 col-lg-6 col-xl-4">
         <history-card
           :subject="'Overloaded'"
-          :entityId="selectedNode.publicKey"
-          :fetchDayMeasurements="
+          :entity-id="selectedNode.publicKey"
+          :fetch-day-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getDayStatistics(publicKey, from, to)
           "
-          :fetchMeasurements="
+          :fetch-measurements="
             (publicKey, from, to) =>
               nodeMeasurementStore.getStatistics(publicKey, from, to)
           "
-          :dayMeasurementProperty="'isOverloadedCount'"
-          :measurementProperty="'isOverLoaded'"
+          :day-measurement-property="'isOverloadedCount'"
+          :measurement-property="'isOverLoaded'"
           :inverted="true"
         >
         </history-card>
@@ -154,10 +154,10 @@
       </div>
     </div>
     <div class="row row-cards">
-      <div class="col-lg-12 col-xl-12" v-if="selectedNode.isValidator">
+      <div v-if="selectedNode.isValidator" class="col-lg-12 col-xl-12">
         <node-quorum-set-validators :node="selectedNode" />
       </div>
-      <div class="col-lg-12 col-xl-12" v-if="!store.isSimulation">
+      <div v-if="!store.isSimulation" class="col-lg-12 col-xl-12">
         <node-latest-updates :node="selectedNode" />
       </div>
       <div v-else class="col-lg-12 col-xl-12">

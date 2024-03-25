@@ -1,5 +1,5 @@
 <template>
-  <b-modal size="xl" v-model="modalVisible">
+  <b-modal v-model="modalVisible" size="xl">
     <template #modal-header="{ close }">
       <h5 class="modal-title">Modify the network</h5>
       <!-- Emulate built in modal header close button action -->
@@ -33,20 +33,20 @@
         </li>
       </ul>
       <b-form-textarea
-        @input="modified = true"
         id="textarea"
         v-model="modifiedNetworkString"
         placeholder="Paste your custom network here"
         rows="20"
         max-rows="20"
         :state="modified ? null : isValid"
+        @input="modified = true"
       ></b-form-textarea>
       <div v-if="!isValid" class="mt-2">
         <b-list-group>
           <b-list-group-item
-            variant="danger"
             v-for="(error, index) in validationErrors"
             :key="index"
+            variant="danger"
             >{{
               error.message +
               (error.dataPath ? " at " + error.dataPath : "") +

@@ -5,9 +5,9 @@
         <full-validator-title :node="node" />
         <b-badge
           v-show="network.isNodeFailing(node)"
+          v-b-tooltip:hover.top="network.getNodeFailingReason(node).description"
           variant="danger"
           class="ml-1"
-          v-b-tooltip:hover.top="network.getNodeFailingReason(node).description"
           >{{ network.getNodeFailingReason(node).label }}</b-badge
         >
       </h3>
@@ -22,8 +22,8 @@
                 node.publicKey.substring(51, 100)
               }}
               <b-button
-                size="sm"
                 v-b-tooltip:hover.top="'Copy to clipboard'"
+                size="sm"
                 @click="copyPublicKey"
               >
                 <b-icon-clipboard />
@@ -44,9 +44,9 @@
             <td class="px-0 text-right">{{ node.key }}</td>
           </tr>
           <tr
-            class="text-gray"
             v-if="node.versionStr"
             v-b-tooltip:hover.top="node.versionStr"
+            class="text-gray"
           >
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
               Version

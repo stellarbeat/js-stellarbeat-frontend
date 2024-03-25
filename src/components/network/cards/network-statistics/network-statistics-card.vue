@@ -45,8 +45,8 @@
         </div>
         <b-button
           size="sm"
-          @click="showModal = true"
           style="border: none; box-shadow: none"
+          @click="showModal = true"
         >
           <b-icon-info-circle
             v-b-tooltip:hover.top="'Click for info'"
@@ -55,14 +55,14 @@
         </b-button>
       </div>
       <div
-        style="height: 35px"
         v-show="!store.isSimulation && store.networkContext.enableHistory"
+        style="height: 35px"
       >
         <network-statistics-chart
           v-if="initialDataLoaded"
           :stats-property="statsProperty"
           :year-statistics="yearStatistics"
-          v-on:hover="onHover"
+          @hover="onHover"
         />
       </div>
       <div
@@ -70,7 +70,7 @@
         class="mb-4"
       ></div>
     </div>
-    <b-modal lazy title="Info" ok-only hide-header v-model="showModal">
+    <b-modal v-model="showModal" lazy title="Info" ok-only hide-header>
       <slot name="info"></slot>
     </b-modal>
   </div>

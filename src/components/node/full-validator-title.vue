@@ -2,8 +2,8 @@
   <div>
     <span
       v-if="node.isFullValidator"
-      class="badge sb-badge badge-success vertical"
       v-b-tooltip:hover.top="'Full Validator'"
+      class="badge sb-badge badge-success vertical"
     >
       <b-icon-shield />
     </span>

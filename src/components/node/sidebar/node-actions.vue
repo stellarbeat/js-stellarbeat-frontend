@@ -14,7 +14,7 @@
     <b-dropdown-header> Simulation options </b-dropdown-header>
     <b-dropdown-item
       v-if="!network.isValidatorBlocked(node)"
-      v-on:click.prevent.stop="store.toggleValidating(node)"
+      @click.prevent.stop="store.toggleValidating(node)"
     >
       <b-icon-lightning scale="0.9" />
       {{ node.isValidating ? "Halt this node" : "Start validating" }}
@@ -24,7 +24,7 @@
     </b-dropdown-text>
     <b-dropdown-item
       v-if="supportsDelete"
-      v-on:click="deleteValidatorFromQuorumSet(node, quorumSet)"
+      @click="deleteValidatorFromQuorumSet(node, quorumSet)"
       @click.prevent.stop
     >
       <b-icon-x-circle scale="0.9" />
@@ -33,12 +33,12 @@
     <b-dropdown-header> Tools </b-dropdown-header>
     <b-dropdown-item
       v-if="supportsHaltingAnalysis"
-      v-on:click.prevent.stop="store.showHaltingAnalysis(node)"
+      @click.prevent.stop="store.showHaltingAnalysis(node)"
     >
       <b-icon-gear-wide scale="0.9" />
       Halting analysis
     </b-dropdown-item>
-    <b-dropdown-item-button v-on:click.prevent.stop="copyPublicKey">
+    <b-dropdown-item-button @click.prevent.stop="copyPublicKey">
       <b-icon-clipboard scale="0.9" />
       Copy public key
     </b-dropdown-item-button>
@@ -48,15 +48,15 @@
 <script setup lang="ts">
 import {
   BDropdown,
-  BDropdownItem,
-  BIconThreeDotsVertical,
-  BDropdownText,
   BDropdownHeader,
-  BIconXCircle,
-  BIconGearWide,
-  BIconClipboard,
-  BIconLightning,
+  BDropdownItem,
   BDropdownItemButton,
+  BDropdownText,
+  BIconClipboard,
+  BIconGearWide,
+  BIconLightning,
+  BIconThreeDotsVertical,
+  BIconXCircle,
 } from "bootstrap-vue";
 
 import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
@@ -74,6 +74,7 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   supportsDelete: false,
   supportsHaltingAnalysis: true,
+  quorumSet: undefined,
 });
 const { node, supportsDelete, quorumSet, supportsHaltingAnalysis } =
   toRefs(props);

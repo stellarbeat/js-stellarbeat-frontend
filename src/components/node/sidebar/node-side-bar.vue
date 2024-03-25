@@ -3,35 +3,35 @@
     v-if="selectedNode"
     :sticky-key="selectedNode.publicKey"
     icon="bullseye"
-    :hasExploreSection="selectedNode.isValidator"
+    :has-explore-section="selectedNode.isValidator"
   >
-    <template v-slot:title>
+    <template #title>
       {{ getDisplayName(selectedNode) }}
     </template>
-    <template v-slot:sub-title>
+    <template #sub-title>
       {{ nodeType }}
       <b-badge
         v-if="network.isNodeFailing(selectedNode)"
+        v-b-tooltip="network.getNodeFailingReason(selectedNode).description"
         variant="danger"
         style="vertical-align: bottom"
-        v-b-tooltip="network.getNodeFailingReason(selectedNode).description"
         >{{ network.getNodeFailingReason(selectedNode).label }}
       </b-badge>
       <b-badge
         v-else-if="NodeWarningDetector.nodeHasWarning(selectedNode, network)"
-        variant="warning"
         v-b-tooltip="
           NodeWarningDetector.getNodeWarningReasonsConcatenated(
             selectedNode,
             network,
           )
         "
+        variant="warning"
       >
         Warning
       </b-badge>
     </template>
-    <template v-slot:explore-list-items>
-      <li class="sb-nav-item" v-if="hasOrganization && organization">
+    <template #explore-list-items>
+      <li v-if="hasOrganization && organization" class="sb-nav-item">
         <organization-validators-dropdown
           :organization="organization"
           :expand="true"
@@ -39,19 +39,19 @@
       </li>
       <li class="sb-nav-item">
         <quorum-set-dropdown
-          :quorum-set="selectedNode.quorumSet"
           v-if="selectedNode.isValidator"
+          :quorum-set="selectedNode.quorumSet"
           :expand="quorumSetExpanded"
-          v-on:toggleExpand="quorumSetExpanded = !quorumSetExpanded"
+          @toggleExpand="quorumSetExpanded = !quorumSetExpanded"
         />
       </li>
     </template>
-    <template v-slot:tool-list-items>
+    <template #tool-list-items>
       <li
-        class="sb-nav-item"
         v-if="
           selectedNode.isValidator && !network.isValidatorBlocked(selectedNode)
         "
+        class="sb-nav-item"
       >
         <nav-link
           :title="
@@ -59,7 +59,7 @@
           "
           :show-icon="true"
           :icon="selectedNode.isValidating ? 'lightning-fill' : 'lightning'"
-          v-on:click="store.toggleValidating(selectedNode)"
+          @click="store.toggleValidating(selectedNode)"
         />
       </li>
       <li class="sb-nav-item">
@@ -73,42 +73,42 @@
       </li>
       <li class="sb-nav-item">
         <nav-link
-          :title="'Quorum slices'"
           v-b-modal.quorumSlicesModal
+          :title="'Quorum slices'"
           :show-icon="true"
           icon="search"
         />
       </li>
-      <li class="sb-nav-item" v-if="selectedNode.isValidator">
+      <li v-if="selectedNode.isValidator" class="sb-nav-item">
         <nav-link
           title="Halting analysis"
           :show-icon="true"
           icon="gear-wide"
-          v-on:click="store.showHaltingAnalysis(selectedNode)"
+          @click="store.showHaltingAnalysis(selectedNode)"
         />
       </li>
       <quorum-slices :selected-node="selectedNode" />
       <li
-        class="sb-nav-item"
         v-if="
           selectedNode.isValidator && store.networkContext.enableConfigExport
         "
+        class="sb-nav-item"
       >
         <nav-link
-          :title="'Stellar core config'"
           v-b-modal.tomlExportModal
+          :title="'Stellar core config'"
           :show-icon="true"
           icon="download"
         />
       </li>
       <b-modal
+        id="tomlExportModal"
         lazy
         size="lg"
-        id="tomlExportModal"
-        v-on:show="loadTomlExport()"
         title="Stellar Core Config"
         ok-only
         ok-title="Close"
+        @show="loadTomlExport()"
       >
         <pre><code>{{tomlNodesExport}}</code></pre>
       </b-modal>

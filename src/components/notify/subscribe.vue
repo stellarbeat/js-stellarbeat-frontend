@@ -9,10 +9,10 @@
     <div v-else>
       <h4>Subscribe to</h4>
       <b-form
-        @submit.prevent="onSubscribe"
-        @reset="onReset"
         novalidate
         :validated="validated"
+        @submit.prevent="onSubscribe"
+        @reset="onReset"
       >
         <b-alert variant="success" :show="requested"
           >Request received, you will receive an email shortly.</b-alert
@@ -29,13 +29,13 @@
         >
           <multiselect
             id="nodes-select"
+            v-model="selectedNodes"
             :multiple="true"
             :close-on-select="false"
             :clear-on-select="false"
             placeholder="Nodes"
             label="name"
             track-by="name"
-            v-model="selectedNodes"
             :options="nodes"
             :internal-search="false"
             @search-change="searchNodes"
@@ -51,13 +51,13 @@
         >
           <multiselect
             id="organization-select"
+            v-model="selectedOrganizations"
             :multiple="true"
             :close-on-select="false"
             :clear-on-select="false"
             placeholder="Organizations"
             label="name"
             track-by="name"
-            v-model="selectedOrganizations"
             :options="organizations"
           >
           </multiselect>
@@ -130,9 +130,9 @@
         <b-button
           class="ml-2"
           type="submit"
-          @click="onUnsubscribe"
           variant="danger"
           :disabled="!(emailAddressState === true && consented === 'accepted')"
+          @click="onUnsubscribe"
           >Unsubscribe and remove email address</b-button
         >
         <b-button type="reset" variant="default">Clear form</b-button>

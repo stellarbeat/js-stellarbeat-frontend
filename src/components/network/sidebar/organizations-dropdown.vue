@@ -3,20 +3,19 @@
     <nav-link
       class="sb-nav-dropdown-title"
       title="Organizations"
-      v-on:click="toggleShow"
-      :showDropdownToggle="true"
-      :dropDownShowing="showing"
-      :showIcon="true"
+      :show-dropdown-toggle="true"
+      :drop-down-showing="showing"
+      :show-icon="true"
       :show-sub-title="true"
       :sub-title="'Transitive quorum set'"
+      @click="toggleShow"
     >
-      <template v-slot:action-dropdown> </template>
+      <template #action-dropdown> </template>
     </nav-link>
     <div v-show="showing" class="sb-nav-dropdown">
       <nav-link
         v-for="organization in paginatedOrganizations"
         :key="organization.id"
-        v-on:click="selectOrganization(organization)"
         :title="organization.name"
         :is-link-in-dropdown="true"
         :has-warnings="hasWarnings(organization)"
@@ -28,15 +27,16 @@
         "
         :has-danger="!organization.subQuorumAvailable"
         :dangers="store.getOrganizationFailingReason(organization)"
+        @click="selectOrganization(organization)"
       >
-        <template v-slot:action-dropdown>
+        <template #action-dropdown>
           <organization-actions :organization="organization" />
         </template>
       </nav-link>
       <nav-pagination
         v-model="currentPage"
-        v-on:input="currentPage = $event"
         :total-rows="organizations.length"
+        @input="currentPage = $event"
       />
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <span v-if="store.isTimeTravel && !store.isSimulation" class="tag mx-2"
     >Time Travel
-    <a href="#" v-on:click.stop.prevent="resetTimeTravel()" class="tag-addon"
+    <a href="#" class="tag-addon" @click.stop.prevent="resetTimeTravel()"
       ><b-icon-x />
     </a>
   </span>

@@ -2,9 +2,9 @@
   <div class="d-flex flex-column align-items-center">
     <div class="relative">
       <canvas
+        :ref="(el) => (chartElement = el)"
         :height="height"
         :width="width"
-        :ref="(el) => (chartElement = el)"
       />
       <div class="absolute-center text-center">
         {{ centerText }}
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
-import { Chart, DoughnutController, ArcElement, LinearScale } from "chart.js";
+import { ArcElement, Chart, DoughnutController, LinearScale } from "chart.js";
 
 const props = defineProps({
   width: { type: String, required: true },
@@ -27,8 +27,8 @@ const props = defineProps({
   valueColor: { type: String, default: "#1997c6" },
   negativeValueColor: { type: String, default: "#e6e5e5" },
   maxValue: { type: Number, required: true },
-  title: { type: String, required: false },
-  centerText: { type: String, required: false },
+  title: { type: String, required: false, default: undefined },
+  centerText: { type: String, required: false, default: undefined },
 });
 const {
   width,

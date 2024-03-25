@@ -3,8 +3,7 @@
     <nav-link
       class="sb-nav-dropdown-title"
       :title="'Trusted Organizations'"
-      v-on:click="toggleShow"
-      :showDropdownToggle="true"
+      :show-dropdown-toggle="true"
       :drop-down-showing="showing"
       :has-warnings="
         OrganizationWarningDetector.someOrganizationsHaveWarnings(
@@ -13,8 +12,9 @@
         )
       "
       :warnings="'Some organizations have warnings'"
+      @click="toggleShow"
     >
-      <template v-slot:action-dropdown>
+      <template #action-dropdown>
         <organization-actions
           :supports-halt="false"
           :supports-delete="false"
@@ -25,30 +25,30 @@
     </nav-link>
     <div v-show="showing" class="sb-nav-dropdown">
       <nav-link
-        v-for="organization in trustedOrganizations"
-        :key="organization.id"
-        v-on:click="selectOrganization(organization)"
-        :title="organization.name"
+        v-for="organizationLink in trustedOrganizations"
+        :key="organizationLink.id"
+        :title="organizationLink.name"
         :is-link-in-dropdown="true"
-        :has-danger="network.isOrganizationFailing(organization)"
-        :dangers="store.getOrganizationFailingReason(organization)"
+        :has-danger="network.isOrganizationFailing(organizationLink)"
+        :dangers="store.getOrganizationFailingReason(organizationLink)"
         :has-warnings="
           OrganizationWarningDetector.organizationHasWarnings(
-            organization,
+            organizationLink,
             store.network,
           )
         "
         :warnings="
           OrganizationWarningDetector.getOrganizationWarningReasons(
-            organization,
+            organizationLink,
             store.network,
           ).join(' | ')
         "
+        @click="selectOrganization(organizationLink)"
       >
-        <template v-slot:action-dropdown>
+        <template #action-dropdown>
           <organization-actions
             :supports-delete="true"
-            :organization="organization"
+            :organization="organizationLink"
           />
         </template>
       </nav-link>

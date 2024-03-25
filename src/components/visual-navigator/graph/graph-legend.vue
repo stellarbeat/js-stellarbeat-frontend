@@ -3,16 +3,10 @@
     class="d-flex flex-column align-items-start justify-content-start legend"
   >
     <div class="legend-link mr-2">
-      <a
-        v-show="!showLegend"
-        v-on:click.prevent.stop="showLegend = true"
-        href="#"
+      <a v-show="!showLegend" href="#" @click.prevent.stop="showLegend = true"
         >Legend</a
       >
-      <a
-        v-show="showLegend"
-        v-on:click.prevent.stop="showLegend = false"
-        href="#"
+      <a v-show="showLegend" href="#" @click.prevent.stop="showLegend = false"
         >Legend</a
       >
     </div>

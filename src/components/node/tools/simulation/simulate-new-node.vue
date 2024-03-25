@@ -1,11 +1,11 @@
 <template>
   <div class="">
     <b-modal
+      id="simulate-node-modal"
       ok-title="Simulate Node"
       size="lg"
-      id="simulate-node-modal"
       title="Simulate a new node"
-      v-on:ok="simulateNewNode"
+      @ok="simulateNewNode"
     >
       <b-form-input
         v-model="newNodeName"
