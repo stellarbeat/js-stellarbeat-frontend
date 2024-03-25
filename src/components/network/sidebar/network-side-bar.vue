@@ -110,10 +110,10 @@ import NavLink from "@/components/side-bar/nav-link.vue";
 import OrganizationsDropdown from "@/components/network/sidebar/organizations-dropdown.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
 
-import { BModal, VBModal, BBadge, VBTooltip, BIconHouse } from "bootstrap-vue";
+import { BBadge, BIconHouse, BModal, VBModal, VBTooltip } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
 import useStore from "@/store/useStore";
-import VueScrollTo from "vue-scrollto";
+
 Vue.directive("b-modal", VBModal);
 Vue.directive("b-tooltip", VBTooltip);
 Vue.component("BIconHouse", BIconHouse);
@@ -151,6 +151,21 @@ const tomlNodesExport = computed(() => {
 });
 
 function scrollToHorizonCard() {
-  VueScrollTo.scrollTo("#public-horizon-apis-card");
+  const contentElement = document.getElementById("public-horizon-apis-card");
+  if (contentElement) {
+    let cumulativeTop = 0;
+    let currentElement = contentElement;
+
+    // Calculate the cumulative offset of the element from the top of the page
+    while (currentElement) {
+      cumulativeTop += currentElement.offsetTop;
+      currentElement = currentElement.offsetParent as HTMLElement;
+    }
+
+    window.scrollTo({
+      top: cumulativeTop,
+      behavior: "smooth",
+    });
+  }
 }
 </script>

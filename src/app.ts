@@ -6,7 +6,6 @@ import { createRouter } from "./router";
 import "./assets/custom.scss";
 import Meta from "vue-meta";
 import "./assets/global.css";
-import VueScrollTo from "vue-scrollto";
 import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
 
@@ -21,7 +20,6 @@ if (isProd) {
 }
 
 Vue.use(Meta);
-Vue.use(VueScrollTo);
 Vue.component("MultiSelect", Multiselect);
 
 const router = createRouter();

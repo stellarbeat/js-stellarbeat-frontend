@@ -98,9 +98,6 @@ dependencies:
   vue-router:
     specifier: ^3.6.5
     version: 3.6.5(vue@2.7.16)
-  vue-scrollto:
-    specifier: ^2.20.0
-    version: 2.20.0
 
 devDependencies:
   '@types/d3-force':
@@ -2048,10 +2045,6 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
-
-  /bezier-easing@2.1.0:
-    resolution: {integrity: sha512-gbIqZ/eslnUFC1tjEvtz0sgx+xTK20wDnYMIA27VA04R7w6xxXQPZDbibjA9DTWZRA2CXtwHykkVzlCaAJAZig==}
-    dev: false
 
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -5031,12 +5024,6 @@ packages:
       vue: ^2
     dependencies:
       vue: 2.7.16
-    dev: false
-
-  /vue-scrollto@2.20.0:
-    resolution: {integrity: sha512-7i+AGKJTThZnMEkhIPgrZjyAX+fXV7/rGdg+CV283uZZwCxwiMXaBLTmIc5RTA4uwGnT+E6eJle3mXQfM2OD3A==}
-    dependencies:
-      bezier-easing: 2.1.0
     dev: false
 
   /vue@2.7.16:

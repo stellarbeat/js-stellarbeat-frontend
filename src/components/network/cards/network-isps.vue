@@ -80,7 +80,6 @@ import {
 import useStore from "@/store/useStore";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
-import VueScrollTo from "vue-scrollto";
 
 const store = useStore();
 const network = store.network;
@@ -167,7 +166,13 @@ const simulateFailure = function (ispKey: string) {
   store.processChange(aggregateChange);
 
   nextTick(() => {
-    VueScrollTo.scrollTo("#content");
+    const contentElement = document.getElementById("content");
+    if (contentElement) {
+      window.scrollTo({
+        top: contentElement.offsetTop,
+        behavior: "smooth",
+      });
+    }
   });
 };
 

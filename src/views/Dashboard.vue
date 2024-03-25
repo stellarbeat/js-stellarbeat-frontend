@@ -88,7 +88,6 @@ import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
-import VueScrollTo from "vue-scrollto";
 
 const NetworkAnalysis = defineAsyncComponent(
   () =>
@@ -158,7 +157,13 @@ const haltingAnalysisPublicKey = computed(() => {
 watch(haltingAnalysisPublicKey, (publicKey) => {
   if (publicKey)
     nextTick(() => {
-      VueScrollTo.scrollTo("#halting-analysis-card");
+      const contentElement = document.getElementById("halting-analysis-card");
+      if (contentElement) {
+        window.scrollTo({
+          top: contentElement.offsetTop,
+          behavior: "smooth",
+        });
+      }
     });
 });
 </script>
