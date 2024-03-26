@@ -13,18 +13,26 @@
         :include-notify="store.networkContext.enableNotify"
       ></navbar>
       <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px">
-        <b-alert :show="showError" variant="danger">{{ errorMessage }}</b-alert>
-        <b-alert
-          :show="['fbas', 'fbas2'].includes(store.networkContext.networkId)"
-          variant="info"
-          >Learn more about the demo networks
-          <a
-            href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e"
-            target="_blank"
-            rel="noopener"
-            >here!</a
-          ></b-alert
-        >
+        <div class="mt-5">
+          <div v-if="showError" class="alert alert-danger mb-0" role="alert">
+            {{ errorMessage }}
+          </div>
+          <div
+            v-if="['fbas', 'fbas2'].includes(store.networkContext.networkId)"
+            class="alert alert-info mb-0"
+            role="alert"
+          >
+            Learn more about the demo networks
+            <a
+              href="https://medium.com/stellarbeatio/stellar-fbas-intuition-5b8018f58f3e"
+              target="_blank"
+              rel="noopener"
+            >
+              here!
+            </a>
+          </div>
+        </div>
+
         <div v-if="store.isLoading" class="d-flex justify-content-center mt-5">
           <div class="loader"></div>
         </div>
@@ -104,7 +112,6 @@
 import Navbar from "@/components/layout/Navbar.vue";
 import Github from "@/components/organization/logo/github.vue";
 import CustomNetwork from "@/components/network/tools/modify-network.vue";
-import { BAlert, BIconEnvelope } from "bootstrap-vue";
 import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
 import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
