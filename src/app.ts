@@ -6,6 +6,7 @@ import "./assets/custom.scss";
 import "./assets/global.css";
 import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
+import "bootstrap";
 
 //@ts-ignore
 window.global ||= window;

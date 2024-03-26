@@ -34,6 +34,7 @@
     "leaflet": "1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "neverthrow": "^4.3.1",
+    "popper.js": "1.16.1",
     "prerender-node": "^3.7.0",
     "vue": "^2.7.16",
     "vue-multiselect": "^2.1.6",
