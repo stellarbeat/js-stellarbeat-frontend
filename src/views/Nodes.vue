@@ -46,7 +46,7 @@
               </div>
             </div>
             <div class="col-12 col-sm-6">
-              <b-form-input
+              <input
                 id="searchInput"
                 v-model="filter"
                 class="form-control search mr-0"
@@ -87,7 +87,6 @@ import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import NodesTable, { TableNode } from "@/components/node/nodes-table.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
-import { BFormInput } from "bootstrap-vue";
 import { computed, ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 import useMetaTags from "@/composables/useMetaTags";
