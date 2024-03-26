@@ -1,20 +1,19 @@
 <template>
   <div class="dropdown search">
-    <b-form-input
+    <input
       id="searchInput"
       ref="searchInput"
-      v-model.lazy="searchString"
+      v-model="searchString"
       class="form-control search-input"
       type="text"
       placeholder="Search"
       autocomplete="off"
-      @keydown.tab.native.prevent.stop="onArrowDown"
-      @keydown.down.native="onArrowDown"
-      @keydown.up.native="onArrowUp"
-      @keydown.enter.native.prevent.stop="onEnter"
-      @keydown.esc.native="searchString = ''"
-    >
-    </b-form-input>
+      @keydown.tab.prevent.stop="onArrowDown"
+      @keydown.down="onArrowDown"
+      @keydown.up="onArrowUp"
+      @keydown.enter.prevent.stop="onEnter"
+      @keydown.esc="searchString = ''"
+    />
     <div
       class="dropdown-menu sb-dropdown-menu"
       :class="{ show: showSuggestions }"
@@ -46,7 +45,6 @@
 <script setup lang="ts">
 import { computed, ComputedRef, ref } from "vue";
 import { RawLocation } from "vue-router";
-import { BIconSearch, BFormInput } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 

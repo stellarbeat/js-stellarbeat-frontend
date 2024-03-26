@@ -7,7 +7,6 @@
   </span>
 </template>
 <script setup lang="ts">
-import { BIconX } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 

@@ -131,7 +131,7 @@
         </div>
         <div class="col-lg-3 ml-auto">
           <form class="input-icon my-3 my-lg-0">
-            <search v-if="!store.isLoading && !store.fetchingDataFailed" />
+            <Search v-if="!store.isLoading && !store.fetchingDataFailed" />
           </form>
         </div>
       </div>
@@ -144,6 +144,7 @@ import useStore from "@/store/useStore";
 import { useRoute } from "vue-router/composables";
 import { BrandLogo } from "@/components/layout/Navbar.vue";
 import NavNetworkSelector from "@/components/layout/NavNetworkSelector.vue";
+import Search from "@/components/search.vue";
 
 defineProps({
   faqRoute: {

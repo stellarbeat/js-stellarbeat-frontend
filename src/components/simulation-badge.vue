@@ -11,8 +11,8 @@
   </span>
 </template>
 <script setup lang="ts">
-import { BIconX } from "bootstrap-vue";
 import useStore from "@/store/useStore";
+
 const store = useStore();
 </script>
 <style scoped></style>

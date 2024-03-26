@@ -13,7 +13,7 @@
         :include-notify="store.networkContext.enableNotify"
       ></navbar>
       <div class="container-fluid h-100 mt-0 mt-md-2" style="max-width: 1360px">
-        <div class="mt-5">
+        <div class="">
           <div v-if="showError" class="alert alert-danger mb-0" role="alert">
             {{ errorMessage }}
           </div>
