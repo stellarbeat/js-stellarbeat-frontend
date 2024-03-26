@@ -11,23 +11,27 @@
       </div>
       <crawl-time v-if="!store.isSimulation" />
     </div>
-    <b-alert
-      :show="selectedNode ? selectedNode.unknown : false"
-      variant="warning"
-      >Selected node with public key:
+    <div
+      v-if="selectedNode && selectedNode.unknown"
+      class="alert alert-warning"
+      role="alert"
+    >
+      Selected node with public key:
       <strong>{{
         selectedNode ? selectedNode.publicKey : "UNKNOWN PUBLIC KEY"
       }}</strong>
       is unknown or archived
-    </b-alert>
-    <b-alert
-      v-if="selectedOrganization"
-      :show="selectedOrganization.unknown"
-      variant="warning"
-      >Selected organization with id:
+    </div>
+
+    <div
+      v-if="selectedOrganization && selectedOrganization.unknown"
+      class="alert alert-warning"
+      role="alert"
+    >
+      Selected organization with id:
       <strong>{{ selectedOrganization.id }}</strong>
       is unknown or archived
-    </b-alert>
+    </div>
 
     <div
       v-if="
@@ -85,7 +89,6 @@ import NetworkVisualNavigator from "@/components/visual-navigator/network-visual
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
-import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 import useScrollTo from "@/composables/useScrollTo";
