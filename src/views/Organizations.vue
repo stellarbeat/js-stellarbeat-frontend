@@ -13,7 +13,7 @@
         <div class="card-header">
           <div class="row header-row">
             <div class="col-12 col-sm-6">
-              <b-form-input
+              <input
                 id="searchInput"
                 v-model="filter"
                 class="form-control search mr-0"
@@ -40,7 +40,6 @@ import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
-import { BFormInput } from "bootstrap-vue";
 import OrganizationsTable, {
   TableOrganization,
 } from "@/components/organization/organizations-table.vue";
