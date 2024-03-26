@@ -1,5 +1,4 @@
-//@ts-ignore
-window.global ||= window;
+import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import App from "./App.vue";
 import Vue from "vue";
 import { createRouter } from "./router";
@@ -7,6 +6,9 @@ import "./assets/custom.scss";
 import "./assets/global.css";
 import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
+
+//@ts-ignore
+window.global ||= window;
 
 const isProd = import.meta.env.PROD;
 
@@ -19,6 +21,9 @@ if (isProd) {
 }
 
 Vue.component("MultiSelect", Multiselect);
+
+Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 
 const router = createRouter();
 

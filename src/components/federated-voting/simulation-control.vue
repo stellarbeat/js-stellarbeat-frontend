@@ -1,18 +1,22 @@
 <template>
   <nav class="card navbar">
     <div class="button-group">
-      <b-button class="navbar-item" @click="backward">
-        <b-icon-arrow-counterclockwise class="icon-color" />
-      </b-button>
-      <b-button v-if="!isPlaying" class="navbar-item" @click="play">
-        <b-icon-play-fill class="icon-color" />
-      </b-button>
-      <b-button v-else class="navbar-item" @click="pause">
-        <b-icon-pause-fill clas="icon-color" />
-      </b-button>
-      <b-button class="navbar-item" @click="forward">
-        <b-icon-arrow-clockwise class="icon-color" />
-      </b-button>
+      <button class="btn btn-primary navbar-item" @click="backward">
+        <i class="bi bi-arrow-counterclockwise-fill icon-color"></i>
+      </button>
+      <button
+        v-if="!isPlaying"
+        class="btn btn-primary navbar-item"
+        @click="play"
+      >
+        <i class="bi bi-play-fill icon-color"></i>
+      </button>
+      <button v-else class="btn btn-primary navbar-item" @click="pause">
+        <i class="bi bi-pause-fill icon-color"></i>
+      </button>
+      <button class="btn btn-primary navbar-item" @click="forward">
+        <i class="bi bi-arrow-clockwise-fill icon-color"></i>
+      </button>
     </div>
 
     <scenario-selector />
@@ -20,13 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  BButton,
-  BIconArrowClockwise,
-  BIconArrowCounterclockwise,
-  BIconPauseFill,
-  BIconPlayFill,
-} from "bootstrap-vue";
 import { ref } from "vue";
 import ScenarioSelector from "@/components/federated-voting/scenario-selector.vue";
 

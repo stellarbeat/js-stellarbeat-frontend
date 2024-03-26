@@ -1,17 +1,32 @@
 <template>
   <div class="card">
     <div class="card-header pl-3 d-flex flex-wrap">
-      <b-button-group size="sm" class="mr-3">
-        <b-button :pressed="chartView === '30D'" @click="select30DayViewDefault"
-          >30D</b-button
+      <div class="btn-group mr-3" role="group" aria-label="Chart view">
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          :class="{ active: chartView === '30D' }"
+          @click="select30DayViewDefault"
         >
-        <b-button :pressed="chartView === '24H'" @click="select24HViewDefault"
-          >24H</b-button
+          30D
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          :class="{ active: chartView === '24H' }"
+          @click="select24HViewDefault"
         >
-        <b-button :pressed="chartView === '1H'" @click="select1HViewDefault"
-          >1H</b-button
+          24H
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          :class="{ active: chartView === '1H' }"
+          @click="select1HViewDefault"
         >
-      </b-button-group>
+          1H
+        </button>
+      </div>
       <h5 class="card-title">
         {{ subject }}
       </h5>
@@ -79,7 +94,6 @@
 import DateNavigator from "@/components/date-navigator.vue";
 import LineChartHour from "@/components/charts/line-chart-hour.vue";
 import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
-import { BButton, BButtonGroup, BIconExclamationTriangle } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";

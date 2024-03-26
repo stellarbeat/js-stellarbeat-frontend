@@ -1,6 +1,10 @@
 <template>
   <div>
-    <b-navbar toggle-breakpoint="lg" class="m-0 p-0" toggleable="lg">
+    <nav
+      toggle-breakpoint="lg"
+      class="navbar navbar-expand-lg m-0 p-0"
+      toggleable="lg"
+    >
       <div class="header py-4 my-header">
         <div class="container-fluid" style="max-width: 1360px">
           <div class="d-flex justify-content-between w-100">
@@ -20,51 +24,7 @@
               </router-link>
               <h2 class="brand-title mb-0">{{ brandName }}</h2>
             </div>
-            <div class="d-none d-lg-flex">
-              <div class="d-flex">
-                <div class="nav-item pr-0" style="cursor: default">
-                  <b-nav-item-dropdown
-                    v-if="store.networkContexts.size > 1 && !store.isLoading"
-                    style="width: 137px"
-                    toggle-class="text-default"
-                    class="text-default nav-link px-0"
-                  >
-                    <template #button-content>
-                      {{ store.getNetworkContextName() }}
-                    </template>
-                    <b-dropdown-item
-                      v-for="network in Array.from(
-                        store.networkContexts.keys(),
-                      )"
-                      :key="network"
-                      @click="navigateToNetwork(network)"
-                    >
-                      {{ store.getNetworkContextName(network) }}
-                    </b-dropdown-item>
-                  </b-nav-item-dropdown>
-                  <div v-else class="text-gray" style="width: 137px">
-                    {{ store.getNetworkContextName() }}
-                  </div>
-                  <a
-                    href="https://github.com/stellarbeat"
-                    class="btn btn-sm btn-outline-primary"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <github />
-                    Github</a
-                  >
-                  <a
-                    :href="`mailto:${store.appConfig.brandEmail}`"
-                    class="btn btn-sm btn-outline-primary ml-2"
-                    target="_blank"
-                  >
-                    <b-icon-envelope />
-                    Mail</a
-                  >
-                </div>
-              </div>
-            </div>
+            <nav-network-selector />
             <b-navbar-toggle
               class="my-navbar-toggle"
               target="nav_collapse"
@@ -72,7 +32,7 @@
           </div>
         </div>
       </div>
-    </b-navbar>
+    </nav>
     <b-collapse id="nav_collapse" class="header collapse d-lg-flex p-0" is-nav>
       <div class="container-fluid collapser" style="max-width: 1360px">
         <div class="row align-items-center">
@@ -237,22 +197,13 @@ import { computed, PropType } from "vue";
 import {
   BCollapse,
   BDropdownItem,
-  BIconBell,
-  BIconBuilding,
-  BIconBullseye,
-  BIconCode,
-  BIconEnvelope,
-  BIconHouse,
-  BIconNewspaper,
-  BIconQuestionCircle,
-  BNavbar,
   BNavbarToggle,
   BNavItemDropdown,
 } from "bootstrap-vue";
-import Github from "@/components/organization/logo/github.vue";
 import Search from "@/components/search.vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
+import NavNetworkSelector from "@/components/layout/NavNetworkSelector.vue";
 
 export interface BrandLogo {
   src: string;
