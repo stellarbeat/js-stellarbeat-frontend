@@ -1,9 +1,14 @@
 <template>
   <div class="d-flex">
     <b-button-group size="sm">
-      <b-button size="sm" :disabled="!canGoBack()" class="left" @click="goBack">
+      <button
+        size="sm"
+        :disabled="!canGoBack()"
+        class="btn btn-sm btn-secondary left"
+        @click="goBack"
+      >
         <b-icon-chevron-left />
-      </b-button>
+      </button>
       <div>
         <b-form-datepicker
           v-if="!showTime"
@@ -34,41 +39,35 @@
           <template #button-content></template>
         </b-form-timepicker>
       </div>
-      <b-button
-        v-b-tooltip.hover
-        size="sm"
-        variant="secondary"
-        class="time-travel-btn"
-        title="Travel to selected time"
+      <button
+        v-tooltip="'Travel to selected time'"
+        class="btn btn-sm btn-secondary time-travel-btn"
         @click="timeTravel"
       >
         <b-icon-clock />
-      </b-button>
-      <b-button size="sm" class="right" @click="goForward">
+      </button>
+      <button class="btn btn-sm btn-secondary right" @click="goForward">
         <b-icon-chevron-right />
-      </b-button>
+      </button>
     </b-button-group>
   </div>
 </template>
 
 <script setup lang="ts">
-import Vue, { nextTick, Ref, ref, toRefs, watch } from "vue";
+import { nextTick, Ref, ref, toRefs, watch } from "vue";
 import {
-  BButton,
-  BIconChevronRight,
-  BIconChevronLeft,
-  BIconClock,
+  BButtonGroup,
   BFormDatepicker,
   BFormTimepicker,
-  VBTooltip,
   BIconCalendar,
-  BButtonGroup,
+  BIconChevronLeft,
+  BIconChevronRight,
+  BIconClock,
 } from "bootstrap-vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 
-Vue.directive("b-tooltip", VBTooltip);
 const props = defineProps({
   selectedDate: {
     type: Date,
@@ -116,7 +115,7 @@ function canGoBack() {
 function goBack() {
   nextTick(() => {
     datePickerDate.value = statisticsDateTimeNavigator.goBack(
-      bucketSize?.value,
+      bucketSize.value,
       new Date(datePickerDate.value),
     );
     time.value = datePickerDate.value.toISOString().substring(11, 16);
@@ -128,7 +127,7 @@ function goBack() {
 function goForward() {
   nextTick(() => {
     datePickerDate.value = statisticsDateTimeNavigator.goForward(
-      bucketSize?.value,
+      bucketSize.value,
       new Date(datePickerDate.value),
     );
     time.value = datePickerDate.value.toISOString().substring(11, 16);

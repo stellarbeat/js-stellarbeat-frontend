@@ -14,14 +14,14 @@
       >
       <b-badge
         v-else-if="store.networkHasDangers()"
-        v-b-tooltip.hover.right="store.getNetworkDangers().description"
+        v-tooltip:right="store.getNetworkDangers().description"
         variant="danger"
         style="vertical-align: bottom"
         >{{ store.getNetworkDangers().label }}
       </b-badge>
       <b-badge
         v-else-if="store.networkHasWarnings()"
-        v-b-tooltip.hover.right="store.getNetworkWarnings().description"
+        v-tooltip:right="store.getNetworkWarnings().description"
         variant="warning"
         style="vertical-align: bottom"
         >{{ store.getNetworkWarnings().label }}
@@ -110,13 +110,12 @@ import NavLink from "@/components/side-bar/nav-link.vue";
 import OrganizationsDropdown from "@/components/network/sidebar/organizations-dropdown.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
 
-import { BBadge, BIconHouse, BModal, VBModal, VBTooltip } from "bootstrap-vue";
+import { BBadge, BIconHouse, BModal, VBModal } from "bootstrap-vue";
 import ModifyNetwork from "@/components/network/tools/modify-network.vue";
 import useStore from "@/store/useStore";
 import useScrollTo from "@/composables/useScrollTo";
 
 Vue.directive("b-modal", VBModal);
-Vue.directive("b-tooltip", VBTooltip);
 Vue.component("BIconHouse", BIconHouse);
 
 const organizationsExpanded = ref(true);

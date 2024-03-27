@@ -112,13 +112,13 @@
               <b-button-toolbar>
                 <b-button-group size="sm">
                   <b-button
-                    v-b-tooltip="'View diff'"
+                    v-tooltip="'View diff'"
                     @click="showDiff(updatesOnDate.snapshot)"
                   >
                     <b-icon-file-diff />
                   </b-button>
                   <b-button
-                    v-b-tooltip="'Travel to this point in time'"
+                    v-tooltip="'Travel to this point in time'"
                     @click="timeTravel(updatesOnDate.snapshot)"
                   >
                     <b-icon-clock />
@@ -161,7 +161,6 @@ import {
   BListGroupItem,
   BModal,
   VBModal,
-  VBTooltip,
 } from "bootstrap-vue";
 import { isArray } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import useStore from "@/store/useStore";
@@ -198,7 +197,6 @@ interface SnapshotForDelta {
   quorumSetHashKey: string | null;
 }
 
-Vue.directive("b-tooltip", VBTooltip);
 Vue.directive("b-modal", VBModal);
 
 const props = defineProps<{

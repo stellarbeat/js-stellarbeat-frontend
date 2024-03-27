@@ -1,9 +1,3 @@
-declare module "vue-truncate-filter";
-declare module "vuejs-datepicker";
-declare module "vue2-timepicker";
-declare module "miragejs";
-declare module "vue2-leaflet-markercluster";
-declare module "vue-lazy-hydration";
 declare module "@stellarbeat/js-stellarbeat-shared/lib/network-schema";
 /// <reference types="vite/client" />
 

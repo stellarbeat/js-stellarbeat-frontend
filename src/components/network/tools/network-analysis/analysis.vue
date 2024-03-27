@@ -20,8 +20,7 @@
             >
               <span
                 v-if="showNodesPartition"
-                v-b-tooltip.hover
-                :title="
+                v-tooltip="
                   nodesPartition.has(item)
                     ? nodesPartition.get(item).join(', ')
                     : 'N/A'
@@ -45,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { BTable, BPagination, BvTableFieldArray } from "bootstrap-vue";
+import { BPagination, BTable, BvTableFieldArray } from "bootstrap-vue";
 import { computed, ComputedRef, ref, toRefs } from "vue";
 
 const props = defineProps({

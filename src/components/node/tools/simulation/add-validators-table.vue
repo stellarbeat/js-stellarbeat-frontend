@@ -27,7 +27,7 @@
       <template #cell(name)="row">
         <span
           v-if="row.item.isFullValidator"
-          v-b-tooltip.hover
+          v-tooltip.hover="'Full validator'"
           class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
           title="Full validator"
         >
@@ -52,19 +52,11 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
-import {
-  BFormInput,
-  BIconShield,
-  BPagination,
-  BTable,
-  VBTooltip,
-} from "bootstrap-vue";
+import { BFormInput, BIconShield, BPagination, BTable } from "bootstrap-vue";
 import { useTruncate } from "@/composables/useTruncate";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 const props = defineProps<{
   validators: Node[];

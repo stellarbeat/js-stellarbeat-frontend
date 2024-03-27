@@ -13,7 +13,9 @@
     "noImplicitThis": true,
     "baseUrl": ".",
     "types": [
-      "jest"
+      "jest",
+      "jquery",
+      "bootstrap"
     ],
     "paths": {
       "@/*": [

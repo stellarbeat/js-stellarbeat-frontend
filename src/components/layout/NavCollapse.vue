@@ -145,6 +145,15 @@ import { useRoute } from "vue-router/composables";
 import { BrandLogo } from "@/components/layout/Navbar.vue";
 import NavNetworkSelector from "@/components/layout/NavNetworkSelector.vue";
 import Search from "@/components/search.vue";
+import {
+  BIconBell,
+  BIconBuilding,
+  BIconBullseye,
+  BIconCode,
+  BIconHouse,
+  BIconNewspaper,
+  BIconQuestionCircle,
+} from "bootstrap-vue";
 
 defineProps({
   faqRoute: {

@@ -17,7 +17,7 @@
         <div class="d-flex flex-row justify-content-start align-items-center">
           <span
             v-if="data.item.isFullValidator"
-            v-b-tooltip.hover
+            v-tooltip="'Full validator'"
             class="badge sb-badge badge-success mr-1"
             title="Full validator"
           >
@@ -45,7 +45,7 @@
                 network.getNodeByPublicKey(data.item.publicKey),
               )
             "
-            v-b-tooltip="
+            v-tooltip="
               network.getNodeFailingReason(
                 network.getNodeByPublicKey(data.item.publicKey),
               ).description
@@ -65,7 +65,7 @@
                 network,
               )
             "
-            v-b-tooltip="
+            v-tooltip="
               NodeWarningDetector.getNodeWarningReasonsConcatenated(
                 network.getNodeByPublicKey(data.item.publicKey),
                 network,
@@ -125,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, ref, toRefs, withDefaults } from "vue";
+import { computed, ref, toRefs, withDefaults } from "vue";
 
 import {
   BBadge,
@@ -133,14 +133,11 @@ import {
   BPagination,
   BTable,
   BvTableFieldArray,
-  VBTooltip,
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import useStore from "@/store/useStore";
 import { useTruncate } from "@/composables/useTruncate";
 import { NodeWarningDetector } from "@/services/NodeWarningDetector";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 export interface Props {
   filter?: string;

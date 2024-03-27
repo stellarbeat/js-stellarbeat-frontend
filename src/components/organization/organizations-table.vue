@@ -22,7 +22,7 @@
             <div class="">
               <span
                 v-if="validator.isFullValidator"
-                v-b-tooltip.hover
+                v-tooltip="'Full validator'"
                 class="badge sb-badge badge-success pt-1 mr-1"
                 title="Full validator"
               >
@@ -45,9 +45,7 @@
               </router-link>
               <span
                 v-if="network.isNodeFailing(validator)"
-                v-b-tooltip:hover="
-                  network.getNodeFailingReason(validator).description
-                "
+                v-tooltip="network.getNodeFailingReason(validator).description"
                 class="badge sb-badge badge-danger ml-1"
                 >{{ network.getNodeFailingReason(validator).label }}</span
               >
@@ -55,7 +53,7 @@
                 v-else-if="
                   NodeWarningDetector.nodeHasWarning(validator, network)
                 "
-                v-b-tooltip:hover="
+                v-tooltip="
                   NodeWarningDetector.getNodeWarningReasonsConcatenated(
                     validator,
                     network,
@@ -73,7 +71,7 @@
         <span class=""
           >{{ data.label }}
           <b-icon-info-circle
-            v-b-tooltip:hover="
+            v-tooltip="
               'Availability: more than or equal to 50% of the organization validators are validating.'
             "
             class="text-gray"
@@ -84,7 +82,7 @@
         <span class=""
           >{{ data.label }}
           <b-icon-info-circle
-            v-b-tooltip:hover="
+            v-tooltip="
               'Availability: more than or equal to 50% of the organization validators are validating.'
             "
             class="text-gray"
@@ -95,7 +93,7 @@
         <div class="d-flex flex-row justify-content-start align-items-center">
           <span
             v-if="row.item.isTierOneOrganization"
-            v-b-tooltip.hover
+            v-tooltip="'Tier one organization'"
             title="Tier one organization"
             class="badge sb-badge badge-primary mr-1"
           >
@@ -118,21 +116,23 @@
           </div>
           <span
             v-if="row.item.failAt === 1"
-            v-b-tooltip.hover
+            v-tooltip="
+              'If one more validator fails, this organization will fail'
+            "
             class="badge sb-badge badge-warning ml-1"
             title="If one more validator fails, this organization will fail"
             >Warning
           </span>
           <span
             v-else-if="row.item.failAt < 1"
-            v-b-tooltip.hover
+            v-tooltip="row.item.dangers"
             class="badge sb-badge badge-danger ml-1"
             :title="row.item.dangers"
             >{{ row.item.blocked ? "Blocked" : "Failing" }}
           </span>
           <span
             v-else-if="row.item.hasWarning"
-            v-b-tooltip.hover
+            v-tooltip="row.item.warning"
             class="badge sb-badge badge-warning ml-1"
             :title="row.item.warning"
             >Warning
@@ -186,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, ref, toRefs } from "vue";
+import { computed, ref, toRefs } from "vue";
 
 import {
   BIconInfoCircle,
@@ -194,13 +194,10 @@ import {
   BPagination,
   BTable,
   BvTableFieldArray,
-  VBTooltip,
 } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
 import useStore from "@/store/useStore";
 import { NodeWarningDetector } from "@/services/NodeWarningDetector";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 export interface Props {
   filter?: string;

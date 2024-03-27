@@ -117,6 +117,7 @@ import useStore from "@/store/useStore";
 import { computed, nextTick, onBeforeMount, ref, watch } from "vue";
 import { useRoute } from "vue-router/composables";
 import useMetaTags from "@/composables/useMetaTags";
+import { BIconEnvelope } from "bootstrap-vue";
 
 const errorMessage = ref("Could not connect to api, please refresh the page");
 

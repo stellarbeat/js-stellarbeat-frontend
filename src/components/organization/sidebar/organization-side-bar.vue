@@ -11,9 +11,7 @@
       {{ organizationType }}
       <b-badge
         v-if="network.isOrganizationFailing(selectedOrganization)"
-        v-b-tooltip:hover="
-          store.getOrganizationFailingReason(selectedOrganization)
-        "
+        v-tooltip="store.getOrganizationFailingReason(selectedOrganization)"
         variant="danger"
       >
         {{
@@ -29,7 +27,7 @@
             store.network,
           )
         "
-        v-b-tooltip:hover="
+        v-tooltip="
           OrganizationWarningDetector.getOrganizationWarningReasons(
             selectedOrganization,
             store.network,
@@ -112,13 +110,12 @@ import OrganizationValidatorsDropdown from "@/components/organization/sidebar/or
 import NavLink from "@/components/side-bar/nav-link.vue";
 import SimulateNewNode from "@/components/node/tools/simulation/simulate-new-node.vue";
 import SideBar from "@/components/side-bar/side-bar.vue";
-import { BModal, VBModal, BBadge, VBTooltip } from "bootstrap-vue";
+import { BBadge, BModal, VBModal } from "bootstrap-vue";
 import TrustedOrganizationsDropdown from "@/components/organization/sidebar/trusted-organizations-dropdown.vue";
 import useStore from "@/store/useStore";
 import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 
 Vue.directive("b-modal", VBModal);
-Vue.directive("b-tooltip", VBTooltip);
 
 const store = useStore();
 const network = store.network;

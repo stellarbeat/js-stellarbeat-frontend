@@ -3,7 +3,7 @@
     <div class="mx-4 mt-4 my-header">
       <div class="text-muted">Network analysis</div>
       <b-button size="sm" class="info" @click="showModal = true">
-        <b-icon-info-circle v-b-tooltip:hover.top="'Info'" class="text-muted" />
+        <b-icon-info-circle v-tooltip:top="'Info'" class="text-muted" />
       </b-button>
     </div>
     <div class="loader"></div>

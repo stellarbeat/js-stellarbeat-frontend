@@ -1,6 +1,6 @@
 <template>
   <div class="btn-group undo-redo" role="group" aria-label="UndoRedo">
-    <div v-b-tooltip:hover.bottomright="'Undo change'">
+    <div v-tooltip:bottom="'Undo change'">
       <button
         type="button"
         class="btn btn-secondary btn-icon"
@@ -18,7 +18,7 @@
     >
       Reset simulation
     </button>
-    <div v-b-tooltip:hover.bottomleft="'Redo change'">
+    <div v-tooltip:bottom="'Redo change'">
       <button
         type="button"
         class="btn btn-secondary btn-icon"
@@ -31,16 +31,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue from "vue";
-import {
-  BIconArrowClockwise,
-  BIconArrowCounterclockwise,
-  VBTooltip,
-} from "bootstrap-vue";
+import { BIconArrowClockwise, BIconArrowCounterclockwise } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 const store = useStore();
 const router = useRouter();

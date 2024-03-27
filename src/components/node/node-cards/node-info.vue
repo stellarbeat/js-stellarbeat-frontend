@@ -5,7 +5,7 @@
         <full-validator-title :node="node" />
         <b-badge
           v-show="network.isNodeFailing(node)"
-          v-b-tooltip:hover.top="network.getNodeFailingReason(node).description"
+          v-tooltip:top="network.getNodeFailingReason(node).description"
           variant="danger"
           class="ml-1"
           >{{ network.getNodeFailingReason(node).label }}</b-badge
@@ -28,7 +28,7 @@
                 node.publicKey.substring(51, 100)
               }}
               <b-button
-                v-b-tooltip:hover.top="'Copy to clipboard'"
+                v-tooltip:top="'Copy to clipboard'"
                 size="sm"
                 @click="copyPublicKey"
               >
@@ -51,7 +51,7 @@
           </tr>
           <tr
             v-if="node.versionStr"
-            v-b-tooltip:hover.top="node.versionStr"
+            v-tooltip:top="node.versionStr"
             class="text-gray"
           >
             <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
@@ -91,14 +91,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue from "vue";
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
-import { BBadge, BButton, BIconClipboard, VBTooltip } from "bootstrap-vue";
+import { BBadge, BButton, BIconClipboard } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
 import useStore from "@/store/useStore";
 import { useTruncate } from "@/composables/useTruncate";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 const store = useStore();
 const network = store.network;

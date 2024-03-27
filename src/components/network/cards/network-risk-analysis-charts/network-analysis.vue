@@ -24,7 +24,7 @@
       <b-button size="sm" @click="showModal = true">
         <b-icon-info-circle
           v-b-modal="'modal-info-' + setType"
-          v-b-tooltip:hover.top="'Info'"
+          v-tooltip:top="'Info'"
           class="text-muted"
         />
       </b-button>
@@ -144,7 +144,6 @@ import {
   BIconInfoCircle,
   BModal,
   VBModal,
-  VBTooltip,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
@@ -156,7 +155,6 @@ import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
 import useNetworkMeasurementsStore from "@/store/useNetworkMeasurementsStore";
 
-Vue.directive("b-tooltip", VBTooltip);
 Vue.directive("b-modal", VBModal);
 
 const { dimmerClass, isLoading } = useIsLoading();

@@ -148,7 +148,7 @@
       </div>
       <a
         v-if="!fullScreen"
-        v-b-tooltip="'Fullscreen'"
+        v-tooltip="'Fullscreen'"
         href="#"
         class="card-options-fullscreen mx-4"
         @click.prevent.stop="fullScreen = true"
@@ -157,7 +157,7 @@
       </a>
       <a
         v-else
-        v-b-tooltip="'Exit fullscreen'"
+        v-tooltip="'Exit fullscreen'"
         href="#"
         class="card-options-fullscreen mx-4"
         @click.prevent.stop="fullScreen = false"
@@ -214,22 +214,21 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, defineAsyncComponent, ref } from "vue";
+import { computed, defineAsyncComponent, ref } from "vue";
 import NetworkGraphCard from "@/components/visual-navigator/network-graph-card.vue";
 import {
   BBreadcrumb,
-  BIconList,
-  BIconChevronDoubleLeft,
   BFormCheckbox,
+  BIconChevronDoubleLeft,
   BIconFullscreen,
   BIconFullscreenExit,
-  VBTooltip,
+  BIconList,
 } from "bootstrap-vue";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
-Vue.directive("b-tooltip", VBTooltip);
+
 const WorldMap = defineAsyncComponent(
   () => import("@/components/visual-navigator/world-map.vue"),
 );

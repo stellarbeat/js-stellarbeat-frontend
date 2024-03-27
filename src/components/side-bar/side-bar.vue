@@ -66,7 +66,7 @@
                             <tr>
                               <td class="px-0 info-title">
                                 <b-icon-info-circle
-                                  v-b-tooltip.hover="
+                                  v-tooltip="
                                     'Overlay version stellarbeat uses to connect to other nodes'
                                   "
                                 ></b-icon-info-circle>
@@ -79,7 +79,7 @@
                             <tr>
                               <td class="px-0 info-title">
                                 <b-icon-info-circle
-                                  v-b-tooltip.hover="
+                                  v-tooltip="
                                     'Minimum allowed overlay version for nodes'
                                   "
                                 ></b-icon-info-circle>
@@ -92,7 +92,7 @@
                             <tr>
                               <td class="px-0 info-title">
                                 <b-icon-info-circle
-                                  v-b-tooltip.hover="
+                                  v-tooltip="
                                     'Stellar core version to determine if a node is outdated'
                                   "
                                 ></b-icon-info-circle>
@@ -105,9 +105,7 @@
                             <tr>
                               <td class="px-0 info-title">
                                 <b-icon-info-circle
-                                  v-b-tooltip.hover="
-                                    'Maximum supported ledger version'
-                                  "
+                                  v-tooltip="'Maximum supported ledger version'"
                                 ></b-icon-info-circle>
                                 Maximum ledger version
                               </td>
@@ -118,7 +116,7 @@
                             <tr v-if="store.network.quorumSetConfiguration">
                               <td class="px-0 info-title">
                                 <b-icon-info-circle
-                                  v-b-tooltip.hover="
+                                  v-tooltip="
                                     'Quorum set to decide the correct externalized ledger values and basis for network analysis'
                                   "
                                 ></b-icon-info-circle>

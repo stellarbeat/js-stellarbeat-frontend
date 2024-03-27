@@ -79,6 +79,7 @@ import NavNetworkSelector from "@/components/layout/NavNetworkSelector.vue";
 import NavCollapse from "@/components/layout/NavCollapse.vue";
 import Github from "@/components/organization/logo/github.vue";
 import useStore from "@/store/useStore";
+import { BIconList } from "bootstrap-vue";
 
 export interface BrandLogo {
   src: string;

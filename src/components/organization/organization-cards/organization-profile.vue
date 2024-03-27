@@ -6,8 +6,7 @@
       <h3 class="my-1">
         <span
           v-if="organization.isTierOneOrganization"
-          v-b-tooltip.hover
-          title="Tier one organization"
+          v-tooltip="'Tier one organization'"
           class="badge sb-badge badge-primary"
         >
           <b-icon-shield />
@@ -15,7 +14,7 @@
         {{ organization.name }}
         <b-badge
           v-if="store.getOrganizationFailAt(organization) <= 0"
-          v-b-tooltip:hover="'More then 50% of its validators are failing'"
+          v-tooltip="'More then 50% of its validators are failing'"
           variant="danger"
           >Failing
         </b-badge>
@@ -36,7 +35,7 @@
       <ul class="social-links list-inline mb-2 mt-2">
         <li v-if="organization.url" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.url"
             :href="organization.url"
             :title="organization.url"
             class="social-link"
@@ -48,7 +47,7 @@
         </li>
         <li v-if="organization.physicalAddress" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.physicalAddress"
             :href="
               'https://www.google.com/maps/search/?api=1&query=' +
               organization.physicalAddress
@@ -63,7 +62,7 @@
         </li>
         <li v-if="organization.officialEmail" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.officialEmail"
             class="social-link"
             :title="organization.officialEmail"
             :href="'mailto:' + organization.officialEmail"
@@ -75,7 +74,7 @@
         </li>
         <li v-if="organization.phoneNumber" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.phoneNumber"
             class="social-link"
             :title="organization.phoneNumber"
             :href="'tel:' + organization.phoneNumber"
@@ -87,7 +86,7 @@
         </li>
         <li v-if="organization.twitter" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.twitter"
             :href="'https://twitter.com/' + organization.twitter"
             class="social-link"
             title="Twitter"
@@ -99,7 +98,7 @@
         </li>
         <li v-if="organization.github" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.github"
             :href="'https://github.com/' + organization.github"
             target="_blank"
             rel="noopener"
@@ -111,7 +110,7 @@
         </li>
         <li v-if="organization.keybase" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.keybase"
             :href="'https://keybase.io/' + organization.keybase"
             rel="noopener"
             title="Keybase"
@@ -128,7 +127,7 @@
         </li>
         <li v-if="organization.horizonUrl" class="list-inline-item">
           <a
-            v-b-tooltip.hover
+            v-tooltip="organization.horizonUrl"
             :href="organization.horizonUrl"
             title="Horizon"
             target="_blank"
@@ -143,24 +142,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue from "vue";
 import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import Github from "@/components/organization/logo/github.vue";
 import Twitter from "@/components/organization/logo/twitter.vue";
 import {
   BAlert,
   BBadge,
+  BIconEnvelope,
   BIconLink,
   BIconMap,
-  BIconShield,
   BIconPhone,
-  VBTooltip,
-  BIconEnvelope,
+  BIconShield,
 } from "bootstrap-vue";
 import Stellar from "@/components/organization/logo/stellar.vue";
 import useStore from "@/store/useStore";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 defineProps<{
   organization: Organization;

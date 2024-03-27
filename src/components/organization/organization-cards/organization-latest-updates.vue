@@ -78,13 +78,13 @@
               <b-button-toolbar>
                 <b-button-group size="sm">
                   <b-button
-                    v-b-tooltip="'View diff'"
+                    v-tooltip="'View diff'"
                     @click="showDiff(updatesOnDate.snapshot)"
                   >
                     <b-icon-file-diff />
                   </b-button>
                   <b-button
-                    v-b-tooltip="'Travel to this point in time'"
+                    v-tooltip="'Travel to this point in time'"
                     @click="timeTravel(updatesOnDate.snapshot)"
                   >
                     <b-icon-clock />
@@ -131,7 +131,6 @@ import {
   BListGroupItem,
   BModal,
   VBModal,
-  VBTooltip,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
@@ -159,7 +158,6 @@ interface SnapshotForDelta {
   keybase: string | null;
 }
 
-Vue.directive("b-tooltip", VBTooltip);
 Vue.directive("b-modal", VBModal);
 
 const store = useStore();

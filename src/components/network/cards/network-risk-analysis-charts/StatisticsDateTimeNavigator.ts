@@ -58,7 +58,10 @@ export default class StatisticsDateTimeNavigator {
   }
 
   //because statistics are shown from time point: selectedDate - bucketSize, we add the bucket size to the first available statistic
-  getMinSelectedDate(bucketSize: string) {
+  getMinSelectedDate(bucketSize?: string) {
+    if (bucketSize === undefined) {
+      bucketSize = "30D";
+    }
     const selectedDate = new Date(this.statisticsTrackingStartDate.getTime()); // Create a new Date object from the statisticsTrackingStartDate value
     if (bucketSize === "30D") {
       selectedDate.setDate(selectedDate.getDate() + 30); // Add 30 days

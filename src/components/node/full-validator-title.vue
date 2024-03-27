@@ -2,7 +2,7 @@
   <div>
     <span
       v-if="node.isFullValidator"
-      v-b-tooltip:hover.top="'Full Validator'"
+      v-tooltip:top="'Full Validator'"
       class="badge sb-badge badge-success vertical"
     >
       <b-icon-shield />
@@ -12,13 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { BIconShield, VBTooltip } from "bootstrap-vue";
+import { BIconShield } from "bootstrap-vue";
 import { useTruncate } from "@/composables/useTruncate";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 
 const truncate = useTruncate();
-import Vue from "vue";
-import { Node } from "@stellarbeat/js-stellarbeat-shared";
-Vue.directive("b-tooltip", VBTooltip);
 
 defineProps<{
   node: Node;

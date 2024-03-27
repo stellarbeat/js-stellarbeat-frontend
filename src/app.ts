@@ -7,6 +7,18 @@ import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/collapse";
+import "bootstrap/js/dist/tooltip";
+import ToolTipDirective from "./directives/tooltip";
+
+//temporary until upgrade to bootstrap 5
+import $ from "jquery";
+
+declare global {
+  interface Window {
+    $: JQueryStatic;
+  }
+}
+window.$ = $;
 
 //@ts-ignore
 window.global ||= window;
@@ -22,6 +34,7 @@ if (isProd) {
 }
 
 Vue.component("MultiSelect", Multiselect);
+Vue.directive("tooltip", ToolTipDirective);
 
 const router = createRouter();
 

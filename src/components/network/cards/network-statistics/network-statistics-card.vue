@@ -49,7 +49,7 @@
           @click="showModal = true"
         >
           <b-icon-info-circle
-            v-b-tooltip:hover.top="'Click for info'"
+            v-tooltip:top="'Click for info'"
             class="text-muted"
           />
         </b-button>
@@ -77,19 +77,11 @@
 </template>
 
 <script setup lang="ts">
-import {
-  BIconInfoCircle,
-  VBTooltip,
-  BButton,
-  BModal,
-  BBadge,
-} from "bootstrap-vue";
+import { BBadge, BButton, BIconInfoCircle, BModal } from "bootstrap-vue";
 import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
-import Vue, { computed, Ref, ref, toRefs, withDefaults } from "vue";
+import { computed, Ref, ref, toRefs, withDefaults } from "vue";
 import useStore from "@/store/useStore";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 const store = useStore();
 export interface Props {

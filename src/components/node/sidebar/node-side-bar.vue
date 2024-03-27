@@ -12,14 +12,14 @@
       {{ nodeType }}
       <b-badge
         v-if="network.isNodeFailing(selectedNode)"
-        v-b-tooltip="network.getNodeFailingReason(selectedNode).description"
+        v-tooltip="network.getNodeFailingReason(selectedNode).description"
         variant="danger"
         style="vertical-align: bottom"
         >{{ network.getNodeFailingReason(selectedNode).label }}
       </b-badge>
       <b-badge
         v-else-if="NodeWarningDetector.nodeHasWarning(selectedNode, network)"
-        v-b-tooltip="
+        v-tooltip="
           NodeWarningDetector.getNodeWarningReasonsConcatenated(
             selectedNode,
             network,

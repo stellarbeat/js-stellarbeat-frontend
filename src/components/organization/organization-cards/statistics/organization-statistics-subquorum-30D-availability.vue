@@ -17,7 +17,7 @@
         <div class="text-muted">
           30D Availability
           <b-icon-info-circle
-            v-b-tooltip:hover="
+            v-tooltip="
               'Availability: more than or equal to 50% of the organization validators are validating.'
             "
             class="text-gray"
@@ -28,12 +28,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue from "vue";
 import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import Gauge from "@/components/charts/gauge.vue";
-import { VBTooltip, BIconInfoCircle } from "bootstrap-vue";
-
-Vue.directive("b-tooltip", VBTooltip);
+import { BIconInfoCircle } from "bootstrap-vue";
 
 defineProps<{
   organization: Organization;

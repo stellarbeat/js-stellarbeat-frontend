@@ -67,7 +67,7 @@
                           <b-button size="sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-qi-info'"
-                              v-b-tooltip:hover.top="'Info'"
+                              v-tooltip:top="'Info'"
                               class="text-muted"
                             />
                           </b-button>
@@ -117,7 +117,7 @@
                           <b-button size="sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-liveness-info'"
-                              v-b-tooltip:hover.top="'Info'"
+                              v-tooltip:top="'Info'"
                               class="text-muted"
                             />
                           </b-button>
@@ -167,7 +167,7 @@
                           <b-button size="sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-safety-info'"
-                              v-b-tooltip:hover.top="'Info'"
+                              v-tooltip:top="'Info'"
                               class="text-muted"
                             />
                           </b-button>
@@ -214,7 +214,7 @@
                           <b-button size="sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-top-tier-info'"
-                              v-b-tooltip:hover.top="'Info'"
+                              v-tooltip:top="'Info'"
                               class="text-muted"
                             />
                           </b-button>
@@ -305,7 +305,6 @@ import {
   BIconX,
   VBModal,
   VBToggle,
-  VBTooltip,
 } from "bootstrap-vue";
 import { PublicKey } from "@stellarbeat/js-stellarbeat-shared";
 import Analysis from "@/components/network/tools/network-analysis/analysis.vue";
@@ -322,7 +321,6 @@ import useScrollTo from "@/composables/useScrollTo";
 
 Vue.directive("b-modal", VBModal);
 Vue.directive("b-toggle", VBToggle);
-Vue.directive("b-tooltip", VBTooltip);
 
 const { isLoading, dimmerClass } = useIsLoading();
 const store = useStore();

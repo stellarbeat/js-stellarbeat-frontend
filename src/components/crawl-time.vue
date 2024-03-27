@@ -25,33 +25,27 @@
     >
       <template #button-content></template>
     </b-form-timepicker>
-    <b-button
-      v-b-tooltip.hover
-      size="sm"
-      variant="secondary"
-      class="time-travel-btn"
-      title="Travel to selected time"
+    <button
+      v-tooltip:top="'Travel to selected time'"
+      class="btn btn-sm btn-secondary time-travel-btn"
       @click="timeTravel"
     >
       <b-icon-clock />
-    </b-button>
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import Vue, { ref, Ref } from "vue";
+//@todo: https://github.com/Vuepic/vue-datepicker for vue3
+import { ref, Ref } from "vue";
 import {
-  BButton,
   BFormDatepicker,
   BFormTimepicker,
   BIconCalendar,
   BIconClock,
-  VBTooltip,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
-
-Vue.directive("b-tooltip", VBTooltip);
 
 const store = useStore();
 const router = useRouter();

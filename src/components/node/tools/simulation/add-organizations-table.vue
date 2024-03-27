@@ -27,7 +27,7 @@
       <template #cell(name)="row">
         <span
           v-if="row.item.isTierOneOrganization"
-          v-b-tooltip.hover
+          v-tooltip.hover="'Tier 1 organization'"
           class="badge sb-badge badge-success full-validator-badge pt-1 mr-1"
           title="Tier 1 organization"
         >
@@ -48,18 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 
 import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
-import {
-  BFormInput,
-  BIconShield,
-  BPagination,
-  BTable,
-  VBTooltip,
-} from "bootstrap-vue";
-
-Vue.directive("b-tooltip", VBTooltip);
+import { BFormInput, BIconShield, BPagination, BTable } from "bootstrap-vue";
 
 const props = defineProps<{
   organizations: Organization[];
