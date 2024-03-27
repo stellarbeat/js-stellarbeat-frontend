@@ -1,5 +1,8 @@
 <template>
   <div v-if="selectedNode">
+    <portal-target name="slices-modal"> </portal-target>
+    <portal-target name="simulate-node-modal"> </portal-target>
+    <portal-target name="quorum-set-modals" multiple></portal-target>
     <b-alert :show="network.isNodeFailing(selectedNode)" variant="danger">
       {{ network.getNodeFailingReason(selectedNode).description }}
     </b-alert>

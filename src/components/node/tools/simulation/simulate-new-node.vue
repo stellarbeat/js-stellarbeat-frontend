@@ -1,5 +1,5 @@
 <template>
-  <portal to="simulate-modal">
+  <portal to="simulate-node-modal">
     <div
       id="simulate-node-modal"
       ref="simulateNodeModal"
@@ -17,7 +17,7 @@
             <button
               type="button"
               class="btn-close"
-              data-bs-dismiss="modal"
+              data-dismiss="modal"
               aria-label="Close"
             ></button>
           </div>
@@ -33,13 +33,14 @@
             <button
               type="button"
               class="btn btn-secondary"
-              data-bs-dismiss="modal"
+              data-dismiss="modal"
             >
               Close
             </button>
             <button
               type="button"
               class="btn btn-primary"
+              data-dismiss="modal"
               @click="simulateNewNode"
             >
               Simulate Node

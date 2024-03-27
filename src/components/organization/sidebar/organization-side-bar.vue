@@ -82,7 +82,8 @@
       </li>
       <li class="sb-nav-item">
         <nav-link
-          v-b-modal.simulate-node-modal
+          data-toggle="modal"
+          data-target="#simulate-node-modal"
           :title="'Simulate new node'"
           :show-icon="true"
           icon="plus"

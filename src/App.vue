@@ -1,8 +1,5 @@
 <template>
   <div id="app" class="page full">
-    <portal-target name="slices-modal"> </portal-target>
-    <portal-target name="simulate-modal"> </portal-target>
-    <portal-target name="quorum-set-modals" multiple></portal-target>
     <div class="flex-fill">
       <navbar
         :brand-tagline="store.appConfig.brandTagline"

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <portal-target name="simulate-node-modal"> </portal-target>
     <div v-if="organization">
       <b-alert
         :show="network.isOrganizationFailing(organization)"

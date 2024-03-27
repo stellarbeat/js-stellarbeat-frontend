@@ -1,5 +1,6 @@
 <template>
   <div>
+    <portal-target name="simulate-node-modal"> </portal-target>
     <b-alert :show="store.networkAnalyzer.manualMode" variant="warning">
       Network not fully analyzed because top tier is not symmetric or too large
       to analyze in a reasonable timeframe. <br />
