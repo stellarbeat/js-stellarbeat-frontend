@@ -83,6 +83,9 @@ dependencies:
   popper.js:
     specifier: 1.16.1
     version: 1.16.1
+  portal-vue:
+    specifier: ^2.1.7
+    version: 2.1.7(vue@2.7.16)
   prerender-node:
     specifier: ^3.7.0
     version: 3.8.0

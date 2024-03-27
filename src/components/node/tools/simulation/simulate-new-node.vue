@@ -1,25 +1,59 @@
 <template>
-  <div class="">
-    <b-modal
+  <portal to="simulate-modal">
+    <div
       id="simulate-node-modal"
-      ok-title="Simulate Node"
-      size="lg"
-      title="Simulate a new node"
-      @ok="simulateNewNode"
+      ref="simulateNodeModal"
+      class="modal fade"
+      tabindex="-1"
+      aria-labelledby="simulateNodeModalLabel"
+      aria-hidden="true"
     >
-      <b-form-input
-        v-model="newNodeName"
-        placeholder="Enter a name"
-      ></b-form-input>
-    </b-modal>
-  </div>
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 id="simulateNodeModalLabel" class="modal-title">
+              Simulate a new node
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              v-model="newNodeName"
+              type="text"
+              class="form-control"
+              placeholder="Enter a name"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="simulateNewNode"
+            >
+              Simulate Node
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </portal>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
-
-import { BFormInput, BModal } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 

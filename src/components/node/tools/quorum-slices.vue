@@ -1,49 +1,63 @@
 <template>
-  <b-modal id="quorumSlicesModal" lazy size="xl" hide-header @show="loadSlices">
-    <div>
-      <b-alert variant="info" show
-        >The node itself is added to every slice</b-alert
-      >
-      <b-table
-        id="network-analysis-table"
-        striped
-        hover
-        :fields="fields"
-        :items="items"
-        :per-page="perPage"
-        thead-class="my-thead"
-        tbody-class="my-tbody"
-        :current-page="currentPage"
-      >
-        <template #cell(slice)="data">
-          {{
-            data.item.slice
-              .map(
-                (publicKey) =>
-                  network.getNodeByPublicKey(publicKey).displayName,
-              )
-              .join(", ")
-          }}
-        </template>
-      </b-table>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="rows"
-        :per-page="perPage"
-        aria-controls="network-analysis-table"
-      ></b-pagination>
+  <portal to="slices-modal">
+    <div
+      id="quorumSlicesModal"
+      ref="quorumSlicesModal"
+      class="modal fade"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <b-alert variant="info" show
+              >The node itself is added to every slice
+            </b-alert>
+            <b-table
+              id="network-analysis-table"
+              striped
+              hover
+              :fields="fields"
+              :items="items"
+              :per-page="perPage"
+              thead-class="my-thead"
+              tbody-class="my-tbody"
+              :current-page="currentPage"
+            >
+              <template #cell(slice)="data">
+                {{
+                  data.item.slice
+                    .map(
+                      (publicKey) =>
+                        network.getNodeByPublicKey(publicKey).displayName,
+                    )
+                    .join(", ")
+                }}
+              </template>
+            </b-table>
+            <b-pagination
+              v-model="currentPage"
+              :total-rows="rows"
+              :per-page="perPage"
+              aria-controls="network-analysis-table"
+            ></b-pagination>
+          </div>
+        </div>
+      </div>
     </div>
-  </b-modal>
+  </portal>
 </template>
 
 <script setup lang="ts">
-import { BModal, BTable, BPagination, VBToggle, BAlert } from "bootstrap-vue";
+import { BAlert, BPagination, BTable, VBToggle } from "bootstrap-vue";
 import {
   Node,
   QuorumSet,
   QuorumSlicesGenerator,
 } from "@stellarbeat/js-stellarbeat-shared";
-import Vue, { computed, ref } from "vue";
+import Vue, { computed, nextTick, onMounted, ref } from "vue";
 import useStore from "@/store/useStore";
 
 Vue.directive("b-toggle", VBToggle);
@@ -55,9 +69,11 @@ const props = defineProps<{
 const store = useStore();
 const network = store.network;
 
+const quorumSlicesModal = ref<HTMLElement>();
+
 const perPage = ref(10);
 const currentPage = ref(1);
-const items = ref<{ slice: string[] }[]>([]);
+const items = ref<{ slice: string[] }[]>([{ slice: ["loading..."] }]);
 const fields = ref<{ key: string; label: string }[]>([
   { key: "slice", label: "slices" },
 ]);
@@ -75,7 +91,21 @@ function loadSlices() {
     return { slice: Array.from(new Set(slice)) };
   });
 }
+
+onMounted(() => {
+  nextTick(() => {
+    if (!quorumSlicesModal.value) return;
+
+    $(quorumSlicesModal.value).on("show.bs.modal", loadSlices);
+  });
+});
 </script>
+<style scoped>
+.modal {
+  z-index: 2000 !important; /* Increase modal z-index */
+  top: 0; /* Vertically align to top */
+}
+</style>
 <style>
 .my-thead tr th {
   color: #495057;

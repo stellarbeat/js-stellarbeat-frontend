@@ -2,9 +2,14 @@
   <div class="card" style="height: 320px" :class="dimmerClass">
     <div class="mx-4 mt-4 my-header">
       <div class="text-muted">Network analysis</div>
-      <b-button size="sm" class="info" @click="showModal = true">
+      <button
+        data-toggle="modal"
+        data-target="#infoModal"
+        type="button"
+        class="btn btn-secondary btn-sm info"
+      >
         <b-icon-info-circle v-tooltip:top="'Info'" class="text-muted" />
-      </b-button>
+      </button>
     </div>
     <div class="loader"></div>
     <div class="card-body d-flex flex-row justify-content-center p-1 my-body">
@@ -13,37 +18,49 @@
       </div>
     </div>
 
-    <b-modal v-model="showModal" lazy title="Info" ok-only hide-header>
-      <h3>What does this chart show?</h3>
-      <p class="my-4">
-        This chart shows liveness and safety buffers for the whole network. For
-        example if the node liveness data point shows that a set of two nodes is
-        found, this means that two specific nodes could halt the network if they
-        fail. If you want to find out what these nodes are, click on a datapoint
-        and run the network analysis.
-      </p>
-      <template #modal-footer>
-        <div class="w-100">
-          <p class="float-left">
-            Powered by
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://github.com/wiberlin/fbas_analyzer"
-              >wiberlin/fbas_analyzer</a
+    <div
+      id="infoModal"
+      ref="infoModal"
+      class="modal fade"
+      tabindex="-1"
+      aria-labelledby="modalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h3>What does this chart show?</h3>
+            <p class="my-4">
+              This chart shows liveness and safety buffers for the whole
+              network. For example if the node liveness data point shows that a
+              set of two nodes is found, this means that two specific nodes
+              could halt the network if they fail. If you want to find out what
+              these nodes are, click on a datapoint and run the network
+              analysis.
+            </p>
+          </div>
+          <div class="modal-footer d-flex justify-content-between">
+            <p>
+              Powered by
+              <a
+                target="_blank"
+                rel="noopener"
+                href="https://github.com/wiberlin/fbas_analyzer"
+              >
+                wiberlin/fbas_analyzer
+              </a>
+            </p>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
             >
-          </p>
-          <b-button
-            variant="primary"
-            size="sm"
-            class="float-right"
-            @click="showModal = false"
-          >
-            Close
-          </b-button>
+              Close
+            </button>
+          </div>
         </div>
-      </template>
-    </b-modal>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -62,14 +79,13 @@ import {
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
-import { BButton, BIconInfoCircle, BModal } from "bootstrap-vue";
+import { BIconInfoCircle } from "bootstrap-vue";
 import { AutomaticNetworkAnalysis } from "@/services/NetworkAnalyzer";
 import useStore from "@/store/useStore";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import useScrollTo from "@/composables/useScrollTo";
 
 const chart = ref<Chart>();
-const showModal = ref(false);
 const store = useStore();
 const network = store.network;
 const chartElement = ref<HTMLCanvasElement>();

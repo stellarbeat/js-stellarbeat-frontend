@@ -64,7 +64,8 @@
       </li>
       <li class="sb-nav-item">
         <nav-link
-          v-b-modal.simulate-node-modal
+          data-toggle="modal"
+          data-target="#simulate-node-modal"
           :title="'Simulate new node'"
           :show-icon="true"
           icon="plus"
@@ -73,7 +74,8 @@
       </li>
       <li class="sb-nav-item">
         <nav-link
-          v-b-modal.quorumSlicesModal
+          data-toggle="modal"
+          data-target="#quorumSlicesModal"
           :title="'Quorum slices'"
           :show-icon="true"
           icon="search"

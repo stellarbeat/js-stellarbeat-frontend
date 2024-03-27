@@ -8,6 +8,8 @@ import * as Sentry from "@sentry/vue";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/collapse";
 import "bootstrap/js/dist/tooltip";
+import "bootstrap/js/dist/modal";
+import PortalVue from "portal-vue";
 import ToolTipDirective from "./directives/tooltip";
 
 //temporary until upgrade to bootstrap 5
@@ -32,6 +34,7 @@ if (isProd) {
     dsn: import.meta.env.VUE_APP_SENTRY_DSN,
   });
 }
+Vue.use(PortalVue);
 
 Vue.component("MultiSelect", Multiselect);
 Vue.directive("tooltip", ToolTipDirective);

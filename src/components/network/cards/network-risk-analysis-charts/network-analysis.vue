@@ -21,37 +21,61 @@
           {{ capitalizeFirstLetter(analysisType) }} thresholds
         </h1>
       </div>
-      <b-button size="sm" @click="showModal = true">
-        <b-icon-info-circle
-          v-b-modal="'modal-info-' + setType"
-          v-tooltip:top="'Info'"
-          class="text-muted"
-        />
-      </b-button>
-      <b-modal v-model="showModal" title="Info" ok-only hide-header>
-        <slot name="info"></slot>
-        <template #modal-footer>
-          <div class="w-100">
-            <p class="float-left">
-              Powered by
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://github.com/wiberlin/fbas_analyzer"
-                >wiberlin/fbas_analyzer</a
+      <button
+        v-tooltip:top="'Info'"
+        data-toggle="modal"
+        class="btn btn-sm btn-secondary"
+        :data-target="'#info-modal-' + analysisType"
+        size="sm"
+        @click="showModal = true"
+      >
+        <b-icon-info-circle class="text-muted" />
+      </button>
+      <div
+        :id="'info-modal-' + analysisType"
+        class="modal fade"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
               >
-            </p>
-            <b-button
-              variant="primary"
-              size="sm"
-              class="float-right"
-              @click="showModal = false"
-            >
-              Close
-            </b-button>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <slot name="info"></slot>
+            </div>
+            <div class="modal-footer">
+              <p class="float-left">
+                Powered by
+                <a
+                  target="_blank"
+                  rel="noopener"
+                  href="https://github.com/wiberlin/fbas_analyzer"
+                >
+                  wiberlin/fbas_analyzer
+                </a>
+              </p>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm float-right"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
           </div>
-        </template>
-      </b-modal>
+        </div>
+      </div>
     </div>
     <div v-if="failed" class="card-alert alert alert-danger mb-0">
       <b-icon-exclamation-triangle />
@@ -142,20 +166,16 @@ import {
   BButtonGroup,
   BIconExclamationTriangle,
   BIconInfoCircle,
-  BModal,
-  VBModal,
 } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import AggregationLineChart from "@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import NetworkStatistics from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics";
-import Vue, { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
+import { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
 import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
 import useNetworkMeasurementsStore from "@/store/useNetworkMeasurementsStore";
-
-Vue.directive("b-modal", VBModal);
 
 const { dimmerClass, isLoading } = useIsLoading();
 

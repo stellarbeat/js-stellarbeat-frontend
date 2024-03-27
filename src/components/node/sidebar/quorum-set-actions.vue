@@ -18,16 +18,12 @@
       </b-dropdown-header>
       <b-dropdown-item
         v-if="level === 0"
-        v-b-modal="'add-organization-modal-' + id"
-        @click.prevent.stop
+        @click.prevent.stop="showAddOrganizationsModal(id)"
       >
         <b-icon-plus-circle class="dropdown-icon" scale="0.9" />
         Add organization
       </b-dropdown-item>
-      <b-dropdown-item
-        v-b-modal="'add-validators-modal-' + id"
-        @click.prevent.stop
-      >
+      <b-dropdown-item @click.prevent.stop="showAddValidatorsModal(id)">
         <b-icon-plus-circle class="dropdown-icon" scale="0.9" />
         Add Validators
       </b-dropdown-item>
@@ -71,69 +67,21 @@
         </b-button>
       </b-dropdown-form>
       <b-dropdown-divider />
-      <b-dropdown-item
-        v-b-modal="'quorumSetTomlExportModal' + id"
-        @click.prevent.stop
-      >
+      <b-dropdown-item @click.prevent.stop="showTomlExportModal(id)">
         <b-icon-download class="dropdown-icon" scale="0.9" />
         Stellar core config
       </b-dropdown-item>
     </b-dropdown>
-    <b-modal
-      :id="'add-validators-modal-' + id"
-      lazy
-      size="lg"
-      title="Select validators to add"
-      ok-title="Add"
-      @ok="validatorsToAddModalOk"
-    >
-      <template slot="default" slot-scope="{ visible }">
-        <AddValidatorsTable
-          v-if="visible"
-          :validators="possibleValidatorsToAdd"
-          @validators-selected="onValidatorsSelected"
-        />
-      </template>
-    </b-modal>
-    <b-modal
-      :id="'add-organization-modal-' + id"
-      lazy
-      size="lg"
-      title="Select organization to add"
-      ok-title="Add"
-      @ok="organizationsToAddModalOk"
-    >
-      <template slot="default" slot-scope="{ visible }">
-        <AddOrganizationsTable
-          v-if="visible"
-          :organizations="possibleOrganizationsToAdd"
-          @organizations-selected="onOrganizationsSelected"
-        />
-      </template>
-    </b-modal>
-    <b-modal
-      :id="'quorumSetTomlExportModal' + id"
-      lazy
-      size="lg"
-      title="Stellar Core Config"
-      ok-only
-      ok-title="Close"
-      @show="loadTomlExport()"
-    >
-      <pre><code>{{tomlNodesExport}}</code></pre>
-    </b-modal>
+    <QuorumSetTomlExportModal :id="id" :quorum-set="quorumSet" />
+    <QuorumSetAddOrganizationsModal :id="id" :quorum-set="quorumSet" />
+    <QuorumSetAddValidatorsModal :id="id" :quorum-set="quorumSet" />
   </div>
 </template>
 
 <script setup lang="ts">
-import Vue, { computed, ref, toRefs } from "vue";
+import Vue, { ref, toRefs } from "vue";
 
-import {
-  Node,
-  Organization,
-  QuorumSet,
-} from "@stellarbeat/js-stellarbeat-shared";
-import AddValidatorsTable from "@/components/node/tools/simulation/add-validators-table.vue";
+import { QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import {
   BButton,
   BDropdown,
@@ -148,12 +96,12 @@ import {
   BIconPlusCircle,
   BIconThreeDotsVertical,
   BIconXCircle,
-  BModal,
   VBModal,
 } from "bootstrap-vue";
-import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellarbeat-shared/lib/stellar-core-configuration-generator";
-import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
 import useStore from "@/store/useStore";
+import QuorumSetTomlExportModal from "@/components/node/sidebar/quorum-set-toml-export-modal.vue";
+import QuorumSetAddOrganizationsModal from "@/components/node/sidebar/quorum-set-add-organizations-modal.vue";
+import QuorumSetAddValidatorsModal from "@/components/node/sidebar/quorum-set-add-validators-modal.vue";
 
 Vue.directive("b-modal", VBModal);
 
@@ -172,51 +120,15 @@ const emit = defineEmits(["expand"]);
 const editingThreshold = ref(false);
 const newThreshold = ref(quorumSet.value.threshold);
 const id = ref(Math.ceil(Math.random() * 1000));
-const validatorsToAdd = ref<string[]>([]);
-const organizationsToAdd = ref<Organization[]>([]);
 const inputState = ref<boolean | null>(null);
-const tomlNodesExport = ref("");
 
 const store = useStore();
-const network = store.network;
 
 const dropdown = ref<BDropdown | null>(null);
 
 function deleteQuorumSet() {
   if (!parentQuorumSet.value) return;
   store.deleteInnerQuorumSet(quorumSet.value, parentQuorumSet.value);
-}
-
-const possibleOrganizationsToAdd = computed(() => {
-  const trustedOrganizations = network
-    .getTrustedOrganizations(quorumSet.value)
-    .map((org) => org.id);
-
-  return store.network.organizations.filter(
-    (organization) => trustedOrganizations.indexOf(organization.id) < 0,
-  );
-});
-
-const possibleValidatorsToAdd = computed(() => {
-  return network.nodes.filter(
-    (node: Node) =>
-      node.isValidator &&
-      QuorumSet.getAllValidators(quorumSet.value).indexOf(node.publicKey) < 0,
-  );
-});
-
-function addValidatorsToQuorumSet(
-  toQuorumSet: QuorumSet,
-  validators: string[],
-) {
-  store.addValidators(toQuorumSet, validators);
-}
-
-function addOrganizationsToQuorumSet(
-  toQuorumSet: QuorumSet,
-  organizations: Organization[],
-) {
-  store.addOrganizations(toQuorumSet, organizations);
 }
 
 function addQuorumSet() {
@@ -236,35 +148,15 @@ function saveThresholdFromInput() {
   store.editQuorumSetThreshold(quorumSet.value, Number(newThreshold.value));
 }
 
-function onValidatorsSelected(validators: Node[]) {
-  validatorsToAdd.value = validators.map(
-    (validator: Node) => validator.publicKey,
-  );
+function showTomlExportModal(id: number) {
+  $("#quorumSetTomlExportModal" + id).modal("show");
 }
 
-function onOrganizationsSelected(organizations: Organization[]) {
-  organizationsToAdd.value = organizations;
+function showAddValidatorsModal(id: number) {
+  $("#add-validator-modal-" + id).modal("show");
 }
-
-function validatorsToAddModalOk() {
-  if (validatorsToAdd.value.length > 0) {
-    addValidatorsToQuorumSet(quorumSet.value, validatorsToAdd.value);
-    emit("expand");
-  }
-}
-
-function organizationsToAddModalOk() {
-  if (organizationsToAdd.value.length > 0) {
-    addOrganizationsToQuorumSet(quorumSet.value, organizationsToAdd.value);
-  }
-}
-
-function loadTomlExport() {
-  const stellarCoreConfigurationGenerator =
-    new StellarCoreConfigurationGenerator(network);
-  tomlNodesExport.value = stellarCoreConfigurationGenerator.quorumSetToToml(
-    quorumSet.value,
-  );
+function showAddOrganizationsModal(id: number) {
+  $("#add-organization-modal-" + id).modal("show");
 }
 </script>
 
