@@ -41,6 +41,7 @@
     "vue-router": "^3.6.5"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/d3-force": "^3.0.3",
     "@types/d3-hierarchy": "^3.0.2",
     "@types/d3-polygon": "^3.0.0",

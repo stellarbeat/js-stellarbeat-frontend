@@ -1,4 +1,3 @@
-import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import App from "./App.vue";
 import Vue from "vue";
 import { createRouter } from "./router";
@@ -6,7 +5,8 @@ import "./assets/custom.scss";
 import "./assets/global.css";
 import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
-import "bootstrap";
+import "bootstrap/js/dist/dropdown";
+import "bootstrap/js/dist/collapse";
 
 //@ts-ignore
 window.global ||= window;
@@ -22,9 +22,6 @@ if (isProd) {
 }
 
 Vue.component("MultiSelect", Multiselect);
-
-Vue.use(BootstrapVue);
-Vue.use(BootstrapVueIcons);
 
 const router = createRouter();
 
