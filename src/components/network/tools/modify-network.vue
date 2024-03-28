@@ -3,14 +3,13 @@
     <template #modal-header="{ close }">
       <h5 class="modal-title">Modify the network</h5>
       <!-- Emulate built in modal header close button action -->
-      <b-button
-        size="sm"
+      <button
+        class="btn btn-sm btn-outline-default"
         aria-label="Close"
-        variant="outline-default"
         @click="close()"
       >
         <b-icon-x />
-      </b-button>
+      </button>
     </template>
     <template #default>
       <ul class="schema-list">
@@ -51,50 +50,50 @@
           </b-list-group-item>
         </b-list-group>
       </div>
-      <b-button-group class="mt-2">
-        <b-button
+      <div class="mt-2">
+        <button
+          class="btn"
           @click="
             modifiedNetworkString = '';
             isValid = false;
             validationErrors = [];
           "
-          >Clear</b-button
         >
-        <b-button @click="initModifiedNetworkString">Reset</b-button>
-        <b-button @click="copyJson">Copy JSON</b-button>
-      </b-button-group>
+          Clear
+        </button>
+        <button class="btn" @click="initModifiedNetworkString">Reset</button>
+        <button class="btn" @click="copyJson">Copy JSON</button>
+      </div>
     </template>
     <template #modal-footer="{ ok, cancel }">
-      <b-button
-        variant="default"
+      <button
+        class="btn btn-secondary"
         @click="
           initModifiedNetworkString();
           cancel();
         "
       >
         Cancel
-      </b-button>
-      <b-button
+      </button>
+      <button
         v-if="isValid && !modified"
-        variant="success"
+        class="btn btn-success"
         @click="
           load();
           ok();
         "
       >
         Load network
-      </b-button>
-      <b-button v-else variant="primary" @click="validate">
+      </button>
+      <button v-else class="btn btn-primary" @click="validate">
         Validate JSON
-      </b-button>
+      </button>
     </template>
   </b-modal>
 </template>
 
 <script setup lang="ts">
 import {
-  BButton,
-  BButtonGroup,
   BFormTextarea,
   BIconX,
   BListGroup,

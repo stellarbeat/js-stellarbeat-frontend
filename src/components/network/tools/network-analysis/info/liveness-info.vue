@@ -52,22 +52,18 @@
             >wiberlin/fbas_analyzer</a
           >
         </p>
-        <b-button
-          variant="primary"
-          size="sm"
-          class="float-right"
-          @click="hideModal"
-        >
+        <button class="btn btn-primary btn-sm float-right" @click="hideModal">
           Close
-        </b-button>
+        </button>
       </div>
     </template>
   </b-modal>
 </template>
 
 <script setup lang="ts">
-import { BModal, BButton } from "bootstrap-vue";
+import { BModal } from "bootstrap-vue";
 import { ref } from "vue";
+
 const livenessInfoModal = ref(null);
 function hideModal() {
   if (livenessInfoModal.value) (livenessInfoModal.value as BModal).hide();

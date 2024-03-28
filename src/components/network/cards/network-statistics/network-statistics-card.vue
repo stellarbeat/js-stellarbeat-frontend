@@ -43,8 +43,8 @@
             </div>
           </div>
         </div>
-        <b-button
-          size="sm"
+        <button
+          class="btn btn-sm"
           style="border: none; box-shadow: none"
           @click="showModal = true"
         >
@@ -52,7 +52,7 @@
             v-tooltip:top="'Click for info'"
             class="text-muted"
           />
-        </b-button>
+        </button>
       </div>
       <div
         v-show="!store.isSimulation && store.networkContext.enableHistory"
@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { BBadge, BButton, BIconInfoCircle, BModal } from "bootstrap-vue";
+import { BBadge, BIconInfoCircle, BModal } from "bootstrap-vue";
 import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import { computed, Ref, ref, toRefs, withDefaults } from "vue";

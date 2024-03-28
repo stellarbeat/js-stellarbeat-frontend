@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <b-button-group size="sm">
+    <div class="btn-group" role="group">
       <button
         size="sm"
         :disabled="!canGoBack()"
@@ -49,14 +49,13 @@
       <button class="btn btn-sm btn-secondary right" @click="goForward">
         <b-icon-chevron-right />
       </button>
-    </b-button-group>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { nextTick, Ref, ref, toRefs, watch } from "vue";
 import {
-  BButtonGroup,
   BFormDatepicker,
   BFormTimepicker,
   BIconCalendar,

@@ -38,23 +38,19 @@
             >wiberlin/fbas_analyzer</a
           >
         </p>
-        <b-button
-          variant="primary"
-          size="sm"
-          class="float-right"
-          @click="hideModal"
-        >
+        <button class="btn btn-sm btn-primary float-right" @click="hideModal">
           Close
-        </b-button>
+        </button>
       </div>
     </template>
   </b-modal>
 </template>
 
 <script setup lang="ts">
-import { BModal, BButton } from "bootstrap-vue";
+import { BModal } from "bootstrap-vue";
 
 import { ref } from "vue";
+
 const quorumIntersectionInfoModal = ref(null);
 function hideModal() {
   if (quorumIntersectionInfoModal.value)

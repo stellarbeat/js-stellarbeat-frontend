@@ -27,13 +27,14 @@
               {{ node.publicKey.substring(0, 7) }}...{{
                 node.publicKey.substring(51, 100)
               }}
-              <b-button
+              <button
                 v-tooltip:top="'Copy to clipboard'"
-                size="sm"
+                type="button"
+                class="btn btn-sm btn-secondary"
                 @click="copyPublicKey"
               >
                 <b-icon-clipboard />
-              </b-button>
+              </button>
             </td>
           </tr>
           <tr class="text-gray">
@@ -92,7 +93,7 @@
 </template>
 <script setup lang="ts">
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
-import { BBadge, BButton, BIconClipboard } from "bootstrap-vue";
+import { BBadge, BIconClipboard } from "bootstrap-vue";
 import FullValidatorTitle from "@/components/node/full-validator-title.vue";
 import useStore from "@/store/useStore";
 import { useTruncate } from "@/composables/useTruncate";

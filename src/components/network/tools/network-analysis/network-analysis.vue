@@ -25,12 +25,12 @@
                 class="mb-1 border-0"
               >
                 <b-card-header header-tag="header" class="p-0" role="tab">
-                  <b-button
+                  <button
                     v-b-toggle.accordion-quorum
-                    block
-                    variant="outline-primary"
-                    >Quorum intersection
-                  </b-button>
+                    class="btn btn-block btn-outline-primary"
+                  >
+                    Quorum intersection
+                  </button>
                 </b-card-header>
                 <b-collapse
                   id="accordion-quorum"
@@ -64,13 +64,13 @@
                               }}
                             </b-badge>
                           </h3>
-                          <b-button size="sm" @click="showModal = true">
+                          <button class="btn btn-sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-qi-info'"
                               v-tooltip:top="'Info'"
                               class="text-muted"
                             />
-                          </b-button>
+                          </button>
                           <quorum-intersection-info />
                         </div>
                       </template>
@@ -80,12 +80,12 @@
               </b-card>
               <b-card v-if="livenessAnalyzed" no-body class="mb-1 border-0">
                 <b-card-header header-tag="header" class="p-0" role="tab">
-                  <b-button
+                  <button
                     v-b-toggle.accordion-liveness
-                    block
-                    variant="outline-primary"
-                    >Liveness risk
-                  </b-button>
+                    class="btn-primary btn btn-block"
+                  >
+                    Liveness risk
+                  </button>
                 </b-card-header>
                 <b-collapse
                   id="accordion-liveness"
@@ -114,13 +114,13 @@
                             {{ blockingSetsMinSize }}
                             that could impact liveness.
                           </h3>
-                          <b-button size="sm" @click="showModal = true">
+                          <button class="btn btn-sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-liveness-info'"
                               v-tooltip:top="'Info'"
                               class="text-muted"
                             />
-                          </b-button>
+                          </button>
                         </div>
                         <liveness-info />
                       </template>
@@ -130,12 +130,12 @@
               </b-card>
               <b-card v-if="safetyAnalyzed" no-body class="mb-1 border-0">
                 <b-card-header header-tag="header" class="p-0" role="tab">
-                  <b-button
+                  <button
                     v-b-toggle.accordion-safety
-                    block
-                    variant="outline-primary"
-                    >Safety risk
-                  </b-button>
+                    class="btn btn-block btn-outline-primary"
+                  >
+                    Safety risk
+                  </button>
                 </b-card-header>
                 <b-collapse
                   id="accordion-safety"
@@ -164,13 +164,13 @@
                             {{ splittingSetsMinSize }}
                             that could impact safety.
                           </h3>
-                          <b-button size="sm" @click="showModal = true">
+                          <button class="btn btn-sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-safety-info'"
                               v-tooltip:top="'Info'"
                               class="text-muted"
                             />
-                          </b-button>
+                          </button>
                         </div>
                         <safety-info />
                       </template>
@@ -180,12 +180,12 @@
               </b-card>
               <b-card v-if="topTierAnalyzed" no-body class="mb-1 border-0">
                 <b-card-header header-tag="header" class="p-0" role="tab">
-                  <b-button
+                  <button
                     v-b-toggle.accordion-top-tier
-                    block
-                    variant="outline-primary"
-                    >Top tier
-                  </b-button>
+                    class="btn btn-block btn-outline-primary"
+                  >
+                    Top tier
+                  </button>
                 </b-card-header>
                 <b-collapse
                   id="accordion-top-tier"
@@ -211,13 +211,13 @@
                             {{ topTier.length }}
                           </h3>
 
-                          <b-button size="sm" @click="showModal = true">
+                          <button class="btn btn-sm" @click="showModal = true">
                             <b-icon-info-circle
                               v-b-modal="'network-analysis-top-tier-info'"
                               v-tooltip:top="'Info'"
                               class="text-muted"
                             />
-                          </b-button>
+                          </button>
                           <top-tier-info />
                         </div>
                         <b-badge variant="info">
@@ -276,12 +276,21 @@
             <b-form-checkbox v-model="analyzeTopTier">Top Tier</b-form-checkbox>
           </b-form-group>
 
-          <b-button v-if="!isLoading" variant="primary" @click="performAnalysis"
-            >Perform analysis
-          </b-button>
-          <b-button v-else variant="danger" @click="stopAnalysis"
-            >Stop analysis</b-button
+          <button
+            v-if="!isLoading"
+            class="btn btn-primary btn"
+            @click="performAnalysis"
           >
+            Perform analysis
+          </button>
+          <button
+            v-else
+            class="btn btn-danger"
+            variant="danger"
+            @click="stopAnalysis"
+          >
+            Stop analysis
+          </button>
         </div>
       </div>
     </b-card-body>
@@ -292,7 +301,6 @@
 import {
   BAlert,
   BBadge,
-  BButton,
   BCard,
   BCardBody,
   BCardHeader,

@@ -58,13 +58,13 @@
             </b-form-input>
           </b-form-group>
         </div>
-        <b-button
-          variant="primary"
-          size="sm"
-          class="mt-2"
+        <button
+          class="btn btn-primary btn-sm mt-2"
+          role="button"
           @click="saveThresholdFromInput"
-          >Save Threshold
-        </b-button>
+        >
+          Save Threshold
+        </button>
       </b-dropdown-form>
       <b-dropdown-divider />
       <b-dropdown-item @click.prevent.stop="showTomlExportModal(id)">
@@ -79,11 +79,10 @@
 </template>
 
 <script setup lang="ts">
-import Vue, { ref, toRefs } from "vue";
+import { ref, toRefs } from "vue";
 
 import { QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import {
-  BButton,
   BDropdown,
   BDropdownDivider,
   BDropdownForm,
@@ -96,14 +95,11 @@ import {
   BIconPlusCircle,
   BIconThreeDotsVertical,
   BIconXCircle,
-  VBModal,
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import QuorumSetTomlExportModal from "@/components/node/sidebar/quorum-set-toml-export-modal.vue";
 import QuorumSetAddOrganizationsModal from "@/components/node/sidebar/quorum-set-add-organizations-modal.vue";
 import QuorumSetAddValidatorsModal from "@/components/node/sidebar/quorum-set-add-validators-modal.vue";
-
-Vue.directive("b-modal", VBModal);
 
 export interface Props {
   quorumSet: QuorumSet;

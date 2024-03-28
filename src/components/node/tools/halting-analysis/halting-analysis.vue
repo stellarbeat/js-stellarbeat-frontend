@@ -41,13 +41,13 @@
             </b-form-group>
           </b-form>
 
-          <b-button
-            size="sm"
-            variant="primary"
-            class="mt-1"
+          <button
+            role="button"
+            class="btn btn-primary btn-sm mt-1"
             @click="restartHaltingAnalysis"
-            >Detect failures
-          </b-button>
+          >
+            Detect failures
+          </button>
           <b-alert
             dismissible
             :show="numberOfNodeFailures > 4"
@@ -80,22 +80,20 @@
                     :select-size="4"
                     :options="nodeFailures"
                   ></b-form-select>
-                  <b-button
+                  <button
                     v-if="!simulated"
-                    size="sm"
-                    variant="primary"
-                    class="mt-2"
+                    class="btn btn-primary btn-sm mt-2"
                     @click="simulateFailure"
-                    >Simulate failure
-                  </b-button>
-                  <b-button
+                  >
+                    Simulate failure
+                  </button>
+                  <button
                     v-else
-                    size="sm"
-                    variant="secondary"
-                    class="mt-2"
+                    class="btn btn-secondary btn-sm mt-2"
                     @click="resetFailureSimulation"
-                    >Reactivate nodes
-                  </b-button>
+                  >
+                    Reactivate nodes
+                  </button>
                 </b-form>
               </div>
             </div>
@@ -119,7 +117,6 @@ import {
 } from "@stellarbeat/js-stellarbeat-shared";
 import {
   BAlert,
-  BButton,
   BCard,
   BForm,
   BFormGroup,

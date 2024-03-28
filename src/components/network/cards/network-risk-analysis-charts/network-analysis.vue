@@ -2,21 +2,28 @@
   <div class="card">
     <div class="card-header px-3 d-flex flex-wrap justify-content-between">
       <div class="d-flex flex-wrap">
-        <b-button-group size="sm" class="mr-3">
-          <b-button :pressed="bucketSize === '1Y'" @click="select1YViewDefault"
-            >1Y</b-button
+        <div class="btn-group-sm mr-3">
+          <button
+            role="button"
+            :aria-pressed="bucketSize === '1Y'"
+            @click="select1YViewDefault"
           >
-          <b-button
-            :pressed="bucketSize === '30D'"
+            1Y
+          </button>
+          <button
+            role="button"
+            :aria-pressed="bucketSize === '30D'"
             @click="select30DayViewDefault"
-            >30D</b-button
           >
-          <b-button
-            :pressed="bucketSize === '24H'"
+            30D
+          </button>
+          <button
+            :aria:pressed="bucketSize === '24H'"
             @click="select24HViewDefault"
-            >24H</b-button
           >
-        </b-button-group>
+            24H
+          </button>
+        </div>
         <h1 class="card-title">
           {{ capitalizeFirstLetter(analysisType) }} thresholds
         </h1>
@@ -161,12 +168,7 @@ import {
   ScatterDataPoint,
   TooltipItem,
 } from "chart.js";
-import {
-  BButton,
-  BButtonGroup,
-  BIconExclamationTriangle,
-  BIconInfoCircle,
-} from "bootstrap-vue";
+import { BIconExclamationTriangle, BIconInfoCircle } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
 import AggregationLineChart from "@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue";

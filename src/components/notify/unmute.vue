@@ -13,13 +13,13 @@
     </div>
     <div v-else>
       <h4>{{ errorMessage }}</h4>
-      <b-button variant="primary" @click="unmute">Try again </b-button>
+      <button class="btn btn-primary" @click="unmute">Try again</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { BAlert, BButton } from "bootstrap-vue";
+import { BAlert } from "bootstrap-vue";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router/composables";
 

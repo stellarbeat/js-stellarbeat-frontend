@@ -124,18 +124,23 @@
             >
           </b-form-checkbox>
         </b-form-group>
-        <b-button type="submit" variant="primary" @click="onSubscribe"
-          >Create or update subscriptions</b-button
-        >
-        <b-button
-          class="ml-2"
+        <button
           type="submit"
-          variant="danger"
+          class="btn-primary btn"
+          role="button"
+          @click="onSubscribe"
+        >
+          Create or update subscriptions
+        </button>
+        <button
+          class="btn btn-danger ml-2"
+          type="submit"
           :disabled="!(emailAddressState === true && consented === 'accepted')"
           @click="onUnsubscribe"
-          >Unsubscribe and remove email address</b-button
         >
-        <b-button type="reset" variant="default">Clear form</b-button>
+          Unsubscribe and remove email address
+        </button>
+        <button class="btn btn-secondary ml-3" type="reset">Clear form</button>
       </b-form>
     </div>
     <b-alert class="mt-5" variant="info" :show="true"
@@ -187,7 +192,6 @@
 import { Multiselect } from "vue-multiselect";
 import {
   BAlert,
-  BButton,
   BForm,
   BFormCheckbox,
   BFormGroup,

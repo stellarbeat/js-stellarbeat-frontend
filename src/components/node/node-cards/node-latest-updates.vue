@@ -111,18 +111,20 @@
             <div class="d-flex align-items-center mb-2">
               <b-button-toolbar>
                 <b-button-group size="sm">
-                  <b-button
+                  <button
                     v-tooltip="'View diff'"
+                    class="btn"
                     @click="showDiff(updatesOnDate.snapshot)"
                   >
                     <b-icon-file-diff />
-                  </b-button>
-                  <b-button
+                  </button>
+                  <button
                     v-tooltip="'Travel to this point in time'"
+                    class="btn"
                     @click="timeTravel(updatesOnDate.snapshot)"
                   >
                     <b-icon-clock />
-                  </b-button>
+                  </button>
                 </b-button-group>
               </b-button-toolbar>
             </div>
@@ -151,7 +153,6 @@ import "jsondiffpatch/formatters/styles/html.css";
 import "jsondiffpatch/formatters/styles/annotated.css";
 
 import {
-  BButton,
   BButtonGroup,
   BButtonToolbar,
   BIconClock,
