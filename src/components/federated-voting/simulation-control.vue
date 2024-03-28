@@ -2,20 +2,20 @@
   <nav class="card navbar">
     <div class="button-group">
       <button class="btn btn-primary navbar-item" @click="backward">
-        <i class="bi bi-arrow-counterclockwise-fill icon-color"></i>
+        <BIconArrowCounterclockwise class="icon-color" />
       </button>
       <button
         v-if="!isPlaying"
         class="btn btn-primary navbar-item"
         @click="play"
       >
-        <i class="bi bi-play-fill icon-color"></i>
+        <BIconPlayFill class="icon-color" />
       </button>
       <button v-else class="btn btn-primary navbar-item" @click="pause">
-        <i class="bi bi-pause-fill icon-color"></i>
+        <BIconPauseFill class="icon-color" />
       </button>
       <button class="btn btn-primary navbar-item" @click="forward">
-        <i class="bi bi-arrow-clockwise-fill icon-color"></i>
+        <BIconArrowClockwise class="icon-color" />
       </button>
     </div>
 
@@ -24,6 +24,12 @@
 </template>
 
 <script setup lang="ts">
+import {
+  BIconArrowClockwise,
+  BIconArrowCounterclockwise,
+  BIconPauseFill,
+  BIconPlayFill,
+} from "bootstrap-vue";
 import { ref } from "vue";
 import ScenarioSelector from "@/components/federated-voting/scenario-selector.vue";
 
