@@ -33,7 +33,7 @@ import SimulationControl from "@/components/federated-voting/simulation-control.
 import Graph from "@/components/visual-navigator/graph/graph.vue";
 import { onMounted, ref } from "vue";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
-import { Node } from "@stellarbeat/js-stellarbeat-shared";
+import { Network, TrustGraph } from "@stellarbeat/js-stellarbeat-shared";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import OverlayGraph from "@/components/federated-voting/overlay-graph.vue";
 import { federatedVotingStore } from "@/store/useFederatedVotingStore";
@@ -41,23 +41,12 @@ import { federatedVotingStore } from "@/store/useFederatedVotingStore";
 const viewGraph = ref<ViewGraph>(new ViewGraph());
 const selectedVertices = ref<ViewVertex[]>([]);
 
-const node = new Node("A");
-node.name = "A";
-node.isValidating = true;
-node.active = true;
-node.activeInScp = true;
-node.quorumSet.threshold = 1;
-node.quorumSet.validators.push("sdf1");
-
-federatedVotingStore.network.nodes.push(node);
-federatedVotingStore.network.recalculateNetwork();
-
 const trustGraph = federatedVotingStore.network.nodesTrustGraph;
 
 onMounted(() => {
   viewGraph.value = ViewGraph.fromNodes(
-    federatedVotingStore.network,
-    trustGraph,
+    federatedVotingStore.network as Network,
+    trustGraph as TrustGraph,
     viewGraph.value,
   );
 });

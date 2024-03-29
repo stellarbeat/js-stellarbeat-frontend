@@ -16,38 +16,20 @@
           height="100%"
         >
           <g>
-            <path
+            <graph-link
               v-for="link in graphManager.links"
               :key="'overlay' + link.source.id + link.target.id"
-              class="link"
-              :d="getLinkPath(link)"
-              @click="() => handleLinkClick(link)"
-            ></path>
+              :link="link"
+              @linkClick="handleLinkClick"
+            />
           </g>
           <g>
-            <g
+            <graph-node
               v-for="node in nodes"
               :key="'overlay' + node.id"
-              :transform="getNodeTransform(node)"
-              class="node-container"
-              @click="() => handleNodeClick(node)"
-            >
-              <circle class="node" r="8"></circle>
-              <g>
-                <rect
-                  class="label-rect"
-                  :width="getLabelWidth(node.name, 10) + 'px'"
-                  height="13px"
-                  y="10"
-                  :x="getLabelX(node.name, 10)"
-                  rx="2"
-                ></rect>
-                <text color="#1687b2" class="label-text" y="5" dy="1.3em">
-                  {{ truncate(node.name, 10) }}
-                  <title>{{ node.name }}</title>
-                </text>
-              </g>
-            </g>
+              :node="node"
+              @nodeClick="handleNodeClick"
+            />
           </g>
         </svg>
       </div>
@@ -62,16 +44,14 @@ import {
   LinkDatum,
   NodeDatum,
 } from "@/components/federated-voting/GraphManager";
-import useGraph from "@/composables/useGraph";
-import { useTruncate } from "@/composables/useTruncate";
 import OverlayGraphOptions from "@/components/federated-voting/overlay-graph-options.vue";
 import { SimulationManager } from "@/components/federated-voting/SimulationManager";
+import GraphLink from "@/components/federated-voting/graph-link.vue";
+import GraphNode from "@/components/federated-voting/graph-node.vue";
 
 const initialRepellingForce = 1000;
 const initialTopology = "complete";
 const overlayGraph = ref<SVGElement | null>(null);
-const truncate = useTruncate();
-const { getLinkPath, getLabelX, getLabelWidth, getNodeTransform } = useGraph();
 
 let simulationManager: SimulationManager | null = null;
 
@@ -145,43 +125,8 @@ const height = (): number => {
   width: 100%;
   height: 400px;
 }
-
-.link {
-  fill: none;
-  stroke: #1687b2;
-  stroke-width: 2px;
-  cursor: pointer;
-}
-
-.link:hover {
-  stroke-width: 4px;
-}
-
-.node {
-  fill: #1687b2;
-  stroke: #fff;
-  stroke-width: 2px;
-}
-
 .overlay-graph {
   width: 100%;
   height: 100%;
-}
-
-.label-text {
-  font-size: 12px;
-  text-anchor: middle;
-  font-weight: 400;
-  fill: #1687b2;
-  text-transform: lowercase;
-}
-
-.label-rect {
-  fill: white;
-  opacity: 0.9;
-}
-
-.node-container {
-  cursor: pointer;
 }
 </style>
