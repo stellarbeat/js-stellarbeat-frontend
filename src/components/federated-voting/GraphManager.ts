@@ -67,6 +67,23 @@ export class GraphManager {
     this.links = newLinks;
   }
 
+  addLink(source: NodeDatum, target: NodeDatum) {
+    if (
+      this.links.filter(
+        (link) => link.source === source && link.target === target,
+      ).length === 0
+    ) {
+      this.links.push({
+        source: source,
+        target: target,
+      });
+    }
+  }
+
+  removeLink(link: LinkDatum) {
+    this.links = this.links.filter((l) => l !== link);
+  }
+
   private getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min);
   }

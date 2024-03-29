@@ -82,4 +82,10 @@ watch(topology, (newTopology) => {
   font-size: 16px;
   font-weight: bold;
 }
+
+.repelling-force-label {
+  color: #333;
+  font-size: 16px;
+  font-weight: bold;
+}
 </style>

@@ -21,6 +21,13 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
+        minify: false,
+        chunkSizeWarningLimit: 1000,
+    },
+    optimizeDeps: {
+        esbuildOptions: {
+
+        }
     },
     css: {
         devSourcemap: true,

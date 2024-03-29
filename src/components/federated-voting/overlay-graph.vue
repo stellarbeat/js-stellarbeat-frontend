@@ -21,6 +21,7 @@
               :key="'overlay' + link.source.id + link.target.id"
               class="link"
               :d="getLinkPath(link)"
+              @click="() => handleLinkClick(link)"
             ></path>
           </g>
           <g>
@@ -28,6 +29,8 @@
               v-for="node in nodes"
               :key="'overlay' + node.id"
               :transform="getNodeTransform(node)"
+              class="node-container"
+              @click="() => handleNodeClick(node)"
             >
               <circle class="node" r="8"></circle>
               <g>
@@ -53,14 +56,6 @@
 </template>
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import {
-  forceCenter,
-  forceLink,
-  forceManyBody,
-  forceSimulation,
-  Simulation,
-  SimulationNodeDatum,
-} from "d3-force";
 import { federatedVotingStore } from "@/store/useFederatedVotingStore";
 import {
   GraphManager,
@@ -70,6 +65,7 @@ import {
 import useGraph from "@/composables/useGraph";
 import { useTruncate } from "@/composables/useTruncate";
 import OverlayGraphOptions from "@/components/federated-voting/overlay-graph-options.vue";
+import { SimulationManager } from "@/components/federated-voting/SimulationManager";
 
 const initialRepellingForce = 1000;
 const initialTopology = "complete";
@@ -77,7 +73,30 @@ const overlayGraph = ref<SVGElement | null>(null);
 const truncate = useTruncate();
 const { getLinkPath, getLabelX, getLabelWidth, getNodeTransform } = useGraph();
 
-let simulation: Simulation<NodeDatum, LinkDatum> | null = null;
+let simulationManager: SimulationManager | null = null;
+
+let addLinkSourceNode: NodeDatum | null = null;
+
+const handleLinkClick = (link: LinkDatum) => {
+  graphManager.removeLink(link);
+  if (simulationManager) {
+    simulationManager.updateSimulationLinks(graphManager.links);
+  }
+};
+
+const handleNodeClick = (node: NodeDatum) => {
+  if (addLinkSourceNode) {
+    graphManager.addLink(addLinkSourceNode, node);
+    addLinkSourceNode = null;
+  } else {
+    addLinkSourceNode = node;
+  }
+
+  if (simulationManager) {
+    simulationManager.updateSimulationLinks(graphManager.links);
+  }
+};
+
 const nodes: NodeDatum[] = federatedVotingStore.network.nodes.map(
   (node, i) => ({
     id: i,
@@ -89,36 +108,26 @@ const nodes: NodeDatum[] = federatedVotingStore.network.nodes.map(
 
 const graphManager = reactive(new GraphManager(nodes, initialTopology));
 
-const charge = forceManyBody().strength(() => -initialRepellingForce);
-const linkForce = forceLink(graphManager.links).id(
-  (d: SimulationNodeDatum) => (d as NodeDatum).id,
-);
-
 onMounted(() => {
-  simulation = forceSimulation(graphManager.nodes)
-    .force("link", linkForce)
-    .force("charge", charge)
-    .force("center", forceCenter(width() / 2, height() / 2));
+  simulationManager = new SimulationManager(
+    graphManager.nodes,
+    graphManager.links,
+    initialRepellingForce,
+    width(),
+    height(),
+  );
 });
 
 const updateRepellingForce = (force: number) => {
-  if (simulation) {
-    charge.strength(-force);
-
-    simulation.alpha(0.5).restart();
+  if (simulationManager) {
+    simulationManager.updateSimulationForce(force);
   }
 };
 
 const updateTopology = (topology: string) => {
   graphManager.updateGraphTopology(topology);
-  if (simulation) {
-    simulation.force(
-      "link",
-      forceLink(graphManager.links).id(
-        (d: SimulationNodeDatum) => (d as NodeDatum).id,
-      ),
-    );
-    simulation.alpha(0.5).restart();
+  if (simulationManager) {
+    simulationManager.updateSimulationLinks(graphManager.links);
   }
 };
 
@@ -138,16 +147,16 @@ const height = (): number => {
   width: 100%;
   height: 400px;
 }
-.repelling-force-label {
-  color: #333;
-  font-size: 16px;
-  font-weight: bold;
-}
 
 .link {
   fill: none;
   stroke: #1687b2;
   stroke-width: 2px;
+  cursor: pointer;
+}
+
+.link:hover {
+  stroke-width: 4px;
 }
 
 .node {
@@ -172,5 +181,9 @@ const height = (): number => {
 .label-rect {
   fill: white;
   opacity: 0.9;
+}
+
+.node-container {
+  cursor: pointer;
 }
 </style>
