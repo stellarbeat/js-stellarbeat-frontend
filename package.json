@@ -28,7 +28,7 @@
     "d3-zoom": "^3.0.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
-    "express": "^4.19.1",
+    "express": "^4.19.2",
     "jquery": "^3.7.1",
     "js-cookie": "^3.0.5",
     "jsondiffpatch": "^0.6.0",
