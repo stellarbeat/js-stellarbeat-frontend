@@ -29,7 +29,8 @@ export class SimulationManager {
       .force("link", this.getLinkForce())
       .force("charge", this.getCharge())
       .force("center", forceCenter(this.width / 2, this.height / 2))
-      .force("boundingBox", () => this.boundingBoxForce());
+      .force("boundingBox", () => this.boundingBoxForce()) //nodes don't go out of bounds
+      .alphaMin(0.1); // stops the simulation when alpha reaches 0.1
   }
 
   private getCharge() {
@@ -46,7 +47,7 @@ export class SimulationManager {
     this.repellingForce = force;
     if (this.simulation) {
       this.simulation.force("charge", this.getCharge());
-      this.simulation.alpha(0.5).restart();
+      this.simulation.alpha(0.8).restart();
     }
   }
 
@@ -54,7 +55,7 @@ export class SimulationManager {
     this.links = links;
     if (this.simulation) {
       this.simulation.force("link", this.getLinkForce());
-      this.simulation.alpha(0.5).restart();
+      this.simulation.alpha(0.8).restart();
     }
   }
 

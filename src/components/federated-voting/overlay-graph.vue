@@ -87,13 +87,11 @@ const handleLinkClick = (link: LinkDatum) => {
 const handleNodeClick = (node: NodeDatum) => {
   if (addLinkSourceNode) {
     graphManager.addLink(addLinkSourceNode, node);
+    if (simulationManager)
+      simulationManager.updateSimulationLinks(graphManager.links);
     addLinkSourceNode = null;
   } else {
     addLinkSourceNode = node;
-  }
-
-  if (simulationManager) {
-    simulationManager.updateSimulationLinks(graphManager.links);
   }
 };
 
