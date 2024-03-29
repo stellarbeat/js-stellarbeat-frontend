@@ -41,9 +41,6 @@ dependencies:
   d3-force:
     specifier: ^3.0.0
     version: 3.0.0
-  d3-hierarchy:
-    specifier: ^3.1.2
-    version: 3.1.2
   d3-polygon:
     specifier: ^3.0.1
     version: 3.0.1
@@ -112,9 +109,6 @@ devDependencies:
   '@types/d3-force':
     specifier: ^3.0.3
     version: 3.0.9
-  '@types/d3-hierarchy':
-    specifier: ^3.0.2
-    version: 3.1.7
   '@types/d3-polygon':
     specifier: ^3.0.0
     version: 3.0.2
@@ -1522,10 +1516,6 @@ packages:
     resolution: {integrity: sha512-IKtvyFdb4Q0LWna6ymywQsEYjK/94SGhPrMfEr1TIc5OBeziTi+1jcCvttts8e0UWZIxpasjnQk9MNk/3iS+kA==}
     dev: true
 
-  /@types/d3-hierarchy@3.1.7:
-    resolution: {integrity: sha512-tJFtNoYBtRtkNysX1Xq4sxtjK8YgoWUNpIiUee0/jHGRwqvzYxkq0hGVbbOGSz+JgFxxRu4K8nb3YpG3CMARtg==}
-    dev: true
-
   /@types/d3-interpolate@3.0.4:
     resolution: {integrity: sha512-mgLPETlrpVV1YRJIglr4Ez47g7Yxjl1lj7YKsiMCb27VJH9W8NVM6Bb9d8kkpG/uAQS5AmbA48q2IAolKKo1MA==}
     dependencies:
@@ -2383,11 +2373,6 @@ packages:
       d3-dispatch: 3.0.1
       d3-quadtree: 3.0.1
       d3-timer: 3.0.1
-    dev: false
-
-  /d3-hierarchy@3.1.2:
-    resolution: {integrity: sha512-FX/9frcub54beBdugHjDCdikxThEqjnR93Qt7PvQTOHxyiNCAlvMrHhclk3cD5VeAaq9fxmfRp+CnWw9rEMBuA==}
-    engines: {node: '>=12'}
     dev: false
 
   /d3-interpolate@3.0.1:

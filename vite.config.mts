@@ -21,12 +21,32 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
-        minify: false,
         chunkSizeWarningLimit: 1000,
-    },
-    optimizeDeps: {
-        esbuildOptions: {
-
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    d3: [
+                        'd3-force',
+                        'd3-shape',
+                        'd3-selection',
+                        'd3-zoom',
+                        'd3-polygon',
+                        "d3-drag",
+                    ],
+                    jquery: [
+                        'jquery',
+                    ],
+                    vue: [
+                        'vue',
+                        'vue-router',
+                        'vue-multiselect',
+                        'portal-vue',
+                    ],
+                    sentry: [
+                        '@sentry/vue',
+                    ]
+                }
+            }
         }
     },
     css: {
