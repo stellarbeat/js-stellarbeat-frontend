@@ -28,7 +28,8 @@ export class SimulationManager {
     this.simulation = forceSimulation(this.nodes)
       .force("link", this.getLinkForce())
       .force("charge", this.getCharge())
-      .force("center", forceCenter(this.width / 2, this.height / 2));
+      .force("center", forceCenter(this.width / 2, this.height / 2))
+      .force("boundingBox", () => this.boundingBoxForce());
   }
 
   private getCharge() {
@@ -54,6 +55,13 @@ export class SimulationManager {
     if (this.simulation) {
       this.simulation.force("link", this.getLinkForce());
       this.simulation.alpha(0.5).restart();
+    }
+  }
+
+  private boundingBoxForce() {
+    for (const node of this.nodes) {
+      node.x = Math.max(8, Math.min(this.width - 8, node.x ?? 0));
+      node.y = Math.max(8, Math.min(this.height - 8, node.y ?? 0));
     }
   }
 }
