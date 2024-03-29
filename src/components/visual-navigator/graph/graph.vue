@@ -260,7 +260,6 @@ const emit = defineEmits(["vertex-selected"]);
 const truncate = useTruncate();
 
 let d3svg: Selection<Element, null, null, undefined>;
-let d3Grid: Selection<Element, null, null, undefined>;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 let graphZoom: any;
 
@@ -282,6 +281,8 @@ watch(selectedVertices, () => {
 watch(viewGraph, () => {
   isLoading.value = true;
   computeGraphWorker.postMessage({
+    width: width(),
+    height: height(),
     vertices: Array.from(viewGraph.value.viewVertices.values()),
     edges: Array.from(viewGraph.value.viewEdges.values()),
   });
@@ -444,19 +445,7 @@ onMounted(() => {
     }
   };
 
-  d3Grid = select(grid.value as Element);
   d3svg = select(graphSvg.value as Element);
-  graphZoom = zoom
-    .zoom()
-    .on("zoom", (event) => {
-      d3Grid.attr("transform", event.transform);
-    })
-    .scaleExtent([1, 3])
-    .translateExtent([
-      [-width(), -height()],
-      [width(), height()],
-    ]);
-  transformAndZoom();
 });
 
 function transformAndZoom() {

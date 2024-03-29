@@ -1,7 +1,8 @@
 import {
+  forceCenter,
+  forceLink,
   forceManyBody,
   forceSimulation,
-  forceLink,
   forceX,
   forceY,
   SimulationLinkDatum,
@@ -31,6 +32,9 @@ function isViewVertex(vertex: unknown): vertex is ViewVertex {
 ctx.addEventListener("message", (event) => {
   const vertices = event.data.vertices;
   const edges = event.data.edges;
+  const width = event.data.width;
+  const height = event.data.height;
+
   //@ts-ignore
   const nrOfTransitiveVertices = event.data.vertices.filter(
     (vertex: ViewVertex) => vertex.isPartOfTransitiveQuorumSet,
@@ -63,6 +67,8 @@ ctx.addEventListener("message", (event) => {
     )
     .force("x", forceX(0))
     .force("y", forceY(0))
+    .force("center", forceCenter(width / 2, height / 2))
+
     // .alphaDecay(0.1)
     // .alphaMin(0.15)
     // .velocityDecay(0.35);
