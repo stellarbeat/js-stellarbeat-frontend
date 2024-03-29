@@ -1,9 +1,8 @@
 <template>
   <div
     id="overlay-graph-options"
-    class="d-flex justify-content-around align-items-baseline border-bottom pb-4"
+    class="d-flex justify-content-around align-items-baseline"
   >
-    <div class="title mb-0 pb-0">Overlay</div>
     <div class="d-flex align-items-center">
       <div>
         <label for="graph-topology" class="graph-topology-label mb-0 pb-0 mr-1"
@@ -54,11 +53,6 @@ watch(topology, (newTopology) => {
 });
 </script>
 <style scoped>
-.title {
-  color: #333;
-  font-size: 24px;
-  font-weight: bold;
-}
 .graph-topology-label {
   color: #333;
   font-size: 16px;

@@ -6,24 +6,38 @@
       </div>
     </div>
     <simulation-control class="card-spacing" />
-    <overlay-graph class="card-spacing" />
-    <div class="card graph">
-      <Graph
-        ref="graph"
-        :selected-vertices="selectedVertices"
-        style="height: 100%"
-        :full-screen="false"
-        :view-graph="viewGraph"
-        :is-loading="false"
-        :option-show-failing-edges="true"
-        :option-highlight-trusting-nodes="true"
-        :option-highlight-trusted-nodes="true"
-        :option-show-regular-edges="true"
-        :option-transitive-quorum-set-only="false"
-        :initial-zoom="2"
-        :propagation-enabled="true"
-        @vertex-selected="handleVertexSelected"
-      />
+    <div class="row">
+      <div class="col-md-6">
+        <overlay-graph class="card-spacing" />
+      </div>
+      <div class="col-md-6">
+        <div class="card graph">
+          <div class="card-body pt-4 pb-0">
+            <div
+              class="d-flex justify-content-around align-items-baseline border-bottom pt-0 pb-4"
+            >
+              <div class="title mb-0 pb-0">Trust Graph</div>
+            </div>
+            <Graph
+              ref="graph"
+              :selected-vertices="selectedVertices"
+              style="height: 400px"
+              :full-screen="false"
+              :view-graph="viewGraph"
+              :is-loading="false"
+              :option-show-failing-edges="true"
+              :option-highlight-trusting-nodes="true"
+              :option-highlight-trusted-nodes="true"
+              :option-show-regular-edges="true"
+              :option-transitive-quorum-set-only="false"
+              :initial-zoom="2"
+              :propagation-enabled="true"
+              @vertex-selected="handleVertexSelected"
+            />
+          </div>
+          <div class="card-footer pt-0 footer"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -57,11 +71,15 @@ const handleVertexSelected = (vertex: ViewVertex) => {
 </script>
 
 <style scoped>
+.title {
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+}
 .card-spacing {
   margin-bottom: 10px;
 }
-
-.graph {
-  height: 450px;
+.footer {
+  height: 60px;
 }
 </style>

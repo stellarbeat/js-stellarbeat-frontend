@@ -1,12 +1,12 @@
 <template>
   <div class="card">
-    <div class="card-body">
-      <overlay-graph-options
-        :initial-repelling-force="initialRepellingForce"
-        :initial-topology="initialTopology"
-        @updateRepellingForce="updateRepellingForce"
-        @updateTopology="updateTopology"
-      />
+    <div class="card-body pt-4 pb-0">
+      <div
+        class="title d-flex justify-content-around align-items-baseline border-bottom pb-4"
+      >
+        Overlay
+      </div>
+
       <div class="chart-container">
         <svg
           ref="overlayGraph"
@@ -32,6 +32,14 @@
             />
           </g>
         </svg>
+      </div>
+      <div class="card-footer">
+        <overlay-graph-options
+          :initial-repelling-force="initialRepellingForce"
+          :initial-topology="initialTopology"
+          @updateRepellingForce="updateRepellingForce"
+          @updateTopology="updateTopology"
+        />
       </div>
     </div>
   </div>
@@ -128,5 +136,10 @@ const height = (): number => {
 .overlay-graph {
   width: 100%;
   height: 100%;
+}
+.title {
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
 }
 </style>

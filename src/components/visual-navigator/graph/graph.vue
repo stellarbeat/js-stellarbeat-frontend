@@ -260,6 +260,8 @@ const emit = defineEmits(["vertex-selected"]);
 const truncate = useTruncate();
 
 let d3svg: Selection<Element, null, null, undefined>;
+let d3Grid: Selection<Element, null, null, undefined>;
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 let graphZoom: any;
 
@@ -445,14 +447,19 @@ onMounted(() => {
     }
   };
 
+  d3Grid = select(grid.value as Element);
   d3svg = select(graphSvg.value as Element);
+  graphZoom = zoom
+    .zoom()
+    .on("zoom", (event) => {
+      d3Grid.attr("transform", event.transform);
+    })
+    .scaleExtent([1, 3]);
+  transformAndZoom();
 });
 
 function transformAndZoom() {
-  const transform = zoom.zoomIdentity
-    .translate(width() / 2, height() / 2)
-    .scale(props.initialZoom);
-  d3svg.call(graphZoom).call(graphZoom.transform, transform);
+  d3svg.call(graphZoom);
 }
 
 function getEdgeClassObject(edge: ViewEdge) {
