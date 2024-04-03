@@ -12,16 +12,6 @@ import "bootstrap/js/dist/modal";
 import PortalVue from "portal-vue";
 import ToolTipDirective from "./directives/tooltip";
 
-//temporary until upgrade to bootstrap 5
-import $ from "jquery";
-
-declare global {
-  interface Window {
-    $: JQueryStatic;
-  }
-}
-window.$ = $;
-
 //@ts-ignore
 window.global ||= window;
 

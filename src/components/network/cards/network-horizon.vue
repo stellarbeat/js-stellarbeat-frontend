@@ -1,7 +1,7 @@
 <template>
   <div id="public-horizon-apis-card" class="card">
     <div class="card-header pl-3">
-      <h1 class="card-title">Public Horizon API's</h1>
+      <h1 class="card-title">Public Horizon APIs</h1>
     </div>
     <div class="card-body p-0">
       <b-list-group flush class="w-100 mb-4 card-columns">
@@ -10,7 +10,7 @@
           :key="horizon.name"
           class="px-3 py-3"
         >
-          <a :href="horizon.url" target="_blank" rel="noopener">{{
+          <a :href="horizon.url ?? undefined" target="_blank" rel="noopener">{{
             horizon.name
           }}</a>
         </b-list-group-item>

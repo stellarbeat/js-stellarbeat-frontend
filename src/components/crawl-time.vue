@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 //@todo: https://github.com/Vuepic/vue-datepicker for vue3
-import { ref, Ref } from "vue";
+import { ref, type Ref } from "vue";
 import {
   BFormDatepicker,
   BFormTimepicker,
@@ -97,11 +97,11 @@ function timeToDateObject() {
   if (typeof date === "number") {
     // If networkTime is a timestamp
     date = new Date(date);
-  } else if (typeof date === "string") {
-    // If networkTime is a string
-    date = new Date(Date.parse(date));
   } else {
-    date = new Date();
+    {
+      // If networkTime is a string
+      date = new Date(Date.parse(date));
+    }
   }
 
   return date;

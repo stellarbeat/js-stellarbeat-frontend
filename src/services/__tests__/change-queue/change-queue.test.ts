@@ -1,32 +1,22 @@
 import { NetworkChangeQueue } from "../../change-queue/network-change-queue";
 import { EntityPropertyUpdate } from "../../change-queue/changes/entity-property-update";
-import { Node, Network } from "@stellarbeat/js-stellarbeat-shared";
+import { Network } from "@stellarbeat/js-stellarbeat-shared";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
-
-jest.mock("./../../change-queue/changes/entity-property-update");
+import { mock } from "jest-mock-extended";
 
 describe("update manager", () => {
   let myNodeUpdateManager: NetworkChangeQueue;
-  let update1: EntityPropertyUpdate;
-  let update2: EntityPropertyUpdate;
-  let update3: EntityPropertyUpdate;
+  const update1 = mock<EntityPropertyUpdate>();
+  const update2 = mock<EntityPropertyUpdate>();
+  const update3 = mock<EntityPropertyUpdate>();
 
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const networkAnalyzerMock = { analyzeNetwork: () => {} };
+    const networkAnalyzerMock = mock<NetworkAnalyzer>();
     myNodeUpdateManager = new NetworkChangeQueue(
       new Network([]),
       networkAnalyzerMock as NetworkAnalyzer,
     );
-
-    update1 = new EntityPropertyUpdate(new Node("a"), "a", "true");
-    update1.toString = jest.fn(() => "a");
-
-    update2 = new EntityPropertyUpdate(new Node("a"), "b", "true");
-    update2.toString = jest.fn(() => "b");
-
-    update3 = new EntityPropertyUpdate(new Node("a"), "c", "true");
-    update3.toString = jest.fn(() => "c");
+    jest.resetAllMocks();
   });
 
   test("add", () => {

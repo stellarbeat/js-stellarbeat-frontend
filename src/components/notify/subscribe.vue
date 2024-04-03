@@ -71,7 +71,6 @@
             id="network-checkbox"
             v-model="networkSubscription"
             name="network-checkbox"
-            value="requested"
             unchecked-value="not_subscribed"
           >
             Network events
@@ -92,7 +91,6 @@
             id="consent-checkbox"
             v-model="consented"
             name="consent-checkbox"
-            value="accepted"
             unchecked-value="not_accepted"
             required
           >
@@ -197,7 +195,7 @@ import {
   BFormGroup,
   BFormInput,
 } from "bootstrap-vue";
-import { computed, ComputedRef, onMounted, Ref, ref } from "vue";
+import { computed, type ComputedRef, onMounted, type Ref, ref } from "vue";
 import useStore from "@/store/useStore";
 
 type EventSourceId = {

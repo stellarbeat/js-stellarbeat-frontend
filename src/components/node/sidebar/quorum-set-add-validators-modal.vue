@@ -2,7 +2,7 @@
   <portal to="quorum-set-modals">
     <div
       :id="'add-validator-modal-' + id"
-      :ref="(el) => (modalRefs[id] = el)"
+      :ref="(el) => addModalRef(el)"
       class="modal fade"
       tabindex="-1"
       role="dialog"
@@ -50,7 +50,16 @@
   </portal>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted, PropType, Ref, ref, toRefs } from "vue";
+import $ from "jquery";
+import {
+  type ComponentPublicInstance,
+  computed,
+  nextTick,
+  onMounted,
+  type PropType,
+  ref,
+  toRefs,
+} from "vue";
 import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";
 import AddValidatorsTable from "@/components/node/tools/simulation/add-validators-table.vue";
@@ -71,7 +80,13 @@ const props = defineProps({
 const { id, quorumSet } = toRefs(props);
 const store = useStore();
 const network = store.network;
-const modalRefs = ref({} as { [key: string]: Ref<HTMLDivElement> });
+const modalRefs = ref(
+  {} as { [key: string]: Element | ComponentPublicInstance | null },
+);
+const addModalRef = (el: Element | ComponentPublicInstance | null) => {
+  if (el === null) return;
+  modalRefs.value[id.value] = el;
+};
 const visible = ref(false);
 const validatorsToAdd = ref<string[]>([]);
 const possibleValidatorsToAdd = computed(() => {
@@ -102,7 +117,7 @@ function addValidatorsToQuorumSet(
 onMounted(() => {
   nextTick(() => {
     const myModalRef = modalRefs.value[id.value];
-    if (myModalRef === undefined) return;
+    if (myModalRef === null) return;
 
     $(myModalRef).on("show.bs.modal", () => {
       visible.value = true;

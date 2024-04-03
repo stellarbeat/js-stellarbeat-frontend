@@ -49,7 +49,7 @@ const emit = defineEmits<{
 }>();
 
 watch(topology, (newTopology) => {
-  emit("updateTopology", newTopology);
+  emit.updateTopology(newTopology);
 });
 </script>
 <style scoped>

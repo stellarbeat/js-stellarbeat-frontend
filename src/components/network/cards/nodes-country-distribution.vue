@@ -19,19 +19,28 @@
 import {
   ArcElement,
   Chart,
+  type ChartItem,
   DoughnutController,
   Legend,
   Tooltip,
 } from "chart.js";
 
-import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from "vue";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  type Ref,
+  watch,
+} from "vue";
 
 import Store from "@/store/Store";
 import useStore from "@/store/useStore";
 
-const chart: Ref<Chart | null> = ref(null);
+const chart: Ref<Chart<"doughnut", number[], string> | null> = ref(null);
 const store: Store = useStore();
 const network = store.network;
+const countryDistributionGraph: Ref<ChartItem | null> = ref(null);
 
 watch(() => store.includeWatcherNodes, onWatcherNodesOptionChanged);
 
@@ -73,7 +82,7 @@ const sortedCountries = computed(() => {
 });
 
 const chartData = computed(() => {
-  const countries = [];
+  const countries: number[] = [];
   if (sortedCountries.value[0]) countries.push(sortedCountries.value[0][1]);
   if (sortedCountries.value[1]) countries.push(sortedCountries.value[1][1]);
   if (sortedCountries.value[2]) countries.push(sortedCountries.value[2][1]);
@@ -88,7 +97,7 @@ const chartData = computed(() => {
 });
 
 const labels = computed(() => {
-  const labels = [];
+  const labels: string[] = [];
   if (sortedCountries.value[0]) labels.push(sortedCountries.value[0][0]);
   if (sortedCountries.value[1]) labels.push(sortedCountries.value[1][0]);
   if (sortedCountries.value[2]) labels.push(sortedCountries.value[2][0]);
@@ -97,19 +106,15 @@ const labels = computed(() => {
   return labels;
 });
 
-const countryDistributionGraph: Ref<HTMLCanvasElement | null> = ref(null);
-
 function initializeDoughnut() {
   if (countryDistributionGraph.value === null) return;
 
   if (sortedCountries.value.length === 0) {
     return;
   }
-  const context = countryDistributionGraph.value.getContext("2d");
-  if (!context) return;
 
   Chart.register(Tooltip, Legend, ArcElement, DoughnutController);
-  chart.value = new Chart(context, {
+  chart.value = new Chart(countryDistributionGraph.value, {
     type: "doughnut",
     // The data for our dataset
     data: {

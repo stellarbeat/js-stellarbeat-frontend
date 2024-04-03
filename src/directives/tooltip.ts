@@ -1,9 +1,9 @@
 // myDirective.ts
 import $ from "jquery";
-import { DirectiveBinding } from "vue/types/options";
+import { type DirectiveBinding } from "vue/types/options";
 import Tooltip from "bootstrap/js/dist/tooltip";
-import PopoverPlacement = Tooltip.PopoverPlacement;
 
+type PopoverPlacement = Tooltip.PopoverPlacement;
 export default {
   inserted(el: HTMLElement, binding: DirectiveBinding) {
     let placement: PopoverPlacement = "top";

@@ -162,11 +162,11 @@
 
 <script setup lang="ts">
 import {
-  ChartDataset,
-  ChartTypeRegistry,
-  LegendItem,
-  ScatterDataPoint,
-  TooltipItem,
+  type ChartDataset,
+  type ChartTypeRegistry,
+  type LegendItem,
+  type ScatterDataPoint,
+  type TooltipItem,
 } from "chart.js";
 import { BIconExclamationTriangle, BIconInfoCircle } from "bootstrap-vue";
 import DateNavigator from "@/components/date-navigator.vue";
@@ -174,7 +174,7 @@ import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib
 import AggregationLineChart from "@/components/network/cards/network-risk-analysis-charts/aggregation-line-chart.vue";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import NetworkStatistics from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics";
-import { computed, nextTick, onMounted, Ref, ref, toRefs } from "vue";
+import { computed, nextTick, onMounted, type Ref, ref, toRefs } from "vue";
 import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
 import useNetworkMeasurementsStore from "@/store/useNetworkMeasurementsStore";
@@ -198,9 +198,9 @@ const { analysisType, defaultBucketSize } = toRefs(props);
 const store = useStore();
 const networkMeasurementStore = useNetworkMeasurementsStore();
 const network = store.network;
-const yearChart = ref<AggregationLineChart | null>(null);
-const monthChart = ref<AggregationLineChart | null>(null);
-const dayChart = ref<AggregationLineChart | null>(null);
+const yearChart = ref<typeof AggregationLineChart | null>(null);
+const monthChart = ref<typeof AggregationLineChart | null>(null);
+const dayChart = ref<typeof AggregationLineChart | null>(null);
 const selectedDate = ref(new Date());
 const yearStatistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
 const days30Statistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
@@ -214,7 +214,7 @@ const failed = ref(false);
 const animated = ref(false);
 const showModal = ref(false);
 const aggregatedDataSets = ref<ChartDataset[]>(getAggregatedDataSets());
-const hour24ChartDataSets = ref<ChartDataset[]>([]);
+const hour24ChartDataSets = ref<ChartDataset[]>(getHour24ChartDataSets());
 const setType = computed(() => {
   return props.analysisType === "safety" ? "splitting" : "blocking";
 });
@@ -265,8 +265,9 @@ async function select1YView(time?: Date) {
   bucketSize.value = "1Y";
 }
 
-function aggregatedChartLabelFilter(legendItem: LegendItem) {
+function aggregatedChartLabelFilter(legendItem: LegendItem): boolean {
   if ([0, 3, 6, 9].includes(legendItem.datasetIndex as number)) return true; //don't show labels for the min max as they are auxiliary lines
+  return false;
 }
 
 function getAggregatedData(
@@ -719,8 +720,6 @@ async function select24HViewDefault() {
 }
 
 async function select24HView(time?: Date) {
-  if (hour24ChartDataSets.value.length === 0)
-    hour24ChartDataSets.value = getHour24ChartDataSets();
   await updateHiddenStatus("24H");
   if (time instanceof Date) selectedDate.value = time;
 
@@ -746,6 +745,7 @@ async function updateYearChart() {
       from,
       to,
     );
+    //@ts-ignore
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
       yearStatistics.value,

@@ -1,4 +1,4 @@
-import { NetworkChange } from "@/services/change-queue/network-change-queue";
+import { type NetworkChange } from "@/services/change-queue/network-change-queue";
 import {
   Node,
   Organization,

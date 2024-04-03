@@ -1,6 +1,6 @@
 import StatisticsStore, {
-  StatisticsAggregation,
-  Statistics,
+  type Statistics,
+  type StatisticsAggregation,
 } from "@/store/StatisticsStore";
 
 export interface OrganizationDayStatistics extends StatisticsAggregation {

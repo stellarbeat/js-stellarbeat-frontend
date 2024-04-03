@@ -10,11 +10,11 @@
             {{ title }}
           </div>
           <div>
-            <div v-if="hasActiveElement" class="d-flex">
+            <div v-if="hasActiveElement && activeElement" class="d-flex">
               <div class="active-element-value mr-1">
                 {{
                   isBool
-                    ? activeElement[statsProperty] * 100 + "%"
+                    ? calculatePercentage(activeElement[statsProperty]) + "%"
                     : activeElement[statsProperty]
                 }}
               </div>
@@ -23,7 +23,7 @@
               </div>
             </div>
             <div v-else>
-              <div v-if="value !== undefined">
+              <div v-if="typeof value !== 'number'">
                 <div
                   v-if="isBool || unknown"
                   class="value"
@@ -80,7 +80,7 @@
 import { BBadge, BIconInfoCircle, BModal } from "bootstrap-vue";
 import NetworkStatisticsChart from "@/components/network/cards/network-statistics/network-statistics-chart.vue";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
-import { computed, Ref, ref, toRefs, withDefaults } from "vue";
+import { computed, type Ref, ref, toRefs, withDefaults } from "vue";
 import useStore from "@/store/useStore";
 
 const store = useStore();
@@ -91,7 +91,7 @@ export interface Props {
   value: number | boolean;
   initialDataLoaded: boolean;
   yearStatistics: NetworkStatisticsAggregation[];
-  statsProperty: string;
+  statsProperty: keyof NetworkStatisticsAggregation;
   isBool?: boolean;
   isSimulationSensitive?: boolean;
   unknown?: boolean;
@@ -133,6 +133,10 @@ const dimmerClass = computed(() => {
     active: props.isLoading,
   };
 });
+
+const calculatePercentage = (value: unknown) => {
+  return (typeof value === "number" ? value * 100 : 0) + "%";
+};
 </script>
 
 <style scoped>

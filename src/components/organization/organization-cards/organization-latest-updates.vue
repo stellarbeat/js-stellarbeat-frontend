@@ -110,11 +110,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue, { Ref, ref, toRefs, watch } from "vue";
+import Vue, { type Ref, ref, toRefs, watch } from "vue";
 import {
   Organization,
   OrganizationSnapShot,
-  PublicKey,
+  type PublicKey,
 } from "@stellarbeat/js-stellarbeat-shared";
 import * as jsondiffpatch from "jsondiffpatch";
 import * as htmlFormatter from "jsondiffpatch/formatters/html";
@@ -139,7 +139,7 @@ import useOrganizationSnapshotRepository from "@/repositories/useOrganizationSna
 
 interface Update {
   key: string;
-  value: unknown;
+  value: string;
 }
 
 interface SnapshotForDelta {
@@ -202,7 +202,7 @@ function showDiff(snapShot: SnapshotForDelta) {
   diffModalHtml.value = htmlFormatter.format(
     deltas.get(snapShot.startDate.toISOString()) as jsondiffpatch.Delta,
     snapShot,
-  );
+  ) as string;
   modalDiff.value.show();
 }
 

@@ -46,14 +46,7 @@
           <history-card
             :subject="'Availability history'"
             :entity-id="organization.id"
-            :fetch-day-measurements="
-              (organizationId, from, to) =>
-                organizationMeasurementStore.getDayStatistics(
-                  organizationId,
-                  from,
-                  to,
-                )
-            "
+            :fetch-day-measurements="fetchDayMeasurements"
             :fetch-measurements="
               (organizationId, from, to) =>
                 organizationMeasurementStore.getStatistics(
@@ -94,6 +87,7 @@ import { BAlert } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import useOrganizationMeasurementsStore from "@/store/useOrganizationMeasurementsStore";
 import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
+import { type StatisticsAggregation } from "@/store/StatisticsStore";
 
 const store = useStore();
 const organizationMeasurementStore = useOrganizationMeasurementsStore();
@@ -103,4 +97,10 @@ const organization = computed(() => {
   if (!store.selectedOrganization) throw new Error("No organization selected");
   return store.selectedOrganization;
 });
+
+const fetchDayMeasurements = (id: string, from: Date, to: Date) => {
+  return organizationMeasurementStore.getDayStatistics(id, from, to) as Promise<
+    StatisticsAggregation[]
+  >;
+};
 </script>

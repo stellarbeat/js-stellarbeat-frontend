@@ -85,9 +85,9 @@ Age = Time since discovery
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
-import NodesTable, { TableNode } from "@/components/node/nodes-table.vue";
+import NodesTable, { type TableNode } from "@/components/node/nodes-table.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
-import { computed, ComputedRef, ref } from "vue";
+import { computed, type ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 import useMetaTags from "@/composables/useMetaTags";
 
@@ -167,7 +167,7 @@ const nodes: ComputedRef<TableNode[]> = computed(() => {
     .filter((node) => node.active || optionShowInactive.value)
     .filter((node) => node.isValidator || optionShowWatchers.value)
     .map((node) => {
-      return {
+      const mappedNode: TableNode = {
         name: node.displayName,
         type: getNodeType(node),
         active24Hour: node.statistics.has24HourStats
@@ -187,16 +187,17 @@ const nodes: ComputedRef<TableNode[]> = computed(() => {
           : "NA",
         ip: node.key,
         publicKey: node.publicKey,
-        country: node.geoData.countryName,
-        isp: node.isp,
-        version: node.versionStr,
+        country: node.geoData.countryName || undefined,
+        isp: node.isp || undefined,
+        version: node.versionStr || undefined,
         isFullValidator: node.isFullValidator,
         isValidator: node.isValidator,
         index: node.index,
         validating: node.isValidating,
         organization: getOrganization(node),
-        organizationId: node.organizationId,
+        organizationId: node.organizationId || undefined,
       };
+      return mappedNode;
     });
 });
 

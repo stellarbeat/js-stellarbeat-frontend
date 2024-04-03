@@ -2,7 +2,7 @@
   <portal to="quorum-set-modals">
     <div
       :id="'quorumSetTomlExportModal' + id"
-      :ref="(el) => (modalRefs[id] = el)"
+      :ref="(el) => mapRef(el)"
       class="modal fade"
       tabindex="-1"
       aria-labelledby="quorumSetTomlExportModalLabel"
@@ -33,7 +33,15 @@
 <script setup lang="ts">
 import StellarCoreConfigurationGenerator from "@stellarbeat/js-stellarbeat-shared/lib/stellar-core-configuration-generator";
 import useStore from "@/store/useStore";
-import { nextTick, onMounted, PropType, Ref, ref, toRefs } from "vue";
+import $ from "jquery";
+import {
+  type ComponentPublicInstance,
+  nextTick,
+  onMounted,
+  type PropType,
+  ref,
+  toRefs,
+} from "vue";
 import { QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 
 const props = defineProps({
@@ -51,7 +59,16 @@ const { id, quorumSet } = toRefs(props);
 const store = useStore();
 const network = store.network;
 const tomlNodesExport = ref("");
-const modalRefs = ref({} as { [key: string]: Ref<HTMLDivElement> });
+const modalRefs = ref(
+  {} as {
+    [key: string]: Element | ComponentPublicInstance | null;
+  },
+);
+
+function mapRef(el: Element | ComponentPublicInstance | null) {
+  if (el === null) return;
+  modalRefs.value[id.value] = el;
+}
 
 function loadTomlExport() {
   const stellarCoreConfigurationGenerator =
@@ -64,7 +81,7 @@ function loadTomlExport() {
 onMounted(() => {
   nextTick(() => {
     const myModalRef = modalRefs.value[id.value];
-    if (myModalRef === undefined) return;
+    if (myModalRef === null) return;
 
     $(myModalRef).on("show.bs.modal", loadTomlExport);
   });

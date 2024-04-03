@@ -43,8 +43,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef, ref } from "vue";
-import { RawLocation } from "vue-router";
+import { computed, type ComputedRef, ref } from "vue";
+import { type RawLocation } from "vue-router";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 import { BIconSearch } from "bootstrap-vue";

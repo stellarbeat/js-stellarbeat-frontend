@@ -1,30 +1,31 @@
 <template>
-  <canvas :ref="(el) => (chartElement = el)" height="140px" :width="width" />
+  <canvas :ref="(el) => setChartElementRef(el)" height="140px" :width="width" />
 </template>
 
 <script setup lang="ts">
 import {
+  type ComponentPublicInstance,
   computed,
   onBeforeUnmount,
   onMounted,
-  Ref,
+  type Ref,
   ref,
   toRefs,
   watch,
 } from "vue";
 import {
-  Chart,
+  type ActiveElement,
   BarController,
-  CategoryScale,
   BarElement,
-  TimeScale,
-  ChartEvent,
-  ActiveElement,
-  ScatterDataPoint,
-  Tooltip,
+  CategoryScale,
+  Chart,
+  type ChartEvent,
   Legend,
-  TooltipItem,
   LinearScale,
+  type ScatterDataPoint,
+  TimeScale,
+  Tooltip,
+  type TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 
@@ -42,6 +43,11 @@ const emit = defineEmits(["click-date"]);
 let barChart: Chart | null = null;
 const chartElement: Ref<HTMLCanvasElement | null> = ref(null);
 
+const setChartElementRef = (
+  el: Element | ComponentPublicInstance | null,
+): void => {
+  chartElement.value = el as HTMLCanvasElement | null;
+};
 const timeFormat = computed(() => {
   if (props.unit === "day") return "d-M-yyyy";
   else return "HH:mm";
@@ -143,7 +149,6 @@ onMounted(() => {
       animation: {
         duration: 0, // general animation time
       },
-      responsiveAnimationDuration: 0, // animation duration after a resize
       scales: {
         x: {
           border: { display: true },
@@ -152,10 +157,8 @@ onMounted(() => {
             drawTicks: false,
             drawOnChartArea: false,
           },
-          distribution: "linear",
           stacked: true,
           display: true,
-          //@ts-ignore
           type: "time",
           time: {
             unit: unit.value,
@@ -169,7 +172,6 @@ onMounted(() => {
             color: "#aaa",
             padding: 2,
           },
-          beginAtZero: true,
         },
 
         y: {

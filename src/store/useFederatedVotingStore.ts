@@ -1,4 +1,4 @@
-import { reactive, ref, Ref } from "vue";
+import { reactive, ref, type Ref } from "vue";
 import { Network } from "@stellarbeat/js-stellarbeat-shared";
 import { FBASQIRepository } from "@/repositories/implementation/FBASQIRepository";
 

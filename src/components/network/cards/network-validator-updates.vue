@@ -66,7 +66,7 @@ import {
 import { NodeSnapShot } from "@stellarbeat/js-stellarbeat-shared/lib/node-snap-shot";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
-import { onMounted, Ref, ref } from "vue";
+import { onMounted, type Ref, ref } from "vue";
 import useNodeSnapshotRepository from "@/repositories/useNodeSnapshotRepository";
 
 const store = useStore();

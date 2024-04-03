@@ -1,11 +1,7 @@
 <template>
   <div class="d-flex flex-column align-items-center">
     <div class="relative">
-      <canvas
-        :ref="(el) => (chartElement = el)"
-        :height="height"
-        :width="width"
-      />
+      <canvas :ref="(el) => setGaugeRef(el)" :height="height" :width="width" />
       <div class="absolute-center text-center">
         {{ centerText }}
       </div>
@@ -17,7 +13,14 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
+import {
+  type ComponentPublicInstance,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import { ArcElement, Chart, DoughnutController, LinearScale } from "chart.js";
 
 const props = defineProps({
@@ -41,7 +44,10 @@ const {
 } = toRefs(props);
 
 const chartElement = ref<HTMLCanvasElement | null>(null);
-let chart: Chart | null = null;
+let chart: Chart<"doughnut", number[], string> | null = null;
+const setGaugeRef = (el: Element | ComponentPublicInstance | null): void => {
+  chartElement.value = el as HTMLCanvasElement | null;
+};
 
 watch(value, () => {
   if (!chart) return;
@@ -73,7 +79,6 @@ onMounted(() => {
       ],
       labels: [title?.value, ""],
     },
-    // Configuration options go here
     options: {
       plugins: {
         legend: {
@@ -87,8 +92,7 @@ onMounted(() => {
         duration: 0, // general animation time
       },
       hover: {
-        //@ts-ignore
-        mode: null,
+        mode: undefined,
       },
       responsive: false,
       cutout: "75%",

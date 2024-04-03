@@ -1,4 +1,4 @@
-import { NetworkChange } from "@/services/change-queue/network-change-queue";
+import { type NetworkChange } from "@/services/change-queue/network-change-queue";
 
 export class AggregateChange implements NetworkChange {
   protected changes: NetworkChange[];

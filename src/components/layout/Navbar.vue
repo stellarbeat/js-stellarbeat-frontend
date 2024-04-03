@@ -74,7 +74,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { PropType } from "vue";
+import { type PropType } from "vue";
 import NavNetworkSelector from "@/components/layout/NavNetworkSelector.vue";
 import NavCollapse from "@/components/layout/NavCollapse.vue";
 import Github from "@/components/organization/logo/github.vue";

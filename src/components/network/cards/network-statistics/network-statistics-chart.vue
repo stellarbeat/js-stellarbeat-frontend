@@ -6,24 +6,31 @@
 
 <script setup lang="ts">
 import {
-  ActiveElement,
+  type ActiveElement,
   Chart,
-  ChartEvent,
+  type ChartEvent,
   Filler,
   LinearScale,
   LineController,
   LineElement,
   PointElement,
   TimeScale,
-  TooltipItem,
+  TimeSeriesScale,
+  type TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib/network-statistics-aggregation";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import {
+  type ComponentPublicInstance,
+  onBeforeUnmount,
+  onMounted,
+  type Ref,
+  ref,
+} from "vue";
 
 const chart = ref<Chart>();
 const emit = defineEmits(["hover"]);
-const chartElement = ref(null);
+const chartElement: Ref<Element | ComponentPublicInstance | null> = ref(null);
 
 const props = defineProps<{
   yearStatistics: NetworkStatisticsAggregation[];
@@ -69,6 +76,7 @@ function initializeBarChart() {
     LineElement,
     LinearScale,
     TimeScale,
+    TimeSeriesScale,
   );
 
   //@ts-ignore
@@ -126,9 +134,6 @@ function initializeBarChart() {
           bottom: 0,
         },
       },
-      title: {
-        display: false,
-      },
       responsive: true,
       maintainAspectRatio: false,
 
@@ -139,9 +144,7 @@ function initializeBarChart() {
         x: {
           offset: false,
           display: false,
-          //@ts-ignore
-          type: "time",
-          distribution: "series",
+          type: "timeseries",
           time: {
             unit: "year",
             tooltipFormat: "MMM yyyy",

@@ -32,10 +32,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ComputedRef, ref } from "vue";
+import { computed, type ComputedRef, ref } from "vue";
 import { Node, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import { BBadge } from "bootstrap-vue";
-import NodesTable, { TableNode } from "@/components/node/nodes-table.vue";
+import NodesTable, { type TableNode } from "@/components/node/nodes-table.vue";
 import useStore from "@/store/useStore";
 
 const props = defineProps<{
@@ -77,10 +77,10 @@ const validators: ComputedRef<TableNode[]> = computed(() => {
   return QuorumSet.getAllValidators(props.node.quorumSet)
     .map((publicKey) => network.getNodeByPublicKey(publicKey))
     .map((validator) => {
-      return {
+      const mappedNode: TableNode = {
         isFullValidator: validator.isFullValidator,
         name: validator.displayName,
-        version: validator.versionStr,
+        version: validator.versionStr || undefined,
         index: validator.index,
         validating24Hour: validator.statistics.has24HourStats
           ? validator.statistics.validating24HoursPercentage + "%"
@@ -88,10 +88,12 @@ const validators: ComputedRef<TableNode[]> = computed(() => {
         validating30Days: validator.statistics.has30DayStats
           ? validator.statistics.validating30DaysPercentage + "%"
           : "NA",
-        country: validator.geoData.countryName,
-        isp: validator.isp,
+        country: validator.geoData.countryName || undefined,
+        isp: validator.isp || undefined,
         publicKey: validator.publicKey,
+        validating: validator.isValidating,
       };
+      return mappedNode;
     });
 });
 </script>

@@ -1,6 +1,6 @@
 import { Network } from "@stellarbeat/js-stellarbeat-shared";
 import { err, ok, Result } from "neverthrow";
-import { NetworkRepository } from "@/repositories/NetworkRepository";
+import { type NetworkRepository } from "@/repositories/NetworkRepository";
 
 //repository to connect to stellarbeat api to fetch networks
 export class StellarBeatNetworkV1Repository implements NetworkRepository {

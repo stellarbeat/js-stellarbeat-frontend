@@ -14,20 +14,22 @@
 
 <script setup lang="ts">
 import {
-  Chart,
+  ArcElement,
   BarController,
   BarElement,
-  Legend,
+  Chart,
+  type ChartConfiguration,
+  type ChartItem,
   DoughnutController,
-  ArcElement,
+  Legend,
   Tooltip,
 } from "chart.js";
 
 import Store from "@/store/Store";
 import useStore from "@/store/useStore";
-import { computed, onBeforeUnmount, onMounted, Ref, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, type Ref, ref } from "vue";
 
-const chart: Ref<Chart | null> = ref(null);
+const chart: Ref<Chart<"doughnut", number[], string> | null> = ref(null);
 
 const store: Store = useStore();
 const network = store.network;
@@ -52,7 +54,7 @@ const overloadedBuckets = computed(() => {
     .reduce(bucketReducer, buckets);
 });
 
-const overLoadedBarChart: Ref<HTMLCanvasElement | null> = ref(null);
+const overLoadedBarChart: Ref<ChartItem | null> = ref(null);
 function initializeBarChart() {
   Chart.register(
     BarController,
@@ -62,7 +64,9 @@ function initializeBarChart() {
     DoughnutController,
     Tooltip,
   );
-  chart.value = new Chart(overLoadedBarChart.value as HTMLCanvasElement, {
+  if (overLoadedBarChart.value === null) return;
+
+  const config: ChartConfiguration<"doughnut", number[], string> = {
     type: "doughnut",
     // The data for our dataset
     data: {
@@ -103,7 +107,8 @@ function initializeBarChart() {
         duration: 0, // general animation time
       },
     },
-  });
+  };
+  chart.value = new Chart(overLoadedBarChart.value, config);
 }
 
 onMounted(() => {

@@ -9,7 +9,7 @@
       toggle-class="more-button btn-thin"
       no-caret
     >
-      <template slot="button-content">
+      <template #button-content>
         <b-icon-three-dots-vertical scale="0.9" />
       </template>
       <b-dropdown-header> Simulation options </b-dropdown-header>
@@ -56,19 +56,18 @@
     </b-dropdown>
     <b-modal
       :id="'add-organizations-modal-' + id"
+      v-slot="{ visible }"
       lazy
       size="lg"
       title="Select organization to add"
       ok-title="Add"
       @ok="organizationsToAddModalOk"
     >
-      <template slot="default" slot-scope="{ visible }">
-        <AddOrganizationsTable
-          v-if="visible"
-          :organizations="possibleOrganizationsToAdd"
-          @organizations-selected="onOrganizationsSelected"
-        />
-      </template>
+      <AddOrganizationsTable
+        v-if="visible"
+        :organizations="possibleOrganizationsToAdd"
+        @organizations-selected="onOrganizationsSelected"
+      />
     </b-modal>
   </div>
 </template>
@@ -76,20 +75,20 @@
 <script setup lang="ts">
 import {
   BDropdown,
-  BDropdownItem,
-  BIconThreeDotsVertical,
   BDropdownHeader,
-  BIconXCircle,
-  BIconPlusCircle,
-  BIconLightning,
-  BModal,
+  BDropdownItem,
   BDropdownText,
+  BIconLightning,
+  BIconPlusCircle,
+  BIconThreeDotsVertical,
+  BIconXCircle,
+  BModal,
   VBModal,
 } from "bootstrap-vue";
 
 import { Organization } from "@stellarbeat/js-stellarbeat-shared";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
-import Vue, { computed, ref, Ref, toRefs } from "vue";
+import Vue, { computed, ref, type Ref, toRefs } from "vue";
 import useStore from "@/store/useStore";
 
 Vue.directive("b-modal", VBModal);

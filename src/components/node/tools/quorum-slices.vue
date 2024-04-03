@@ -27,14 +27,7 @@
               :current-page="currentPage"
             >
               <template #cell(slice)="data">
-                {{
-                  data.item.slice
-                    .map(
-                      (publicKey) =>
-                        network.getNodeByPublicKey(publicKey).displayName,
-                    )
-                    .join(", ")
-                }}
+                {{ mapSlice(data.item.slice) }}
               </template>
             </b-table>
             <b-pagination
@@ -51,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import $ from "jquery";
 import { BAlert, BPagination, BTable, VBToggle } from "bootstrap-vue";
 import {
   Node,
@@ -90,6 +84,14 @@ function loadSlices() {
   items.value = generator.getSlices(quorumSetWithSelf).map((slice) => {
     return { slice: Array.from(new Set(slice)) };
   });
+}
+
+function mapSlice(slice: string[]) {
+  return slice
+    .map(
+      (publicKey: string) => network.getNodeByPublicKey(publicKey).displayName,
+    )
+    .join(", ");
 }
 
 onMounted(() => {

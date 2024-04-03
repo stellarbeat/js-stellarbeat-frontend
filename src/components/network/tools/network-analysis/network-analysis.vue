@@ -314,15 +314,15 @@ import {
   VBModal,
   VBToggle,
 } from "bootstrap-vue";
-import { PublicKey } from "@stellarbeat/js-stellarbeat-shared";
+import { type PublicKey } from "@stellarbeat/js-stellarbeat-shared";
 import Analysis from "@/components/network/tools/network-analysis/analysis.vue";
 import QuorumIntersectionInfo from "@/components/network/tools/network-analysis/info/quorum-intersection-info.vue";
 import SafetyInfo from "@/components/network/tools/network-analysis/info/safety-info.vue";
 import LivenessInfo from "@/components/network/tools/network-analysis/info/liveness-info.vue";
 import TopTierInfo from "@/components/network/tools/network-analysis/info/top-tier-info.vue";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
-import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
-import Vue, { onMounted, Ref, ref } from "vue";
+import { type FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
+import Vue, { onMounted, type Ref, ref } from "vue";
 import { useIsLoading } from "@/composables/useIsLoading";
 import useStore from "@/store/useStore";
 import useScrollTo from "@/composables/useScrollTo";

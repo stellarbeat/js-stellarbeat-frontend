@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Node } from "@stellarbeat/js-stellarbeat-shared";
-import NodesTable from "@/components/node/nodes-table.vue";
+import NodesTable, { type TableNode } from "@/components/node/nodes-table.vue";
 import { BBadge } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 
@@ -41,12 +41,14 @@ const fields = computed(() => {
 
 const nodes = computed(() => {
   return network.getTrustingNodes(props.node).map((validator) => {
-    return {
+    const mappedNode: TableNode = {
       isFullValidator: validator.isFullValidator,
       name: validator.displayName,
       publicKey: validator.publicKey,
       index: validator.index,
+      validating: validator.isValidating,
     };
+    return mappedNode;
   });
 });
 </script>

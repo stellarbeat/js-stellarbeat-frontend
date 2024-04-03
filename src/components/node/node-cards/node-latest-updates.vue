@@ -144,8 +144,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import Vue, { Ref, ref, toRefs, watch } from "vue";
-import { Node, PublicKey, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
+import Vue, { type Ref, ref, toRefs, watch } from "vue";
+import {
+  Node,
+  type PublicKey,
+  QuorumSet,
+} from "@stellarbeat/js-stellarbeat-shared";
 import * as jsondiffpatch from "jsondiffpatch";
 import * as htmlFormatter from "jsondiffpatch/formatters/html";
 
@@ -207,9 +211,9 @@ const props = defineProps<{
 const node = toRefs(props).node;
 
 const differ = jsondiffpatch.create({
-  objectHash(obj: Record<string, unknown>) {
-    if (isArray(obj.validators)) {
-      return obj.validators.join("");
+  objectHash(item) {
+    if (isArray((item as QuorumSet).validators)) {
+      return (item as QuorumSet).validators.join("");
     }
   },
 });
@@ -241,7 +245,7 @@ function showDiff(snapShot: SnapshotForDelta) {
   diffModalHtml.value = htmlFormatter.format(
     deltas.get(snapShot.startDate.toISOString()) as jsondiffpatch.Delta,
     snapShot,
-  );
+  ) as string;
   modalDiff.value.show();
 }
 

@@ -264,15 +264,29 @@ const menuVisible = ref(false);
 const fullScreen = ref(false);
 
 const breadCrumbs = computed(() => {
-  const crumbs = [];
+  const crumbs: {
+    active?: boolean;
+    text?: string;
+    to?: {
+      params?: {
+        organizationId: string;
+      };
+      name: string;
+      query: {
+        view: string;
+        network: string;
+        at: string;
+      };
+    };
+  }[] = [];
   crumbs.push({
     text: store.getNetworkContextName(),
     to: {
       name: "network-dashboard",
       query: {
-        view: route.query.view,
-        network: route.query.network,
-        at: route.query.at,
+        view: route.query.view as string,
+        network: route.query.network as string,
+        at: route.query.at as string,
       },
     },
   });
@@ -291,9 +305,9 @@ const breadCrumbs = computed(() => {
             organizationId: selectedNode.value.organizationId,
           },
           query: {
-            view: route.query.view,
-            network: route.query.network,
-            at: route.query.at,
+            view: route.query.view as string,
+            network: route.query.network as string,
+            at: route.query.at as string,
           },
         },
         active: false,

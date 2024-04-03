@@ -171,7 +171,10 @@ import {
 } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 import NavLink from "@/components/side-bar/nav-link.vue";
-import { BaseQuorumSet, Network } from "@stellarbeat/js-stellarbeat-shared";
+import {
+  type BaseQuorumSet,
+  Network,
+} from "@stellarbeat/js-stellarbeat-shared";
 
 Vue.component("BIconBullseye", BIconBullseye);
 Vue.component("BIconBuilding", BIconBuilding);

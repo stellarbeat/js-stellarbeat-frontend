@@ -66,18 +66,25 @@
 
 <script setup lang="ts">
 import {
-  ActiveElement,
+  type ActiveElement,
   Chart,
-  ChartEvent,
+  type ChartEvent,
   Filler,
   LineElement,
   PointElement,
   RadarController,
   RadialLinearScale,
-  TooltipItem,
+  type TooltipItem,
 } from "chart.js";
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  type ComponentPublicInstance,
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 
 import { BIconInfoCircle } from "bootstrap-vue";
 import { AutomaticNetworkAnalysis } from "@/services/NetworkAnalyzer";
@@ -88,7 +95,7 @@ import useScrollTo from "@/composables/useScrollTo";
 const chart = ref<Chart>();
 const store = useStore();
 const network = store.network;
-const chartElement = ref<HTMLCanvasElement>();
+const chartElement = ref<null | Element | ComponentPublicInstance>();
 const scrollTo = useScrollTo();
 
 watch(

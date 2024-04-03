@@ -35,7 +35,7 @@
 </template>
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import NodesTable from "@/components/node/nodes-table.vue";
+import NodesTable, { type TableNode } from "@/components/node/nodes-table.vue";
 import { BBadge, BIconSearch } from "bootstrap-vue";
 import useStore from "@/store/useStore";
 
@@ -75,12 +75,14 @@ const validators = computed(() => {
   return network.nodes
     .filter((node) => node.isValidator || store.includeWatcherNodes)
     .map((node) => {
-      return {
-        isFullValidator: node.isFullValidator,
+      const mappedNode: TableNode = {
         name: node.displayName,
         index: node.index,
+        isFullValidator: node.isFullValidator,
         publicKey: node.publicKey,
+        validating: node.isValidating,
       };
+      return mappedNode;
     });
 });
 </script>

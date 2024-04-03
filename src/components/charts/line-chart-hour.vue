@@ -1,19 +1,27 @@
 <template>
-  <canvas :ref="(el) => (chartElement = el)" height="140px" :width="width" />
+  <canvas :ref="(el) => defineCanvasRef(el)" height="140px" :width="width" />
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, toRefs, watch } from "vue";
 import {
-  ActiveElement,
+  type ComponentPublicInstance,
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
+import {
+  type ActiveElement,
   Chart,
-  ChartEvent,
+  type ChartEvent,
   Filler,
   LineController,
   LineElement,
   PointElement,
-  ScatterDataPoint,
-  TooltipItem,
+  type ScatterDataPoint,
+  type TooltipItem,
 } from "chart.js";
 
 interface Props {
@@ -49,6 +57,12 @@ watch(data, () => {
 
   lineChart.update();
 });
+
+const defineCanvasRef = (
+  el: Element | ComponentPublicInstance | null,
+): void => {
+  chartElement.value = el as HTMLCanvasElement | null;
+};
 
 const pointColors = computed(() => {
   if (!props.inverted) {
@@ -118,7 +132,6 @@ onMounted(() => {
       animation: {
         duration: 0, // general animation time
       },
-      responsiveAnimationDuration: 0, // animation duration after a resize
       scales: {
         x: {
           border: {
@@ -131,7 +144,6 @@ onMounted(() => {
           },
           stacked: true,
           display: true,
-          //@ts-ignore
           type: "time",
           time: {
             unit: "minute",
@@ -139,14 +151,12 @@ onMounted(() => {
               minute: "HH:mm",
             },
           },
-          distribution: "series",
           ticks: {
             font: {
               size: 10,
             },
             padding: 8,
           },
-          beginAtZero: true,
         },
         y: {
           border: {

@@ -94,7 +94,7 @@
           title="Modify Network"
           :show-icon="true"
           icon="pencil"
-          @click="$refs['modifyNetwork'].showModal()"
+          @click="handleModifyNetworkClick()"
         />
         <modify-network ref="modifyNetwork" />
       </li>
@@ -112,9 +112,9 @@ import OrganizationsDropdown from "@/components/network/sidebar/organizations-dr
 import SideBar from "@/components/side-bar/side-bar.vue";
 
 import { BBadge, BIconHouse, BModal, VBModal } from "bootstrap-vue";
-import ModifyNetwork from "@/components/network/tools/modify-network.vue";
 import useStore from "@/store/useStore";
 import useScrollTo from "@/composables/useScrollTo";
+import ModifyNetwork from "@/components/network/tools/modify-network.vue";
 
 Vue.directive("b-modal", VBModal);
 Vue.component("BIconHouse", BIconHouse);
@@ -123,6 +123,13 @@ const organizationsExpanded = ref(true);
 const store = useStore();
 const network = store.network;
 const scrollTo = useScrollTo();
+const modifyNetwork = ref<typeof ModifyNetwork | null>(null);
+
+const handleModifyNetworkClick = () => {
+  if (modifyNetwork.value) {
+    modifyNetwork.value.showModal();
+  }
+};
 
 const networkTransitiveQuorumSetNodes = computed(() => {
   return Array.from(network.nodesTrustGraph.networkTransitiveQuorumSet).map(

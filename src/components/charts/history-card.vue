@@ -93,23 +93,26 @@
 <script setup lang="ts">
 import DateNavigator from "@/components/date-navigator.vue";
 import LineChartHour from "@/components/charts/line-chart-hour.vue";
-import { Statistics, StatisticsAggregation } from "@/store/StatisticsStore";
+import {
+  type Statistics,
+  type StatisticsAggregation,
+} from "@/store/StatisticsStore";
 import StatisticsDateTimeNavigator from "@/components/network/cards/network-risk-analysis-charts/StatisticsDateTimeNavigator";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
-import { computed, ComputedRef, onMounted, ref, toRefs, watch } from "vue";
+import { computed, type ComputedRef, onMounted, ref, toRefs, watch } from "vue";
 import BarChartDay from "@/components/charts/bar-chart-day.vue";
-import { ScatterDataPoint } from "chart.js";
+import { type ScatterDataPoint } from "chart.js";
 
 const { isLoading, dimmerClass } = useIsLoading();
 
 interface Props {
   subject: string;
-  fetchDayMeasurements: <T extends StatisticsAggregation>(
+  fetchDayMeasurements: (
     id: string,
     from: Date,
     to: Date,
-  ) => Promise<T[]>;
+  ) => Promise<StatisticsAggregation[]>;
   fetchMeasurements: (
     id: string,
     from: Date,

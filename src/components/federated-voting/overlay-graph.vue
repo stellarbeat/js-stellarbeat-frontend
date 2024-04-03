@@ -49,8 +49,8 @@ import { onMounted, reactive, ref } from "vue";
 import { federatedVotingStore } from "@/store/useFederatedVotingStore";
 import {
   GraphManager,
-  LinkDatum,
-  NodeDatum,
+  type LinkDatum,
+  type NodeDatum,
 } from "@/components/federated-voting/GraphManager";
 import OverlayGraphOptions from "@/components/federated-voting/overlay-graph-options.vue";
 import { SimulationManager } from "@/components/federated-voting/SimulationManager";

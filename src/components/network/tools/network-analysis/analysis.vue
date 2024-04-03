@@ -20,11 +20,7 @@
             >
               <span
                 v-if="showNodesPartition"
-                v-tooltip="
-                  nodesPartition.has(item)
-                    ? nodesPartition.get(item).join(', ')
-                    : 'N/A'
-                "
+                v-tooltip="getNodesPartitionTooltip(item, nodesPartition)"
                 class="tag mb-1"
                 >{{ item }}</span
               >
@@ -44,8 +40,8 @@
 </template>
 
 <script setup lang="ts">
-import { BPagination, BTable, BvTableFieldArray } from "bootstrap-vue";
-import { computed, ComputedRef, ref, toRefs } from "vue";
+import { BPagination, BTable, type BvTableFieldArray } from "bootstrap-vue";
+import { computed, type ComputedRef, type PropType, ref, toRefs } from "vue";
 
 const props = defineProps({
   items: {
@@ -57,7 +53,7 @@ const props = defineProps({
     required: true,
   },
   nodesPartition: {
-    type: Map,
+    type: Map as PropType<Map<string, string[]>>,
     required: true,
   },
   showNodesPartition: {
@@ -70,6 +66,13 @@ const { title, items } = toRefs(props);
 
 const perPage = ref(5);
 const currentPage = ref(1);
+
+const getNodesPartitionTooltip = (
+  node: string,
+  nodesPartition: Map<string, string[]>,
+) => {
+  return nodesPartition.get(node)?.join(", ") || "";
+};
 
 const fields: ComputedRef<BvTableFieldArray> = computed(() => {
   return [

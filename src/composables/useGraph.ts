@@ -1,7 +1,7 @@
 import { isObject } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
-import { SimulationLinkDatum, SimulationNodeDatum } from "d3-force";
+import { type SimulationLinkDatum, type SimulationNodeDatum } from "d3-force";
 import { useTruncate } from "@/composables/useTruncate";
-import { NodeDatum } from "@/components/federated-voting/GraphManager";
+import { type NodeDatum } from "@/components/federated-voting/GraphManager";
 
 const truncate = useTruncate();
 

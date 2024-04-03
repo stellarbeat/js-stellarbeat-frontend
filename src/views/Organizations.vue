@@ -36,17 +36,17 @@
 </template>
 
 <script setup lang="ts">
-import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
 import CrawlTime from "@/components/crawl-time.vue";
 import SimulationBadge from "@/components/simulation-badge.vue";
 import TimeTravelBadge from "@/components/time-travel-badge.vue";
 import OrganizationsTable, {
-  TableOrganization,
+  type TableOrganization,
 } from "@/components/organization/organizations-table.vue";
-import { computed, ComputedRef, ref } from "vue";
+import { computed, type ComputedRef, ref } from "vue";
 import useStore from "@/store/useStore";
 import { OrganizationWarningDetector } from "@/services/OrganizationWarningDetector";
 import useMetaTags from "@/composables/useMetaTags";
+import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
 
 defineProps({
   isLoading: {
@@ -87,13 +87,13 @@ const fields = computed(() => {
 
 const organizations: ComputedRef<TableOrganization[]> = computed(() => {
   return store.network.organizations.map((organization) => {
-    return {
+    const mappedOrganization: TableOrganization = {
       name: organization.name,
       validators: getValidators(organization),
-      keybase: organization.keybase,
-      github: organization.github,
-      url: organization.url,
-      email: organization.officialEmail,
+      keybase: organization.keybase || undefined,
+      github: organization.github || undefined,
+      url: organization.url || undefined,
+      email: organization.officialEmail || undefined,
       id: organization.id,
       failAt: store.getOrganizationFailAt(organization),
       dangers: store.getOrganizationFailingReason(organization),
@@ -110,6 +110,7 @@ const organizations: ComputedRef<TableOrganization[]> = computed(() => {
       subQuorum30DAvailability: organization.subQuorum30DaysAvailability + "%",
       isTierOneOrganization: organization.isTierOneOrganization,
     };
+    return mappedOrganization;
   });
 });
 

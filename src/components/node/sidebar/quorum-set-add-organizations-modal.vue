@@ -2,7 +2,7 @@
   <portal to="quorum-set-modals">
     <div
       :id="'add-organization-modal-' + id"
-      :ref="(el) => (modalRefs[id] = el)"
+      :ref="(el) => mapModalRef(el)"
       class="modal fade"
       tabindex="-1"
       role="dialog"
@@ -54,10 +54,19 @@
   </portal>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onMounted, PropType, Ref, ref, toRefs } from "vue";
+import {
+  type ComponentPublicInstance,
+  computed,
+  nextTick,
+  onMounted,
+  type PropType,
+  ref,
+  toRefs,
+} from "vue";
 import useStore from "@/store/useStore";
 import { Organization, QuorumSet } from "@stellarbeat/js-stellarbeat-shared";
 import AddOrganizationsTable from "@/components/node/tools/simulation/add-organizations-table.vue";
+import $ from "jquery";
 
 const props = defineProps({
   id: {
@@ -69,7 +78,13 @@ const props = defineProps({
     required: true,
   },
 });
-const modalRefs = ref({} as { [key: string]: Ref<HTMLDivElement> });
+const modalRefs = ref(
+  {} as { [key: string]: Element | ComponentPublicInstance | null },
+);
+const mapModalRef = (el: Element | ComponentPublicInstance | null) => {
+  if (el === null) return;
+  modalRefs.value[id.value] = el;
+};
 const { id, quorumSet } = toRefs(props);
 const visible = ref(false);
 
@@ -106,7 +121,7 @@ function addOrganizationsToQuorumSet(
 onMounted(() => {
   nextTick(() => {
     const myModalRef = modalRefs.value[id.value];
-    if (myModalRef === undefined) return;
+    if (myModalRef === null) return;
 
     $(myModalRef).on("show.bs.modal", () => {
       visible.value = true;

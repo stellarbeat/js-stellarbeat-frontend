@@ -1,4 +1,4 @@
-import { SimulationLinkDatum, SimulationNodeDatum } from "d3-force";
+import { type SimulationLinkDatum, type SimulationNodeDatum } from "d3-force";
 
 export interface NodeDatum extends SimulationNodeDatum {
   id: number;

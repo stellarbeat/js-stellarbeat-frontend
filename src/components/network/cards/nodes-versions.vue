@@ -14,19 +14,28 @@
 
 <script setup lang="ts">
 import {
-  Chart,
   ArcElement,
+  Chart,
+  type ChartConfiguration,
+  type ChartItem,
   DoughnutController,
   Legend,
   Tooltip,
 } from "chart.js";
 
-import { computed, onBeforeUnmount, onMounted, ref, Ref, watch } from "vue";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  type Ref,
+  watch,
+} from "vue";
 
 import Store from "@/store/Store";
 import useStore from "@/store/useStore";
 
-const chart: Ref<Chart | null> = ref(null);
+const chart: Ref<Chart<"doughnut", number[], string> | null> = ref(null);
 const store: Store = useStore();
 const network = store.network;
 
@@ -101,13 +110,13 @@ const labels = computed(() => {
   return labels;
 });
 
-const versionGraph: Ref<HTMLCanvasElement | null> = ref(null);
+const versionGraph: Ref<ChartItem | null> = ref(null);
 function initializeDoughnut() {
   if (versionGraph.value === null) return;
-  const context = versionGraph.value.getContext("2d");
 
   Chart.register(Tooltip, ArcElement, DoughnutController, Legend);
-  chart.value = new Chart(context as CanvasRenderingContext2D, {
+
+  const config: ChartConfiguration<"doughnut", number[], string> = {
     type: "doughnut",
     data: {
       labels: labels.value,
@@ -132,7 +141,6 @@ function initializeDoughnut() {
       ],
     },
 
-    // Configuration options go here
     options: {
       layout: {
         padding: {
@@ -153,7 +161,8 @@ function initializeDoughnut() {
         duration: 0, // general animation time
       },
     },
-  });
+  };
+  chart.value = new Chart(versionGraph.value, config);
 }
 
 onMounted(function () {

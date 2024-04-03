@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, Ref, ref, toRefs, watch } from "vue";
+import { nextTick, type Ref, ref, toRefs, watch } from "vue";
 import {
   BFormDatepicker,
   BFormTimepicker,

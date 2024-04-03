@@ -21,7 +21,14 @@ import Graph from "@/components/visual-navigator/graph/graph.vue";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import { TrustGraphBuilder } from "@stellarbeat/js-stellarbeat-shared";
-import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
+import {
+  computed,
+  type ComputedRef,
+  onMounted,
+  type Ref,
+  ref,
+  watch,
+} from "vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
 

@@ -107,11 +107,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs, watch } from "vue";
 import {
-  NetworkGraphNode,
-  QuorumSet as NetworkQuorumSet,
+  type NetworkGraphNode,
+  type QuorumSet as NetworkQuorumSet,
 } from "@stellar/halting-analysis/src";
 import {
-  PublicKey,
+  type PublicKey,
   QuorumSet,
   Vertex,
 } from "@stellarbeat/js-stellarbeat-shared";
@@ -252,7 +252,7 @@ function mapQuorumSetToNetworkQuorumSet(
   const innerQSets = quorumSet.innerQuorumSets.map((innerQSet) =>
     mapQuorumSetToNetworkQuorumSet(innerQSet),
   );
-  const v = [];
+  const v: (string | NetworkQuorumSet)[] = [];
   v.push(...quorumSet.validators);
   innerQSets.forEach((innerQSet) => v.push(innerQSet));
   return {

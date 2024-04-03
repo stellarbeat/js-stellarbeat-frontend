@@ -45,7 +45,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive, ref, Ref } from "vue";
+import $ from "jquery";
+import { onMounted, reactive, ref, type Ref } from "vue";
 import { onBeforeRouteUpdate, useRoute } from "vue-router/composables";
 import useStore from "@/store/useStore";
 import useUserConsentManager from "@/store/useUserConsentManager";

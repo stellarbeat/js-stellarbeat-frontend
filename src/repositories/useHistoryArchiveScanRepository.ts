@@ -1,5 +1,5 @@
 import useStore from "@/store/useStore";
-import { HistoryArchiveScanRepository } from "@/repositories/HistoryArchiveScanRepository";
+import { type HistoryArchiveScanRepository } from "@/repositories/HistoryArchiveScanRepository";
 import { RESTHistoryArchiveScanRepository } from "@/repositories/implementation/RESTHistoryArchiveScanRepository";
 
 const store = useStore();

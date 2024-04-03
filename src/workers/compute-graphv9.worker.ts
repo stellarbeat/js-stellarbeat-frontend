@@ -5,8 +5,8 @@ import {
   forceSimulation,
   forceX,
   forceY,
-  SimulationLinkDatum,
-  SimulationNodeDatum,
+  type SimulationLinkDatum,
+  type SimulationNodeDatum,
 } from "d3-force";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewEdge from "@/components/visual-navigator/graph/view-edge";

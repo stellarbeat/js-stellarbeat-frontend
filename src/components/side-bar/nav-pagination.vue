@@ -16,10 +16,14 @@
 import { BPagination } from "bootstrap-vue";
 
 defineProps({
-  // eslint-disable-next-line vue/require-default-prop,vue/require-prop-types
-  value: {},
-  // eslint-disable-next-line vue/require-default-prop,vue/require-prop-types
-  totalRows: {},
+  value: {
+    type: Number,
+    required: true,
+  },
+  totalRows: {
+    type: Number,
+    required: true,
+  },
 });
 </script>
 

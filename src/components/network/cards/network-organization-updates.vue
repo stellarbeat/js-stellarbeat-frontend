@@ -67,7 +67,7 @@ import {
 import { OrganizationSnapShot } from "@stellarbeat/js-stellarbeat-shared";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
-import { onMounted, Ref, ref } from "vue";
+import { onMounted, type Ref, ref } from "vue";
 import useOrganizationSnapshotRepository from "@/repositories/useOrganizationSnapshotRepository";
 
 const store = useStore();

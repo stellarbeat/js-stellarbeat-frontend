@@ -22,7 +22,7 @@ const { greatest, vertexCoordinates } = toRefs(props);
 
 const hullLine = computed(() => {
   const hull = polygonHull(vertexCoordinates.value as [number, number][]);
-  if (!hull) return null;
+  if (!hull) return undefined;
 
   const valueLine = line()
     .x(function (d) {
@@ -38,7 +38,7 @@ const hullLine = computed(() => {
     return hullLine;
   }
 
-  return null;
+  return undefined;
 });
 
 const classObject = computed(() => {

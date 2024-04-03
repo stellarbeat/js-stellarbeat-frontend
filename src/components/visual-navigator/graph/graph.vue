@@ -178,7 +178,7 @@
 
 <script setup lang="ts">
 import * as zoom from "d3-zoom";
-import { select, selectAll, Selection } from "d3-selection";
+import { select, selectAll, type Selection } from "d3-selection";
 import GraphStronglyConnectedComponent from "@/components/visual-navigator/graph/graph-strongly-connected-component.vue";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
@@ -188,7 +188,7 @@ import {
   computed,
   onBeforeUnmount,
   onMounted,
-  PropType,
+  type PropType,
   ref,
   toRefs,
   watch,

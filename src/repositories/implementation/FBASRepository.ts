@@ -1,4 +1,4 @@
-import { NetworkRepository } from "@/repositories/NetworkRepository";
+import { type NetworkRepository } from "@/repositories/NetworkRepository";
 import { ok, Result } from "neverthrow";
 import {
   Network,

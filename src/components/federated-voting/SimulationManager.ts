@@ -3,12 +3,12 @@ import {
   forceLink,
   forceManyBody,
   forceSimulation,
-  Simulation,
-  SimulationNodeDatum,
+  type Simulation,
+  type SimulationNodeDatum,
 } from "d3-force";
 import {
-  LinkDatum,
-  NodeDatum,
+  type LinkDatum,
+  type NodeDatum,
 } from "@/components/federated-voting/GraphManager";
 
 export class SimulationManager {

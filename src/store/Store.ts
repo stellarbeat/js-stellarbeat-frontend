@@ -6,7 +6,7 @@ import {
   QuorumSetService,
 } from "@stellarbeat/js-stellarbeat-shared";
 import {
-  NetworkChange,
+  type NetworkChange,
   NetworkChangeQueue,
 } from "@/services/change-queue/network-change-queue";
 import { EntityPropertyUpdate } from "@/services/change-queue/changes/entity-property-update";
@@ -15,13 +15,13 @@ import { InnerQuorumSetDelete } from "@/services/change-queue/changes/inner-quor
 import { InnerQuorumSetAdd } from "@/services/change-queue/changes/inner-quorum-set-add";
 import { QuorumSetValidatorsAdd } from "@/services/change-queue/changes/quorum-set-validators-add";
 import { NetworkAddNode } from "@/services/change-queue/changes/network-add-node";
-import { reactive, UnwrapNestedRefs } from "vue";
+import { reactive, type UnwrapNestedRefs } from "vue";
 import { QuorumSetOrganizationsAdd } from "@/services/change-queue/changes/quorum-set-organizations-add";
 import { AggregateChange } from "@/services/change-queue/changes/aggregate-change";
 import NetworkAnalyzer from "@/services/NetworkAnalyzer";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
-import Config, { NetworkContext, NetworkId } from "@/config/Config";
+import Config, { type NetworkContext, type NetworkId } from "@/config/Config";
 
 interface Data {
   isLoading: boolean;
@@ -334,7 +334,7 @@ export default class Store {
   }
 
   public toggleValidating(node: Node) {
-    const changes = [];
+    const changes: NetworkChange[] = [];
     if (!node.active)
       changes.push(new EntityPropertyUpdate(node, "active", !node.active));
 

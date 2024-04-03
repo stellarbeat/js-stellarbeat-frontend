@@ -132,7 +132,7 @@ import {
   BIconShield,
   BPagination,
   BTable,
-  BvTableFieldArray,
+  type BvTableFieldArray,
 } from "bootstrap-vue";
 import NodeActions from "@/components/node/sidebar/node-actions.vue";
 import useStore from "@/store/useStore";
@@ -175,5 +175,16 @@ export type TableNode = {
   version?: string;
   action?: string;
   isFullValidator?: boolean;
+  active24Hour?: string;
+  active30Days?: string;
+  validating24Hour?: string;
+  validating30Days?: string;
+  isp?: string;
+  country?: string;
+  overLoaded24Hour?: string;
+  ip?: string;
+  isValidator?: boolean;
+  index?: number;
+  validating: boolean;
 };
 </script>

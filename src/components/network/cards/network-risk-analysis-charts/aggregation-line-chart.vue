@@ -6,26 +6,33 @@
 
 <script setup lang="ts">
 import {
-  ActiveElement,
+  type ActiveElement,
   Chart,
-  ChartData,
-  ChartDataset,
-  ChartEvent,
+  type ChartData,
+  type ChartDataset,
+  type ChartEvent,
   Filler,
   Legend,
-  LegendItem,
+  type LegendItem,
   LinearScale,
   LineController,
   LineElement,
-  Point,
+  type Point,
   PointElement,
   TimeSeriesScale,
   Tooltip,
-  TooltipItem,
+  type TooltipItem,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 
-import { onBeforeUnmount, onMounted, ref, withDefaults } from "vue";
+import {
+  type ComponentPublicInstance,
+  onBeforeUnmount,
+  onMounted,
+  type Ref,
+  ref,
+  withDefaults,
+} from "vue";
 
 const chart = ref<Chart>();
 
@@ -59,7 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
   stepSize: 2,
 });
 
-const chartElement = ref(null);
+const chartElement: Ref<null | Element | ComponentPublicInstance> = ref(null);
 const emit = defineEmits(["click-date"]);
 
 function updateData() {

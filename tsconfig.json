@@ -1,18 +1,30 @@
 {
+  "vueCompilerOptions": {
+    "target": 2.7,
+  },
   "compilerOptions": {
+    "noEmit": true,
     "target": "ESNext",
     "module": "ESNext",
     "strict": true,
     "jsx": "preserve",
+    "verbatimModuleSyntax": false,
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "jsxImportSource": "vue",
     "experimentalDecorators": true,
     "esModuleInterop": true,
+    "useDefineForClassFields": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "noImplicitAny": false,
     "noImplicitThis": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    // See <https://github.com/vuejs/vue-cli/pull/5688>
+    "skipLibCheck": true,
     "types": [
       "jest",
       "jquery",
@@ -38,6 +50,6 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
   ]
 }

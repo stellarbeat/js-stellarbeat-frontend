@@ -1,4 +1,4 @@
-import { FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
+import { type FbasAnalysisWorkerResult } from "@/workers/fbas-analysis-v3.worker";
 import { Network, Node } from "@stellarbeat/js-stellarbeat-shared";
 import { MergeBy } from "@stellarbeat/stellar_analysis_web";
 import { isNumber } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";

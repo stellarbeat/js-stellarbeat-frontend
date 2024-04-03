@@ -299,7 +299,7 @@ import NetworkStatisticsAggregation from "@stellarbeat/js-stellarbeat-shared/lib
 import NetworkStatisticsCard from "@/components/network/cards/network-statistics/network-statistics-card.vue";
 import useStore from "@/store/useStore";
 import { useIsLoading } from "@/composables/useIsLoading";
-import { onMounted, ref, Ref } from "vue";
+import { onMounted, ref, type Ref } from "vue";
 import useNetworkMeasurementsStore from "@/store/useNetworkMeasurementsStore";
 
 const store = useStore();

@@ -193,11 +193,12 @@ import {
   BIconShield,
   BPagination,
   BTable,
-  BvTableFieldArray,
+  type BvTableFieldArray,
 } from "bootstrap-vue";
 import OrganizationActions from "@/components/organization/sidebar/organization-actions.vue";
 import useStore from "@/store/useStore";
 import { NodeWarningDetector } from "@/services/NodeWarningDetector";
+import { Node } from "@stellarbeat/js-stellarbeat-shared";
 
 export interface Props {
   filter?: string;
@@ -236,6 +237,9 @@ export type TableOrganization = {
   subQuorum30DAvailability?: string;
   email?: string;
   keybase?: string;
+  validators?: Node[];
+  github?: string;
+  url?: string;
 };
 </script>
 

@@ -107,7 +107,7 @@ import {
 } from "@stellarbeat/js-stellarbeat-shared";
 import { ModifyNetwork as ModifyNetworkChange } from "@/services/change-queue/changes/modify-network";
 import useStore from "@/store/useStore";
-import { Ref, ref } from "vue";
+import { type Ref, ref } from "vue";
 
 import validateSchema from "@stellarbeat/js-stellarbeat-shared/lib/network-schema";
 
