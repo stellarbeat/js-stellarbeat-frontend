@@ -32,7 +32,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { defineEmits, ref, toRefs, watch } from "vue";
+import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
+import { isNumber } from "chart.js/helpers";
+import { ref, toRefs, watch } from "vue";
 
 const props = defineProps<{
   initialRepellingForce: number;
@@ -43,13 +45,17 @@ const { initialRepellingForce, initialTopology } = toRefs(props);
 const repellingForce = ref(initialRepellingForce.value);
 const topology = ref(initialTopology.value); // Default to 'complete'
 
-const emit = defineEmits<{
-  updateRepellingForce: (force: number) => void;
-  updateTopology: (topology: string) => void;
-}>();
+const emit = defineEmits({
+  updateTopology: (topology: string) => {
+    return isString(topology);
+  },
+  updateRepellingForce: (repellingForce: number) => {
+    return isNumber(repellingForce);
+  },
+});
 
-watch(topology, (newTopology) => {
-  emit.updateTopology(newTopology);
+watch(topology, (newTopology: string) => {
+  emit("updateTopology", newTopology);
 });
 </script>
 <style scoped>

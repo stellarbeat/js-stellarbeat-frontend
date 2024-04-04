@@ -20,14 +20,19 @@
               v-for="link in graphManager.links"
               :key="'overlay' + link.source.id + link.target.id"
               :link="link"
+              :selected="
+                link.source.id === federatedVotingStore.selectedNodeId ||
+                link.target.id === federatedVotingStore.selectedNodeId
+              "
               @linkClick="handleLinkClick"
             />
           </g>
           <g>
             <graph-node
-              v-for="node in nodes"
-              :key="'overlay' + node.id"
-              :node="node"
+              v-for="nody in nodes"
+              :key="'overlay' + nody.id"
+              :node="nody"
+              :selected="nody.id === federatedVotingStore.selectedNodeId"
               @nodeClick="handleNodeClick"
             />
           </g>
@@ -83,14 +88,12 @@ const handleNodeClick = (node: NodeDatum) => {
   }
 };
 
-const nodes: NodeDatum[] = federatedVotingStore.network.nodes.map(
-  (node, i) => ({
-    id: i,
-    name: node.name ? node.name : node.publicKey,
-    x: 0,
-    y: 0,
-  }),
-);
+const nodes: NodeDatum[] = federatedVotingStore.network.nodes.map((node) => ({
+  id: node.publicKey,
+  name: node.name ? node.name : node.publicKey,
+  x: 0,
+  y: 0,
+}));
 
 const graphManager = reactive(new GraphManager(nodes, initialTopology));
 

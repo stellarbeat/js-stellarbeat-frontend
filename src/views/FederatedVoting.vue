@@ -67,6 +67,7 @@ onMounted(() => {
 
 const handleVertexSelected = (vertex: ViewVertex) => {
   selectedVertices.value = [vertex];
+  federatedVotingStore.selectedNodeId = vertex.key;
 };
 </script>
 

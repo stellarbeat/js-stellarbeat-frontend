@@ -1,7 +1,7 @@
 import { type SimulationLinkDatum, type SimulationNodeDatum } from "d3-force";
 
 export interface NodeDatum extends SimulationNodeDatum {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -11,12 +11,24 @@ export interface LinkDatum extends SimulationLinkDatum<NodeDatum> {
 }
 
 export class GraphManager {
+  private nodesMap: Map<string, NodeDatum>;
   nodes: NodeDatum[];
   links: LinkDatum[] = [];
 
   constructor(nodes: NodeDatum[], topology: string) {
     this.nodes = nodes;
+    this.nodesMap = new Map(nodes.map((node) => [node.id, node]));
     this.updateGraphTopology(topology);
+  }
+
+  getNodeById(id: string): NodeDatum | null {
+    const node = this.nodesMap.get(id);
+    if (!node) return null;
+    return node;
+  }
+
+  isLinkSelected(link: LinkDatum, selectedNode: NodeDatum) {
+    return link.source === selectedNode;
   }
 
   updateGraphTopology(topology: string) {

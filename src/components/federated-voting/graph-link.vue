@@ -1,6 +1,6 @@
 <template>
   <path
-    class="link"
+    :class="['link', { selected }]"
     :d="getLinkPath(link)"
     @click="$emit('linkClick', link)"
   ></path>
@@ -17,11 +17,16 @@ const props = defineProps({
     type: Object as PropType<LinkDatum>,
     required: true,
   },
+  selected: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const link: Ref<LinkDatum> = toRefs(props).link;
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import "src/assets/variables";
 .link {
   fill: none;
   stroke: #1687b2;
@@ -31,5 +36,10 @@ const link: Ref<LinkDatum> = toRefs(props).link;
 
 .link:hover {
   stroke-width: 4px;
+}
+
+.link.selected {
+  stroke-width: 4px;
+  stroke: $yellow;
 }
 </style>

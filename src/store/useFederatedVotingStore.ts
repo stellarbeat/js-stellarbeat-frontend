@@ -6,11 +6,12 @@ class FederatedVotingStore {
   scenarios: string[] = ["FBAS QI scenario"];
   selectedScenario: string = this.scenarios[0];
   network: Network = new Network([]);
+  selectedNodeId: string | null = null;
 
   overlayGraphRepellingForce: Ref<number> = ref(1000);
 
   constructor() {
-    this.getNetwork().then((network) => {
+    this.getNetwork().then((network: Network) => {
       this.network = network;
     });
   }
