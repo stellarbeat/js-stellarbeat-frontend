@@ -23,7 +23,7 @@
               </div>
             </div>
             <div v-else>
-              <div v-if="typeof value !== 'number'">
+              <div v-if="value !== undefined">
                 <div
                   v-if="isBool || unknown"
                   class="value"
