@@ -2,8 +2,9 @@
   <div class="card">
     <div class="card-header px-3 d-flex flex-wrap justify-content-between">
       <div class="d-flex flex-wrap">
-        <div class="btn-group-sm mr-3">
+        <div class="btn-group mr-3">
           <button
+            class="btn btn-sm btn-secondary"
             role="button"
             :aria-pressed="bucketSize === '1Y'"
             @click="select1YViewDefault"
@@ -11,6 +12,7 @@
             1Y
           </button>
           <button
+            class="btn btn-sm btn-secondary"
             role="button"
             :aria-pressed="bucketSize === '30D'"
             @click="select30DayViewDefault"
@@ -18,6 +20,7 @@
             30D
           </button>
           <button
+            class="btn btn-sm btn-secondary"
             :aria:pressed="bucketSize === '24H'"
             @click="select24HViewDefault"
           >
@@ -207,7 +210,7 @@ const days30Statistics: Ref<NetworkStatisticsAggregation[]> = ref([]);
 const hour24Statistics = ref<NetworkStatistics[]>([]);
 const initialDataLoaded = ref(false);
 const statisticsDateTimeNavigator = ref<StatisticsDateTimeNavigator>(
-  new StatisticsDateTimeNavigator(store.measurementsStartDate),
+  new StatisticsDateTimeNavigator(store.measurementsStartDate)
 );
 const bucketSize = ref(defaultBucketSize?.value ?? "1Y");
 const failed = ref(false);
@@ -272,7 +275,7 @@ function aggregatedChartLabelFilter(legendItem: LegendItem): boolean {
 
 function getAggregatedData(
   statisticsAggregation: NetworkStatisticsAggregation[],
-  prop: string,
+  prop: string
 ): ScatterDataPoint[] {
   return statisticsAggregation
     .filter((stat) => stat.crawlCount > 0)
@@ -287,7 +290,7 @@ function getAggregatedData(
 
 function updateAggregatedDataInDataSets(
   dataSets: ChartDataset[],
-  statisticsAggregation: NetworkStatisticsAggregation[],
+  statisticsAggregation: NetworkStatisticsAggregation[]
 ) {
   dataSets.forEach((dataSet) => {
     switch (dataSet.label) {
@@ -298,7 +301,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetOrgs" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Average",
+            "Average"
         );
         break;
       case "min(|Organization|)":
@@ -308,7 +311,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetOrgs" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Min",
+            "Min"
         );
         break;
       case "max(|Organization|)":
@@ -318,7 +321,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetOrgs" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Max",
+            "Max"
         );
         break;
       case "Node":
@@ -328,7 +331,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "Set" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Average",
+            "Average"
         );
         break;
       case "min(|Node|)":
@@ -338,7 +341,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "Set" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Min",
+            "Min"
         );
         break;
       case "max(|Node|)":
@@ -348,7 +351,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "Set" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Max",
+            "Max"
         );
         break;
       case "Country":
@@ -358,7 +361,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetCountry" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Average",
+            "Average"
         );
         break;
       case "min(|Country|)":
@@ -368,7 +371,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetCountry" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Min",
+            "Min"
         );
         break;
       case "max(|Country|)":
@@ -378,7 +381,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetCountry" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Max",
+            "Max"
         );
         break;
       case "ISP":
@@ -388,7 +391,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetISP" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Average",
+            "Average"
         );
         break;
       case "min(|ISP|)":
@@ -398,7 +401,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetISP" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Min",
+            "Min"
         );
         break;
       case "max(|ISP|)":
@@ -408,7 +411,7 @@ function updateAggregatedDataInDataSets(
             capitalizeFirstLetter(setType.value) +
             "SetISP" +
             (canBeFiltered.value ? "Filtered" : "") +
-            "Max",
+            "Max"
         );
         break;
     }
@@ -675,7 +678,7 @@ function getHour24ChartDataSets(): ChartDataset[] {
         pointRadius: 0,
         pointHitRadius: 5,
       },
-    ],
+    ]
   );
 
   return sets;
@@ -743,12 +746,12 @@ async function updateYearChart() {
     yearStatistics.value = await networkMeasurementStore.getMonthStatistics(
       "stellar-public",
       from,
-      to,
+      to
     );
     //@ts-ignore
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
-      yearStatistics.value,
+      yearStatistics.value
     );
   } catch (e) {
     failed.value = true;
@@ -771,11 +774,11 @@ async function updateDays30Chart() {
     days30Statistics.value = await networkMeasurementStore.getDayStatistics(
       network.id ?? "stellar-public",
       from,
-      to,
+      to
     );
     updateAggregatedDataInDataSets(
       aggregatedDataSets.value,
-      days30Statistics.value,
+      days30Statistics.value
     );
   } catch (e) {
     failed.value = true;
@@ -799,7 +802,7 @@ async function updateHours24Chart() {
     hour24Statistics.value = await networkMeasurementStore.getStatistics(
       "stellar-public",
       from,
-      to,
+      to
     );
     updateDataInDataSets(hour24ChartDataSets.value as ChartDataset[]);
   } catch (e) {

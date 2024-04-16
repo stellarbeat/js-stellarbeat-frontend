@@ -8,7 +8,7 @@
     <simulation-control class="card-spacing" />
     <div class="row">
       <div class="col-md-6">
-        <overlay-graph class="card-spacing" />
+        <OverlayGraphBase class="card-spacing" />
       </div>
       <div class="col-md-6">
         <div class="card graph">
@@ -49,8 +49,8 @@ import { onMounted, ref } from "vue";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import { Network, TrustGraph } from "@stellarbeat/js-stellarbeat-shared";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
-import OverlayGraph from "@/components/federated-voting/overlay-graph.vue";
 import { federatedVotingStore } from "@/store/useFederatedVotingStore";
+import OverlayGraphBase from "@/components/federated-voting/overlay-graph-base.vue";
 
 const viewGraph = ref<ViewGraph>(new ViewGraph());
 const selectedVertices = ref<ViewVertex[]>([]);

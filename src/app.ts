@@ -21,6 +21,7 @@ Vue.config.productionTip = false;
 
 if (isProd) {
   Sentry.init({
+    Vue,
     dsn: import.meta.env.VUE_APP_SENTRY_DSN,
   });
 }
