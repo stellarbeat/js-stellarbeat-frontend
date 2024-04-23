@@ -5,6 +5,7 @@ import "./assets/custom.scss";
 import "./assets/global.css";
 import Multiselect from "vue-multiselect";
 import * as Sentry from "@sentry/vue";
+import "popper.js";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/collapse";
 import "bootstrap/js/dist/tooltip";

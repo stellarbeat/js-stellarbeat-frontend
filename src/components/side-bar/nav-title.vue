@@ -6,14 +6,12 @@
     {{ title }}
     <b-icon-exclamation-triangle
       v-if="hasDanger"
-      v-tooltip:left="danger"
-      :title="danger"
+      v-tooltip:top="danger"
       class="sb-danger mr-1"
     />
     <b-icon-exclamation-triangle
       v-else-if="hasWarnings"
-      v-tooltip:left="warnings"
-      :title="warnings"
+      v-tooltip:top="warnings"
       class="sb-alert mr-1"
     />
   </div>

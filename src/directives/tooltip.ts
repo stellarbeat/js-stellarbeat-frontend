@@ -4,8 +4,10 @@ import { type DirectiveBinding } from "vue/types/options";
 import Tooltip from "bootstrap/js/dist/tooltip";
 
 type PopoverPlacement = Tooltip.PopoverPlacement;
+
 export default {
   inserted(el: HTMLElement, binding: DirectiveBinding) {
+    console.log("inserted");
     let placement: PopoverPlacement = "top";
     if (!binding.value) return;
 
@@ -18,6 +20,7 @@ export default {
       if (binding.arg !== undefined)
         throw new Error("Invalid placement: " + binding.arg);
     }
+    console.log(placement);
     $(el).tooltip({
       title: binding.value,
       placement: placement,
