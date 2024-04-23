@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@sentry/vue": "^7.108.0",
-    "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
+    "@stellarbeat/stellar-halting-analysis": "1.2.0",
     "@stellarbeat/js-stellarbeat-shared": "^6.6.1",
     "@stellarbeat/stellar_analysis_web": "^0.6.2",
     "bootstrap": "4.6.1",

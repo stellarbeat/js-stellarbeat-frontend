@@ -1,4 +1,4 @@
-import { haltingAnalysis } from "@stellar/halting-analysis/src";
+import { haltingAnalysis } from "@stellarbeat/stellar-halting-analysis";
 
 // @ts-ignore
 const ctx: Worker = self;

@@ -109,7 +109,7 @@ import { computed, onMounted, ref, toRefs, watch } from "vue";
 import {
   type NetworkGraphNode,
   type QuorumSet as NetworkQuorumSet,
-} from "@stellar/halting-analysis/src";
+} from "@stellarbeat/stellar-halting-analysis";
 import {
   type PublicKey,
   QuorumSet,
