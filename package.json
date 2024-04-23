@@ -12,7 +12,7 @@
   "dependencies": {
     "@sentry/vue": "^7.108.0",
     "@stellar/halting-analysis": "https://github.com/stellarbeat/halting-analysis",
-    "@stellarbeat/js-stellarbeat-shared": "^6.5.0",
+    "@stellarbeat/js-stellarbeat-shared": "^6.6.1",
     "@stellarbeat/stellar_analysis_web": "^0.6.2",
     "bootstrap": "4.6.1",
     "bootstrap-icons": "^1.11.3",
@@ -82,5 +82,5 @@
   "engines": {
     "node": "20.x"
   },
-  "packageManager": "pnpm@8.15.1"
+  "packageManager": "pnpm@9.0.5+sha256.61bd66913b52012107ec25a6ee4d6a161021ab99e04f6acee3aa50d0e34b4af9"
 }
