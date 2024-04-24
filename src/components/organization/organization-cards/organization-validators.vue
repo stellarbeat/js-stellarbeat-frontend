@@ -23,7 +23,7 @@ const fields = computed(() => {
       { key: "validating24Hour", label: "24H validating" },
       { key: "validating30Days", label: "30D validating" },
       "version",
-      "lag"
+      "lag",
     );
   }
   return fields;

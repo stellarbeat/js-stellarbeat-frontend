@@ -42,19 +42,19 @@
           <b-badge
             v-if="
               network.isNodeFailing(
-                network.getNodeByPublicKey(data.item.publicKey)
+                network.getNodeByPublicKey(data.item.publicKey),
               )
             "
             v-tooltip="
               network.getNodeFailingReason(
-                network.getNodeByPublicKey(data.item.publicKey)
+                network.getNodeByPublicKey(data.item.publicKey),
               ).description
             "
             variant="danger"
           >
             {{
               network.getNodeFailingReason(
-                network.getNodeByPublicKey(data.item.publicKey)
+                network.getNodeByPublicKey(data.item.publicKey),
               ).label
             }}
           </b-badge>
@@ -62,13 +62,13 @@
             v-else-if="
               NodeWarningDetector.nodeHasWarning(
                 network.getNodeByPublicKey(data.item.publicKey),
-                network
+                network,
               )
             "
             v-tooltip="
               NodeWarningDetector.getNodeWarningReasonsConcatenated(
                 network.getNodeByPublicKey(data.item.publicKey),
-                network
+                network,
               )
             "
             variant="warning"
