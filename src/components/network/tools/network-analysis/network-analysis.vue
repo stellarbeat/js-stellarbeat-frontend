@@ -544,7 +544,7 @@ onMounted(() => {
   };
 });
 </script>
-<style>
+<style scoped>
 .my-thead tr th {
   color: #495057;
   text-transform: none;

@@ -7,5 +7,7 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   testMatch: ["**/__tests__/**/*.test.(js|jsx|ts|tsx)"],
-  testURL: "http://localhost/",
+  testEnvironmentOptions: {
+    url: "http://localhost/",
+  },
 };

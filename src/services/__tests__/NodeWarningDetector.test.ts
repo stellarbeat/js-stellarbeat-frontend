@@ -5,9 +5,8 @@ describe("NodeWarningDetector", () => {
   describe("nodeHasWarning", () => {
     it("returns true if the node version is behind the latest stellar core version", () => {
       const node = new Node("a");
-      node.versionStr = "10.0.0";
-      const network = new Network();
-      network.stellarCoreVersion = "11.0.0";
+      const network = new Network([node]);
+      node.stellarCoreVersionBehind = true;
       expect(NodeWarningDetector.nodeHasWarning(node, network)).toBe(true);
     });
 
@@ -23,6 +22,13 @@ describe("NodeWarningDetector", () => {
       const node = new Node("a");
       node.historyUrl = "http://localhost:11626";
       node.historyArchiveHasError = true;
+      const network = new Network([node]);
+      expect(NodeWarningDetector.nodeHasWarning(node, network)).toBe(true);
+    });
+
+    it("returns true if node has connectivity error", () => {
+      const node = new Node("a");
+      node.connectivityError = true;
       const network = new Network([node]);
       expect(NodeWarningDetector.nodeHasWarning(node, network)).toBe(true);
     });
@@ -71,9 +77,8 @@ describe("NodeWarningDetector", () => {
     });
     it('returns "Stellar-core version behind" if node version is behind the latest stellar core version', () => {
       const node = new Node("a");
-      node.versionStr = "10.0.0";
-      const network = new Network();
-      network.stellarCoreVersion = "11.0.0";
+      const network = new Network([node]);
+      node.stellarCoreVersionBehind = true;
       expect(NodeWarningDetector.getNodeWarningReasons(node, network)).toEqual([
         "Stellar-core version behind",
       ]);
@@ -85,6 +90,15 @@ describe("NodeWarningDetector", () => {
       const network = new Network();
       expect(NodeWarningDetector.getNodeWarningReasons(node, network)).toEqual([
         "Could not connect to node",
+      ]);
+    });
+
+    it('returns "High lag" if node has a lag greater than 2000', () => {
+      const node = new Node("a");
+      node.lag = 3000;
+      const network = new Network();
+      expect(NodeWarningDetector.getNodeWarningReasons(node, network)).toEqual([
+        "High lag",
       ]);
     });
   });
@@ -106,7 +120,7 @@ describe("NodeWarningDetector", () => {
       node.historyUrl = "http://localhost:11626";
       node.isFullValidator = false;
       node.historyArchiveHasError = true;
-      node.versionStr = "10.0.0";
+      node.stellarCoreVersionBehind = true;
       const network = new Network([node]);
       network.stellarCoreVersion = "11.0.0";
       expect(

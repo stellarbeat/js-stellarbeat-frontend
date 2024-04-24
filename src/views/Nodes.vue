@@ -142,6 +142,11 @@ if (!store.isSimulation) {
       label: "24H overloaded",
       sortable: true,
     });
+    fieldsBase.push({
+      key: "lag",
+      label: "Lag",
+      sortable: true,
+    });
   }
 
   if (store.networkContext.enableIndex) {
@@ -190,6 +195,7 @@ const nodes: ComputedRef<TableNode[]> = computed(() => {
         country: node.geoData.countryName || undefined,
         isp: node.isp || undefined,
         version: node.versionStr || undefined,
+        lag: node.lag !== null ? node.lag + " ms" : "Not detected",
         isFullValidator: node.isFullValidator,
         isValidator: node.isValidator,
         index: node.index,

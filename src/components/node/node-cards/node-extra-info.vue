@@ -70,6 +70,14 @@
               {{ node.ledgerVersion }}
             </td>
           </tr>
+          <tr v-if="node.isValidator" class="text-gray">
+            <td class="px-0" style="font-weight: 600; font-size: 0.875rem">
+              Externalize lag
+            </td>
+            <td class="px-0 text-right">
+              {{ node.lag !== null ? node.lag + " ms" : "Not detected" }}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

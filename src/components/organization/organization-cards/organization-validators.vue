@@ -23,6 +23,7 @@ const fields = computed(() => {
       { key: "validating24Hour", label: "24H validating" },
       { key: "validating30Days", label: "30D validating" },
       "version",
+      "lag"
     );
   }
   return fields;
@@ -36,6 +37,7 @@ const validators: ComputedRef<TableNode[]> = computed(() => {
         isFullValidator: validator.isFullValidator,
         name: validator.displayName,
         version: validator.versionStr || undefined,
+        lag: validator.lag !== null ? validator.lag + " ms" : "Not detected",
         index: validator.index,
         validating24Hour: validator.statistics.has24HourStats
           ? validator.statistics.validating24HoursPercentage + "%"

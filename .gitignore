@@ -28,3 +28,5 @@ yarn-error.log*
 yalc.lock
 
 .env
+
+tmux-*.log

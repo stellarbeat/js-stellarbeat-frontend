@@ -42,7 +42,7 @@ describe("OrganizationWarningDetector", () => {
   describe("organizationHasValidatorsWithStellarCoreRunningBehind", () => {
     test("returns true if any validator is behind", () => {
       const { organization, validator1, network } = setupSUT();
-      validator1.versionStr = "0.0.0";
+      validator1.stellarCoreVersionBehind = true;
       expect(
         OrganizationWarningDetector.organizationHasValidatorsWithStellarCoreRunningBehind(
           organization,
