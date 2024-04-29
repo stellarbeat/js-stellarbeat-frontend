@@ -23,11 +23,15 @@ export class NodeWarningDetector {
       reasons.push("Could not connect to node");
     }
 
-    if (node.lag && node.lag > 2000) {
+    if (NodeWarningDetector.nodeHasHighLag(node)) {
       reasons.push("High lag");
     }
 
     return reasons;
+  }
+
+  static nodeHasHighLag(node: Node) {
+    return node.lag && node.lag > 2000;
   }
 
   static getNodeWarningReasonsConcatenated(

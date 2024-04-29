@@ -1,4 +1,5 @@
 import { Network, Organization } from "@stellarbeat/js-stellarbeat-shared";
+import { NodeWarningDetector } from "./NodeWarningDetector";
 
 export class OrganizationWarningDetector {
   public static organizationHasWarnings(
@@ -20,6 +21,15 @@ export class OrganizationWarningDetector {
     return organization.validators
       .map((validator) => network.getNodeByPublicKey(validator))
       .some((validator) => validator.stellarCoreVersionBehind);
+  }
+
+  public static organizationHasValidatorsWithHighLag(
+    organization: Organization,
+    network: Network,
+  ) {
+    return organization.validators
+      .map((validator) => network.getNodeByPublicKey(validator))
+      .some((validator) => NodeWarningDetector.nodeHasHighLag(validator));
   }
 
   public static organizationHasValidatorsThatWeCouldNotConnectTo(
@@ -96,6 +106,14 @@ export class OrganizationWarningDetector {
       )
     )
       reasons.push("Could not connect to all validators");
+
+    if (
+      OrganizationWarningDetector.organizationHasValidatorsWithHighLag(
+        organization,
+        network,
+      )
+    )
+      reasons.push("High lag validator");
 
     if (!["Ok", "Unknown"].includes(organization.tomlState))
       reasons.push(
