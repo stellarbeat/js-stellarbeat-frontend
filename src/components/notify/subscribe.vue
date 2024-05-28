@@ -92,7 +92,6 @@
             v-model="consented"
             name="consent-checkbox"
             unchecked-value="not_accepted"
-            required
           >
             I have read, understood, and agree to be bound by the
             <router-link
@@ -133,7 +132,9 @@
         <button
           class="btn btn-danger ml-2"
           type="submit"
-          :disabled="!(emailAddressState === true && consented === 'accepted')"
+          :disabled="
+            !(emailAddressState === true && consented !== 'not_accepted')
+          "
           @click="onUnsubscribe"
         >
           Unsubscribe and remove email address
@@ -305,7 +306,7 @@ async function onSubscribe(event: Event) {
   event.preventDefault();
   submitError.value = false;
   requested.value = false;
-  if (!emailAddressState.value || consented.value !== "accepted") return;
+  if (!emailAddressState.value || consented.value === "not_accepted") return;
   try {
     requesting.value = true;
     const response = await fetch(
@@ -338,7 +339,7 @@ async function onUnsubscribe(event: Event) {
   event.preventDefault();
   submitError.value = false;
   requested.value = false;
-  if (!emailAddressState.value || consented.value !== "accepted") return;
+  if (!emailAddressState.value || consented.value === "not_accepted") return;
   try {
     requesting.value = true;
     const response = await fetch(
