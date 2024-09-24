@@ -18,8 +18,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       '@stellarbeat/stellar_analysis_web':
-        specifier: ^0.6.2
-        version: 0.6.2
+        specifier: ^0.7.0
+        version: 0.7.0
       bootstrap:
         specifier: 4.6.1
         version: 4.6.1(jquery@3.7.1)(popper.js@1.16.1)
@@ -822,8 +822,8 @@ packages:
   '@stellarbeat/stellar-halting-analysis@1.2.0':
     resolution: {integrity: sha512-W/OfQOgIcogIxpwyQ93RTr8Ke55z4/mvqG9UNUdB4AgJLwfgelYFn+RMdmWw4I77koQ3zdw19kuTm6pbg4yUkw==}
 
-  '@stellarbeat/stellar_analysis_web@0.6.2':
-    resolution: {integrity: sha512-Ygit5McXIuvH3aluOlZwZbGg7FYnO1iqPmzHzeqVpx7mrRkiS8YdoS05O1CuFxHXJQVYGQPoFXz1OKPuBcaaLw==}
+  '@stellarbeat/stellar_analysis_web@0.7.0':
+    resolution: {integrity: sha512-0ygZnhYHtyQBKHMpwDYclFwT0cvnGg+589AZQC0VcysJG01uPX0Z9PgXFOuDmZO6mfxHrNUASCU/QsyPyINrsA==}
 
   '@swc/core-darwin-arm64@1.7.26':
     resolution: {integrity: sha512-FF3CRYTg6a7ZVW4yT9mesxoVVZTrcSWtmZhxKCYJX9brH4CS/7PRPjAKNk6kzWgWuRoglP7hkjQcd6EpMcZEAw==}
@@ -3610,7 +3610,7 @@ snapshots:
 
   '@stellarbeat/stellar-halting-analysis@1.2.0': {}
 
-  '@stellarbeat/stellar_analysis_web@0.6.2': {}
+  '@stellarbeat/stellar_analysis_web@0.7.0': {}
 
   '@swc/core-darwin-arm64@1.7.26':
     optional: true

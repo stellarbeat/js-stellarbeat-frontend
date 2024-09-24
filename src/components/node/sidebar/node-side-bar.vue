@@ -83,6 +83,14 @@
       </li>
       <li v-if="selectedNode.isValidator" class="sb-nav-item">
         <nav-link
+          title="Network analysis"
+          :show-icon="true"
+          icon="gear-wide"
+          @click="store.isNetworkAnalysisVisible = true"
+        />
+      </li>
+      <li v-if="selectedNode.isValidator" class="sb-nav-item">
+        <nav-link
           title="Halting analysis"
           :show-icon="true"
           icon="gear-wide"

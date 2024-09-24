@@ -13,7 +13,7 @@
     "@sentry/vue": "^7.119.0",
     "@stellarbeat/js-stellarbeat-shared": "^6.6.1",
     "@stellarbeat/stellar-halting-analysis": "1.2.0",
-    "@stellarbeat/stellar_analysis_web": "^0.6.2",
+    "@stellarbeat/stellar_analysis_web": "^0.7.0",
     "bootstrap": "4.6.1",
     "bootstrap-icons": "^1.11.3",
     "bootstrap-vue": "2.23.1",

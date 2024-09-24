@@ -246,6 +246,13 @@
             ></b-alert
           >
           <b-form-group label="Analysis target: ">
+            <b-form-checkbox
+              v-if="store.selectedNode"
+              v-model="analyzeTrustCluster"
+              class="pb-1"
+            >
+              Analyze trust cluster of selected node (Could be slow!)
+            </b-form-checkbox>
             <b-form-radio-group
               id="radio-group-2"
               v-model="store.networkAnalysisMergeBy"
@@ -314,7 +321,12 @@ import {
   VBModal,
   VBToggle,
 } from "bootstrap-vue";
-import { type PublicKey } from "@stellarbeat/js-stellarbeat-shared";
+import {
+  BaseQuorumSet,
+  Node,
+  TransitiveQuorumSetFinder,
+  type PublicKey,
+} from "@stellarbeat/js-stellarbeat-shared";
 import Analysis from "@/components/network/tools/network-analysis/analysis.vue";
 import QuorumIntersectionInfo from "@/components/network/tools/network-analysis/info/quorum-intersection-info.vue";
 import SafetyInfo from "@/components/network/tools/network-analysis/info/safety-info.vue";
@@ -361,6 +373,7 @@ const splittingSetsMinSize = ref(0);
 const topTier: Ref<Array<Array<string>>> = ref([]);
 const topTierIsSymmetric = ref(false);
 
+const analyzeTrustCluster = ref(false);
 const analyzeQuorumIntersection = ref(true);
 const quorumIntersectionAnalyzed = ref(false);
 const analyzeSafety = ref(true);
@@ -393,10 +406,26 @@ function stopAnalysis() {
 }
 
 function performAnalysis() {
+  console.log(store.selectedNode?.publicKey);
+  const nodesToAnalyze: Node[] =
+    analyzeTrustCluster.value && store.selectedNode
+      ? [
+          ...Array.from(
+            TransitiveQuorumSetFinder.find(
+              store.selectedNode?.quorumSet,
+              getNodesToQuorumSetMap(store.network.nodes),
+            ),
+          ).map((publicKey) => store.network.getNodeByPublicKey(publicKey)),
+          store.selectedNode,
+        ]
+      : store.networkAnalyzer.nodesToAnalyze;
+
+  console.log(nodesToAnalyze.length);
+
   isLoading.value = true;
   fbasAnalysisWorker.postMessage({
     id: 1,
-    nodes: store.networkAnalyzer.nodesToAnalyze,
+    nodes: nodesToAnalyze,
     organizations: store.network.organizations,
     mergeBy: store.networkAnalysisMergeBy,
     failingNodePublicKeys: store.network.nodes
@@ -408,6 +437,14 @@ function performAnalysis() {
     analyzeTopTier: analyzeTopTier,
     analyzeSymmetricTopTier: true,
   });
+}
+
+function getNodesToQuorumSetMap(nodes: Node[]): Map<PublicKey, BaseQuorumSet> {
+  return new Map<string, BaseQuorumSet>(
+    nodes
+      .filter((node) => node.quorumSet)
+      .map((node: Node) => [node.publicKey, node.quorumSet]),
+  );
 }
 
 function updatePartitions() {
@@ -550,8 +587,5 @@ onMounted(() => {
   text-transform: none;
   font-size: 0.9375rem;
   font-weight: 700;
-}
-
-.my-tbody tr td {
 }
 </style>

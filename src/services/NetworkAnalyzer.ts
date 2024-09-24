@@ -210,7 +210,7 @@ export default class NetworkAnalyzer {
     });
   }
 
-  get nodesToAnalyze() {
+  get nodesToAnalyze(): Node[] {
     const isNodeCorrectlyConfigured = (node: Node) => {
       return !(
         node.quorumSet.validators.length === 1 &&
