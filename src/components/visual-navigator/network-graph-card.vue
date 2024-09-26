@@ -12,6 +12,7 @@
     :option-highlight-trusted-nodes="optionHighlightTrustedNodes"
     :option-show-regular-edges="optionShowRegularEdges"
     :option-transitive-quorum-set-only="optionTransitiveQuorumSetOnly"
+    :option-filter-trust-cluster="optionFilterTrustCluster"
     @vertex-selected="vertexSelected"
   />
 </template>
@@ -20,7 +21,6 @@
 import Graph from "@/components/visual-navigator/graph/graph.vue";
 import ViewGraph from "@/components/visual-navigator/graph/view-graph";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
-import { TrustGraphBuilder } from "@stellarbeat/js-stellarbeat-shared";
 import {
   computed,
   type ComputedRef,
@@ -31,6 +31,10 @@ import {
 } from "vue";
 import useStore from "@/store/useStore";
 import { useRoute, useRouter } from "vue-router/composables";
+import { NodeTrustGraphBuilder } from "@/services/NodeTrustGraphBuilder";
+import { OrganizationTrustGraphBuilder } from "@/services/OrganizationTrustGraphBuilder";
+import { TrustClusterFinder } from "@/services/TrustClusterFinder";
+import { Node, Organization } from "@stellarbeat/js-stellarbeat-shared";
 
 const router = useRouter();
 const route = useRoute();
@@ -67,9 +71,17 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  optionFilterTrustCluster: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const type = computed(() => props.type);
+const includeWatcherNodes = computed(() => store.includeWatcherNodes);
+const selectedNode = computed(() => store.selectedNode);
+const selectedOrganization = computed(() => store.selectedOrganization);
+const optionFilterTrustCluster = computed(() => props.optionFilterTrustCluster);
 const store = useStore();
 const networkReCalculated = computed(() => store.networkReCalculated);
 
@@ -81,6 +93,28 @@ watch(networkReCalculated, () => {
 });
 
 watch(type, () => {
+  updateGraph();
+});
+
+watch(includeWatcherNodes, () => {
+  updateGraph();
+});
+
+watch(selectedNode, () => {
+  if (optionFilterTrustCluster.value) {
+    //different selected node, different trust cluster
+    updateGraph();
+  }
+});
+
+watch(selectedOrganization, () => {
+  if (optionFilterTrustCluster.value) {
+    //different selected organization, different trust cluster
+    updateGraph();
+  }
+});
+
+watch(optionFilterTrustCluster, () => {
   updateGraph();
 });
 
@@ -137,30 +171,75 @@ const selectedKeys = computed(() => {
   return selectedKeys;
 });
 
-function getOrganizationTrustGraph() {
-  const trustGraphBuilder = new TrustGraphBuilder(store.network);
-  return trustGraphBuilder.buildGraphFromOrganizations(
-    store.network.nodesTrustGraph,
-  );
-}
-
 function updateGraph(merge = false) {
   isLoading.value = true;
 
-  if (type.value === "node")
-    viewGraph.value = ViewGraph.fromNodes(
-      store.network,
-      store.network.nodesTrustGraph,
-      merge ? viewGraph.value : undefined,
-      selectedKeys.value,
+  const allNodes = store.includeWatcherNodes
+    ? store.network.nodes
+    : store.network.nodes.filter((node) => node.isValidator);
+
+  if (type.value === "node") {
+    buildNodeViewGraph(allNodes, merge);
+  } else {
+    buildOrganizationViewGraph(allNodes, merge);
+  }
+}
+
+function buildNodeViewGraph(allNodes: Node[], merge: boolean) {
+  let nodes: Node[] = [];
+  if (store.selectedNode && optionFilterTrustCluster.value) {
+    nodes = Array.from(
+      TrustClusterFinder.find(
+        [store.selectedNode],
+        new Map(allNodes.map((node) => [node.publicKey, node.quorumSet])),
+      ),
+    ).map((node) => store.network.getNodeByPublicKey(node));
+  } else {
+    nodes = allNodes;
+  }
+  const trustGraph = NodeTrustGraphBuilder.build(nodes);
+  viewGraph.value = ViewGraph.fromNodes(
+    store.network,
+    trustGraph,
+    merge ? viewGraph.value : undefined,
+    selectedKeys.value,
+  );
+}
+
+function buildOrganizationViewGraph(allNodes: Node[], merge: boolean) {
+  let organizations: Organization[] = [];
+  if (store.selectedOrganization && optionFilterTrustCluster.value) {
+    organizations = Array.from(
+      new Set(
+        Array.from(
+          TrustClusterFinder.find(
+            store.selectedOrganization.validators.map((publicKey) =>
+              store.network.getNodeByPublicKey(publicKey),
+            ),
+            new Map(allNodes.map((node) => [node.publicKey, node.quorumSet])),
+          ),
+        )
+          .map((node) => store.network.getNodeByPublicKey(node).organizationId)
+          .filter((organizationId) => organizationId !== null)
+          .map((organizationId) =>
+            store.network.getOrganizationById(organizationId),
+          ),
+      ),
     );
-  else
-    viewGraph.value = ViewGraph.fromOrganizations(
-      store.network,
-      getOrganizationTrustGraph(),
-      merge ? viewGraph.value : undefined,
-      selectedKeys.value,
-    );
+  } else {
+    organizations = store.network.organizations;
+  }
+  const trustGraph = OrganizationTrustGraphBuilder.build(
+    organizations,
+    store.network.organizations,
+    allNodes,
+  );
+  viewGraph.value = ViewGraph.fromOrganizations(
+    store.network,
+    trustGraph,
+    merge ? viewGraph.value : undefined,
+    selectedKeys.value,
+  );
 }
 
 const graph = ref(null);
@@ -180,22 +259,8 @@ const centerVertex: ComputedRef<ViewVertex | undefined> = computed(() => {
 });
 
 onMounted(() => {
-  if (type.value === "node")
-    viewGraph.value = ViewGraph.fromNodes(
-      store.network,
-      store.network.nodesTrustGraph,
-      undefined,
-      selectedKeys.value,
-    );
-  else
-    viewGraph.value = ViewGraph.fromOrganizations(
-      store.network,
-      getOrganizationTrustGraph(),
-      undefined,
-      selectedKeys.value,
-    );
-  Object.freeze(viewGraph); //not reactive;
-
+  updateGraph();
+  Object.freeze(viewGraph);
   networkId = store.networkId;
 });
 </script>

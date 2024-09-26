@@ -46,8 +46,6 @@ const showLegend = ref(false);
 </script>
 
 <style scoped>
-.legend {
-}
 div {
   color: #797979;
 }

@@ -126,6 +126,13 @@
             >
               Transitive quorum set only
             </b-form-checkbox>
+            <b-form-checkbox
+              v-model="optionFilterTrustCluster"
+              class="sb-nav-item sb-nav-toggle mt-1"
+              switch
+            >
+              Filter trust cluster
+            </b-form-checkbox>
           </div>
         </div>
         <div>
@@ -187,6 +194,7 @@
         :option-highlight-trusted-nodes="optionHighlightTrustedNodes"
         :option-show-regular-edges="optionShowRegularEdges"
         :option-transitive-quorum-set-only="optionTransitiveQuorumSetOnly"
+        :option-filter-trust-cluster="optionFilterTrustCluster"
         :type="view === 'graph' ? 'node' : 'organization'"
       >
       </network-graph-card>
@@ -259,6 +267,7 @@ const optionHighlightTrustingNodes = ref(true);
 const optionHighlightTrustedNodes = ref(true);
 const optionShowRegularEdges = ref(true);
 const optionTransitiveQuorumSetOnly = ref(false);
+const optionFilterTrustCluster = ref(false);
 
 const menuVisible = ref(false);
 const fullScreen = ref(false);
