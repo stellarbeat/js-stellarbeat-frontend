@@ -406,7 +406,6 @@ function stopAnalysis() {
 }
 
 function performAnalysis() {
-  console.log(store.selectedNode?.publicKey);
   const nodesToAnalyze: Node[] =
     analyzeTrustCluster.value && store.selectedNode
       ? [
@@ -419,8 +418,6 @@ function performAnalysis() {
           store.selectedNode,
         ]
       : store.networkAnalyzer.nodesToAnalyze;
-
-  console.log(nodesToAnalyze.length);
 
   isLoading.value = true;
   fbasAnalysisWorker.postMessage({

@@ -222,7 +222,7 @@ function buildOrganizationViewGraph(allNodes: Node[], merge: boolean) {
           .map((node) => store.network.getNodeByPublicKey(node).organizationId)
           .filter((organizationId) => organizationId !== null)
           .map((organizationId) =>
-            store.network.getOrganizationById(organizationId),
+            store.network.getOrganizationById(organizationId!),
           ),
       ),
     );
