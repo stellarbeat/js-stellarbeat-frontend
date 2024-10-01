@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import * as zoom from "d3-zoom";
+import { zoom, zoomIdentity } from "d3-zoom";
 import { select, selectAll, type Selection } from "d3-selection";
 import GraphStronglyConnectedComponent from "@/components/visual-navigator/graph/graph-strongly-connected-component.vue";
 import ViewVertex from "@/components/visual-navigator/graph/view-vertex";
@@ -229,6 +229,11 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  zoomEnabled: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   viewGraph: {
     type: Object as PropType<ViewGraph>,
     required: true,
@@ -248,6 +253,7 @@ const props = defineProps({
 const {
   centerVertex,
   fullScreen,
+  zoomEnabled,
   selectedVertices,
   viewGraph,
   optionHighlightTrustingNodes,
@@ -404,9 +410,7 @@ function centerCorrectVertex() {
     const realVertexX = -centerVertex.value.x + width() / 2;
     const realVertexY = -centerVertex.value.y + height() / 2;
 
-    const transform = zoom.zoomIdentity
-      .translate(realVertexX, realVertexY)
-      .scale(1);
+    const transform = zoomIdentity.translate(realVertexX, realVertexY).scale(1);
     d3svg.call(graphZoom.transform, transform);
   }
 }
@@ -427,6 +431,7 @@ function mapViewGraph(vertices: ViewVertex[], edges: ViewEdge[]) {
 }
 
 const grid = ref<Element | null>(null);
+
 onMounted(() => {
   const workerType = import.meta.env.DEV ? "module" : "classic";
   computeGraphWorker = new Worker(
@@ -449,8 +454,15 @@ onMounted(() => {
 
   d3Grid = select(grid.value as Element);
   d3svg = select(graphSvg.value as Element);
-  graphZoom = zoom
-    .zoom()
+  graphZoom = zoom()
+    .filter((event) => {
+      //mouse scrolling interferes with zoom,
+      //that is why it has to be explicitly enabled
+      if (!zoomEnabled.value && event.type === "wheel") {
+        return false;
+      }
+      return true;
+    })
     .on("zoom", (event) => {
       d3Grid.attr("transform", event.transform);
     })

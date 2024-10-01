@@ -5,6 +5,7 @@
     :selected-vertices="selectedVertices"
     style="height: 100%"
     :full-screen="fullScreen"
+    :zoom-enabled="zoomEnabled"
     :view-graph="viewGraph"
     :is-loading="isLoading"
     :option-show-failing-edges="optionShowFailingEdges"
@@ -70,6 +71,10 @@ const props = defineProps({
   fullScreen: {
     type: Boolean,
     required: true,
+  },
+  zoomEnabled: {
+    type: Boolean,
+    default: false,
   },
   optionFilterTrustCluster: {
     type: Boolean,

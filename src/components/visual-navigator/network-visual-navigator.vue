@@ -154,6 +154,25 @@
         </b-breadcrumb>
       </div>
       <a
+        v-if="!zoomEnabled"
+        v-tooltip="'Toggle scroll to zoom'"
+        href="#"
+        class="mx-4"
+        @click.prevent.stop="zoomEnabled = true"
+      >
+        <b-icon-zoom-in />
+      </a>
+      <a
+        v-else
+        v-tooltip="'Toggle scroll to zoom'"
+        href="#"
+        class="mx-4"
+        @click.prevent.stop="zoomEnabled = false"
+      >
+        <b-icon-zoom-in variant="success" />
+      </a>
+
+      <a
         v-if="!fullScreen"
         v-tooltip="'Fullscreen'"
         href="#"
@@ -189,6 +208,7 @@
       <network-graph-card
         v-else
         :full-screen="fullScreen"
+        :zoom-enabled="zoomEnabled"
         :option-show-failing-edges="optionShowFailingEdges"
         :option-highlight-trusting-nodes="optionHighlightTrustingNodes"
         :option-highlight-trusted-nodes="optionHighlightTrustedNodes"
@@ -231,6 +251,7 @@ import {
   BIconFullscreen,
   BIconFullscreenExit,
   BIconList,
+  BIconZoomIn,
 } from "bootstrap-vue";
 import GraphLegend from "@/components/visual-navigator/graph/graph-legend.vue";
 import useStore from "@/store/useStore";
@@ -271,6 +292,7 @@ const optionFilterTrustCluster = ref(false);
 
 const menuVisible = ref(false);
 const fullScreen = ref(false);
+const zoomEnabled = ref(false);
 
 const breadCrumbs = computed(() => {
   const crumbs: {
