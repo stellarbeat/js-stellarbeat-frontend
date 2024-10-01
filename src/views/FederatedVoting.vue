@@ -30,6 +30,7 @@
               :option-highlight-trusted-nodes="true"
               :option-show-regular-edges="true"
               :option-transitive-quorum-set-only="false"
+              :zoom-enabled="false"
               :initial-zoom="2"
               :propagation-enabled="true"
               @vertex-selected="handleVertexSelected"
