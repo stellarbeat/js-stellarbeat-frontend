@@ -83,7 +83,7 @@
                   <button
                     v-if="!simulated"
                     class="btn btn-primary btn-sm mt-2"
-                    @click="simulateFailure"
+                    @click.prevent.stop="simulateFailure"
                   >
                     Simulate failure
                   </button>
