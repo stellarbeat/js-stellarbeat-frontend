@@ -3,6 +3,7 @@ import { StellarBeatNetworkV1Repository } from "@/repositories/implementation/St
 import { isString } from "@stellarbeat/js-stellarbeat-shared/lib/typeguards";
 import { FBASRepository } from "@/repositories/implementation/FBASRepository";
 import { FBASQIRepository } from "@/repositories/implementation/FBASQIRepository";
+import { MeridianRepository } from "@/repositories/implementation/MeridianRepository";
 
 export interface NetworkContext {
   networkId: NetworkId;
@@ -130,6 +131,20 @@ export default class Config {
         networkId: "fbas2",
         name: "FBAS QI demo",
         repository: new FBASQIRepository(),
+        enableNotify: false,
+        enableHistory: false,
+        enableIndex: false,
+        isSimulation: true,
+        enableHorizon: false,
+        enableValidatorLoad: false,
+        enableConfigExport: false,
+        apiBaseUrl: "localhost",
+      });
+
+      this.networkContexts.set("meridian", {
+        networkId: "meridian",
+        name: "Meridian demo",
+        repository: new MeridianRepository(),
         enableNotify: false,
         enableHistory: false,
         enableIndex: false,
