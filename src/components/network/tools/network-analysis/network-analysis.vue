@@ -406,18 +406,21 @@ function stopAnalysis() {
 }
 
 function performAnalysis() {
-  const nodesToAnalyze: Node[] =
-    analyzeTrustCluster.value && store.selectedNode
-      ? [
-          ...Array.from(
-            TransitiveQuorumSetFinder.find(
-              store.selectedNode?.quorumSet,
-              getNodesToQuorumSetMap(store.network.nodes),
-            ),
-          ).map((publicKey) => store.network.getNodeByPublicKey(publicKey)),
-          store.selectedNode,
-        ]
-      : store.networkAnalyzer.nodesToAnalyze;
+  const nodesToAnalyze: Node[] = Array.from(
+    new Set(
+      analyzeTrustCluster.value && store.selectedNode
+        ? [
+            ...Array.from(
+              TransitiveQuorumSetFinder.find(
+                store.selectedNode?.quorumSet,
+                getNodesToQuorumSetMap(store.network.nodes),
+              ),
+            ).map((publicKey) => store.network.getNodeByPublicKey(publicKey)),
+            store.selectedNode,
+          ]
+        : store.networkAnalyzer.nodesToAnalyze,
+    ),
+  );
 
   isLoading.value = true;
   fbasAnalysisWorker.postMessage({
